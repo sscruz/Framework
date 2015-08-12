@@ -206,6 +206,7 @@ class Canvas:
       for plotName in self.plotNames:
           self.myCanvas.SaveAs('plots/'+plotName)
 
+      del self.myCanvas
 
 
    def save(self, legend, isData, log, lumi):
