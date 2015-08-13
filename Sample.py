@@ -262,7 +262,7 @@ class Tree:
      
      for b in self.blocks:
      
-       AuxName = "aux_block" + b.name
+       AuxName = "aux_block" + name + "_" + b.name
        haux = b.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel)
        h.Add(haux)
        del haux

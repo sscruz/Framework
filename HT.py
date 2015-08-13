@@ -31,12 +31,13 @@ if __name__ == "__main__":
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
-    if len(args) != 2:
-      parser.error("wrong number of arguments")
+    #if len(args) != 2:
+    #  parser.error("wrong number of arguments")
 
-    inputFileName = args[0]
-    tree23 = Tree(inputFileName, "MC", 0)
-    inputFileName2 = args[1]
+    #inputFileName = args[0]
+    #tree23 = Tree(inputFileName, "MC", 0)
+    print args[0]
+    inputFileName2 = args[0]
     tree43 = Tree(inputFileName2, "MC", 0)
    
     gROOT.ProcessLine('.L tdrstyle.C')
@@ -46,13 +47,10 @@ if __name__ == "__main__":
 
     bins = [50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]
     #####Attention: setting the first bin in 50 because we only have DY mll>50 at this point
-    ht23 = tree23.getTH1F(4, "ht23", "t.htJet35j_Edge", 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "H_T [GeV]")
-    ht43 = tree43.getTH1F(4, "ht43", "t.htJet35j_Edge", 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "H_T [GeV]")
-    ht23_40 = tree23.getTH1F(4, "ht23_40", "htJet40", 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "H_T [GeV]")
-    ht43_40 = tree43.getTH1F(4, "ht43_40", "htJet40", 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "H_T [GeV]")
- 
+    #ht23 = tree23.getTH1F(4, "ht23", "t.htJet35j_Edge", 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "H_T [GeV]")
+    ht43 = tree43.getTH2F(4, "ht43", "t.htJet35j_Edge:htJet40", 20, 0, 500, 20, 0, 500, cuts.Add(cuts.DYControlNoMassLeptonSF(), cuts.Central()), "COLZ", "H_T^{35} [GeV]", "H_T^{40} [GeV]")
+    
     plot_ht_central = Canvas("plot_ht_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_ht_central.addHisto(ht23, "HIST", "23", "L", r.kRed, 1, 0)
-    plot_ht_central.addHisto(ht43, "HIST, SAME", "43", "L", r.kBlue, 1, 0)
-    plot_ht_central.saveRatio(1, 0, 0, 4.0, ht23, ht43)
+    plot_ht_central.addHisto(ht43, "COLZ", "43", "", r.kBlue, 1, 0)
+    plot_ht_central.save(0, 0, 0, 4.0)
     
