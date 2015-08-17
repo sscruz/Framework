@@ -13,13 +13,7 @@ class CutManager:
       self.leptonDR = "t.lepsDR_Edge > 0.3"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
       self.leptonsMll = "t.lepsMll_Edge > 20"
-      ## self.leptonEta = "abs(LepGood_eta[0]) < 2.4 && abs(LepGood_eta[1]) < 2.4"
-      ## self.leptonID = "LepGood_tightId[0] > 0 && LepGood_tightId[1] > 0"
-      ## self.goodLepton = self.twoLeptons + " && " + self.leptonPt + " && " + self.leptonEta + " && " + self.ECALCrack  + " && " + self.leptonDR + " && " + self.leptonID
       self.goodLepton = self.twoLeptons + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll
-      #self.ee = "((Lep2_pdgId_Edge * Lep2_pdgId_Edge == -121) && HLT_DoubleEl > 0)"
-      #self.mm = "((Lep2_pdgId_Edge * Lep2_pdgId_Edge == -169) && HLT_DoubleMu > 0)"
-      #self.OF = "((Lep2_pdgId_Edge * Lep2_pdgId_Edge == -143) && HLT_MuEG > 0)"
       self.ee = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121)"
       self.mm = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)"
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
