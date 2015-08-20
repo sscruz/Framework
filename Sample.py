@@ -6,7 +6,7 @@ from ROOT import TTree, TFile, TCut, TH1F, TH2F, THStack, TCanvas
 class Sample:
    'Common base class for all Samples'
 
-   def __init__(self, name, location, friendlocation, xsection, ngen, isdata):
+   def __init__(self, name, location, friendlocation, xsection, isdata):
       self.name = name
       self.location = location
       self.xSection = xsection
@@ -167,10 +167,9 @@ class Tree:
         location    = splitedLine[4]
         flocation   = splitedLine[5]
         xsection    = float(splitedLine[6])
-        ngen        = float(splitedLine[7])
-        isdata      = int(splitedLine[8])
+        isdata      = int(splitedLine[7])
 
-        sample = Sample(name, location, flocation, xsection, ngen, isdata)
+        sample = Sample(name, location, flocation, xsection, isdata)
         coincidentBlock = [l for l in self.blocks if l.name == block]
 
         if(coincidentBlock == []):
