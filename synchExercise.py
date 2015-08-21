@@ -51,7 +51,7 @@ if __name__ == '__main__':
     scanString  = "run:evt:"
     scanString += "Lep1_pt_Edge:Lep1_eta_Edge:Lep1_phi_Edge:Lep1_pdgId_Edge:Lep1_mvaIdPhys14_Edge:"
     scanString += "Lep2_pt_Edge:Lep2_eta_Edge:Lep2_phi_Edge:Lep2_pdgId_Edge:Lep2_mvaIdPhys14_Edge:"
-    scanString += "lepsMll_Edge:met_pt:nJetSel_Edge"
+    scanString += "lepsMll_Edge:met_pt:nJetSel_Edge:(Lep1_pdgId_Edge*Lep2_pdgId_Edge)"
 
     ## define the cut you want to have applied
     cutString = cuts.goodLepton

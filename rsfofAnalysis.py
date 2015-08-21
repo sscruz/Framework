@@ -139,7 +139,7 @@ if __name__ == '__main__':
 
    
             rsfof= make_rsfof(sf, of)
-            plot_rsfof= Canvas('plot_rsfof_'+var+'_'+eta+'_'+options.region+trig_suffix, 'png,pdf', 0.6, 0.6, 0.8, 0.8)
+            plot_rsfof= Canvas('rsfof/plot_rsfof_'+var+'_'+eta+'_'+options.region+trig_suffix, 'png,pdf', 0.6, 0.6, 0.8, 0.8)
             plot_rsfof.addHisto(rsfof, 'PE', 'OF', 'L', r.kBlack, 1, 0)
             plot_rsfof.addLine(rsfof.GetXaxis().GetXmin(), 1., rsfof.GetXaxis().GetXmax(),1., 3)
             plot_rsfof.save(0, 0, 0, 4.0)

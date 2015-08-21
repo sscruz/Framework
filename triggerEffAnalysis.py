@@ -63,10 +63,11 @@ if __name__ == '__main__':
     r.setTDRStyle() 
     cuts = CutManager()
     
-    ht_ht = getTriggerEffs(tree, cuts.AddList([cuts.goodLepton,cuts.Central()]), 'HLT_HT > 0', 't.htJet35j_Edge', 'H_{T} (GeV)', [20,   0,  800], 4.) ## ,'(HLT_DoubleMu > 0 || HLT_DoubleEl > 0|| HLT_MuEG > 0)'
+    ht_ht = getTriggerEffs(tree, cuts.AddList([cuts.goodLepton,cuts.Central()]), 'HLT_pfht350 > 0', 't.htJet35j_Edge', 'H_{T} (GeV)', [20,   0,  800], 4.) ## ,'(HLT_DoubleMu > 0 || HLT_DoubleEl > 0|| HLT_MuEG > 0)'
    
-    plot_ht_ht = Canvas('plot_eff_ht_ht', 'png', 0.6, 0.6, 0.8, 0.8)
+    plot_ht_ht = Canvas('trigger/plot_eff_ht_ht', 'png', 0.6, 0.6, 0.8, 0.8)
     ht_ht.GetHistogram().Draw()
+    ht_ht.GetYaxis().SetRangeUser(-0.05, 1.05)
     ht_ht.Draw('apz')
     plot_ht_ht.save(0, 0, 0, 4.0)
     
@@ -95,22 +96,25 @@ if __name__ == '__main__':
         else: 
             print 'something is wrong...'
 
-        eff_mll  = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_HT > 0', 't.htJet35j_Edge > 400']), trigger, 't.lepsMll_Edge'  , mllvar, [20,  0, 200], 4.)
-        eff_l1pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_HT > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep_Edge_pt[0]', pt1var, [10, 20, 120], 4.)
-        eff_l2pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_HT > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep_Edge_pt[1]', pt2var, [10, 20, 120], 4.)
+        eff_mll  = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.lepsMll_Edge'  , mllvar, [20,  0, 200], 4.)
+        eff_l1pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], 4.)
+        eff_l2pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], 4.)
 
-        plot_mll = Canvas('plot_eff_'+flavor+'_mll', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_mll = Canvas('trigger/plot_eff_'+flavor+'_mll', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_mll.GetHistogram().Draw()
+        eff_mll.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_mll.Draw('apz')
         plot_mll.save(0, 0, 0, 4.0)
 
-        plot_l1pt = Canvas('plot_eff_'+flavor+'_l1pt', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_l1pt = Canvas('trigger/plot_eff_'+flavor+'_l1pt', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_l1pt.GetHistogram().Draw()
+        eff_l1pt.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_l1pt.Draw('apz')
         plot_l1pt.save(0, 0, 0, 4.0)
 
-        plot_l2pt = Canvas('plot_eff_'+flavor+'_l2pt', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_l2pt = Canvas('trigger/plot_eff_'+flavor+'_l2pt', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_l2pt.GetHistogram().Draw()
+        eff_l2pt.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_l2pt.Draw('apz')
         plot_l2pt.save(0, 0, 0, 4.0)
 

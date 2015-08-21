@@ -6,7 +6,7 @@ from ROOT import TTree, TFile, TCut, TH1F, TH2F, THStack, TCanvas
 class Sample:
    'Common base class for all Samples'
 
-   def __init__(self, name, location, friendlocation, xsection, ngen, isdata):
+   def __init__(self, name, location, friendlocation, xsection, isdata):
       self.name = name
       self.location = location
       self.xSection = xsection
@@ -16,7 +16,16 @@ class Sample:
       self.ttree = self.tfile.Get('tree')
       print self.tfile, self.ftfile
       self.ttree.AddFriend('sf/t',self.ftfile)
-      self.count = ngen if ngen > 0. else self.tfile.Get('Count').GetEntries()
+      if not self.isData:
+        gw = 0.
+        for i in self.ttree:
+            gw = abs(i.genWeight)
+            if gw: break
+        print 'this is the genweight', gw
+        self.count = self.tfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
+      else:
+        self.count = self.tfile.Get('Count').GetEntries()
+      print 'this is the count', self.count
       self.lumWeight = 1.0
       if(self.isData == 0):
         self.lumWeight = self.xSection / self.count
@@ -158,10 +167,9 @@ class Tree:
         location    = splitedLine[4]
         flocation   = splitedLine[5]
         xsection    = float(splitedLine[6])
-        ngen        = float(splitedLine[7])
-        isdata      = int(splitedLine[8])
+        isdata      = int(splitedLine[7])
 
-        sample = Sample(name, location, flocation, xsection, ngen, isdata)
+        sample = Sample(name, location, flocation, xsection, isdata)
         coincidentBlock = [l for l in self.blocks if l.name == block]
 
         if(coincidentBlock == []):
