@@ -1,10 +1,27 @@
-TTJets r.kBlue TTJets TT+Jets /afs/cern.ch/work/m/mdunser/public/edgeTrees/74x_edgeSamples/ friends/ 831760. 14000948. 0
-#TTJets r.kBlue TTJets TT+Jets /afs/cern.ch/work/m/mdunser/public/edgeTrees/allSamples_02062015/ edgeFriends/ 831760 0
-# DYJetsToLL_M50 r.kRed DYJetsToLL_M50 DY+Jets /afs/cern.ch/work/m/mdunser/public/edgeTrees/allSamples_02062015/ edgeFriends/ 5482000 0
-## SMS_T2tt_2J_mStop850_mLSP100
-## SMS_T2tt_2J_mStop425_mLSP325
-## DYJetsToLL_M50_HT100to200
-## DYJetsToLL_M50_HT200to400
-## DYJetsToLL_M50_HT400to600
-## DYJetsToLL_M50_HT600toInf
-## DYJetsToLL_M50
+#-----------------------------------------------------------
+#-----------------------------------------------------------
+#----- all samples that are currently available ------------
+#-----------------------------------------------------------
+#
+#-----------------------------------------------------------
+#----------------- data samples ----------------------------
+#-----------------------------------------------------------
+# BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#DoubleMuon_Run2015B   r.kBlack   DoubleMuon_Run2015B   DoubleMuon_Run2015B   /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
+#DoubleEG_Run2015B     r.kBlack   DoubleEG_Run2015B     DoubleEG_Run2015B     /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
+#MuonEG_Run2015B       r.kBlack   MuonEG_Run2015B       MuonEG_Run2015B       /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
+#HTMHT_Run2015B        r.kBlack   HTMHT_Run2015B        HTMHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
+#JetHT_Run2015B        r.kBlack   JetHT_Run2015B        JetHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
+#
+#-----------------------------------------------------------
+#----------------- monte carlo -----------------------------
+#-----------------------------------------------------------
+# BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+TTJets                r.kBlue    TTJets                TT+Jets_NLO           /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
+DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/  18610000.   0
+DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/   6024000.   0
+#TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
+#TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/     87314.8  0
+#
