@@ -21,11 +21,9 @@ class Sample:
         for i in self.ttree:
             gw = abs(i.genWeight)
             if gw: break
-        print 'this is the genweight', gw
         self.count = self.tfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
         self.count = self.tfile.Get('Count').GetEntries()
-      print 'this is the count', self.count
       self.lumWeight = 1.0
       if(self.isData == 0):
         self.lumWeight = self.xSection / self.count

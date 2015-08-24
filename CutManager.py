@@ -22,6 +22,7 @@ class CutManager:
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
+      self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
       self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
