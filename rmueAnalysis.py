@@ -100,52 +100,95 @@ def make_rmue_meas(ee, mm, syst):
 
 if __name__ == "__main__":
 
+
     parser = OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
-    if len(args) != 1:
+    if len(args) != 2:
       parser.error("wrong number of arguments")
 
+    if args[1] != "MC" and args[1] != "DATA":
+      parser.error("Second argument must be MC or DATA")
+
     inputFileName = args[0]
-    tree = Tree(inputFileName, "MC", 0)
-   
+    typeOfSample = args[1]
+    isData = 1 if typeOfSample == 'DATA' else 0
+
+    tree = Tree(inputFileName, typeOfSample, isData)
+
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
-    r.setTDRStyle() 
+    r.setTDRStyle()
+
+    ####Cuts needed by rimue
     cuts = CutManager()
 
-    bins = [20,30,40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]
-    #####Attention: setting the first bin in 50 because we only have DY mll>50 at this point
-    #mll_ee_central = tree.getTH1F(4, "mll_ee_central", "t.lepsMll_Edge", 25, 50, 300, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "m_{ll} [GeV]")
-    #mll_mm_central = tree.getTH1F(4, "mll_mm_central", "t.lepsMll_Edge", 25, 50, 300, cuts.Add(cuts.DYControlNoMassLeptonmm(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_ee_central = tree.getTH1F(4, "mll_ee_central", "t.lepsMll_Edge", bins, 1, 1, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_mm_central = tree.getTH1F(4, "mll_mm_central", "t.lepsMll_Edge", bins, 1, 1,cuts.Add(cuts.DYControlNoMassLeptonmm(), cuts.Central()), "", "m_{ll} [GeV]")
-    met_ee_central = tree.getTH1F(4, "met_ee_central", "met_pt", 10, 0, 100, cuts.Add(cuts.DYControlNoMetLeptonee(), cuts.Central()), "", "m_{ll} [GeV]")
-    met_mm_central = tree.getTH1F(4, "met_mm_central", "met_pt", 10, 0, 100, cuts.Add(cuts.DYControlNoMetLeptonmm(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_ee_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalLowMassee(), cuts.Central()))
-    mll_mm_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalLowMassmm(), cuts.Central()))
-    mll_ee_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalHighMassee(), cuts.Central()))
-    mll_mm_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalHighMassmm(), cuts.Central()))
-    mll_ee_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalZMassee(), cuts.Central()))
-    mll_mm_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalZMassmm(), cuts.Central()))
-    mll_ee_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.AddList([cuts.DYControlNoMassLeptonee(), cuts.Central(), cuts.DYMass()]))
-    mll_mm_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.AddList([cuts.DYControlNoMassLeptonmm(), cuts.Central(), cuts.DYMass()]))
+    DYregion_Central_nomassee = cuts.AddList([cuts.GoodLeptonee(), cuts.DYControlRegion, cuts.Central()])
+    DYregion_Central_nomassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.DYControlRegion, cuts.Central()])
     
-    #mll_ee_forward = tree.getTH1F(4, "mll_ee_forward", "t.lepsMll_Edge", 25, 50, 300, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Forward()), "", "m_{ll} [GeV]")
-    #mll_mm_forward = tree.getTH1F(4, "mll_mm_forward", "t.lepsMll_Edge", 25, 50, 300, cuts.Add(cuts.DYControlNoMassLeptonmm(), cuts.Forward()), "", "m_{ll} [GeV]")
-    mll_ee_forward = tree.getTH1F(4, "mll_ee_forward", "t.lepsMll_Edge", bins, 1, 1, cuts.Add(cuts.DYControlNoMassLeptonee(), cuts.Forward()), "", "m_{ll} [GeV]")
-    mll_mm_forward = tree.getTH1F(4, "mll_mm_forward", "t.lepsMll_Edge", bins, 1, 1, cuts.Add(cuts.DYControlNoMassLeptonmm(), cuts.Forward()), "", "m_{ll} [GeV]")
-    met_ee_forward = tree.getTH1F(4, "met_ee_forward", "met_pt", 10, 0, 100, cuts.Add(cuts.DYControlNoMetLeptonee(), cuts.Forward()), "", "m_{ll} [GeV]")
-    met_mm_forward = tree.getTH1F(4, "met_mm_forward", "met_pt", 10, 0, 100, cuts.Add(cuts.DYControlNoMetLeptonmm(), cuts.Forward()), "", "m_{ll} [GeV]")
-    mll_ee_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalLowMassee(), cuts.Forward()))
-    mll_mm_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalLowMassmm(), cuts.Forward()))
-    mll_ee_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalHighMassee(), cuts.Forward()))
-    mll_mm_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalHighMassmm(), cuts.Forward()))
-    mll_ee_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalZMassee(), cuts.Forward()))
-    mll_mm_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.Add(cuts.SignalZMassmm(), cuts.Forward()))
-    mll_ee_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.AddList([cuts.DYControlNoMassLeptonee(), cuts.Forward(), cuts.DYMass()]))
-    mll_mm_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, cuts.AddList([cuts.DYControlNoMassLeptonmm(), cuts.Forward(), cuts.DYMass()]))
+    DYregion_Central_ee = cuts.AddList([cuts.GoodLeptonee(), cuts.DYControlRegion, cuts.DYmass, cuts.Central()])
+    DYregion_Central_mm = cuts.AddList([cuts.GoodLeptonmm(), cuts.DYControlRegion, cuts.DYmass, cuts.Central()])
+    
+    DYregion_Central_nometee = cuts.AddList([cuts.GoodLeptonee(), cuts.nj2, cuts.DYmass, cuts.Central()])
+    DYregion_Central_nometmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.nj2, cuts.DYmass, cuts.Central()])
+    
+    Signalregion_Central_lowmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.lowmass, cuts.Central()])
+    Signalregion_Central_lowmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.lowmass, cuts.Central()])
+    
+    Signalregion_Central_highmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.highmass, cuts.Central()])
+    Signalregion_Central_highmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.highmass, cuts.Central()])
+
+    Signalregion_Central_Zmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.Zmass, cuts.Central()])
+    Signalregion_Central_Zmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.Zmass, cuts.Central()])
+
+    DYregion_Forward_nomassee = cuts.AddList([cuts.GoodLeptonee(), cuts.DYControlRegion, cuts.Forward()])
+    DYregion_Forward_nomassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.DYControlRegion, cuts.Forward()])
+    
+    DYregion_Forward_ee = cuts.AddList([cuts.GoodLeptonee(), cuts.DYControlRegion, cuts.DYmass, cuts.Forward()])
+    DYregion_Forward_mm = cuts.AddList([cuts.GoodLeptonmm(), cuts.DYControlRegion, cuts.DYmass, cuts.Forward()])
+    
+    DYregion_Forward_nometee = cuts.AddList([cuts.GoodLeptonee(), cuts.nj2, cuts.DYmass, cuts.Forward()])
+    DYregion_Forward_nometmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.nj2, cuts.DYmass, cuts.Forward()])
+    
+    Signalregion_Forward_lowmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.lowmass, cuts.Forward()])
+    Signalregion_Forward_lowmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.lowmass, cuts.Forward()])
+    
+    Signalregion_Forward_highmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.highmass, cuts.Forward()])
+    Signalregion_Forward_highmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.highmass, cuts.Forward()])
+
+    Signalregion_Forward_Zmassee = cuts.AddList([cuts.GoodLeptonee(), cuts.METJetsSignalRegion, cuts.Zmass, cuts.Forward()])
+    Signalregion_Forward_Zmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.Zmass, cuts.Forward()])
+    
+
+    ####################Filling histograms
+    bins = [20,30,40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]
+    mll_ee_central = tree.getTH1F(4, "mll_ee_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassee, "", "m_{ll} [GeV]")
+    mll_mm_central = tree.getTH1F(4, "mll_mm_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassmm, "", "m_{ll} [GeV]")
+    met_ee_central = tree.getTH1F(4, "met_ee_central", "met_pt", 10, 0, 100, DYregion_Central_nometee, "", "m_{ll} [GeV]")
+    met_mm_central = tree.getTH1F(4, "met_mm_central", "met_pt", 10, 0, 100, DYregion_Central_nometmm, "", "m_{ll} [GeV]")
+    mll_ee_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassee)
+    mll_mm_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassmm)
+    mll_ee_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassee)
+    mll_mm_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassmm)
+    mll_ee_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassee)
+    mll_mm_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassmm)
+    mll_ee_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Central_ee)
+    mll_mm_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Central_mm)
+
+    mll_ee_forward = tree.getTH1F(4, "mll_ee_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassee, "", "m_{ll} [GeV]")
+    mll_mm_forward = tree.getTH1F(4, "mll_mm_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassmm, "", "m_{ll} [GeV]")
+    met_ee_forward = tree.getTH1F(4, "met_ee_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometee, "", "m_{ll} [GeV]")
+    met_mm_forward = tree.getTH1F(4, "met_mm_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometmm, "", "m_{ll} [GeV]")
+    mll_ee_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassee)
+    mll_mm_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassmm)
+    mll_ee_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassee)
+    mll_mm_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassmm)
+    mll_ee_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassee)
+    mll_mm_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassmm)
+    mll_ee_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_ee)
+    mll_mm_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_mm)
+    
 
 
     rmue_mll_central = make_rmue(mll_mm_central, mll_ee_central)

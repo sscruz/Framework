@@ -32,7 +32,7 @@ class Canvas:
       latex.SetTextColor(r.kBlack);
       latex.SetTextFont(42);
       latex.SetTextAlign(31);
-      latex.SetTextSize(0.07);
+      latex.SetTextSize(0.04);
       latex.DrawLatex(0.25, 0.93, "CMS")
 
       latexb = TLatex()
@@ -56,7 +56,7 @@ class Canvas:
       latexc.SetTextFont(42);
       latexc.SetTextAlign(31);
       latexc.SetTextSize(0.05);
-      latexc.DrawLatex(0.82, 0.93, text_lumi)
+      latexc.DrawLatex(0.87, 0.93, text_lumi)
 
    def banner2(self, isData, lumi):
     
@@ -66,7 +66,7 @@ class Canvas:
       latex.SetTextColor(r.kBlack);
       latex.SetTextFont(42);
       latex.SetTextAlign(31);
-      latex.SetTextSize(0.06);
+      latex.SetTextSize(0.04);
       latex.DrawLatex(0.25, 0.93, "CMS")
 
       latexb = TLatex()
@@ -90,7 +90,7 @@ class Canvas:
       latexc.SetTextFont(42);
       latexc.SetTextAlign(31);
       latexc.SetTextSize(0.04);
-      latexc.DrawLatex(0.82, 0.93, text_lumi)
+      latexc.DrawLatex(0.87, 0.93, text_lumi)
 
    def addLine(self, x1, y1, x2, y2, color):
       line = TLine(x1,y1,x2,y2)
