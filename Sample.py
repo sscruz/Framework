@@ -14,7 +14,6 @@ class Sample:
       self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
       self.ftfile = TFile(self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
       self.ttree = self.tfile.Get('tree')
-      print self.tfile, self.ftfile
       self.ttree.AddFriend('sf/t',self.ftfile)
       if not self.isData:
         gw = 0.
@@ -109,7 +108,7 @@ class Block:
      h.GetYaxis().SetTitle(ylabel)
 
      for s in self.samples:
-       AuxName = "aux_sample" + s.name
+       AuxName = "auxT1_sample" + s.name
        haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        h.Add(haux)
        del haux
@@ -130,7 +129,7 @@ class Block:
      
      for s in self.samples:
      
-       AuxName = "aux_block" + s.name
+       AuxName = "auxT2_block" + s.name
        haux = s.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel)
        h.Add(haux)
        del haux
@@ -159,13 +158,21 @@ class Tree:
 
         splitedLine = str.split(l)
         block       = splitedLine[0]
-        color       = eval(splitedLine[1])
+        theColor    = splitedLine[1]
         name        = splitedLine[2]
         label       = splitedLine[3]
         location    = splitedLine[4]
         flocation   = splitedLine[5]
         xsection    = float(splitedLine[6])
         isdata      = int(splitedLine[7])
+
+        color = 0
+        plusposition = theColor.find("+")
+        if(plusposition == -1):
+          color = eval(theColor)
+        else:
+          color = eval(theColor[0:plusposition])
+          color = color + int(theColor[plusposition+1:len(theColor)])
 
         sample = Sample(name, location, flocation, xsection, isdata)
         coincidentBlock = [l for l in self.blocks if l.name == block]
@@ -218,7 +225,7 @@ class Tree:
      hs = THStack(name, "")
      for b in self.blocks:
      
-       AuxName = "aux_block_" + name + "_" + b.name
+       AuxName = "auxStack_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        haux.SetFillColor(b.color)
        hs.Add(haux)
@@ -252,7 +259,7 @@ class Tree:
      h.GetYaxis().SetTitle(ylabel)
      
      for b in self.blocks:
-       AuxName = "aux_block_" + name + "_" + b.name
+       AuxName = "auxh1_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        h.Add(haux)
        del haux

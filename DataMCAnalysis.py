@@ -31,23 +31,27 @@ if __name__ == "__main__":
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
-    if len(args) != 1:
+    if len(args) != 2:
         parser.error("wrong number of arguments")
 
-    inputFileName = args[0]
-    tree = Tree(inputFileName, "MC", 0)
+    inputFileNameMC = args[0]
+    inputFileNameData = args[1]
+  
+    treeMC = Tree(inputFileNameMC, "MC", 0)
+    treeData = Tree(inputFileNameData, "Data", 0)
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
+
     cuts = CutManager()
 
-    mll_SF_central_data = tree.getTH1F(4, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.DYControlNoMassLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_SF_central_mc_s = tree.getStack(4, "mll_SF_central_mc_s", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.DYControlNoMassLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_SF_central_mc_h = tree.getTH1F(4, "mll_SF_central_mc_h", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.DYControlNoMassLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
+    mll_SF_central_data = treeData.getTH1F(0.04, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
+    mll_SF_central_mc = treeMC.getStack(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
+    mll_SF_central_mc_h = treeMC.getTH1F(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
  
-    plot_SFvsOF_central = Canvas("plot_SF_DataMC_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_SFvsOF_central.addStack(mll_SF_central_mc_s, "H", 1, 1)
-    plot_SFvsOF_central.addHisto(mll_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plot_SFvsOF_central.saveRatio(1, 0, 0, 4.0, mll_SF_central_data, mll_SF_central_mc_h)
+    plot_SF_central = Canvas("plot_SF_central", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_SF_central.addStack(mll_SF_central_mc, "HIST", 1, 1)
+    plot_SF_central.addHisto(mll_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+    plot_SF_central.saveRatio(1, 1, 1, 0.04, mll_SF_central_data, mll_SF_central_mc_h)
     
