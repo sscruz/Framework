@@ -29,6 +29,7 @@ class CutManager:
       self.highmass = "t.lepsMll_Edge > 120"
       self.central = "(abs(t.Lep1_eta_Edge)<1.4 && abs(t.Lep2_eta_Edge)<1.4)"
       self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
+      self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
 
    def brackets(self, cut):
       return '('+cut+')'
@@ -71,19 +72,19 @@ class CutManager:
  
    def GoodLeptonSF(self):
 
-      return self.brackets(self.goodLepton + " && " + self.SF)
+      return self.brackets(self.goodLepton + " && " + self.SF + " && " + self.trigger)
 
    def GoodLeptonOF(self):
 
-      return self.brackets(self.goodLepton + " && " + self.OF)
+      return self.brackets(self.goodLepton + " && " + self.OF + " && " + self.trigger)
 
    def GoodLeptonee(self):
 
-      return self.brackets(self.goodLepton + " && " + self.ee)
+      return self.brackets(self.goodLepton + " && " + self.ee + " && " + self.trigger)
 
    def GoodLeptonmm(self):
 
-      return self.brackets(self.goodLepton + " && " + self.mm)
+      return self.brackets(self.goodLepton + " && " + self.mm + " && " + self.trigger)
 
    def SignalNoMassLeptonSF(self):
 

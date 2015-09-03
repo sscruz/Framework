@@ -46,12 +46,21 @@ if __name__ == "__main__":
 
     cuts = CutManager()
 
-    mll_SF_central_data = treeData.getTH1F(0.04, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_SF_central_mc = treeMC.getStack(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
-    mll_SF_central_mc_h = treeMC.getTH1F(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.Add(cuts.GoodLeptonSF(), cuts.Central()), "", "m_{ll} [GeV]")
+    mll_SF_central_data = treeData.getTH1F(0.04, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_SF_central_mc = treeMC.getStack(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_SF_central_mc_h = treeMC.getTH1F(0.04, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    
+    mll_OF_central_data = treeData.getTH1F(0.04, "mll_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_OF_central_mc = treeMC.getStack(0.04, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_OF_central_mc_h = treeMC.getTH1F(0.04, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
  
     plot_SF_central = Canvas("plot_SF_central", "png", 0.6, 0.6, 0.8, 0.8)
     plot_SF_central.addStack(mll_SF_central_mc, "HIST", 1, 1)
     plot_SF_central.addHisto(mll_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
     plot_SF_central.saveRatio(1, 1, 1, 0.04, mll_SF_central_data, mll_SF_central_mc_h)
+    
+    plot_OF_central = Canvas("plot_OF_central", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_OF_central.addStack(mll_OF_central_mc, "HIST", 1, 1)
+    plot_OF_central.addHisto(mll_OF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+    plot_OF_central.saveRatio(1, 1, 1, 0.04, mll_OF_central_data, mll_OF_central_mc_h)
     
