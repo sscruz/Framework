@@ -19,7 +19,10 @@ class Rounder:
 
  
    def getRound(self, d, expo):
-      
+
+       if(math.fabs(expo)>10):
+         print "Is it really such a weird number?"
+         return 0 
        val = math.floor(d/math.pow(10, expo))*math.pow(10, expo)
        val1 = (1+math.floor(d/math.pow(10, expo)))*math.pow(10, expo)
                 

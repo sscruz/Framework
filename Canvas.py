@@ -67,7 +67,7 @@ class Canvas:
       latex.SetTextFont(42);
       latex.SetTextAlign(31);
       latex.SetTextSize(0.05);
-      latex.DrawLatex(0.21, 0.93, "CMS")
+      latex.DrawLatex(0.23, 0.93, "CMS")
 
       latexb = TLatex()
       latexb.SetNDC();
@@ -78,9 +78,9 @@ class Canvas:
       latexb.SetTextSize(0.03);
  
       if(isData):
-        latexb.DrawLatex(0.33, 0.93, "Preliminary")
+        latexb.DrawLatex(0.37, 0.93, "Preliminary")
       else:
-        latexb.DrawLatex(0.33, 0.93, "Simulation")
+        latexb.DrawLatex(0.37, 0.93, "Simulation")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()

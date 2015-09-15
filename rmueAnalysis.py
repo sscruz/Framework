@@ -47,6 +47,8 @@ def make_rmue(histo_mm, histo_ee):
         Emm = histo_mm.GetBinError(i)
         Eee = histo_ee.GetBinError(i)
         if(Nee != 0):
+            if(Nee == 0 or Nmm == 0):
+              continue
             val = rmue(Nmm, Nee, Emm, Eee)
             ratio.SetBinContent(i, val[0])
             ratio.SetBinError(i, val[1])
@@ -55,9 +57,18 @@ def make_rmue(histo_mm, histo_ee):
 
 def make_rmue_signal(ee_l, mm_l, ee_Z, mm_Z, ee_h, mm_h):
 
-    rmue_l = rmue(mm_l[0], ee_l[0], mm_l[1], ee_l[1])
-    rmue_Z = rmue(mm_Z[0], ee_Z[0], mm_Z[1], ee_Z[1])
-    rmue_h = rmue(mm_h[0], ee_h[0], mm_h[1], ee_h[1])
+    if(ee_l[0] == 0 or mm_l[0] == 0):
+      rmue_l = [0, 0]
+    else:
+      rmue_l = rmue(mm_l[0], ee_l[0], mm_l[1], ee_l[1])
+    if(ee_Z[0] == 0 or mm_Z[0] == 0):
+      rmue_Z = [0, 0]
+    else:
+      rmue_Z = rmue(mm_Z[0], ee_Z[0], mm_Z[1], ee_Z[1])
+    if(ee_h[0] == 0 or mm_h[0] == 0):
+      rmue_h = [0, 0]
+    else:
+      rmue_h = rmue(mm_h[0], ee_h[0], mm_h[1], ee_h[1])
 
     rmue_x = array("d", [(20+70)/2.0, (101.0+81.0)/2.0, (110+300)/2.0])
     rmue_ex = array("d", [25, 5, 100])
@@ -161,59 +172,61 @@ if __name__ == "__main__":
     Signalregion_Forward_Zmassmm = cuts.AddList([cuts.GoodLeptonmm(), cuts.METJetsSignalRegion, cuts.Zmass, cuts.Forward()])
     
 
+
+    lumi = 0.020
     ####################Filling histograms
     bins = [20,30,40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]
-    mll_ee_central = tree.getTH1F(4, "mll_ee_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassee, "", "m_{ll} [GeV]")
-    mll_mm_central = tree.getTH1F(4, "mll_mm_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassmm, "", "m_{ll} [GeV]")
-    met_ee_central = tree.getTH1F(4, "met_ee_central", "met_pt", 10, 0, 100, DYregion_Central_nometee, "", "m_{ll} [GeV]")
-    met_mm_central = tree.getTH1F(4, "met_mm_central", "met_pt", 10, 0, 100, DYregion_Central_nometmm, "", "m_{ll} [GeV]")
-    mll_ee_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassee)
-    mll_mm_central_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassmm)
-    mll_ee_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassee)
-    mll_mm_central_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassmm)
-    mll_ee_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassee)
-    mll_mm_central_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassmm)
-    mll_ee_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Central_ee)
-    mll_mm_central_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Central_mm)
+    mll_ee_central = tree.getTH1F(lumi, "mll_ee_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassee, "", "m_{ll} [GeV]")
+    mll_mm_central = tree.getTH1F(lumi, "mll_mm_central", "t.lepsMll_Edge", bins, 1, 1, DYregion_Central_nomassmm, "", "m_{ll} [GeV]")
+    met_ee_central = tree.getTH1F(lumi, "met_ee_central", "met_pt", 10, 0, 100, DYregion_Central_nometee, "", "m_{ll} [GeV]")
+    met_mm_central = tree.getTH1F(lumi, "met_mm_central", "met_pt", 10, 0, 100, DYregion_Central_nometmm, "", "m_{ll} [GeV]")
+    mll_ee_central_lowmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassee)
+    mll_mm_central_lowmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_lowmassmm)
+    mll_ee_central_highmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassee)
+    mll_mm_central_highmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_highmassmm)
+    mll_ee_central_Zmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassee)
+    mll_mm_central_Zmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Central_Zmassmm)
+    mll_ee_central_DYmeas = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, DYregion_Central_ee)
+    mll_mm_central_DYmeas = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, DYregion_Central_mm)
 
-    mll_ee_forward = tree.getTH1F(4, "mll_ee_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassee, "", "m_{ll} [GeV]")
-    mll_mm_forward = tree.getTH1F(4, "mll_mm_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassmm, "", "m_{ll} [GeV]")
-    met_ee_forward = tree.getTH1F(4, "met_ee_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometee, "", "m_{ll} [GeV]")
-    met_mm_forward = tree.getTH1F(4, "met_mm_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometmm, "", "m_{ll} [GeV]")
-    mll_ee_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassee)
-    mll_mm_forward_lowmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassmm)
-    mll_ee_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassee)
-    mll_mm_forward_highmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassmm)
-    mll_ee_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassee)
-    mll_mm_forward_Zmass = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassmm)
-    mll_ee_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_ee)
-    mll_mm_forward_DYmeas = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_mm)
+    mll_ee_forward = tree.getTH1F(lumi, "mll_ee_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassee, "", "m_{ll} [GeV]")
+    mll_mm_forward = tree.getTH1F(lumi, "mll_mm_forward", "t.lepsMll_Edge", bins, 1, 1, DYregion_Forward_nomassmm, "", "m_{ll} [GeV]")
+    met_ee_forward = tree.getTH1F(lumi, "met_ee_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometee, "", "m_{ll} [GeV]")
+    met_mm_forward = tree.getTH1F(lumi, "met_mm_forward", "met_pt", 10, 0, 100, DYregion_Forward_nometmm, "", "m_{ll} [GeV]")
+    mll_ee_forward_lowmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassee)
+    mll_mm_forward_lowmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_lowmassmm)
+    mll_ee_forward_highmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassee)
+    mll_mm_forward_highmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_highmassmm)
+    mll_ee_forward_Zmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassee)
+    mll_mm_forward_Zmass = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, Signalregion_Forward_Zmassmm)
+    mll_ee_forward_DYmeas = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_ee)
+    mll_mm_forward_DYmeas = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, DYregion_Forward_mm)
     
 
 
     rmue_mll_central = make_rmue(mll_mm_central, mll_ee_central)
     rmue_mll_central.GetYaxis().SetRangeUser(0, 2)
-    plot_rmue_mll_central = Canvas("plot_rmue_mll_central", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_rmue_mll_central = Canvas("plot_rmue_mll_central", "png", 0.6, 0.15, 0.8, 0.35)
     plot_rmue_mll_central.addHisto(rmue_mll_central, "E1,SAME", "DY", "L", r.kBlack, 1, 0)
-    plot_rmue_mll_central.save(0, 0, 0, 4.0)
+    plot_rmue_mll_central.save(0, 0, 0, lumi)
     
     rmue_met_central = make_rmue(met_mm_central, met_ee_central)
     rmue_met_central.GetYaxis().SetRangeUser(0, 2)
-    plot_rmue_met_central = Canvas("plot_rmue_met_central", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_rmue_met_central = Canvas("plot_rmue_met_central", "png", 0.6, 0.15, 0.8, 0.35)
     plot_rmue_met_central.addHisto(rmue_met_central, "E1,SAME", "DY", "L", r.kBlack, 1, 0)
-    plot_rmue_met_central.save(0, 0, 0, 4.0)
+    plot_rmue_met_central.save(0, 0, 0, lumi)
     
     rmue_mll_forward = make_rmue(mll_mm_forward, mll_ee_forward)
     rmue_mll_forward.GetYaxis().SetRangeUser(0, 2)
-    plot_rmue_mll_forward = Canvas("plot_rmue_mll_forward", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_rmue_mll_forward = Canvas("plot_rmue_mll_forward", "png", 0.6, 0.15, 0.8, 0.35)
     plot_rmue_mll_forward.addHisto(rmue_mll_forward, "E1,SAME", "DY", "L", r.kBlack, 1, 0)
-    plot_rmue_mll_forward.save(0, 0, 0, 4.0)
+    plot_rmue_mll_forward.save(0, 0, 0, lumi)
     
     rmue_met_forward = make_rmue(met_mm_forward, met_ee_forward)
     rmue_met_forward.GetYaxis().SetRangeUser(0, 2)
-    plot_rmue_met_forward = Canvas("plot_rmue_met_forward", "png", 0.6, 0.6, 0.8, 0.8)
+    plot_rmue_met_forward = Canvas("plot_rmue_met_forward", "png", 0.6, 0.15, 0.8, 0.35)
     plot_rmue_met_forward.addHisto(rmue_met_forward, "E1,SAME", "DY", "L", r.kBlack, 1, 0)
-    plot_rmue_met_forward.save(0, 0, 0, 4.0)
+    plot_rmue_met_forward.save(0, 0, 0, lumi)
     
     [rmue_central_signal, rmue_central_l, rmue_central_Z, rmue_central_h] = make_rmue_signal(mll_ee_central_lowmass, mll_mm_central_lowmass, mll_ee_central_Zmass, mll_mm_central_Zmass, mll_ee_central_highmass, mll_mm_central_highmass)
     rmue_central_signal.GetYaxis().SetRangeUser(0, 2)
@@ -245,12 +258,12 @@ if __name__ == "__main__":
     rmue_mll_central.SetMarkerSize(1.2)
     rmue_mll_forward.SetMarkerSize(1.2)
 
-    finalplot_rmue_mll_central = Canvas("finalplot_rmue_mll_central", "png", 0.6, 0.65, 0.8, 0.85)
+    finalplot_rmue_mll_central = Canvas("finalplot_rmue_mll_central", "png", 0.6, 0.15, 0.8, 0.35)
     finalplot_rmue_mll_central.addGraph(rmue_central_meas, "AP2", "<DY Region>", "L", r.kBlue-9, 1, 0)
     finalplot_rmue_mll_central.addLine(20, rmue_central_DY_meas[0], 300, rmue_central_DY_meas[0], r.kBlue-4)
     finalplot_rmue_mll_central.addGraph(rmue_central_signal, "P", "Signal Region", "L", r.kRed, 1, 2)
     finalplot_rmue_mll_central.addHisto(rmue_mll_central, "E1,SAME", "DY Region", "L", r.kBlack, 1, 1)
-    finalplot_rmue_mll_central.save(1, 0, 0, 4.0)
+    finalplot_rmue_mll_central.save(1, 0, 0, lumi)
 
 
     finalplot_rmue_mll_forward = Canvas("finalplot_rmue_mll_forward", "png", 0.6, 0.15, 0.8, 0.35)
@@ -258,21 +271,21 @@ if __name__ == "__main__":
     finalplot_rmue_mll_forward.addLine(20, rmue_forward_DY_meas[0], 300, rmue_forward_DY_meas[0], r.kBlue-4)
     finalplot_rmue_mll_forward.addGraph(rmue_forward_signal, "P", "Signal Region", "L", r.kRed, 1, 2)
     finalplot_rmue_mll_forward.addHisto(rmue_mll_forward, "E1,SAME", "DY Region", "L", r.kBlack, 1, 1)
-    finalplot_rmue_mll_forward.save(1, 0, 0, 4.0)
+    finalplot_rmue_mll_forward.save(1, 0, 0, lumi)
 
 
-    finalplot_rmue_met_central = Canvas("finalplot_rmue_met_central", "png", 0.6, 0.65, 0.8, 0.85)
+    finalplot_rmue_met_central = Canvas("finalplot_rmue_met_central", "png", 0.6, 0.15, 0.8, 0.35)
     finalplot_rmue_met_central.addGraph(rmue_central_met, "AP2", "<DY Region>", "L", r.kBlue-9, 1, 0)
     finalplot_rmue_met_central.addLine(0, rmue_central_DY_meas[0], 100, rmue_central_DY_meas[0], r.kBlue-4)
     finalplot_rmue_met_central.addHisto(rmue_met_central, "E1,SAME", "DY Region", "L", r.kBlack, 1, 1)
-    finalplot_rmue_met_central.save(1, 0, 0, 4.0)
+    finalplot_rmue_met_central.save(1, 0, 0, lumi)
 
 
     finalplot_rmue_met_forward = Canvas("finalplot_rmue_met_forward", "png", 0.6, 0.15, 0.8, 0.35)
     finalplot_rmue_met_forward.addGraph(rmue_forward_met, "AP2", "<DY Region>", "L", r.kBlue-9, 1, 0)
     finalplot_rmue_met_forward.addLine(0, rmue_forward_DY_meas[0], 100, rmue_forward_DY_meas[0], r.kBlue-4)
     finalplot_rmue_met_forward.addHisto(rmue_met_forward, "E1,SAME", "DY Region", "L", r.kBlack, 1, 1)
-    finalplot_rmue_met_forward.save(1, 0, 0, 4.0)
+    finalplot_rmue_met_forward.save(1, 0, 0, lumi)
 
 
  

@@ -53,11 +53,13 @@ class Sample:
       if self.isData:
         if(name.find("DoubleMuon") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
         if(name.find("DoubleEG") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
         if(name.find("MuonEG") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)))"
-        cut = cut + "* ( " + addCut + " )"
+          cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) )" 

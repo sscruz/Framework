@@ -144,38 +144,40 @@ if __name__ == "__main__":
     regionLow_Forward_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.lowmass, cuts.Forward()])
 
 
+    lumi = 0.042
+
     ############# Mass plots to show the invariant mass distribution for SF and OF events #################################
-    mll_SF_central = tree.getTH1F(4, "mll_SF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassSF, "", "m_{ll} [GeV]")
-    mll_OF_central = tree.getTH1F(4, "mll_OF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassOF, "", "m_{ll} [GeV]")
-    mll_SF_forward = tree.getTH1F(4, "mll_SF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassSF, "", "m_{ll} [GeV]")
-    mll_OF_forward = tree.getTH1F(4, "mll_OF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassOF, "", "m_{ll} [GeV]")
+    mll_SF_central = tree.getTH1F(lumi, "mll_SF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassSF, "", "m_{ll} [GeV]")
+    mll_OF_central = tree.getTH1F(lumi, "mll_OF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassOF, "", "m_{ll} [GeV]")
+    mll_SF_forward = tree.getTH1F(lumi, "mll_SF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassSF, "", "m_{ll} [GeV]")
+    mll_OF_forward = tree.getTH1F(lumi, "mll_OF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassOF, "", "m_{ll} [GeV]")
 
     plot_mll_central = Canvas("plot_mll_central", "png", 0.6, 0.6, 0.8, 0.8)
     plot_mll_central.addHisto(mll_SF_central, "HIST", "SF", "L", r.kRed, 1, 0)
     plot_mll_central.addHisto(mll_OF_central, "HIST,SAME", "OF", "L", r.kBlue, 1, 0)
-    plot_mll_central.save(1, 0, 1, 4.0)
+    plot_mll_central.save(1, 0, 1, lumi)
     
     plot_mll_forward = Canvas("plot_mll_forward", "png", 0.6, 0.6, 0.8, 0.8)
     plot_mll_forward.addHisto(mll_SF_forward, "HIST", "SF", "L", r.kRed, 1, 0)
     plot_mll_forward.addHisto(mll_OF_forward, "HIST,SAME", "OF", "L", r.kBlue, 1, 0)
-    plot_mll_forward.save(1, 0, 1, 4.0)
+    plot_mll_forward.save(1, 0, 1, lumi)
 
 
 
     ########### Get yields ############################################################################################### 
-    rinZ_SF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionZ_CentralSF)
-    rinZ_OF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionZ_CentralOF)
-    rinlow_SF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionLow_CentralSF)
-    rinlow_OF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionLow_CentralOF)
-    rinhigh_SF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralSF)
-    rinhigh_OF_central = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralOF)
+    rinZ_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_CentralSF)
+    rinZ_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_CentralOF)
+    rinlow_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_CentralSF)
+    rinlow_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_CentralOF)
+    rinhigh_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralSF)
+    rinhigh_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralOF)
 
-    rinZ_SF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardSF)
-    rinZ_OF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardOF)
-    rinlow_SF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardSF)
-    rinlow_OF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardOF)
-    rinhigh_SF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardSF)
-    rinhigh_OF_forward = tree.getYields(4, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardOF)
+    rinZ_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardSF)
+    rinZ_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardOF)
+    rinlow_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardSF)
+    rinlow_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardOF)
+    rinhigh_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardSF)
+    rinhigh_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardOF)
 
     rinout_low_central = r_inout(rinlow_SF_central, rinlow_OF_central, rinZ_SF_central, rinZ_OF_central)
     rinout_high_central = r_inout(rinhigh_SF_central, rinhigh_OF_central, rinZ_SF_central, rinZ_OF_central)
@@ -205,12 +207,12 @@ if __name__ == "__main__":
 
 
     ########### Get Systematics ############################################################################################### 
-    met_rinZ_SF_central = tree.getTH1F(4, "met_rinZ_SF_central", "met_pt", 10, 0, 100, regionZ_Central_nometSF, "", "MET [GeV]")
-    met_rinZ_OF_central = tree.getTH1F(4, "met_rinZ_OF_central", "met_pt", 10, 0, 100, regionZ_Central_nometOF, "", "MET [GeV]")
-    met_rinlow_SF_central = tree.getTH1F(4, "met_rinlow_SF_central", "met_pt", 10, 0, 100, regionLow_Central_nometSF, "", "MET [GeV]")
-    met_rinlow_OF_central = tree.getTH1F(4, "met_rinlow_OF_central", "met_pt", 10, 0, 100, regionLow_Central_nometOF, "", "MET [GeV]")
-    met_rinhigh_SF_central = tree.getTH1F(4, "met_rinhigh_SF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometSF , "", "MET [GeV]")
-    met_rinhigh_OF_central = tree.getTH1F(4, "met_rinhigh_OF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometOF , "", "MET [GeV]")
+    met_rinZ_SF_central = tree.getTH1F(lumi, "met_rinZ_SF_central", "met_pt", 10, 0, 100, regionZ_Central_nometSF, "", "MET [GeV]")
+    met_rinZ_OF_central = tree.getTH1F(lumi, "met_rinZ_OF_central", "met_pt", 10, 0, 100, regionZ_Central_nometOF, "", "MET [GeV]")
+    met_rinlow_SF_central = tree.getTH1F(lumi, "met_rinlow_SF_central", "met_pt", 10, 0, 100, regionLow_Central_nometSF, "", "MET [GeV]")
+    met_rinlow_OF_central = tree.getTH1F(lumi, "met_rinlow_OF_central", "met_pt", 10, 0, 100, regionLow_Central_nometOF, "", "MET [GeV]")
+    met_rinhigh_SF_central = tree.getTH1F(lumi, "met_rinhigh_SF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometSF , "", "MET [GeV]")
+    met_rinhigh_OF_central = tree.getTH1F(lumi, "met_rinhigh_OF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometOF , "", "MET [GeV]")
 
     met_rinZ_central = met_rinZ_SF_central.Clone("met_rinZ_central")
     met_rinZ_central.Add(met_rinZ_OF_central, -1.0)
@@ -225,7 +227,7 @@ if __name__ == "__main__":
     plot_metrinhigh_central.addGraph(met_default_high_central, "AP2", "Measured", "F", r.kBlue-9, 1, 0)
     plot_metrinhigh_central.addLine(0, rinout_high_central[0], 100, rinout_high_central[0], r.kBlue-4)
     plot_metrinhigh_central.addHisto(met_rinhigh_central, "E1,SAME", "data", "P", r.kRed, 1, 0)
-    plot_metrinhigh_central.save(1, 0, 0, 4.0)
+    plot_metrinhigh_central.save(1, 0, 0, lumi)
 
 
 

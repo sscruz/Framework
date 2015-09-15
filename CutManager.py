@@ -31,6 +31,8 @@ class CutManager:
       self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
 
+      self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht300 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0 || HLT_at51>0 || HLT_at52 >0 || HLT_at53 > 0 || HLT_at55 > 0)"
+
    def brackets(self, cut):
       return '('+cut+')'
 
@@ -70,6 +72,14 @@ class CutManager:
  
       return self.brackets(self.DYmass)
  
+   def GoodLeptonNoTriggerSF(self):
+
+      return self.brackets(self.goodLepton + " && " + self.SF)
+
+   def GoodLeptonNoTriggerOF(self):
+
+      return self.brackets(self.goodLepton + " && " + self.OF) 
+
    def GoodLeptonSF(self):
 
       return self.brackets(self.goodLepton + " && " + self.SF + " && " + self.trigger)
