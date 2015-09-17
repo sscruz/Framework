@@ -14,18 +14,15 @@ class Sample:
       self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
       self.ftfile = TFile(self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
       self.ttree = self.tfile.Get('tree')
-      print self.tfile, self.ftfile
       self.ttree.AddFriend('sf/t',self.ftfile)
       if not self.isData:
         gw = 0.
         for i in self.ttree:
             gw = abs(i.genWeight)
             if gw: break
-        print 'this is the genweight', gw
         self.count = self.tfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
         self.count = self.tfile.Get('Count').GetEntries()
-      print 'this is the count', self.count
       self.lumWeight = 1.0
       if(self.isData == 0):
         self.lumWeight = self.xSection / self.count
@@ -51,7 +48,19 @@ class Sample:
       h.Sumw2()
       h.GetXaxis().SetTitle(xlabel)
       h.GetYaxis().SetTitle(ylabel)
-      
+
+      addCut = ""
+      if self.isData:
+        if(name.find("DoubleMuon") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
+        if(name.find("DoubleEG") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
+        if(name.find("MuonEG") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)))"
+          cut = cut + "* ( " + addCut + " )"
+           
       if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) )" 
       
@@ -111,7 +120,7 @@ class Block:
      h.GetYaxis().SetTitle(ylabel)
 
      for s in self.samples:
-       AuxName = "aux_sample" + s.name
+       AuxName = "auxT1_sample" + s.name
        haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        h.Add(haux)
        del haux
@@ -132,7 +141,7 @@ class Block:
      
      for s in self.samples:
      
-       AuxName = "aux_block" + s.name
+       AuxName = "auxT2_block" + s.name
        haux = s.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel)
        h.Add(haux)
        del haux
@@ -161,13 +170,21 @@ class Tree:
 
         splitedLine = str.split(l)
         block       = splitedLine[0]
-        color       = eval(splitedLine[1])
+        theColor    = splitedLine[1]
         name        = splitedLine[2]
         label       = splitedLine[3]
         location    = splitedLine[4]
         flocation   = splitedLine[5]
         xsection    = float(splitedLine[6])
         isdata      = int(splitedLine[7])
+
+        color = 0
+        plusposition = theColor.find("+")
+        if(plusposition == -1):
+          color = eval(theColor)
+        else:
+          color = eval(theColor[0:plusposition])
+          color = color + int(theColor[plusposition+1:len(theColor)])
 
         sample = Sample(name, location, flocation, xsection, isdata)
         coincidentBlock = [l for l in self.blocks if l.name == block]
@@ -220,7 +237,7 @@ class Tree:
      hs = THStack(name, "")
      for b in self.blocks:
      
-       AuxName = "aux_block_" + name + "_" + b.name
+       AuxName = "auxStack_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        haux.SetFillColor(b.color)
        hs.Add(haux)
@@ -254,7 +271,7 @@ class Tree:
      h.GetYaxis().SetTitle(ylabel)
      
      for b in self.blocks:
-       AuxName = "aux_block_" + name + "_" + b.name
+       AuxName = "auxh1_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
        h.Add(haux)
        del haux

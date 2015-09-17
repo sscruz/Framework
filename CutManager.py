@@ -22,12 +22,16 @@ class CutManager:
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
+      self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
       self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
       self.highmass = "t.lepsMll_Edge > 120"
       self.central = "(abs(t.Lep1_eta_Edge)<1.4 && abs(t.Lep2_eta_Edge)<1.4)"
       self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
+      self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
+
+      self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht300 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0 || HLT_at51>0 || HLT_at52 >0 || HLT_at53 > 0 || HLT_at55 > 0)"
 
    def brackets(self, cut):
       return '('+cut+')'
@@ -68,21 +72,29 @@ class CutManager:
  
       return self.brackets(self.DYmass)
  
-   def GoodLeptonSF(self):
+   def GoodLeptonNoTriggerSF(self):
 
       return self.brackets(self.goodLepton + " && " + self.SF)
 
+   def GoodLeptonNoTriggerOF(self):
+
+      return self.brackets(self.goodLepton + " && " + self.OF) 
+
+   def GoodLeptonSF(self):
+
+      return self.brackets(self.goodLepton + " && " + self.SF + " && " + self.trigger)
+
    def GoodLeptonOF(self):
 
-      return self.brackets(self.goodLepton + " && " + self.OF)
+      return self.brackets(self.goodLepton + " && " + self.OF + " && " + self.trigger)
 
    def GoodLeptonee(self):
 
-      return self.brackets(self.goodLepton + " && " + self.ee)
+      return self.brackets(self.goodLepton + " && " + self.ee + " && " + self.trigger)
 
    def GoodLeptonmm(self):
 
-      return self.brackets(self.goodLepton + " && " + self.mm)
+      return self.brackets(self.goodLepton + " && " + self.mm + " && " + self.trigger)
 
    def SignalNoMassLeptonSF(self):
 
