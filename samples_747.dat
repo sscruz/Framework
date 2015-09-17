@@ -19,9 +19,9 @@ JetHT_Run2015B        r.kBlack   JetHT_Run2015B        JetHT_Run2015B        /af
 #-----------------------------------------------------------
 # BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#TTJets                r.kBlue    TTJets                TT+Jets_NLO           /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
-#DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/  18610000.   0
-#DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/   6024000.   0
-#TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
-#TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/     87314.8  0
+TTJets                r.kBlue    TTJets                TT+Jets_NLO           /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
+DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/  18610000.   0
+DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/   6024000.   0
+TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/    831760.   0
+TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesAug18/      friends/     87314.8  0
 #

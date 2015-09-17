@@ -23,13 +23,15 @@ from CutManager import CutManager
 from Canvas import Canvas
 
 
-def make_rsfof(histo_sf, histo_of):
+def make_rsfof(histo_sf, histo_of, datamc):
 
     ratio = histo_sf.Clone('rsfof_' + histo_sf.GetName())
     ratio.Divide(histo_of)
     ratio.GetYaxis().SetTitle('r_{SFOF}')
 
     fit = TF1('myfit','pol0', ratio.GetXaxis().GetXmin(), ratio.GetXaxis().GetXmax())
+    fit.SetLineColor(r.kBlack if datamc == 'DATA' else r.kRed+1)
+    fit.SetLineStyle(2)
     
     ratio.Fit('myfit')
 
@@ -48,20 +50,30 @@ def make_rsfof(histo_sf, histo_of):
     f = open('txts/'+ratio.GetName()+'_values.txt', 'w')
     for i in range(1, ratio.GetNbinsX()+1):
         min, max = ratio.GetBinLowEdge(i), ratio.GetBinLowEdge(i)+ratio.GetBinWidth(i)
-        print    'R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f'    %(min, max, ratio.GetBinContent(i), ratio.GetBinError(i) )
-        f.write( 'R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f \n' %(min, max, ratio.GetBinContent(i), ratio.GetBinError(i) ) )
+        print    '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f'    %(datamc, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) )
+        f.write( '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f \n' %(datamc, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) ) )
     f.close()
 
 
     return ratio
 
 
+def selectSamples(inputfile, selList, sType = 'DATA'):
+    f = open(inputfile, 'r')
+    tmp_file = open('.tmp_sampleFile%s.txt' %sType, 'w')
+    for line in f.readlines():
+        if '#' in line: continue
+        for smp in selList:
+            if smp == line.split()[2]:
+                tmp_file.write(line)
+    return tmp_file.name
+
 
 if __name__ == '__main__':
 
     parser = OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    parser.add_option('-r', '--region', action='store', type='string', dest='region', default='inclusive', help='region for which to produce Rsfof plots. \n choices are \'inclusive\', \'ttjets\', \'signal\'. default is \'inclusive\'')
+    parser.add_option('-r', '--region', action='store', type='string', dest='region', default='ttjets', help='region for which to produce Rsfof plots. \n choices are \'inclusive\', \'ttjets\', \'signal\'. default is \'inclusive\'')
     parser.add_option('-t', '--trigger', action='store', type='int', dest='triggerFlag', default='1', help='Trigger cut. Set to 0 if you want to run without trigger')
     (options, args) = parser.parse_args()
 
@@ -70,7 +82,19 @@ if __name__ == '__main__':
       parser.error('wrong number of arguments')
 
     inputFileName = args[0]
-    tree = Tree(inputFileName, 'MC', 0)
+
+    #treeMC = Tree(inputFileName, 'MC'  , 0)
+    #treeDA = Tree(inputFileName, 'DATA', 1)
+
+    mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    daDatasets = ['DoubleMuon_Run2015B', 'DoubleEG_Run2015B', 'MuonEG_Run2015B']
+    treeMC = Tree(selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Tree(selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+
+
+    #sys.exit(0)
+
+    lumi = 0.020
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
@@ -121,8 +145,8 @@ if __name__ == '__main__':
 
         trig_suffix = ''
         if not options.triggerFlag:
-            trigsf = '(HLT_DoubleMu > -1 || HLT_DoubleEl > -1)'
-            trigof = '(HLT_MuEG > -1)'
+            trigsf = trigsf.replace('0','-1')
+            trigof = trigof.replace('0','-1')
             trig_suffix = '_notrig'
 
         print trigsf, trigof
@@ -134,17 +158,21 @@ if __name__ == '__main__':
             if   eta == 'central': etacut = cuts.Central()
             elif eta == 'forward': etacut = cuts.Forward()
 
-            sf = tree.getTH1F(4, var+'sf_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonSF(), etacut, trigsf]), '', v_name)
-            of = tree.getTH1F(4, var+'of_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonOF(), etacut, trigof]), '', v_name)
+            sfMC = treeMC.getTH1F(lumi, var+'sf_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonSF(), etacut, trigsf]), '', v_name)
+            ofMC = treeMC.getTH1F(lumi, var+'of_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonOF(), etacut, trigof]), '', v_name)
 
+            sfDA = treeDA.getTH1F(lumi, var+'sf_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonSF(), etacut, trigsf]), '', v_name)
+            ofDA = treeDA.getTH1F(lumi, var+'of_'+eta+'_'+options.region, t_var, bin[0], bin[1], bin[2], cuts.AddList([r_cut, cuts.GoodLeptonOF(), etacut, trigof]), '', v_name)
    
-            rsfof= make_rsfof(sf, of)
-            plot_rsfof= Canvas('rsfof/plot_rsfof_'+var+'_'+eta+'_'+options.region+trig_suffix, 'png,pdf', 0.6, 0.6, 0.8, 0.8)
-            plot_rsfof.addHisto(rsfof, 'PE', 'OF', 'L', r.kBlack, 1, 0)
-            plot_rsfof.addLine(rsfof.GetXaxis().GetXmin(), 1., rsfof.GetXaxis().GetXmax(),1., 3)
-            plot_rsfof.save(0, 0, 0, 4.0)
+            rsfofMC = make_rsfof(sfMC, ofMC, 'MC')
+            rsfofDA = make_rsfof(sfDA, ofDA, 'DATA')
+            plot_rsfof = Canvas('rsfof/plot_rsfof_'+var+'_'+eta+'_'+options.region+trig_suffix, 'png,pdf', 0.6, 0.6, 0.8, 0.8)
+            plot_rsfof.addHisto(rsfofDA, 'PE'     , 'DATA', 'PL', r.kBlack, 1, 0)
+            plot_rsfof.addHisto(rsfofMC, 'PE same', 'MC'  , 'PL', r.kRed+1, 1, 1)
+            plot_rsfof.addLine (rsfofMC.GetXaxis().GetXmin(), 1., rsfofMC.GetXaxis().GetXmax(),1., 3)
+            plot_rsfof.save(1, 1, 0, lumi)
             
 
-            del sf, of, rsfof, plot_rsfof
+            del sfMC, ofMC, sfDA, ofDA, rsfofMC, rsfofDA, plot_rsfof
 
 
