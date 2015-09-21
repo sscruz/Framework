@@ -8,11 +8,11 @@ class Rounder:
        exponent = 0 
        v = math.fabs(s) 
        if(v > 1):
-           while v > math.pow(10, exponent):
+           while v >= math.pow(10, exponent):
                 exponent = exponent + 1
            exponent = exponent - 1 
        else:
-           while v < math.pow(10, exponent):
+           while v <= math.pow(10, exponent):
                 exponent = exponent - 1
                 #v = v * 10.0
        return exponent  
