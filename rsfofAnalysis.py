@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     parser = OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    parser.add_option('-r', '--region', action='store', type='string', dest='region', default='ttjets', help='region for which to produce Rsfof plots. \n choices are \'inclusive\', \'ttjets\', \'signal\'. default is \'inclusive\'')
+    parser.add_option('-r', '--region', action='store', type='string', dest='region', default='ttjets', help='region for which to produce Rsfof plots. \n choices are \'inclusive\', \'ttjets\', \'signal\'. default is \'ttjets\'')
     parser.add_option('-t', '--trigger', action='store', type='int', dest='triggerFlag', default='1', help='Trigger cut. Set to 0 if you want to run without trigger')
     (options, args) = parser.parse_args()
 
@@ -87,14 +87,14 @@ if __name__ == '__main__':
     #treeDA = Tree(inputFileName, 'DATA', 1)
 
     mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015B', 'DoubleEG_Run2015B', 'MuonEG_Run2015B']
+    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
     treeMC = Tree(selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Tree(selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
 
 
     #sys.exit(0)
 
-    lumi = 0.020
+    lumi = 0.024
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
@@ -140,8 +140,8 @@ if __name__ == '__main__':
             v_name = 'N_{vertices}'
 
 
-        trigsf = '(HLT_DoubleMu >0 || HLT_DoubleEl > 0)'
-        trigof = '(HLT_MuEG > 0)'
+        trigsf = '(HLT_mu17mu8_dz > 0 || HLT_el17el12_dz > 0)'
+        trigof = '(HLT_mu8el17 > 0 || HLT_mu17el12 > 0)'
 
         trig_suffix = ''
         if not options.triggerFlag:

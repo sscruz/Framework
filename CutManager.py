@@ -6,10 +6,13 @@ class CutManager:
    def __init__(self):
 
       self.twoLeptons = "t.nPairLep_Edge > 0"
-      self.trigMMc = "HLT_DoubleMu > 0"
-      self.trigEEc = "HLT_DoubleEl > 0"
-      self.trigEMc = "HLT_MuEG > 0"
-      self.leptonPt = "t.Lep1_pt_Edge > 25. && t.Lep2_pt_Edge > 20."
+      #self.trigMMc = "HLT_DoubleMu > 0"
+      #self.trigEEc = "HLT_DoubleEl > 0"
+      #self.trigEMc = "HLT_MuEG > 0"
+      self.trigMMc = "HLT_mu17mu8_dz > 0"
+      self.trigEEc = "HLT_el17el12_dz > 0"
+      self.trigEMc = "(HLT_mu8el17 > 0 || HLT_mu17el12 > 0)"
+      self.leptonPt = "t.Lep1_pt_Edge > 20. && t.Lep2_pt_Edge > 20."
       self.leptonDR = "t.lepsDR_Edge > 0.3"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
       self.leptonsMll = "t.lepsMll_Edge > 20"
