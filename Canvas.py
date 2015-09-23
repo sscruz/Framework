@@ -1,4 +1,4 @@
-from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats
+from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph
 import ROOT as r
 
 class Canvas:
@@ -13,6 +13,8 @@ class Canvas:
       self.orderForLegend = []
       self.histos = []
       self.lines = []
+      self.latexs= []
+      self.bands = []
       self.options = []
       self.labels = []      
       self.labelsOption = []
@@ -92,10 +94,25 @@ class Canvas:
       latexc.SetTextSize(0.05);
       latexc.DrawLatex(0.90, 0.93, text_lumi)
 
+   def addBand(self, x1, y1, x2, y2, color, opacity):
+
+      grshade = TGraph(4)
+      grshade.SetPoint(0,x1,y1)
+      grshade.SetPoint(1,x2,y1)
+      grshade.SetPoint(2,x2,y2)
+      grshade.SetPoint(3,x1,y2)
+      #grshade.SetFillStyle(3001)
+      grshade.SetFillColorAlpha(color, opacity)
+      self.bands.append(grshade)
+
    def addLine(self, x1, y1, x2, y2, color):
       line = TLine(x1,y1,x2,y2)
       line.SetLineColor(color)
       self.lines.append(line)
+
+   def addLatex(self, x1, y1, text, font=42, size = 0.04):
+      lat = [x1, y1, text, font, size]
+      self.latexs.append(lat)
 
  
    def addHisto(self, h, option, label, labelOption, color, ToDraw, orderForLegend):
@@ -220,8 +237,18 @@ class Canvas:
           if(self.ToDraw[i] != 0):        
               self.histos[i].Draw(self.options[i])
 
+      for band in self.bands:
+          band.Draw('f')
+  
       for line in self.lines:
           line.Draw()
+  
+      for latex in self.latexs:
+          lat = TLatex()
+          lat.SetNDC()
+          lat.SetTextSize(latex[-1])
+          lat.SetTextFont(latex[-2])
+          lat.DrawLatex(latex[0], latex[1], latex[2])
   
       ## ps = self.histos[0].GetListOfFunctions().FindObject('stat')
       ## if ps:

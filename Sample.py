@@ -3,6 +3,28 @@ from array import array
 from ROOT import TTree, TFile, TCut, TH1F, TH2F, THStack, TCanvas
 
 
+def selectSamples(inputfile, selList, sType = 'DATA'):
+    f = open(inputfile, 'r')
+    tmp_file = open('.tmp_sampleFile%s.txt' %sType, 'w')
+    checkedList = []
+    typeList    = []
+    for line in f.readlines():
+        if '#' in line: continue
+        for _sample in selList:
+            if _sample == line.split()[2]:
+                tmp_file.write(line)
+                checkedList.append(_sample)
+                typeList   .append(int(line.split()[-1]))
+    for _selSample in selList:
+        if _selSample not in checkedList:
+            print 'ERROR: some samples weren\'t selected, check all sample names!'
+            sys.exit('exiting...')
+    if not len(set(typeList)) == 1:
+            print 'ERROR: you\'re mixing DATA and MC!'
+            sys.exit('exiting...')
+            
+    return tmp_file.name
+
 class Sample:
    'Common base class for all Samples'
 
