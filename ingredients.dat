@@ -8,33 +8,33 @@
 ## ===========================================================
 
 rmue    sr_lm       MC      1.0     0.05    0.1
-rmue    sr_onZ      MC      1.0     0.05    0.1
-rmue    sr_hm       MC      1.0     0.05    0.1
-rmue    dycr_dym    MC      1.0     0.05    0.1
+rmue    sr_onZ      MC      1.1     0.06    0.1
+rmue    sr_hm       MC      1.2     0.07    0.1
+rmue    dycr_dym    MC      1.3     0.08    0.1
 
-rmue    sr_lm       DATA    1.0     0.05    0.1
-rmue    sr_onZ      DATA    1.0     0.05    0.1
-rmue    sr_hm       DATA    1.0     0.05    0.1
-rmue    dycr_dym    DATA    1.0     0.05    0.1
+rmue    sr_lm       DATA    1.4     0.04    0.15
+rmue    sr_onZ      DATA    1.5     0.03    0.15
+rmue    sr_hm       DATA    1.6     0.02    0.15
+rmue    dycr_dym    DATA    1.7     0.01    0.15
 
 
 ## ===========================================================
 ## ===================== r_sfof ==============================
 ## ===========================================================
 
-rsfof   sr_lm       MC      1.0     0.05    0.1
-rsfof   sr_onZ      MC      1.0     0.05    0.1
-rsfof   sr_hm       MC      1.0     0.05    0.1
-rsfof   ttcr_lm     MC      1.0     0.05    0.1
-rsfof   ttcr_onZ    MC      1.0     0.05    0.1
-rsfof   ttcr_hm     MC      1.0     0.05    0.1
+rsfof   sr_lm       MC      2.1     0.01    0.1
+rsfof   sr_onZ      MC      2.2     0.02    0.1
+rsfof   sr_hm       MC      2.3     0.03    0.1
+rsfof   ttcr_lm     MC      2.4     0.04    0.1
+rsfof   ttcr_onZ    MC      2.5     0.05    0.1
+rsfof   ttcr_hm     MC      2.6     0.06    0.1
 
-rsfof   sr_lm       DATA    1.0     0.05    0.1
-rsfof   sr_onZ      DATA    1.0     0.05    0.1
-rsfof   sr_hm       DATA    1.0     0.05    0.1
-rsfof   ttcr_lm     DATA    1.0     0.05    0.1
-rsfof   ttcr_onZ    DATA    1.0     0.05    0.1
-rsfof   ttcr_hm     DATA    1.0     0.05    0.1
+rsfof   sr_lm       DATA    1.7     0.07    0.1
+rsfof   sr_onZ      DATA    1.8     0.08    0.1
+rsfof   sr_hm       DATA    1.9     0.09    0.1
+rsfof   ttcr_lm     DATA    3.0     0.10    0.1
+rsfof   ttcr_onZ    DATA    3.1     0.11    0.1
+rsfof   ttcr_hm     DATA    3.2     0.12    0.1
 
 
 ## ===========================================================
@@ -43,4 +43,4 @@ rsfof   ttcr_hm     DATA    1.0     0.05    0.1
 
 rt      region      MC      1.0     0.05    0.1
 
-rt      region      DATA    1.0     0.05    0.1
+rt      region      DATA    2.0     0.05    0.1

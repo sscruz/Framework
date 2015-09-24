@@ -19,40 +19,85 @@ import Canvas, CutManager, Sample
 
 from ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 
+def check(test, string):
+    return all(i in string for i in test)
+
 class valErrs:
-    def __init__(self, val, sys, stat):
+    def __init__(self, val, sys, stat, name):
         self.val  = val
         self.sys  = sys
         self.stat = stat
-    def err(self):
-        return math.sqrt(sys*sys + stat*stat)
+        self.vals = []
+        self.name = name
+    def totError(self):
+        self.err = math.sqrt(self.sys**2 + self.stat**2)
+        self.vals.append(self.err)
+    def setVals(self, line):
+        self.val  = float(line.split()[-3])
+        self.sys  = float(line.split()[-2])
+        self.stat = float(line.split()[-1])
+        self.vals.extend([self.val, self.sys, self.stat])
+        self.totError()
+    def printValues(self):
+        print '%s %.3f +- %.3f (%.3f stat. %.3f syst.)' %(
+                self.name, self.val, self.err, self.stat, self.sys)
 
 class ingredients:
-    def readValues(self):
-        f = open(self.infile, 'r')
-        lines = f.read().splitlines()
-        for line in lines:
-            if '#' in line: continue
-
     def __init__(self, infile, isData):
         self.infile = infile
         self.isData = isData
+        self.dataMC = 'DATA' if self.isData else 'MC'
+        self.rs = []
         ## rmue
-        self.rmue_sr_lm       = valErrs(-1., -1., -1.)
-        self.rmue_sr_onZ      = valErrs(-1., -1., -1.)
-        self.rmue_sr_hm       = valErrs(-1., -1., -1.)
-        self.rmue_dycr_dym    = valErrs(-1., -1., -1.)
+        self.rmue_sr_lm     = valErrs(-1., -1., -1., 'r_mue SR lm'    ); self.rs.append(self.rmue_sr_lm    )
+        self.rmue_sr_onZ    = valErrs(-1., -1., -1., 'r_mue SR onZ'   ); self.rs.append(self.rmue_sr_onZ   )
+        self.rmue_sr_hm     = valErrs(-1., -1., -1., 'r_mue SR hm'    ); self.rs.append(self.rmue_sr_hm    )
+        self.rmue_dycr_dym  = valErrs(-1., -1., -1., 'r_mue dycr dym' ); self.rs.append(self.rmue_dycr_dym )
+        ## rsfof
+        self.rsfof_sr_lm    = valErrs(-1., -1., -1., 'R_sfof SR lm'   ); self.rs.append(self.rsfof_sr_lm   )
+        self.rsfof_sr_onZ   = valErrs(-1., -1., -1., 'R_sfof SR onZ'  ); self.rs.append(self.rsfof_sr_onZ  )
+        self.rsfof_sr_hm    = valErrs(-1., -1., -1., 'R_sfof SR hm'   ); self.rs.append(self.rsfof_sr_hm   )
+        self.rsfof_ttcr_lm  = valErrs(-1., -1., -1., 'R_sfof TTCR lm' ); self.rs.append(self.rsfof_ttcr_lm )
+        self.rsfof_ttcr_onZ = valErrs(-1., -1., -1., 'R_sfof TTCR onZ'); self.rs.append(self.rsfof_ttcr_onZ)
+        self.rsfof_ttcr_hm  = valErrs(-1., -1., -1., 'R_sfof TTCR hm' ); self.rs.append(self.rsfof_ttcr_hm )
+        ## RT
+        self.rt_region      = valErrs(-1., -1., -1., 'R_T region'     ); self.rs.append(self.rt_region     )
+        ## fill the values from the file
+        self.readValues()
+        ## check if none is unset. exit if one is.
+        self.checkValues()
+        print 'loaded all ingredients from %s for %s' %(self.infile, self.dataMC)
 
-        #rsfof
-        self.rsfof_sr_lm      = valErrs(-1., -1., -1.)
-        self.rsfof_sr_onZ     = valErrs(-1., -1., -1.)
-        self.rsfof_sr_hm      = valErrs(-1., -1., -1.)
-        self.rsfof_ttcr_lm    = valErrs(-1., -1., -1.)
-        self.rsfof_ttcr_onZ   = valErrs(-1., -1., -1.)
-        self.rsfof_ttcr_hm    = valErrs(-1., -1., -1.)
+    def readValues(self):
+        print 'reading values from %s for %s' %(self.infile, self.dataMC)
+        f = open(self.infile, 'r')
+        lines = f.read().splitlines()
+        for line in lines:
+            if '#' in line or not len(line.strip()): continue
+            dataMC = 'DATA' if self.isData else 'MC'
+            #rmue
+            if check(['rmue' , dataMC, 'sr_lm'   ], line): self.rmue_sr_lm    .setVals(line)
+            if check(['rmue' , dataMC, 'sr_onZ'  ], line): self.rmue_sr_onZ   .setVals(line)
+            if check(['rmue' , dataMC, 'sr_hm'   ], line): self.rmue_sr_hm    .setVals(line)
+            if check(['rmue' , dataMC, 'dycr_dym'], line): self.rmue_dycr_dym .setVals(line)
+            #rsfof
+            if check(['rsfof', dataMC, 'sr_lm'   ], line): self.rsfof_sr_lm   .setVals(line)
+            if check(['rsfof', dataMC, 'sr_onZ'  ], line): self.rsfof_sr_onZ  .setVals(line)
+            if check(['rsfof', dataMC, 'sr_hm'   ], line): self.rsfof_sr_hm   .setVals(line)
+            if check(['rsfof', dataMC, 'ttcr_lm' ], line): self.rsfof_ttcr_lm .setVals(line)
+            if check(['rsfof', dataMC, 'ttcr_onZ'], line): self.rsfof_ttcr_onZ.setVals(line)
+            if check(['rsfof', dataMC, 'ttcr_hm' ], line): self.rsfof_ttcr_hm .setVals(line)
+            #RT
+            if check(['rt'   , dataMC, 'region'  ], line): self.rt_region     .setVals(line)
+        f.close()
+    def checkValues(self):
+        for thing in self.rs:
+            if any(i < 0 for i in thing.vals):
+                print 'ERROR: some of the ingredients aren\'t set properly'
+                print thing.printValues()
+                #sys.exit('exiting...')
 
-        # RT
-        self.rt_region        = valErrs(-1., -1., -1.)
+
 
 if __name__ == '__main__':
 
@@ -65,15 +110,15 @@ if __name__ == '__main__':
     if len(args) != 2:
       parser.error('wrong number of arguments')
 
-    inputFileName = args[0]
-    centralForward = args[1]
+    sampleFile     = args[0]
+    ingredientFile = args[1]
 
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
 
-    treeMC = Sample.Tree(Sample.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(Sample.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(Sample.selectSamples(sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(Sample.selectSamples(sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print 'Trees successfully loaded...'
 
@@ -92,64 +137,6 @@ if __name__ == '__main__':
     doClosure = True
     isBlinded = True
 
-    for eta in [centralForward]:#, 'forward']:
-        regions = []
-        ttjets_meas    = rsfofRegion('ttjets_meas', eta, 
-                                     [cuts.METJetsControlRegion],
-                                     [20, 70, 81, 101, 120, 300],
-                                     False, 'mll', True)
-        regions.append(ttjets_meas)
-        ttjets_sig_lm  = rsfofRegion('ttjets_sig_lm', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.lowmass],
-                                     [20, 70],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_lm)
-        ttjets_sig_onZ = rsfofRegion('ttjets_sig_onZ', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.Zmass],
-                                     [81, 101],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_onZ)
-        ttjets_sig_hm  = rsfofRegion('ttjets_sig_hm', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.highmass],
-                                     [120, 300],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_hm)
-        ## ttjets_inc     = rsfofRegion('ttjets_inc', eta, 
-        ##                              [cuts.nj2],
-        ##                              [20, 70, 81, 101, 120, 300],
-        ##                              False, 'mll', True)
-        ## regions.append(ttjets_inc)
-
-        print '...in', eta
-
-        for region in regions:
-
-            print 'i am at region', region.name
-            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
-            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
-
-            for tree in ([treeMC, treeDA] if region.doData else [treeMC]):
-
-                region.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+region.cenFwd, 't.lepsMll_Edge', region.bins, 1, 1, cuts_sf, '', "m_{ll} (GeV)")
-                region.mll_of = tree.getTH1F(lumi, 'mll_of_'+region.cenFwd, 't.lepsMll_Edge', region.bins, 1, 1, cuts_of, '', "m_{ll} (GeV)")
-
-                isData = False if tree == treeMC else True
-                region.set_rsfof(make_rsfof(region.mll_sf, region.mll_of, isData), isData)
-    
-
-        ## =================
-        ## MAKE THE Mll PLOT
-        ## =================
-        #meas_rsfof = 
-        plot_rsfof = Canvas.Canvas('rsfof/plot_rsfof_mll_'+ttjets_meas.cenFwd, 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-        plot_rsfof.addHisto(ttjets_meas   .rsfof     , 'PE'     , 'ttjets region - MC'  , 'PL', r.kRed+1 , 1, 0)
-        plot_rsfof.addHisto(ttjets_meas   .rsfof_data, 'PE,SAME', 'ttjets region - DATA', 'PL', r.kBlack , 1, 1)
-        plot_rsfof.addGraph(ttjets_sig_lm .rsfof     , 'PZ,SAME', 'signal lowmass - MC' , 'PL', r.kBlue-8, 1, 2)
-        plot_rsfof.addGraph(ttjets_sig_onZ.rsfof     , 'PZ,SAME', 'signal onZ - MC'     , 'PL', r.kBlue-7, 1, 3)
-        plot_rsfof.addGraph(ttjets_sig_hm .rsfof     , 'PZ,SAME', 'signal highmass - MC', 'PL', r.kBlue-9, 1, 4)
-        #plot_rsfof.addHisto(ttjets_inc .rsfof     , 'E,SAME', 'incl.  region - MC'  , 'PL', r.kBlack , 1, 1)
-        plot_rsfof.addBand (ttjets_meas.rsfof.GetXaxis().GetXmin(), 0.9, ttjets_meas.rsfof.GetXaxis().GetXmax(), 1.1, r.kGreen, 0.2)
-        plot_rsfof.addLine (ttjets_meas.rsfof.GetXaxis().GetXmin(), 1.0, ttjets_meas.rsfof.GetXaxis().GetXmax(), 1.0, r.kGreen)
-        plot_rsfof.addLatex(0.2, 0.2, ttjets_meas.cenFwd)
-        plot_rsfof.save(1, 1, 0, lumi)
+    rsMC = ingredients(ingredientFile, False)
+    rsDA = ingredients(ingredientFile, True )
         
