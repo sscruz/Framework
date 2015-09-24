@@ -87,14 +87,16 @@ class region:
 
 
     def printValues(self):
-        print 'REGION', self.name, self.cenFwd
-        for _bin in range(1,self.rmue_mll.GetNbinsX()+1):
-            print 'r_mue in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
-                  self.rmue_mll.GetXaxis().GetBinLowEdge(_bin),
-                  self.rmue_mll.GetXaxis().GetBinUpEdge (_bin),
-                  self.cenFwd,
-                  self.rmue_mll.GetBinContent(_bin),
-                  self.rmue_mll.GetBinError(_bin))
+        for i in ([1, 2] if self.doData else [1]):
+            print 'REGION %s \t %s \t %s' %(self.name, self.cenFwd, 'DATA' if i>1 else 'MC')
+            obj = self.rmue_mll_data if i>1 else self.rmue_mll
+            for _bin in range(1,self.rmue_mll.GetNbinsX()+1):
+                print 'r_mue in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
+                      obj.GetXaxis().GetBinLowEdge(_bin),
+                      obj.GetXaxis().GetBinUpEdge (_bin),
+                      self.cenFwd,
+                      obj.GetBinContent(_bin),
+                      obj.GetBinError(_bin))
 
 
 if __name__ == "__main__":
@@ -216,7 +218,7 @@ if __name__ == "__main__":
         plot_rmue_met.addLatex(0.2, 0.2, dy_nomass.cenFwd)
         plot_rmue_met.save(1, 0, 0, lumi)
 
-        dy_onZ .printValues()
+        dy_onZ    .printValues()
         dy_nomass .printValues()
-        sig_onZ.printValues()
-        sig_lm .printValues()
+        sig_onZ   .printValues()
+        sig_lm    .printValues()

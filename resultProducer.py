@@ -19,84 +19,7 @@ import Canvas, CutManager, Sample
 
 from ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 
-def check(test, string):
-    return all(i in string for i in test)
-
-class valErrs:
-    def __init__(self, val, sys, stat, name):
-        self.val  = val
-        self.sys  = sys
-        self.stat = stat
-        self.vals = []
-        self.name = name
-    def totError(self):
-        self.err = math.sqrt(self.sys**2 + self.stat**2)
-        self.vals.append(self.err)
-    def setVals(self, line):
-        self.val  = float(line.split()[-3])
-        self.sys  = float(line.split()[-2])
-        self.stat = float(line.split()[-1])
-        self.vals.extend([self.val, self.sys, self.stat])
-        self.totError()
-    def printValues(self):
-        print '%s %.3f +- %.3f (%.3f stat. %.3f syst.)' %(
-                self.name, self.val, self.err, self.stat, self.sys)
-
-class ingredients:
-    def __init__(self, infile, isData):
-        self.infile = infile
-        self.isData = isData
-        self.dataMC = 'DATA' if self.isData else 'MC'
-        self.rs = []
-        ## rmue
-        self.rmue_sr_lm     = valErrs(-1., -1., -1., 'r_mue SR lm'    ); self.rs.append(self.rmue_sr_lm    )
-        self.rmue_sr_onZ    = valErrs(-1., -1., -1., 'r_mue SR onZ'   ); self.rs.append(self.rmue_sr_onZ   )
-        self.rmue_sr_hm     = valErrs(-1., -1., -1., 'r_mue SR hm'    ); self.rs.append(self.rmue_sr_hm    )
-        self.rmue_dycr_dym  = valErrs(-1., -1., -1., 'r_mue dycr dym' ); self.rs.append(self.rmue_dycr_dym )
-        ## rsfof
-        self.rsfof_sr_lm    = valErrs(-1., -1., -1., 'R_sfof SR lm'   ); self.rs.append(self.rsfof_sr_lm   )
-        self.rsfof_sr_onZ   = valErrs(-1., -1., -1., 'R_sfof SR onZ'  ); self.rs.append(self.rsfof_sr_onZ  )
-        self.rsfof_sr_hm    = valErrs(-1., -1., -1., 'R_sfof SR hm'   ); self.rs.append(self.rsfof_sr_hm   )
-        self.rsfof_ttcr_lm  = valErrs(-1., -1., -1., 'R_sfof TTCR lm' ); self.rs.append(self.rsfof_ttcr_lm )
-        self.rsfof_ttcr_onZ = valErrs(-1., -1., -1., 'R_sfof TTCR onZ'); self.rs.append(self.rsfof_ttcr_onZ)
-        self.rsfof_ttcr_hm  = valErrs(-1., -1., -1., 'R_sfof TTCR hm' ); self.rs.append(self.rsfof_ttcr_hm )
-        ## RT
-        self.rt_region      = valErrs(-1., -1., -1., 'R_T region'     ); self.rs.append(self.rt_region     )
-        ## fill the values from the file
-        self.readValues()
-        ## check if none is unset. exit if one is.
-        self.checkValues()
-        print 'loaded all ingredients from %s for %s' %(self.infile, self.dataMC)
-
-    def readValues(self):
-        print 'reading values from %s for %s' %(self.infile, self.dataMC)
-        f = open(self.infile, 'r')
-        lines = f.read().splitlines()
-        for line in lines:
-            if '#' in line or not len(line.strip()): continue
-            dataMC = 'DATA' if self.isData else 'MC'
-            #rmue
-            if check(['rmue' , dataMC, 'sr_lm'   ], line): self.rmue_sr_lm    .setVals(line)
-            if check(['rmue' , dataMC, 'sr_onZ'  ], line): self.rmue_sr_onZ   .setVals(line)
-            if check(['rmue' , dataMC, 'sr_hm'   ], line): self.rmue_sr_hm    .setVals(line)
-            if check(['rmue' , dataMC, 'dycr_dym'], line): self.rmue_dycr_dym .setVals(line)
-            #rsfof
-            if check(['rsfof', dataMC, 'sr_lm'   ], line): self.rsfof_sr_lm   .setVals(line)
-            if check(['rsfof', dataMC, 'sr_onZ'  ], line): self.rsfof_sr_onZ  .setVals(line)
-            if check(['rsfof', dataMC, 'sr_hm'   ], line): self.rsfof_sr_hm   .setVals(line)
-            if check(['rsfof', dataMC, 'ttcr_lm' ], line): self.rsfof_ttcr_lm .setVals(line)
-            if check(['rsfof', dataMC, 'ttcr_onZ'], line): self.rsfof_ttcr_onZ.setVals(line)
-            if check(['rsfof', dataMC, 'ttcr_hm' ], line): self.rsfof_ttcr_hm .setVals(line)
-            #RT
-            if check(['rt'   , dataMC, 'region'  ], line): self.rt_region     .setVals(line)
-        f.close()
-    def checkValues(self):
-        for thing in self.rs:
-            if any(i < 0 for i in thing.vals):
-                print 'ERROR: some of the ingredients aren\'t set properly'
-                print thing.printValues()
-                #sys.exit('exiting...')
-
+import include.helper as helper
 
 
 if __name__ == '__main__':
@@ -137,6 +60,6 @@ if __name__ == '__main__':
     doClosure = True
     isBlinded = True
 
-    rsMC = ingredients(ingredientFile, False)
-    rsDA = ingredients(ingredientFile, True )
+    rsMC = helper.ingredients(ingredientFile, False)
+    rsDA = helper.ingredients(ingredientFile, True )
         
