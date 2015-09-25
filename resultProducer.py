@@ -14,12 +14,14 @@
 #####################################################################
 
 import ROOT as r
+from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse
-import Canvas, CutManager, Sample
 
-from ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 
-import include.helper as helper
+import include.helper     as helper
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 
 if __name__ == '__main__':
@@ -40,8 +42,8 @@ if __name__ == '__main__':
     mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
 
-    treeMC = Sample.Tree(Sample.selectSamples(sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(Sample.selectSamples(sampleFile, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(helper.selectSamples(sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print 'Trees successfully loaded...'
 

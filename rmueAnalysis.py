@@ -18,7 +18,6 @@ from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
 import math, sys, optparse, array
 import Rounder as rounder
 
-
 import include.helper     as helper
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
@@ -176,3 +175,9 @@ if __name__ == "__main__":
         dy_nomass .printValues()
         sig_onZ   .printValues()
         sig_lm    .printValues()
+
+        dy_onZ .saveInFile('ingredients.dat', ['rmue', 'dycr_dym'], 0.1)
+        sig_lm .saveInFile('ingredients.dat', ['rmue', 'sr_lm'   ], 0.1)
+        sig_onZ.saveInFile('ingredients.dat', ['rmue', 'sr_onZ'  ], 0.1)
+        sig_hm .saveInFile('ingredients.dat', ['rmue', 'sr_hm'   ], 0.1)
+

@@ -178,3 +178,28 @@ class rmueRegion:
                       obj.GetBinContent(_bin),
                       obj.GetBinError(_bin))
 
+    def saveInFile(self, ingFile, pattern, systErr):
+        print 'writing calculated values into file...'
+        f = open(ingFile, 'r')
+        lines = f.readlines()
+        newlines = []
+        for line in lines:
+            appended = False
+            for t in ['MC', 'DATA'] if self.doData else ['MC']:
+                if all(s in line for s in pattern+[t]):
+                    obj = self.rmue_mll if t =='MC' else self.rmue_mll_data
+                    newlines.append('%s \t %s \t %s \t %.4f \t %.4f \t %s \t %.4f \t %.4f \t %s\n' %(
+                            line.split()[0], line.split()[1], t,
+                            obj.GetBinContent(1) if     self.isCentral else float(line.split()[3]),
+                            obj.GetBinError  (1) if     self.isCentral else float(line.split()[4]),
+                            str(systErr)         if     self.isCentral else line.split()[5],
+                            obj.GetBinContent(1) if not self.isCentral else float(line.split()[6]),
+                            obj.GetBinError  (1) if not self.isCentral else float(line.split()[7]),
+                            str(systErr)         if not self.isCentral else line.split()[8]))
+                    appended = True
+
+            if not appended:
+                newlines.append(line)
+        f.close()
+        g = open(ingFile, 'w')
+        g.writelines(newlines)
