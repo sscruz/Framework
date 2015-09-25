@@ -14,16 +14,15 @@
 #####################################################################
 
 import ROOT as r
-import math as math
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+import math, sys, optparse, array
 import Rounder as rounder
-import Canvas, CutManager
 
 
-from optparse import OptionParser
-from ROOT import gROOT, TCanvas, TFile
-from Sample import Sample, Block, Tree, selectSamples
-from ROOT import TGraphErrors
-from array import array
+import include.helper     as helper
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 def calc_rmue(Nmm, Nee, Emm, Eee):
 
@@ -53,56 +52,11 @@ def make_rmue(histo_mm, histo_ee):
             ratio.SetBinError(i, val[1])
     return ratio
 
-class region:
-    def __init__(self, name, cenFwd, cuts, bins, isGraph, mllMet, doData):
-        self.name      = name
-        self.cuts      = cuts
-        self.bins      = bins
-        self.isGraph   = isGraph
-        self.cenFwd    = cenFwd
-        self.isCentral = (cenFwd == 'central')
-        self.doMll     = ('mll' in mllMet)
-        self.doMet     = ('met' in mllMet)
-        self.doData    = doData
-
-    def set_rmue_mll(self, rmue_mll, data=0):
-        if not data:
-            self.rmue_mll         = rmue_mll
-            self.rmue_mll_gr      = TGraphErrors(rmue_mll)
-            self.rmue_mll.GetYaxis().SetRangeUser(0, 2)
-        else:
-            self.rmue_mll_data    = rmue_mll
-            self.rmue_mll_data_gr = TGraphErrors(rmue_mll)
-            self.rmue_mll_data.GetYaxis().SetRangeUser(0, 2)
-
-    def set_rmue_met(self, rmue_met, data=0):
-        if not data:
-            self.rmue_met         = rmue_met
-            self.rmue_met_gr      = TGraphErrors(rmue_met)
-            self.rmue_met.GetYaxis().SetRangeUser(0, 2)
-        else:
-            self.rmue_met_data    = rmue_met
-            self.rmue_met_data_gr = TGraphErrors(rmue_met)
-            self.rmue_met_data.GetYaxis().SetRangeUser(0, 2)
-
-
-    def printValues(self):
-        for i in ([1, 2] if self.doData else [1]):
-            print 'REGION %s \t %s \t %s' %(self.name, self.cenFwd, 'DATA' if i>1 else 'MC')
-            obj = self.rmue_mll_data if i>1 else self.rmue_mll
-            for _bin in range(1,self.rmue_mll.GetNbinsX()+1):
-                print 'r_mue in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
-                      obj.GetXaxis().GetBinLowEdge(_bin),
-                      obj.GetXaxis().GetBinUpEdge (_bin),
-                      self.cenFwd,
-                      obj.GetBinContent(_bin),
-                      obj.GetBinError(_bin))
-
 
 if __name__ == "__main__":
 
 
-    parser = OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
+    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
@@ -112,8 +66,8 @@ if __name__ == "__main__":
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTJets', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
-    treeMC = Tree(selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Tree(selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
     print 'Trees successfully loaded...'
 
@@ -131,32 +85,32 @@ if __name__ == "__main__":
     #for eta in ['forward']:#, 'forward']:
     for eta in [doEta]:#, 'forward']:
         regions = []
-        dy_nomass = region('DY_nomass', eta, 
+        dy_nomass = helper.rmueRegion('DY_nomass', eta, 
                            [cuts.DYControlRegion],
                            [20, 30, 40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300],
                            False, 'mll', True)
         regions.append(dy_nomass)
-        dy_onZ    = region('DY_onZ'   , eta, 
+        dy_onZ    = helper.rmueRegion('DY_onZ'   , eta, 
                            [cuts.DYControlRegion, cuts.DYmass],
                            [60, 120],
                            True, 'mll', True)
         regions.append(dy_onZ)
-        dy_nomet  = region('DY_nomet' , eta, 
+        dy_nomet  = helper.rmueRegion('DY_nomet' , eta, 
                            [cuts.nj2, cuts.DYmass],
                            range(0,110,10),
                            True, 'met', True)
         regions.append(dy_nomet)
-        sig_lm    = region('Signal_lowmass' , eta, 
+        sig_lm    = helper.rmueRegion('Signal_lowmass' , eta, 
                            [cuts.METJetsSignalRegion, cuts.lowmass],
                            [20,  70],
                            True, 'mll', False)
         regions.append(sig_lm)
-        sig_onZ   = region('Signal_onZ' , eta, 
+        sig_onZ   = helper.rmueRegion('Signal_onZ' , eta, 
                            [cuts.METJetsSignalRegion, cuts.Zmass],
                            [81, 101],
                            True, 'mll', False)
         regions.append(sig_onZ)
-        sig_hm    = region('Signal_highmass' , eta, 
+        sig_hm    = helper.rmueRegion('Signal_highmass' , eta, 
                            [cuts.METJetsSignalRegion, cuts.highmass],
                            [120, 300],
                            True, 'mll', False)

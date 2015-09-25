@@ -14,14 +14,13 @@
 #####################################################################
 
 import ROOT as r
-import math as math
-import sys
-import Canvas, CutManager
+from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
+import math, sys, optparse
 
-from optparse import OptionParser
-from ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
-from Sample import Sample, Block, Tree, selectSamples
-
+import include.helper     as helper
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 def make_rsfof(histo_sf, histo_of, isData):
 
@@ -50,41 +49,11 @@ def make_rsfof(histo_sf, histo_of, isData):
     return ratio
 
 
-class rsfofRegion:
-    def __init__(self, name, cenFwd, cuts, bins, isGraph, var, doData):
-        self.name      = name
-        self.cuts      = cuts
-        self.bins      = bins
-        self.isGraph   = isGraph
-        self.cenFwd    = cenFwd
-        self.isCentral = (cenFwd == 'central')
-        self.doData    = doData
-
-    def set_rsfof(self, rsfof, data=0):
-        if not data:
-            self.rsfof         = rsfof
-            self.rsfof_gr      = r.TGraphErrors(rsfof)
-            self.rsfof.GetYaxis().SetRangeUser(0, 2)
-        else:
-            self.rsfof_data    = rsfof
-            self.rsfof_data_gr = r.TGraphErrors(rsfof)
-            self.rsfof_data.GetYaxis().SetRangeUser(0, 2)
-
-    def printValues(self):
-        print 'REGION', self.name, self.cenFwd
-        for _bin in range(1,self.rsfof.GetNbinsX()+1):
-            print 'r_sfof in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
-                  self.rsfof.GetXaxis().GetBinLowEdge(_bin),
-                  self.rsfof.GetXaxis().GetBinUpEdge (_bin),
-                  self.cenFwd,
-                  self.rsfof.GetBinContent(_bin),
-                  self.rsfof.GetBinError(_bin))
-
 
 if __name__ == '__main__':
 
     print 'Starting r_SFOF analysis...'
-    parser = OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
+    parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
     parser.add_option('-t', '--trigger', action='store', type='int', dest='triggerFlag', default='1', help='Trigger cut. Set to 0 if you want to run without trigger')
     (options, args) = parser.parse_args()
@@ -99,8 +68,8 @@ if __name__ == '__main__':
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
-    treeMC = Tree(selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Tree(selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     print 'Trees successfully loaded...'
 
 
@@ -114,27 +83,27 @@ if __name__ == '__main__':
 
     for eta in [centralForward]:#, 'forward']:
         regions = []
-        ttjets_meas    = rsfofRegion('ttjets_meas', eta, 
+        ttjets_meas    = helper.rsfofRegion('ttjets_meas', eta, 
                                      [cuts.METJetsControlRegion],
                                      [20, 70, 81, 101, 120, 300],
                                      False, 'mll', True)
         regions.append(ttjets_meas)
-        ttjets_sig_lm  = rsfofRegion('ttjets_sig_lm', eta, 
+        ttjets_sig_lm  = helper.rsfofRegion('ttjets_sig_lm', eta, 
                                      [cuts.METJetsSignalRegion, cuts.lowmass],
                                      [20, 70],
                                      True, 'mll', False)
         regions.append(ttjets_sig_lm)
-        ttjets_sig_onZ = rsfofRegion('ttjets_sig_onZ', eta, 
+        ttjets_sig_onZ = helper.rsfofRegion('ttjets_sig_onZ', eta, 
                                      [cuts.METJetsSignalRegion, cuts.Zmass],
                                      [81, 101],
                                      True, 'mll', False)
         regions.append(ttjets_sig_onZ)
-        ttjets_sig_hm  = rsfofRegion('ttjets_sig_hm', eta, 
+        ttjets_sig_hm  = helper.rsfofRegion('ttjets_sig_hm', eta, 
                                      [cuts.METJetsSignalRegion, cuts.highmass],
                                      [120, 300],
                                      True, 'mll', False)
         regions.append(ttjets_sig_hm)
-        ## ttjets_inc     = rsfofRegion('ttjets_inc', eta, 
+        ## ttjets_inc     = helper.rsfofRegion('ttjets_inc', eta, 
         ##                              [cuts.nj2],
         ##                              [20, 70, 81, 101, 120, 300],
         ##                              False, 'mll', True)

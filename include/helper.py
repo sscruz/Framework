@@ -1,5 +1,28 @@
 import math, sys
 import ROOT as r
+from   ROOT import TGraphErrors, gROOT, TCanvas, TFile
+
+def selectSamples(inputfile, selList, sType = 'DATA'):
+    f = open(inputfile, 'r')
+    tmp_file = open('.tmp_sampleFile%s.txt' %sType, 'w')
+    checkedList = []
+    typeList    = []
+    for line in f.readlines():
+        if '#' in line: continue
+        for _sample in selList:
+            if _sample == line.split()[2]:
+                tmp_file.write(line)
+                checkedList.append(_sample)
+                typeList   .append(int(line.split()[-1]))
+    for _selSample in selList:
+        if _selSample not in checkedList:
+            print 'ERROR: some samples weren\'t selected, check all sample names!'
+            sys.exit('exiting...')
+    if not len(set(typeList)) == 1:
+            print 'ERROR: you\'re mixing DATA and MC!'
+            sys.exit('exiting...')
+            
+    return tmp_file.name
 
 
 class valErrs:
@@ -80,4 +103,78 @@ class ingredients:
                 print thing.printValues()
                 #sys.exit('exiting...')
 
+class rsfofRegion:
+    def __init__(self, name, cenFwd, cuts, bins, isGraph, var, doData):
+        self.name      = name
+        self.cuts      = cuts
+        self.bins      = bins
+        self.isGraph   = isGraph
+        self.cenFwd    = cenFwd
+        self.isCentral = (cenFwd == 'central')
+        self.doData    = doData
+
+    def set_rsfof(self, rsfof, data=0):
+        if not data:
+            self.rsfof         = rsfof
+            self.rsfof_gr      = r.TGraphErrors(rsfof)
+            self.rsfof.GetYaxis().SetRangeUser(0, 2)
+        else:
+            self.rsfof_data    = rsfof
+            self.rsfof_data_gr = r.TGraphErrors(rsfof)
+            self.rsfof_data.GetYaxis().SetRangeUser(0, 2)
+
+    def printValues(self):
+        print 'REGION', self.name, self.cenFwd
+        for _bin in range(1,self.rsfof.GetNbinsX()+1):
+            print 'r_sfof in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
+                  self.rsfof.GetXaxis().GetBinLowEdge(_bin),
+                  self.rsfof.GetXaxis().GetBinUpEdge (_bin),
+                  self.cenFwd,
+                  self.rsfof.GetBinContent(_bin),
+                  self.rsfof.GetBinError(_bin))
+
+class rmueRegion:
+    def __init__(self, name, cenFwd, cuts, bins, isGraph, mllMet, doData):
+        self.name      = name
+        self.cuts      = cuts
+        self.bins      = bins
+        self.isGraph   = isGraph
+        self.cenFwd    = cenFwd
+        self.isCentral = (cenFwd == 'central')
+        self.doMll     = ('mll' in mllMet)
+        self.doMet     = ('met' in mllMet)
+        self.doData    = doData
+
+    def set_rmue_mll(self, rmue_mll, data=0):
+        if not data:
+            self.rmue_mll         = rmue_mll
+            self.rmue_mll_gr      = TGraphErrors(rmue_mll)
+            self.rmue_mll.GetYaxis().SetRangeUser(0, 2)
+        else:
+            self.rmue_mll_data    = rmue_mll
+            self.rmue_mll_data_gr = TGraphErrors(rmue_mll)
+            self.rmue_mll_data.GetYaxis().SetRangeUser(0, 2)
+
+    def set_rmue_met(self, rmue_met, data=0):
+        if not data:
+            self.rmue_met         = rmue_met
+            self.rmue_met_gr      = TGraphErrors(rmue_met)
+            self.rmue_met.GetYaxis().SetRangeUser(0, 2)
+        else:
+            self.rmue_met_data    = rmue_met
+            self.rmue_met_data_gr = TGraphErrors(rmue_met)
+            self.rmue_met_data.GetYaxis().SetRangeUser(0, 2)
+
+
+    def printValues(self):
+        for i in ([1, 2] if self.doData else [1]):
+            print 'REGION %s \t %s \t %s' %(self.name, self.cenFwd, 'DATA' if i>1 else 'MC')
+            obj = self.rmue_mll_data if i>1 else self.rmue_mll
+            for _bin in range(1,self.rmue_mll.GetNbinsX()+1):
+                print 'r_mue in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
+                      obj.GetXaxis().GetBinLowEdge(_bin),
+                      obj.GetXaxis().GetBinUpEdge (_bin),
+                      self.cenFwd,
+                      obj.GetBinContent(_bin),
+                      obj.GetBinError(_bin))
 
