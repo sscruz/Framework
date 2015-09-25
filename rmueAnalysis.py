@@ -176,8 +176,8 @@ if __name__ == "__main__":
         sig_onZ   .printValues()
         sig_lm    .printValues()
 
-        dy_onZ .saveInFile('ingredients.dat', ['rmue', 'dycr_dym'], 0.1)
-        sig_lm .saveInFile('ingredients.dat', ['rmue', 'sr_lm'   ], 0.1)
-        sig_onZ.saveInFile('ingredients.dat', ['rmue', 'sr_onZ'  ], 0.1)
-        sig_hm .saveInFile('ingredients.dat', ['rmue', 'sr_hm'   ], 0.1)
+        helper.saveInFile(dy_onZ , ['rmue', 'dycr_dym'], 0.1)
+        helper.saveInFile(sig_lm , ['rmue', 'sr_lm'   ], 0.1)
+        helper.saveInFile(sig_onZ, ['rmue', 'sr_onZ'  ], 0.1)
+        helper.saveInFile(sig_hm , ['rmue', 'sr_hm'   ], 0.1)
 

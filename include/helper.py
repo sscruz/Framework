@@ -112,6 +112,7 @@ class rsfofRegion:
         self.cenFwd    = cenFwd
         self.isCentral = (cenFwd == 'central')
         self.doData    = doData
+        self.classType = 'rsfofRegion'
 
     def set_rsfof(self, rsfof, data=0):
         if not data:
@@ -122,6 +123,16 @@ class rsfofRegion:
             self.rsfof_data    = rsfof
             self.rsfof_data_gr = r.TGraphErrors(rsfof)
             self.rsfof_data.GetYaxis().SetRangeUser(0, 2)
+
+    def getHisto(self, dataMC):
+        if   dataMC == 'MC':
+            return self.rsfof
+        elif dataMC == 'DATA':
+            return self.rsfof_data
+        else:
+            print 'you\'re calling the getHisto function wrong. 
+            valid arguments are \'MC\' and \'DATA\''
+            sys.exit('exiting...)
 
     def printValues(self):
         print 'REGION', self.name, self.cenFwd
@@ -144,6 +155,7 @@ class rmueRegion:
         self.doMll     = ('mll' in mllMet)
         self.doMet     = ('met' in mllMet)
         self.doData    = doData
+        self.classType = 'rmueRegion'
 
     def set_rmue_mll(self, rmue_mll, data=0):
         if not data:
@@ -165,6 +177,15 @@ class rmueRegion:
             self.rmue_met_data_gr = TGraphErrors(rmue_met)
             self.rmue_met_data.GetYaxis().SetRangeUser(0, 2)
 
+    def getHisto(self, dataMC):
+        if   dataMC == 'MC':
+            return self.rmue_mll
+        elif dataMC == 'DATA':
+            return self.rmue_mll_data
+        else:
+            print 'you\'re calling the getHisto function wrong. 
+            valid arguments are \'MC\' and \'DATA\''
+            sys.exit('exiting...')
 
     def printValues(self):
         for i in ([1, 2] if self.doData else [1]):
@@ -178,28 +199,29 @@ class rmueRegion:
                       obj.GetBinContent(_bin),
                       obj.GetBinError(_bin))
 
-    def saveInFile(self, ingFile, pattern, systErr):
-        print 'writing calculated values into file...'
-        f = open(ingFile, 'r')
-        lines = f.readlines()
-        newlines = []
-        for line in lines:
-            appended = False
-            for t in ['MC', 'DATA'] if self.doData else ['MC']:
-                if all(s in line for s in pattern+[t]):
-                    obj = self.rmue_mll if t =='MC' else self.rmue_mll_data
-                    newlines.append('%s \t %s \t %s \t %.4f \t %.4f \t %s \t %.4f \t %.4f \t %s\n' %(
-                            line.split()[0], line.split()[1], t,
-                            obj.GetBinContent(1) if     self.isCentral else float(line.split()[3]),
-                            obj.GetBinError  (1) if     self.isCentral else float(line.split()[4]),
-                            str(systErr)         if     self.isCentral else line.split()[5],
-                            obj.GetBinContent(1) if not self.isCentral else float(line.split()[6]),
-                            obj.GetBinError  (1) if not self.isCentral else float(line.split()[7]),
-                            str(systErr)         if not self.isCentral else line.split()[8]))
-                    appended = True
+def saveInFile(obj, pattern, systErr):
+    print 'writing calculated values into file...'
+    filename = 'ingredients.dat'
+    f = open(filename, 'r')
+    lines = f.readlines()
+    newlines = []
+    for line in lines:
+        appended = False
+        for t in ['MC', 'DATA'] if obj.doData else ['MC']:
+            if all(s in line for s in pattern+[t]):
+                hist = obj.getHisto(t)
+                newlines.append('%s \t %s \t %s \t %.4f \t %.4f \t %s \t %.4f \t %.4f \t %s\n' %(
+                        line.split()[0], line.split()[1], t,
+                        hist.GetBinContent(1) if     obj.isCentral else float(line.split()[3]),
+                        hist.GetBinError  (1) if     obj.isCentral else float(line.split()[4]),
+                        str(systErr)          if     obj.isCentral else line.split()[5],
+                        hist.GetBinContent(1) if not obj.isCentral else float(line.split()[6]),
+                        hist.GetBinError  (1) if not obj.isCentral else float(line.split()[7]),
+                        str(systErr)          if not obj.isCentral else line.split()[8]))
+                appended = True
 
-            if not appended:
-                newlines.append(line)
-        f.close()
-        g = open(ingFile, 'w')
-        g.writelines(newlines)
+        if not appended:
+            newlines.append(line)
+    f.close()
+    g = open(filename, 'w')
+    g.writelines(newlines)
