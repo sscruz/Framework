@@ -132,7 +132,7 @@ class rsfofRegion:
         else:
             print 'you\'re calling the getHisto function wrong. 
             valid arguments are \'MC\' and \'DATA\''
-            sys.exit('exiting...)
+            sys.exit('exiting...')
 
     def printValues(self):
         print 'REGION', self.name, self.cenFwd
