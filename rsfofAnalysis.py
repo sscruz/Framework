@@ -18,11 +18,12 @@ from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse
 
 import include.helper     as helper
+import include.Region     as Region
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 
-def make_rsfof(histo_sf, histo_of, isData):
+def make_rsfof(histo_sf, histo_of, dataMC):
 
     ratio = histo_sf.Clone('rsfof_' + histo_sf.GetName())
     ratio.Divide(histo_of)
@@ -31,19 +32,19 @@ def make_rsfof(histo_sf, histo_of, isData):
     doFit = 0
     if doFit:
         fit = TF1('myfit','pol0', ratio.GetXaxis().GetXmin(), ratio.GetXaxis().GetXmax())
-        fit.SetLineColor(r.kBlack if isData else r.kRed+1)
+        fit.SetLineColor(r.kBlack if dataMC  == 'DATA' else r.kRed+1)
         fit.SetLineStyle(2)
         
         ratio.Fit('myfit','0')
 
     ratio.GetYaxis().SetRangeUser(0.5,1.5)
 
-    f = open('txts/'+ratio.GetName()+'_values.txt', 'w')
-    for i in range(1, ratio.GetNbinsX()+1):
-        min, max = ratio.GetBinLowEdge(i), ratio.GetBinLowEdge(i)+ratio.GetBinWidth(i)
-        print    '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f'    %('DATA' if isData else 'MC', min, max, ratio.GetBinContent(i), ratio.GetBinError(i) )
-        f.write( '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f \n' %('DATA' if isData else 'MC', min, max, ratio.GetBinContent(i), ratio.GetBinError(i) ) )
-    f.close()
+    # f = open('txts/'+ratio.GetName()+'_values.txt', 'w')
+    # for i in range(1, ratio.GetNbinsX()+1):
+    #     min, max = ratio.GetBinLowEdge(i), ratio.GetBinLowEdge(i)+ratio.GetBinWidth(i)
+    #     print    '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f'    %(dataMC, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) )
+    #     f.write( '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f \n' %(dataMC, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) ) )
+    # f.close()
 
 
     return ratio
@@ -59,21 +60,21 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
 
-    if len(args) != 2:
+    if len(args) != 1:
       parser.error('wrong number of arguments')
 
     inputFileName = args[0]
-    centralForward = args[1]
 
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
+    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
+                  'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     print 'Trees successfully loaded...'
 
 
-    lumi = 0.020
+    lumi = 0.150
     print 'Running with an integrated luminosity of', lumi,'fb-1'
    
     gROOT.ProcessLine('.L tdrstyle.C')
@@ -81,64 +82,79 @@ if __name__ == '__main__':
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
 
-    for eta in [centralForward]:#, 'forward']:
-        regions = []
-        ttjets_meas    = helper.rsfofRegion('ttjets_meas', eta, 
-                                     [cuts.METJetsControlRegion],
-                                     [20, 70, 81, 101, 120, 300],
-                                     False, 'mll', True)
-        regions.append(ttjets_meas)
-        ttjets_sig_lm  = helper.rsfofRegion('ttjets_sig_lm', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.lowmass],
-                                     [20, 70],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_lm)
-        ttjets_sig_onZ = helper.rsfofRegion('ttjets_sig_onZ', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.Zmass],
-                                     [81, 101],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_onZ)
-        ttjets_sig_hm  = helper.rsfofRegion('ttjets_sig_hm', eta, 
-                                     [cuts.METJetsSignalRegion, cuts.highmass],
-                                     [120, 300],
-                                     True, 'mll', False)
-        regions.append(ttjets_sig_hm)
-        ## ttjets_inc     = helper.rsfofRegion('ttjets_inc', eta, 
-        ##                              [cuts.nj2],
-        ##                              [20, 70, 81, 101, 120, 300],
-        ##                              False, 'mll', True)
-        ## regions.append(ttjets_inc)
+    regions = []
+    ttjets_meas    = Region.region('ttjets_meas', 
+                                   [cuts.METJetsControlRegion],
+                                   ['mll'],
+                                   [[20, 70, 81, 101, 120, 300]],
+                                   True)
+    regions.append(ttjets_meas)
+    ttjets_sig_lm  = Region.region('ttjets_sig_lm',
+                                   [cuts.METJetsSignalRegion, cuts.lowmass],
+                                   ['mll'],
+                                   [[20, 70]],
+                                   False)
+    regions.append(ttjets_sig_lm)
+    ttjets_sig_onZ = Region.region('ttjets_sig_onZ', 
+                                   [cuts.METJetsSignalRegion, cuts.Zmass],
+                                   ['mll'],
+                                   [[81, 101]],
+                                   False)
+    regions.append(ttjets_sig_onZ)
+    ttjets_sig_hm  = Region.region('ttjets_sig_hm', 
+                                   [cuts.METJetsSignalRegion, cuts.highmass],
+                                   ['mll'],
+                                   [[120, 300]],
+                                   False)
+    regions.append(ttjets_sig_hm)
+    ttjets_inc     = Region.region('ttjets_inc', 
+                                   [cuts.nj2],
+                                   ['mll'],
+                                   [[20, 70, 81, 101, 120, 300]],
+                                   False)
+    regions.append(ttjets_inc)
 
-        print '...in', eta
+    for reg in regions:
+        print 'i am at region', reg.name
+        for eta in ['central', 'forward']:
+            print '... in %s' %(eta)
 
-        for region in regions:
+            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
 
-            print 'i am at region', region.name
-            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
-            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
+            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
 
-            for tree in ([treeMC, treeDA] if region.doData else [treeMC]):
+                reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
+                reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
 
-                region.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+region.cenFwd, 't.lepsMll_Edge', region.bins, 1, 1, cuts_sf, '', "m_{ll} (GeV)")
-                region.mll_of = tree.getTH1F(lumi, 'mll_of_'+region.cenFwd, 't.lepsMll_Edge', region.bins, 1, 1, cuts_of, '', "m_{ll} (GeV)")
+                dataMC = 'DATA' if tree == treeDA else 'MC'
+                reg.mll.setHisto(make_rsfof(reg.mll_sf, reg.mll_of, dataMC), dataMC, eta)
 
-                isData = False if tree == treeMC else True
-                region.set_rsfof(make_rsfof(region.mll_sf, region.mll_of, isData), isData)
+                del reg.mll_sf, reg.mll_of
     
 
+    for eta in ['central', 'forward']:
         ## =================
         ## MAKE THE Mll PLOT
         ## =================
-        #meas_rsfof = 
-        plot_rsfof = Canvas.Canvas('rsfof/plot_rsfof_mll_'+ttjets_meas.cenFwd, 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-        plot_rsfof.addHisto(ttjets_meas   .rsfof     , 'PE'     , 'ttjets region - MC'  , 'PL', r.kRed+1 , 1, 0)
-        plot_rsfof.addHisto(ttjets_meas   .rsfof_data, 'PE,SAME', 'ttjets region - DATA', 'PL', r.kBlack , 1, 1)
-        plot_rsfof.addGraph(ttjets_sig_lm .rsfof     , 'PZ,SAME', 'signal lowmass - MC' , 'PL', r.kBlue-8, 1, 2)
-        plot_rsfof.addGraph(ttjets_sig_onZ.rsfof     , 'PZ,SAME', 'signal onZ - MC'     , 'PL', r.kBlue-7, 1, 3)
-        plot_rsfof.addGraph(ttjets_sig_hm .rsfof     , 'PZ,SAME', 'signal highmass - MC', 'PL', r.kBlue-9, 1, 4)
+        plot_rsfof = Canvas.Canvas('rsfof/plot_rsfof_mll_'+eta, 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+        plot_rsfof.addHisto(ttjets_meas   .mll.getHisto('MC'  , eta), 'PE'     , 'ttjets region - MC'  , 'PL', r.kRed+1 , 1, 0)
+        plot_rsfof.addHisto(ttjets_meas   .mll.getHisto('DATA', eta), 'PE,SAME', 'ttjets region - DATA', 'PL', r.kBlack , 1, 1)
+        plot_rsfof.addGraph(ttjets_sig_lm .mll.getGraph('MC'  , eta), 'PZ,SAME', 'signal lowmass - MC' , 'PL', r.kBlue-8, 1, 2)
+        plot_rsfof.addGraph(ttjets_sig_onZ.mll.getGraph('MC'  , eta), 'PZ,SAME', 'signal onZ - MC'     , 'PL', r.kBlue-7, 1, 3)
+        plot_rsfof.addGraph(ttjets_sig_hm .mll.getGraph('MC'  , eta), 'PZ,SAME', 'signal highmass - MC', 'PL', r.kBlue-9, 1, 4)
         #plot_rsfof.addHisto(ttjets_inc .rsfof     , 'E,SAME', 'incl.  region - MC'  , 'PL', r.kBlack , 1, 1)
-        plot_rsfof.addBand (ttjets_meas.rsfof.GetXaxis().GetXmin(), 0.9, ttjets_meas.rsfof.GetXaxis().GetXmax(), 1.1, r.kGreen, 0.2)
-        plot_rsfof.addLine (ttjets_meas.rsfof.GetXaxis().GetXmin(), 1.0, ttjets_meas.rsfof.GetXaxis().GetXmax(), 1.0, r.kGreen)
-        plot_rsfof.addLatex(0.2, 0.2, ttjets_meas.cenFwd)
+        plot_rsfof.addBand (ttjets_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), 0.9, ttjets_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), 1.1, r.kGreen, 0.2)
+        plot_rsfof.addLine (ttjets_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), 1.0, ttjets_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), 1.0, r.kGreen)
+        plot_rsfof.addLatex(0.2, 0.2, eta)
         plot_rsfof.save(1, 1, 0, lumi)
         
+    ## =================
+    ## PRINT AND SAVE ==
+    ## =================
+    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_lm' ], 0.1,  50)
+    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_onZ'], 0.1,  91)
+    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_hm' ], 0.1, 150)
+    ttjets_sig_lm .mll.saveInFile(['rsfof', 'sr_lm'   ], 0.1)
+    ttjets_sig_onZ.mll.saveInFile(['rsfof', 'sr_onZ'  ], 0.1)
+    ttjets_sig_hm .mll.saveInFile(['rsfof', 'sr_hm'   ], 0.1)
