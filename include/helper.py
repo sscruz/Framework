@@ -26,24 +26,35 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
 
 
 class valErrs:
-    def __init__(self, val, sys, stat, name):
-        self.val  = val
-        self.sys  = sys
-        self.stat = stat
+    def __init__(self, cen_val, cen_sys, cen_stat, fwd_val, fwd_sys, fwd_stat, name):
+        self.cen_val  = cen_val
+        self.cen_sys  = cen_sys
+        self.cen_stat = cen_stat
+        self.fwd_val  = fwd_val
+        self.fwd_sys  = fwd_sys
+        self.fwd_stat = fwd_stat
         self.vals = []
         self.name = name
     def totError(self):
-        self.err = math.sqrt(self.sys**2 + self.stat**2)
-        self.vals.append(self.err)
+        self.cen_err = math.sqrt(self.cen_sys**2 + self.cen_stat**2)
+        self.fwd_err = math.sqrt(self.fwd_sys**2 + self.fwd_stat**2)
+        self.vals.append(self.cen_err)
+        self.vals.append(self.fwd_err)
     def setVals(self, line):
-        self.val  = float(line.split()[-3])
-        self.sys  = float(line.split()[-2])
-        self.stat = float(line.split()[-1])
-        self.vals.extend([self.val, self.sys, self.stat])
+        self.cen_val  = float(line.split()[-6])
+        self.cen_sys  = float(line.split()[-5])
+        self.cen_stat = float(line.split()[-4])
+        self.vals.extend([self.cen_val, self.cen_sys, self.cen_stat])
+        self.fwd_val  = float(line.split()[-3])
+        self.fwd_sys  = float(line.split()[-2])
+        self.fwd_stat = float(line.split()[-1])
+        self.vals.extend([self.fwd_val, self.fwd_sys, self.fwd_stat])
         self.totError()
     def printValues(self):
-        print '%s %.3f +- %.3f (%.3f stat. %.3f syst.)' %(
-                self.name, self.val, self.err, self.stat, self.sys)
+        print 'central %s %.3f +- %.3f (%.3f stat. %.3f syst.)' %(
+                self.name, self.cen_val, self.cen_err, self.cen_stat, self.cen_sys)
+        print 'forward %s %.3f +- %.3f (%.3f stat. %.3f syst.)' %(
+                self.name, self.fwd_val, self.fwd_err, self.fwd_stat, self.fwd_sys)
 
 class ingredients:
     def __init__(self, infile, isData):
