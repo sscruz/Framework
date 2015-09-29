@@ -223,6 +223,20 @@ class Canvas:
       for plotName in self.plotNames:
           self.myCanvas.SaveAs('plots/'+plotName)
 
+      for band in self.bands:
+          band.Draw('f')
+  
+      for line in self.lines:
+          line.Draw()
+  
+      for latex in self.latexs:
+          lat = TLatex()
+          lat.SetNDC()
+          lat.SetTextSize(latex[-1])
+          lat.SetTextFont(latex[-2])
+          lat.DrawLatex(latex[0], latex[1], latex[2])
+  
+
       del self.myCanvas
 
 
