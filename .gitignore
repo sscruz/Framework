@@ -1,1 +1,3 @@
 *.pyc
+.tmp_sampleFileDA.txt
+.tmp_sampleFileMC.txt
