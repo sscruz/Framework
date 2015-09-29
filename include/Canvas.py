@@ -192,6 +192,19 @@ class Canvas:
           self.makeLegend()
           self.myLegend.Draw()
 
+      for band in self.bands:
+          band.Draw('f')
+  
+      for line in self.lines:
+          line.Draw()
+  
+      for latex in self.latexs:
+          lat = TLatex()
+          lat.SetNDC()
+          lat.SetTextSize(latex[-1])
+          lat.SetTextFont(latex[-2])
+          lat.DrawLatex(latex[0], latex[1], latex[2])
+  
       
       ratio = hdata.Clone("ratio")
       ratio.Divide(hMC)
@@ -206,9 +219,10 @@ class Canvas:
       ratio.GetYaxis().SetNdivisions(4);
       ratio.GetYaxis().SetTitleSize(0.14);
       ratio.GetXaxis().SetTitleSize(0.14);
-      ratio.SetMarkerStyle(21);
-      ratio.SetMarkerColor(r.kBlue);
-      ratio.SetLineColor(r.kBlue);
+      ratio.SetMarkerStyle(20);
+      ratio.SetMarkerSize(0.8*ratio.GetMarkerSize());
+      ratio.SetMarkerColor(r.kGray+3);
+      ratio.SetLineColor(r.kGray+3);
 
 
       pad2.cd();  
@@ -216,26 +230,13 @@ class Canvas:
       line.SetLineColor(r.kRed);
       ratio.Draw();
       line.Draw();
-      ratio.Draw("E1,SAME");
+      ratio.Draw("E,SAME");
 
       pad1.cd()
       self.banner(isData, lumi)
       for plotName in self.plotNames:
           self.myCanvas.SaveAs('plots/'+plotName)
 
-      for band in self.bands:
-          band.Draw('f')
-  
-      for line in self.lines:
-          line.Draw()
-  
-      for latex in self.latexs:
-          lat = TLatex()
-          lat.SetNDC()
-          lat.SetTextSize(latex[-1])
-          lat.SetTextFont(latex[-2])
-          lat.DrawLatex(latex[0], latex[1], latex[2])
-  
 
       del self.myCanvas
 

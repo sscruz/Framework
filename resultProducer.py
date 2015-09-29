@@ -26,11 +26,19 @@ import include.Sample     as Sample
 
 
 def makePrediction(of_histo, ing, eta):
+    central = (eta == 'central')
     sf_pred = copy.deepcopy(of_histo)
     for _bin in range(1,of_histo.GetNbinsX()+1):
         tmp_cont  = of_histo.GetBinContent(_bin)
         tmp_err   = of_histo.GetBinError  (_bin)
-        tmp_pred  = 1.2*tmp_cont
+        tmp_mass  = of_histo.GetXaxis().GetBinCenter(_bin)
+        if   tmp_mass <  80.:
+            scale = ing.rsfof_ttcr_lm.cen_val if central else ing.rsfof_ttcr_lm.cen_val
+        elif tmp_mass < 120.:
+            scale = ing.rsfof_ttcr_onZ.cen_val if central else ing.rsfof_ttcr_onZ.cen_val
+        else:
+            scale = ing.rsfof_ttcr_hm.cen_val if central else ing.rsfof_ttcr_hm.cen_val
+        tmp_pred  = scale*tmp_cont
         tmp_prede = 1.2*tmp_err
         sf_pred.SetBinContent(_bin, tmp_pred )
         sf_pred.SetBinError  (_bin, tmp_prede)
@@ -84,7 +92,7 @@ if __name__ == '__main__':
     signalRegion = Region.region('signalRegion', 
                                  [cuts.METJetsSignalRegion],
                                  ['mll', 'met'],
-                                 [range(0,310,10), range(0,210,10)],
+                                 [range(20,310,10), range(0,210,10)],
                                  True if not isBlinded else False)
     regions.append(signalRegion)
 
@@ -116,8 +124,15 @@ if __name__ == '__main__':
         ## MAKE THE Mll PLOT
         ## =================
         signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0., 15. if eta == 'central' else 10.)
+        a = signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kRed+1, 0.4)
+        b = signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
         plot_result = Canvas.Canvas('results/plot_results_mll_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-        plot_result.addHisto(signalRegion.mll_pred.getHisto('MC', eta), 'PE'     , 'SR - predicted', 'PL', r.kRed+1 , 1, 0)
-        plot_result.addHisto(signalRegion.mll     .getHisto('MC', eta), 'PE,SAME', 'SR - observed' , 'PL', r.kBlack , 1, 1)
-        plot_result.addLatex(0.2, 0.2, eta)
-        plot_result.saveRatio(1, 1, 0, lumi, signalRegion.mll_pred.getHisto('MC', eta), signalRegion.mll.getHisto('MC', eta))
+        plot_result.addHisto(signalRegion.mll_pred.getHisto('MC', eta), 'hist'   , 'SR - predicted', 'L', r.kRed+1 , 1, 0)
+        plot_result.addGraph(signalRegion.mll_pred.getGraph('MC', eta), '2,same', 'SR - predicted', 'L', r.kRed+1  , 1, -1)
+        plot_result.addHisto(signalRegion.mll     .getHisto('MC', eta), 'PE,SAME', 'SR - observed' , 'PL', r.kBlack, 1, 1)
+        plot_result.addLatex(0.7, 0.8, eta)
+        plot_result.saveRatio(1, 0, 0, lumi, signalRegion.mll_pred.getHisto('MC', eta), signalRegion.mll.getHisto('MC', eta))
+        #plot_result.save(1, 1, 0, lumi)
+        del plot_result
+
+

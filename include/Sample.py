@@ -40,7 +40,7 @@ class Sample:
  
       if(xmin == xmax):
         h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-        ylabel = "N. Events"
+        ylabel = "# events"
       else:
         h = TH1F(name, "", nbin, xmin, xmax)
         bw = int((xmax-xmin)/nbin)
@@ -110,7 +110,7 @@ class Block:
 
      if(xmin == xmax):
        h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-       ylabel = "N. Events"
+       ylabel = "# events"
      else:
        h = TH1F(name, "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
@@ -261,7 +261,7 @@ class Tree:
    
      if(xmin == xmax):
        h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-       ylabel = "N. Events"
+       ylabel = "# events"
      else:
        h = TH1F(name, "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
