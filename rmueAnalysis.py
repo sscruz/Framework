@@ -14,16 +14,15 @@
 #####################################################################
 
 import ROOT as r
-import math as math
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+import math, sys, optparse, array
 import Rounder as rounder
-import Canvas, CutManager
 
-
-from optparse import OptionParser
-from ROOT import gROOT, TCanvas, TFile
-from Sample import Sample, Block, Tree, selectSamples
-from ROOT import TGraphErrors
-from array import array
+import include.helper     as helper
+import include.Region     as Region
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 def calc_rmue(Nmm, Nee, Emm, Eee):
 
@@ -53,65 +52,22 @@ def make_rmue(histo_mm, histo_ee):
             ratio.SetBinError(i, val[1])
     return ratio
 
-class region:
-    def __init__(self, name, cenFwd, cuts, bins, isGraph, mllMet, doData):
-        self.name      = name
-        self.cuts      = cuts
-        self.bins      = bins
-        self.isGraph   = isGraph
-        self.cenFwd    = cenFwd
-        self.isCentral = (cenFwd == 'central')
-        self.doMll     = ('mll' in mllMet)
-        self.doMet     = ('met' in mllMet)
-        self.doData    = doData
-
-    def set_rmue_mll(self, rmue_mll, data=0):
-        if not data:
-            self.rmue_mll         = rmue_mll
-            self.rmue_mll_gr      = TGraphErrors(rmue_mll)
-            self.rmue_mll.GetYaxis().SetRangeUser(0, 2)
-        else:
-            self.rmue_mll_data    = rmue_mll
-            self.rmue_mll_data_gr = TGraphErrors(rmue_mll)
-            self.rmue_mll_data.GetYaxis().SetRangeUser(0, 2)
-
-    def set_rmue_met(self, rmue_met, data=0):
-        if not data:
-            self.rmue_met         = rmue_met
-            self.rmue_met_gr      = TGraphErrors(rmue_met)
-            self.rmue_met.GetYaxis().SetRangeUser(0, 2)
-        else:
-            self.rmue_met_data    = rmue_met
-            self.rmue_met_data_gr = TGraphErrors(rmue_met)
-            self.rmue_met_data.GetYaxis().SetRangeUser(0, 2)
-
-
-    def printValues(self):
-        print 'REGION', self.name, self.cenFwd
-        for _bin in range(1,self.rmue_mll.GetNbinsX()+1):
-            print 'r_mue in [%.0f, %.0f] in %s: %.3f +- %.3f' %(
-                  self.rmue_mll.GetXaxis().GetBinLowEdge(_bin),
-                  self.rmue_mll.GetXaxis().GetBinUpEdge (_bin),
-                  self.cenFwd,
-                  self.rmue_mll.GetBinContent(_bin),
-                  self.rmue_mll.GetBinError(_bin))
-
 
 if __name__ == "__main__":
 
 
-    parser = OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
+    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
     inputFileName = args[0]
-    doEta = args[1]
 
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTJets', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C']
-    treeMC = Tree(selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Tree(selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
+                  'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
     print 'Trees successfully loaded...'
 
@@ -122,101 +78,122 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    lumi = 0.020
+    lumi = 0.150
 
 
-    #for eta in ['central']:#, 'forward']:
-    #for eta in ['forward']:#, 'forward']:
-    for eta in [doEta]:#, 'forward']:
-        regions = []
-        dy_nomass = region('DY_nomass', eta, 
-                           [cuts.DYControlRegion],
-                           [20, 30, 40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300],
-                           False, 'mll', True)
-        regions.append(dy_nomass)
-        dy_onZ    = region('DY_onZ'   , eta, 
-                           [cuts.DYControlRegion, cuts.DYmass],
-                           [60, 120],
-                           True, 'mll', True)
-        regions.append(dy_onZ)
-        dy_nomet  = region('DY_nomet' , eta, 
-                           [cuts.nj2, cuts.DYmass],
-                           range(0,110,10),
-                           True, 'met', True)
-        regions.append(dy_nomet)
-        sig_lm    = region('Signal_lowmass' , eta, 
-                           [cuts.METJetsSignalRegion, cuts.lowmass],
-                           [20,  70],
-                           True, 'mll', False)
-        regions.append(sig_lm)
-        sig_onZ   = region('Signal_onZ' , eta, 
-                           [cuts.METJetsSignalRegion, cuts.Zmass],
-                           [81, 101],
-                           True, 'mll', False)
-        regions.append(sig_onZ)
-        sig_hm    = region('Signal_highmass' , eta, 
-                           [cuts.METJetsSignalRegion, cuts.highmass],
-                           [120, 300],
-                           True, 'mll', False)
-        regions.append(sig_hm)
-
-
-        for region in regions:
-            print 'i am at region', region.name
-            cuts_ee = cuts.AddList([cuts.GoodLeptonee()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
-            cuts_mm = cuts.AddList([cuts.GoodLeptonmm()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+region.cuts)
-
-
-            for tree in ([treeMC, treeDA] if region.doData else [treeMC]):
-
-                if region.doMll:
-                    region.mll_ee = tree.getTH1F(lumi, "mll_ee_"+region.cenFwd, "t.lepsMll_Edge", region.bins, 1, 1, cuts_ee, "", "m_{ll} (GeV)")
-                    region.mll_mm = tree.getTH1F(lumi, "mll_mm_"+region.cenFwd, "t.lepsMll_Edge", region.bins, 1, 1, cuts_mm, "", "m_{ll} (GeV)")
-
-                    region.set_rmue_mll(make_rmue(region.mll_mm, region.mll_ee), False if tree == treeMC else True)
-
-                if region.doMet:
-                    region.met_ee = tree.getTH1F(lumi, "met_ee_"+region.cenFwd, "met_pt", region.bins, 1, 1, cuts_ee, "", "ME_{T} (GeV)")
-                    region.met_mm = tree.getTH1F(lumi, "met_mm_"+region.cenFwd, "met_pt", region.bins, 1, 1, cuts_mm, "", "ME_{T} (GeV)")
-
-                    region.set_rmue_met(make_rmue(region.met_mm, region.met_ee), False if tree == treeMC else True)
+    regions = []
+    dy_nomass = Region.region('DY_nomass',
+                       [cuts.DYControlRegion],
+                       ['mll'],
+                       [[20, 30, 40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]],
+                       True)
+    regions.append(dy_nomass)
+    dy_onZ    = Region.region('DY_onZ',
+                       [cuts.DYControlRegion, cuts.DYmass],
+                       ['mll'],
+                       [[60, 120]],
+                       True)
+    regions.append(dy_onZ)
+    dy_nomet  = Region.region('DY_nomet',
+                       [cuts.nj2, cuts.DYmass],
+                       ['met'],
+                       [range(0,110,10)],
+                       True)
+    regions.append(dy_nomet)
+    sig_lm    = Region.region('Signal_lowmass',
+                       [cuts.METJetsSignalRegion, cuts.lowmass],
+                       ['mll'],
+                       [[20,  70]],
+                       False)
+    regions.append(sig_lm)
+    sig_onZ   = Region.region('Signal_onZ',
+                       [cuts.METJetsSignalRegion, cuts.Zmass],
+                       ['mll'],
+                       [[81, 101]],
+                       False)
+    regions.append(sig_onZ)
+    sig_hm    = Region.region('Signal_highmass',
+                       [cuts.METJetsSignalRegion, cuts.highmass],
+                       ['mll'],
+                       [[120, 300]],
+                       False)
+    regions.append(sig_hm)
     
+    
+    for reg in regions:
+        print 'i am at region', reg.name
+        for eta in ['central', 'forward']:
+            print '... in %s' %(eta)
 
+            cuts_ee = cuts.AddList([cuts.GoodLeptonee()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_mm = cuts.AddList([cuts.GoodLeptonmm()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+    
+    
+            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+    
+                dataMC = 'DATA' if tree == treeDA else 'MC'
 
+                if 'mll' in reg.rvars:
+                    reg.mll_ee = tree.getTH1F(lumi, "mll_ee_"+eta, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_ee, "", "m_{ll} (GeV)")
+                    reg.mll_mm = tree.getTH1F(lumi, "mll_mm_"+eta, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_mm, "", "m_{ll} (GeV)")
+    
+                    reg.mll.setHisto(make_rmue(reg.mll_mm, reg.mll_ee), dataMC, eta)
+    
+                if 'met' in reg.rvars:
+                    reg.met_ee = tree.getTH1F(lumi, "met_ee_"+eta, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_ee, "", "ME_{T} (GeV)")
+                    reg.met_mm = tree.getTH1F(lumi, "met_mm_"+eta, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_mm, "", "ME_{T} (GeV)")
+    
+                    reg.met.setHisto(make_rmue(reg.met_mm, reg.met_ee), dataMC, eta)
+    
+    
+    
+    for eta in ['central', 'forward']:
         ## =================
         ## MAKE THE Mll PLOT
         ## =================
-        meas_rmue_mc   = dy_onZ.rmue_mll.GetBinContent(1)
-        meas_rmue_mc_e = math.sqrt(dy_onZ.rmue_mll.GetBinError(1)**2 + 0.1**2)
-        meas_rmue_da   = dy_onZ.rmue_mll_data.GetBinContent(1)
-        meas_rmue_da_e = math.sqrt(dy_onZ.rmue_mll_data.GetBinError(1)**2 + 0.1**2)
-
-        plot_rmue_mll = Canvas.Canvas("rmue/plot_rmue_mll_"+dy_nomass.cenFwd, "png,pdf", 0.6, 0.15, 0.8, 0.35)
-        plot_rmue_mll.addHisto(dy_nomass.rmue_mll     , "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
-        plot_rmue_mll.addHisto(dy_nomass.rmue_mll_data, "E,SAME", "DY - data", "PL", r.kBlack , 1, 5)
-        plot_rmue_mll.addGraph(sig_lm .rmue_mll_gr, "PZ", "<SR low>"  , "PL", r.kBlue-7, 1, 1)
-        plot_rmue_mll.addGraph(sig_onZ.rmue_mll_gr, "PZ", "<SR onZ>"  , "PL", r.kBlue-8, 1, 2)
-        plot_rmue_mll.addGraph(sig_hm .rmue_mll_gr, "PZ", "<SR high>" , "PL", r.kBlue-9, 1, 3)
-        plot_rmue_mll.addGraph(dy_onZ .rmue_mll_gr, "PZ", "<DY onZ>"  , "PL", r.kCyan+1, 1, 4)
-        plot_rmue_mll.addLine (dy_nomass.rmue_mll.GetXaxis().GetXmin(), 1.                   , dy_nomass.rmue_mll.GetXaxis().GetXmax(), 1.                   , r.kGreen)
-        plot_rmue_mll.addBand (dy_nomass.rmue_mll.GetXaxis().GetXmin(), meas_rmue_da-meas_rmue_da_e, dy_nomass.rmue_mll.GetXaxis().GetXmax(), meas_rmue_da+meas_rmue_da_e, r.kGray+1, 0.2)
-        plot_rmue_mll.addLine (dy_nomass.rmue_mll.GetXaxis().GetXmin(), meas_rmue_da               , dy_nomass.rmue_mll.GetXaxis().GetXmax(), meas_rmue_da               , r.kGray+1)
-        plot_rmue_mll.addLatex(0.2, 0.2, dy_nomass.cenFwd)
+        meas_rmue_mc   = dy_onZ.mll.getHisto('MC'  , eta).GetBinContent(1)
+        meas_rmue_da   = dy_onZ.mll.getHisto('DATA', eta).GetBinContent(1)
+        meas_rmue_mc_e = math.sqrt(dy_onZ.mll.getHisto('MC'  , eta).GetBinError(1)**2 + 0.1**2)
+        meas_rmue_da_e = math.sqrt(dy_onZ.mll.getHisto('DATA', eta).GetBinError(1)**2 + 0.1**2)
+        upEdge = meas_rmue_da+meas_rmue_da_e
+        dnEdge = meas_rmue_da-meas_rmue_da_e
+        middle = meas_rmue_da
+        
+        plot_rmue_mll = Canvas.Canvas("rmue/plot_rmue_mll_"+eta, "png,pdf", 0.6, 0.15, 0.8, 0.35)
+        plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
+        plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 5)
+        plot_rmue_mll.addGraph(sig_lm   .mll.getGraph('MC'  ,eta), "PZ", "SR low - MC"  , "PL", r.kBlue-7, 1, 1)
+        plot_rmue_mll.addGraph(sig_onZ  .mll.getGraph('MC'  ,eta), "PZ", "SR onZ - MC"  , "PL", r.kBlue-8, 1, 2)
+        plot_rmue_mll.addGraph(sig_hm   .mll.getGraph('MC'  ,eta), "PZ", "SR high - MC" , "PL", r.kBlue-9, 1, 3)
+        plot_rmue_mll.addGraph(dy_onZ   .mll.getGraph('MC'  ,eta), "PZ", "DY onZ - MC"  , "PL", r.kCyan+1, 1, 4)
+        plot_rmue_mll.addLine (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(),     1., dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(),     1., r.kGreen)
+        plot_rmue_mll.addBand (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), dnEdge, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), upEdge, r.kGray+1, 0.2)
+        plot_rmue_mll.addLine (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), middle, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), middle, r.kGray+1)
+        plot_rmue_mll.addLatex(0.2, 0.2, eta)
         plot_rmue_mll.save(1, 0, 0, lumi)
-
+        
         ## =================
         ## MAKE THE MET PLOT
         ## =================
-        plot_rmue_met = Canvas.Canvas("rmue/plot_rmue_met_"+region.cenFwd, "png,pdf", 0.6, 0.15, 0.8, 0.35)
-        plot_rmue_met.addHisto(dy_nomet.rmue_met     , "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
-        plot_rmue_met.addHisto(dy_nomet.rmue_met_data, "E,SAME", "DY - data", "PL", r.kBlack , 1, 1)
-        plot_rmue_met.addLine (dy_nomet.rmue_met.GetXaxis().GetXmin(), 1.           , dy_nomet.rmue_met.GetXaxis().GetXmax(), 1.           , r.kGreen)
-        plot_rmue_met.addBand (dy_nomet.rmue_met.GetXaxis().GetXmin(), meas_rmue_da-meas_rmue_da_e, dy_nomet.rmue_met.GetXaxis().GetXmax(), meas_rmue_da+meas_rmue_da_e, r.kGray+1, 0.2)
-        plot_rmue_met.addLine (dy_nomet.rmue_met.GetXaxis().GetXmin(), meas_rmue_da               , dy_nomet.rmue_met.GetXaxis().GetXmax(), meas_rmue_da               , r.kGray+1)
-        plot_rmue_met.addLatex(0.2, 0.2, dy_nomass.cenFwd)
+        plot_rmue_met = Canvas.Canvas("rmue/plot_rmue_met_"+eta, "png,pdf", 0.6, 0.15, 0.8, 0.35)
+        plot_rmue_met.addHisto(dy_nomet.met.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
+        plot_rmue_met.addHisto(dy_nomet.met.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 1)
+        plot_rmue_met.addLine (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(),     1., dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(),     1., r.kGreen)
+        plot_rmue_met.addBand (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(), dnEdge, dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(), upEdge, r.kGray+1, 0.2)
+        plot_rmue_met.addLine (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(), middle, dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(), middle, r.kGray+1)
+        plot_rmue_met.addLatex(0.2, 0.2, eta)
         plot_rmue_met.save(1, 0, 0, lumi)
+        
+    ## =================
+    ## PRINT AND SAVE ==
+    ## =================
+    dy_onZ    .mll.printValues()
+    dy_nomass .mll.printValues()
+    sig_onZ   .mll.printValues()
+    sig_lm    .mll.printValues()
+    
+    dy_onZ .mll.saveInFile(['rmue', 'dycr_dym'], 0.1)
+    sig_lm .mll.saveInFile(['rmue', 'sr_lm'   ], 0.1)
+    sig_onZ.mll.saveInFile(['rmue', 'sr_onZ'  ], 0.1)
+    sig_hm .mll.saveInFile(['rmue', 'sr_hm'   ], 0.1)
 
-        dy_onZ .printValues()
-        dy_nomass .printValues()
-        sig_onZ.printValues()
-        sig_lm .printValues()
