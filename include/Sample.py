@@ -26,6 +26,9 @@ class Sample:
       self.lumWeight = 1.0
       if(self.isData == 0):
         self.lumWeight = self.xSection / self.count
+      self.puWeight = "1.0"
+      if(self.isData == 0):
+        self.puWeight = "t.PileupW_Edge"
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -40,7 +43,7 @@ class Sample:
  
       if(xmin == xmax):
         h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-        ylabel = "N. Events"
+        ylabel = "# events"
       else:
         h = TH1F(name, "", nbin, xmin, xmax)
         bw = int((xmax-xmin)/nbin)
@@ -62,7 +65,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
       
       self.ttree.Project(name, var, cut, options) 
       return h
@@ -75,7 +78,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
@@ -110,7 +113,7 @@ class Block:
 
      if(xmin == xmax):
        h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-       ylabel = "N. Events"
+       ylabel = "# events"
      else:
        h = TH1F(name, "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
@@ -261,7 +264,7 @@ class Tree:
    
      if(xmin == xmax):
        h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-       ylabel = "N. Events"
+       ylabel = "# events"
      else:
        h = TH1F(name, "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
