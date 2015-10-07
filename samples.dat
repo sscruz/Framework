@@ -20,11 +20,11 @@ DoubleEG     r.kBlack   DoubleEG_Run2015C     DoubleEG_Run2015C     /afs/cern.ch
 MuonEG       r.kBlack   MuonEG_Run2015C       MuonEG_Run2015C       /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
 HTMHT        r.kBlack   HTMHT_Run2015C        HTMHT_Run2015C        /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
 JetHT        r.kBlack   JetHT_Run2015C        JetHT_Run2015C        /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
-DoubleMuon   r.kBlack   DoubleMuon_Run2015D   DoubleMuon_Run2015D   /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015D     DoubleEG_Run2015D     /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015D       MuonEG_Run2015D       /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
-HTMHT        r.kBlack   HTMHT_Run2015D        HTMHT_Run2015D        /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
-JetHT        r.kBlack   JetHT_Run2015D        JetHT_Run2015D        /afs/cern.ch/work/p/pablom/public/data/DataGolden150pb25ns/   friends/   1         1
+DoubleMuon   r.kBlack   DoubleMuon_Run2015D   DoubleMuon_Run2015D   /afs/cern.ch/work/p/pablom/public/data/DataGolden225pb25ns/   friends/   1         1
+DoubleEG     r.kBlack   DoubleEG_Run2015D     DoubleEG_Run2015D     /afs/cern.ch/work/p/pablom/public/data/DataGolden225pb25ns/   friends/   1         1
+MuonEG       r.kBlack   MuonEG_Run2015D       MuonEG_Run2015D       /afs/cern.ch/work/p/pablom/public/data/DataGolden225pb25ns/   friends/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015D        HTMHT_Run2015D        /afs/cern.ch/work/p/pablom/public/data/DataGolden225pb25ns/   friends/   1         1
+JetHT        r.kBlack   JetHT_Run2015D        JetHT_Run2015D        /afs/cern.ch/work/p/pablom/public/data/DataGolden225pb25ns/   friends/   1         1
 #
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
