@@ -74,7 +74,7 @@ if __name__ == '__main__':
     print 'Trees successfully loaded...'
 
 
-    lumi = 0.150
+    lumi = 0.225
     print 'Running with an integrated luminosity of', lumi,'fb-1'
    
     gROOT.ProcessLine('.L tdrstyle.C')
