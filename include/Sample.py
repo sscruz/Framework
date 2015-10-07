@@ -26,7 +26,9 @@ class Sample:
       self.lumWeight = 1.0
       if(self.isData == 0):
         self.lumWeight = self.xSection / self.count
-      self.puWeight = 1.0
+      self.puWeight = "1.0"
+      if(self.isData == 0):
+        self.puWeight = "t.PileupW_Edge"
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -63,7 +65,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * t.PileupW_Edge )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
       
       self.ttree.Project(name, var, cut, options) 
       return h
@@ -76,7 +78,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * t.PileupW_Edge )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
