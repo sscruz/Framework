@@ -121,7 +121,9 @@ if __name__ == "__main__":
 					
 		my_cuts = cuts.AddList([cuts.goodLepton]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
 		for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
-    
+		
+#			dataMC = 'DATA' if tree == treeDA else 'MC'  
+		
 			if tree == treeDA: 
 				dataMC = 'DATA'
 			elif tree == treeMC: 
@@ -131,7 +133,7 @@ if __name__ == "__main__":
 
 			if 'mll' in reg.rvars:
 				reg.mll.setHisto(tree.getTH1F(lumi, "mll_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge", 	reg.bins[reg.rvars.index('mll')], 1, 1, my_cuts, "", "m_{ll} (GeV)"), dataMC, eta)
-				reg.mll_dy.setHisto(treeDY.getTH1F(lumi, "mll_dy_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge", 	reg.bins[reg.rvars.index('mll')], 1, 1, my_cuts, "", "m_{ll} (GeV)"), dataMC, eta)
+				reg.mll_dy.setHisto(treeDY.getTH1F(lumi, "mll_dy_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge", 	reg.bins[reg.rvars.index('mll')], 1, 1, my_cuts, "", "m_{ll} (GeV)"), 'DY', eta)
 			if 'met' in reg.rvars:
 				reg.met.setHisto(tree.getTH1F(lumi, "met_"+eta+reg.name+str(dataMC), "met_pt", 	reg.bins[reg.rvars.index('met')], 1, 1, my_cuts, "", "ME_{T} (GeV)"), dataMC, eta)
 
