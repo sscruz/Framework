@@ -239,6 +239,36 @@ class CutManager:
 
       return self.brackets(self.ControlNoMassLeptonee() + " && " + self.highmass)
    
+   def Control2JetsSF(self):
 
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonSF())
+   
+   def Control2JetsOF(self):
 
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonOF())
+   
+   def Control2Jetsee(self):
 
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonee())
+   
+   def Control2Jetsmm(self):
+
+	return self.brackets(self.nj2 + " && " + self.GoodLeptonmm())
+      
+   def Control2JetsMETSF(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonSF())
+   
+   def Control2JetsMETOF(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonOF())
+   
+   def Control2JetsMETee(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonee())
+   
+   def Control2JetsMETmm(self):
+
+	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
+      
+ 
