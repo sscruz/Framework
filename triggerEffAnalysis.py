@@ -16,14 +16,14 @@
                                                        
 
 import ROOT as r
-import math as math
-import sys
-
-from optparse import OptionParser
 from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors
-from Sample import Sample, Block, Tree
-from CutManager import CutManager
-from Canvas import Canvas
+import math,sys,optparse
+
+import include.helper     as helper
+import include.Region     as Region
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 
 def getTriggerEffs(tree, cut, addCut, var, varname, binning, lumi):
@@ -35,9 +35,9 @@ def getTriggerEffs(tree, cut, addCut, var, varname, binning, lumi):
     for i in range(1,passHisto.GetNbinsX()+1):
         print 'at variable %s events passing/total %.2f  of  %.2f' %(varname, passHisto.GetBinContent(i), allHisto.GetBinContent(i) )
 
-    ratio = passHisto.Clone('eff_' + passHisto.GetName())
-    ratio.Divide(allHisto)
-    ratio.GetYaxis().SetTitle('trigger eff.')
+    ##ratio = passHisto.Clone('eff_' + passHisto.GetName())
+    ##ratio.Divide(allHisto)
+    ##ratio.GetYaxis().SetTitle('trigger eff.')
 
     errs = TGraphAsymmErrors(passHisto, allHisto, 'a')
 
@@ -48,7 +48,7 @@ def getTriggerEffs(tree, cut, addCut, var, varname, binning, lumi):
 
 if __name__ == '__main__':
 
-    parser = OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
+    parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
     (options, args) = parser.parse_args()
 
@@ -56,39 +56,50 @@ if __name__ == '__main__':
       parser.error('wrong number of arguments')
 
     inputFileName = args[0]
-    tree = Tree(inputFileName, 'MC', 0)
+    print 'Going to load DATA and MC trees...'
+    mcDatasets = ['TTJets', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    daDatasets = ['HTMHT_Run2015C', 'JetHT_Run2015C',
+                  'HTMHT_Run2015D', 'JetHT_Run2015D']
+    #daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
+    #              'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    #tree = treeMC
+    print 'Trees successfully loaded...'
+
+    lumi = 0.225
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
-    cuts = CutManager()
+    cuts = CutManager.CutManager()
     
-    ht_ht = getTriggerEffs(tree, cuts.AddList([cuts.goodLepton,cuts.Central()]), 'HLT_pfht350 > 0', 't.htJet35j_Edge', 'H_{T} (GeV)', [20,   0,  800], 4.) ## ,'(HLT_DoubleMu > 0 || HLT_DoubleEl > 0|| HLT_MuEG > 0)'
+    ht_ht = getTriggerEffs(treeDA, cuts.AddList([cuts.goodLepton,cuts.Central()]), cuts.triggerHT, 't.htJet35j_Edge', 'H_{T} (GeV)', [20, 0, 800], lumi)
    
-    plot_ht_ht = Canvas('trigger/plot_eff_ht_ht', 'png', 0.6, 0.6, 0.8, 0.8)
+    plot_ht_ht = Canvas.Canvas('trigger/plot_eff_ht_ht', 'png', 0.6, 0.6, 0.8, 0.8)
     ht_ht.GetHistogram().Draw()
     ht_ht.GetYaxis().SetRangeUser(-0.05, 1.05)
     ht_ht.Draw('apz')
-    plot_ht_ht.save(0, 0, 0, 4.0)
+    plot_ht_ht.save(0, 0, 0, lumi)
     
-    #sys.exit(0)
+    ##sys.exit(0)
 
     for flavor in ['ee', 'mm', 'em']:
 
         if   flavor is 'ee': 
-            trigger = 'HLT_DoubleEl'
+            trigger = cuts.trigEEc
             mllvar  = 'm_{ee} (GeV)'
             pt1var  = 'p_{T}^{e,lead} (GeV)'
             pt2var  = 'p_{T}^{e,trail} (GeV)'
             lepcut = cuts.GoodLeptonee()
         elif flavor is 'mm': 
-            trigger = 'HLT_DoubleMu'
+            trigger = cuts.trigMMc
             mllvar  = 'm_{#mu#mu} (GeV)'
             pt1var  = 'p_{T}^{#mu,lead} (GeV)'
             pt2var  = 'p_{T}^{#mu,trail} (GeV)'
             lepcut = cuts.GoodLeptonmm()
         elif flavor is 'em': 
-            trigger = 'HLT_MuEG'
+            trigger = cuts.trigEMc
             mllvar  = 'm_{e#mu} (GeV)'
             pt1var  = 'p_{T}^{lep,lead} (GeV)'
             pt2var  = 'p_{T}^{lep,trail} (GeV)'
@@ -96,27 +107,27 @@ if __name__ == '__main__':
         else: 
             print 'something is wrong...'
 
-        eff_mll  = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.lepsMll_Edge'  , mllvar, [20,  0, 200], 4.)
-        eff_l1pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], 4.)
-        eff_l2pt = getTriggerEffs(tree, cuts.AddList([lepcut,cuts.Central(),'HLT_pfht350 > 0', 't.htJet35j_Edge > 400']), trigger, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], 4.)
+        eff_mll  = getTriggerEffs(treeDA, cuts.AddList([lepcut,cuts.Central(),cuts.triggerHT, 't.htJet35j_Edge > 400']), trigger, 't.lepsMll_Edge', mllvar, [20,  0, 200], lumi)
+        eff_l1pt = getTriggerEffs(treeDA, cuts.AddList([lepcut,cuts.Central(),cuts.triggerHT, 't.htJet35j_Edge > 400']), trigger, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], lumi)
+        eff_l2pt = getTriggerEffs(treeDA, cuts.AddList([lepcut,cuts.Central(),cuts.triggerHT, 't.htJet35j_Edge > 400']), trigger, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], lumi)
 
-        plot_mll = Canvas('trigger/plot_eff_'+flavor+'_mll', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_mll = Canvas.Canvas('trigger/plot_eff_'+flavor+'_mll', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_mll.GetHistogram().Draw()
         eff_mll.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_mll.Draw('apz')
-        plot_mll.save(0, 0, 0, 4.0)
+        plot_mll.save(0, 0, 0, lumi)
 
-        plot_l1pt = Canvas('trigger/plot_eff_'+flavor+'_l1pt', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_l1pt = Canvas.Canvas('trigger/plot_eff_'+flavor+'_l1pt', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_l1pt.GetHistogram().Draw()
         eff_l1pt.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_l1pt.Draw('apz')
-        plot_l1pt.save(0, 0, 0, 4.0)
+        plot_l1pt.save(0, 0, 0, lumi)
 
-        plot_l2pt = Canvas('trigger/plot_eff_'+flavor+'_l2pt', 'png', 0.6, 0.6, 0.8, 0.8)
+        plot_l2pt = Canvas.Canvas('trigger/plot_eff_'+flavor+'_l2pt', 'png', 0.6, 0.6, 0.8, 0.8)
         eff_l2pt.GetHistogram().Draw()
         eff_l2pt.GetYaxis().SetRangeUser(-0.05, 1.05)
         eff_l2pt.Draw('apz')
-        plot_l2pt.save(0, 0, 0, 4.0)
+        plot_l2pt.save(0, 0, 0, lumi)
 
         del plot_mll, plot_l1pt, plot_l2pt
 

@@ -78,7 +78,7 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    lumi = 0.150
+    lumi = 0.225
 
 
     regions = []

@@ -145,12 +145,13 @@ void setTDRStyle(bool fatline=true) {
   // tdrStyle->SetTimeOffset(Double_t toffset);
   // tdrStyle->SetHistMinimumZero(kTRUE);
 
-  Double_t stops[5] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
-  Double_t red[5]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
-  Double_t green[5] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
-  Double_t blue[5]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
-  TColor::CreateGradientColorTable(5, stops, red, green,blue, 255);
+  // Double_t stops[5] = { 0.00, 0.34, 0.61, 0.84, 1.00 };
+  // Double_t red[5]   = { 0.00, 0.00, 0.87, 1.00, 0.51 };
+  // Double_t green[5] = { 0.00, 0.81, 1.00, 0.20, 0.00 };
+  // Double_t blue[5]  = { 0.51, 1.00, 0.12, 0.00, 0.00 };
+  // TColor::CreateGradientColorTable(5, stops, red, green,blue, 255);
   tdrStyle->SetNumberContours(255);
+  tdrStyle->SetPalette(53);
   
   tdrStyle->cd();
 }
