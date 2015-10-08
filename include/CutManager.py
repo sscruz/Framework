@@ -24,6 +24,7 @@ class CutManager:
       self.nj2 = "(t.nJetSel_Edge >= 2)"
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
+      self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
       self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
@@ -247,6 +248,10 @@ class CutManager:
 
       return self.brackets(self.nj2 + " && " + self.GoodLeptonOF()  + " && " + self.trigger)
    
+   def RSFOFControlRegion(self):
+
+      return self.brackets(self.RSFOFControlAlternative + " && " + self.trigger)
+   
    def Control2Jetsee(self):
 
       return self.brackets(self.nj2 + " && " + self.GoodLeptonee())
@@ -271,4 +276,3 @@ class CutManager:
 
 	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
       
- 
