@@ -108,6 +108,7 @@ class region():
         for v in self.rvars:
             if v == 'mll':
                 self.mll      = collection(self.bins[self.rvars.index(v)], v)
+                self.mll_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'met':
                 self.met      = collection(self.bins[self.rvars.index(v)], v)
