@@ -41,7 +41,7 @@ if __name__ == "__main__":
     dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
                   'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
-    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'DY+TTJets'  , 0)
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(inputFileName, dyDatasets, 'DY'), 'DY'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -59,34 +59,34 @@ if __name__ == "__main__":
 
     regions = []
     setLog = []
-    Control2JetsSF = Region.region('Control2JetsSF',
-                       [cuts.Control2JetsSF()],
-                       ['mll', 'met', 'nb', 'nj'],
-                       [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
-                       True)
-    regions.append(Control2JetsSF)
-    setLog.append(True)
-    Control2JetsOF = Region.region('Control2JetsOF',
-                        [cuts.Control2JetsOF()],
-                        ['mll', 'met', 'nb', 'nj'],
-                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
-                        True)
-    regions.append(Control2JetsOF) 
-    setLog.append(False)                      
-    RSFOFControlRegionAlt = Region.region('RSFOFControlRegionAlternative',
-                        [cuts.RSFOFControlRegion()],
-                        ['mll', 'met', 'nb', 'nj'],
-                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
-                        True)
-    regions.append(RSFOFControlRegionAlt) 
-    setLog.append(False)                      
-    RSFOFControlRegion = Region.region('RSFOFControlRegion',
-                        [cuts.RSFOFControlRegion()],
-                        ['mll', 'met', 'nb', 'nj'],
-                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
-                        True)
-    regions.append(RSFOFControlRegion) 
-    setLog.append(False)                      
+#    Control2JetsSF = Region.region('Control2JetsSF',
+#                       [cuts.Control2JetsSF()],
+#                       ['mll', 'met', 'nb', 'nj'],
+#                       [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
+#                       True)
+#    regions.append(Control2JetsSF)
+#    setLog.append(True)
+#    Control2JetsOF = Region.region('Control2JetsOF',
+#                        [cuts.Control2JetsOF()],
+#                        ['mll', 'met', 'nb', 'nj'],
+#                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
+#                        True)
+#    regions.append(Control2JetsOF) 
+#    setLog.append(False)                      
+#    RSFOFControlRegionAlt = Region.region('RSFOFControlRegionAlternative',
+#                        [cuts.RSFOFControlRegion()],
+#                        ['mll', 'met', 'nb', 'nj'],
+#                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
+#                        True)
+#    regions.append(RSFOFControlRegionAlt) 
+#    setLog.append(False)                      
+#    RSFOFControlRegion = Region.region('RSFOFControlRegion',
+#                        [cuts.RSFOFControlRegion()],
+#                        ['mll', 'met', 'nb', 'nj'],
+#                        [range(10,310,10), range(10,310,10), range(0,8,1), range(0,8,1)],
+#                        True)
+#    regions.append(RSFOFControlRegion) 
+#    setLog.append(False)                      
 #    DYControlNoMassLeptonSF = Region.region('DYControlNoMassLeptonSF',
 #                        [cuts.DYControlNoMassLeptonSF()],
 #                        ['mll', 'met'],
@@ -129,15 +129,27 @@ if __name__ == "__main__":
 #                        True)
 #    regions.append(Control2JetsMETmm)     
 #    setLog.append(True)    
+    Control2Jetsee = Region.region('Control2Jetsee',
+                        [cuts.Control2Jetsee()],
+                        ['met', 'nvtx'],
+                        [range(10,310,10), range(0,40,1)],
+                        True)
+    regions.append(Control2Jetsee)
+    setLog.append(True)                   
+    Control2Jetsmm = Region.region('Control2Jetsmm',
+                        [cuts.Control2Jetsmm()],
+                        ['met', 'nvtx'],
+                        [range(10,310,10), range(0,40,1)],
+                        True)
+    regions.append(Control2Jetsmm)     
+    setLog.append(True)    
     for reg in regions:
         print 'i am at region', reg.name
         for eta in ['central', 'forward']:
                     
             my_cuts = cuts.AddList([cuts.goodLepton]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
-            
-#                dataMC = 'DATA' if tree == treeDA else 'MC'  
-            
+           
                 if tree == treeDA: 
                     dataMC = 'DATA'
                 elif tree == treeMC: 
@@ -161,47 +173,61 @@ if __name__ == "__main__":
                     reg.nj.setHisto(tree.getTH1F(lumi, "nj_"+eta+reg.name+str(dataMC), "t.nJetSel_Edge",     reg.bins[reg.rvars.index('nj')], 1, 1, my_cuts, "", "nJets"), dataMC, eta)
                     if dataMC == "MC":
                          reg.nj_dy.setHisto(treeDY.getTH1F(lumi, "nj_dy_"+eta+reg.name+str(dataMC), "t.nJetSel_Edge",     reg.bins[reg.rvars.index('nj')], 1, 1, my_cuts, "", "nJets"), 'MC', eta)
+                if 'nvtx' in reg.rvars:
+                    reg.nvtx.setHisto(tree.getTH1F(lumi, "nvtx_"+eta+reg.name+str(dataMC), "nVert",     reg.bins[reg.rvars.index('nvtx')], 1, 1, my_cuts, "", "nVtx"), dataMC, eta)
+                    if dataMC == "MC":
+                         reg.nvtx_dy.setHisto(treeDY.getTH1F(lumi, "nvtx_dy_"+eta+reg.name+str(dataMC), "nVert",     reg.bins[reg.rvars.index('nvtx')], 1, 1, my_cuts, "", "nVtx"), 'MC', eta)
 
     for reg in regions:
         print 'plotting region', reg.name
 
         for eta in ['central', 'forward']:
-            reg.mll_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
-            reg.mll_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
-            plot_mll = Canvas.Canvas("test/mll_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-            plot_mll.addHisto(reg.mll   .getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
-            plot_mll.addHisto(reg.mll_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
-            plot_mll.addHisto(reg.mll   .getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-            plot_mll.saveRatio(1, 1, 1, lumi, reg.mll.getHisto('DATA', eta), reg.mll.getHisto('MC', eta))
-            #del plot_mll  
-            time.sleep(0.1)
+#            reg.mll_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
+#            reg.mll_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
+#            plot_mll = Canvas.Canvas("test/mll_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+#            plot_mll.addHisto(reg.mll   .getHisto('MC', eta), "HIST", "DY+TTJets"  , "PL", r.kRed+1 , 1, 0)        
+#            plot_mll.addHisto(reg.mll_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
+#            plot_mll.addHisto(reg.mll   .getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+#            plot_mll.saveRatio(1, 1, 1, lumi, reg.mll.getHisto('DATA', eta), reg.mll.getHisto('MC', eta))
+#            #del plot_mll  
+#            time.sleep(0.1)
 
             reg.met_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
             reg.met_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
-            plot_met = Canvas.Canvas("test/met_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-            plot_met.addHisto(reg.met.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
+            plot_met = Canvas.Canvas("MET_PU_test/noPU/met_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+            plot_met.addHisto(reg.met.getHisto('MC', eta), "HIST", "DY+TTJets"  , "PL", r.kRed+1 , 1, 0)        
             plot_met.addHisto(reg.met_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
             plot_met.addHisto(reg.met.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
             plot_met.saveRatio(1, 1, 1, lumi, reg.met.getHisto('DATA', eta), reg.met.getHisto('MC', eta))
             #del plot_met    
             time.sleep(0.1)
 
-            reg.nb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
-            reg.nb_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
-            plot_nb = Canvas.Canvas("test/nb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-            plot_nb.addHisto(reg.nb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
-            plot_nb.addHisto(reg.nb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
-            plot_nb.addHisto(reg.nb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-            plot_nb.saveRatio(1, 1, 1, lumi, reg.nb.getHisto('DATA', eta), reg.nb.getHisto('MC', eta))
-            #del plot_nb    
-            time.sleep(0.1)
+#            reg.nb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
+#            reg.nb_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
+#            plot_nb = Canvas.Canvas("test/nb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+#            plot_nb.addHisto(reg.nb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
+#            plot_nb.addHisto(reg.nb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
+#            plot_nb.addHisto(reg.nb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+#            plot_nb.saveRatio(1, 1, 1, lumi, reg.nb.getHisto('DATA', eta), reg.nb.getHisto('MC', eta))
+#            #del plot_nb    
+#            time.sleep(0.1)
+#
+#            reg.nj_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
+#            reg.nj_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
+#            plot_nj = Canvas.Canvas("test/nj_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+#            plot_nj.addHisto(reg.nj.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
+#            plot_nj.addHisto(reg.nj_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
+#            plot_nj.addHisto(reg.nj.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+#            plot_nj.saveRatio(1, 1, 1, lumi, reg.nj.getHisto('DATA', eta), reg.nj.getHisto('MC', eta))
+#            #del plot_nj    
+#            time.sleep(0.1)
 
-            reg.nj_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
-            reg.nj_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
-            plot_nj = Canvas.Canvas("test/nj_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-            plot_nj.addHisto(reg.nj.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
-            plot_nj.addHisto(reg.nj_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
-            plot_nj.addHisto(reg.nj.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-            plot_nj.saveRatio(1, 1, 1, lumi, reg.nj.getHisto('DATA', eta), reg.nj.getHisto('MC', eta))
-            #del plot_nj    
+            reg.nvtx_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
+            reg.nvtx_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
+            plot_nvtx = Canvas.Canvas("MET_PU_test/noPU/nvtx_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+            plot_nvtx.addHisto(reg.nvtx.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
+            plot_nvtx.addHisto(reg.nvtx_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
+            plot_nvtx.addHisto(reg.nvtx.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+            plot_nvtx.saveRatio(1, 1, 1, lumi, reg.nvtx.getHisto('DATA', eta), reg.nvtx.getHisto('MC', eta))
+            #del plot_nvtx    
             time.sleep(0.1)

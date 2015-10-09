@@ -120,12 +120,16 @@ class region():
                 self.met_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nj' :
                 self.nj       = collection(self.bins[self.rvars.index(v)], v)
-                self.nj_dy       = collection(self.bins[self.rvars.index(v)], v)
+                self.nj_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_pred  = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nb' :
                 self.nb       = collection(self.bins[self.rvars.index(v)], v)
-                self.nb_dy       = collection(self.bins[self.rvars.index(v)], v)
+                self.nb_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_pred  = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'nvtx' :
+                self.nvtx     = collection(self.bins[self.rvars.index(v)], v)
+                self.nvtx_dy  = collection(self.bins[self.rvars.index(v)], v)
+                self.nvtx_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'jzb' :
                 self.jzb      = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)
