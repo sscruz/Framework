@@ -24,6 +24,7 @@ class CutManager:
       self.nj2 = "(t.nJetSel_Edge >= 2)"
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
+      self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
       self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
@@ -117,11 +118,11 @@ class CutManager:
 
    def ControlNoMassLeptonSF(self):
 
-      return self.brackets(self.GoodLeptonSF() + " && " + self.METJetsControlRegion)
+      return self.brackets(self.GoodLeptonSF() + " && " + self.METJetsControlRegion  + " && " + self.trigger)
    
    def ControlNoMassLeptonOF(self):
 
-      return self.brackets(self.GoodLeptonOF() + " && " + self.METJetsControlRegion)
+      return self.brackets(self.GoodLeptonOF() + " && " + self.METJetsControlRegion  + " && " + self.trigger)
    
    def ControlNoMassLeptonee(self):
 
@@ -133,11 +134,11 @@ class CutManager:
 
    def DYControlNoMassLeptonSF(self):
 
-      return self.brackets(self.GoodLeptonSF() + " && " + self.DYControlRegion)
+      return self.brackets(self.GoodLeptonSF() + " && " + self.DYControlRegion  + " && " + self.trigger)
    
    def DYControlNoMassLeptonOF(self):
 
-      return self.brackets(self.GoodLeptonOF() + " && " + self.DYControlRegion)
+      return self.brackets(self.GoodLeptonOF() + " && " + self.DYControlRegion  + " && " + self.trigger)
    
    def DYControlNoMassLeptonee(self):
 
@@ -239,6 +240,39 @@ class CutManager:
 
       return self.brackets(self.ControlNoMassLeptonee() + " && " + self.highmass)
    
+   def Control2JetsSF(self):
 
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonSF()  + " && " + self.trigger)
+   
+   def Control2JetsOF(self):
 
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonOF()  + " && " + self.trigger)
+   
+   def RSFOFControlRegion(self):
 
+      return self.brackets(self.RSFOFControlAlternative + " && " + self.trigger)
+   
+   def Control2Jetsee(self):
+
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonee())
+   
+   def Control2Jetsmm(self):
+
+	return self.brackets(self.nj2 + " && " + self.GoodLeptonmm())
+      
+   def Control2JetsMETSF(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonSF())
+   
+   def Control2JetsMETOF(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonOF())
+   
+   def Control2JetsMETee(self):
+
+      return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonee())
+   
+   def Control2JetsMETmm(self):
+
+	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
+      
