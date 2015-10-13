@@ -41,6 +41,7 @@ def makePrediction(of_histo, ing, eta):
         elif 120 < tmp_mass:
             scale = ing.rsfof_ttcr_hm.cen_val  if central else ing.rsfof_ttcr_hm.fwd_val
             s_err = ing.rsfof_ttcr_hm.cen_err  if central else ing.rsfof_ttcr_hm.fwd_err
+        print 'using rsfof: %.4f' %(scale)
         tmp_pred  = scale*tmp_cont
         tmp_prede = math.sqrt(tmp_err*tmp_err + s_err*s_err*tmp_cont*tmp_cont)
         sf_pred.SetBinContent(_bin, tmp_pred )
@@ -64,7 +65,7 @@ if __name__ == '__main__':
     ingredientFile = args[1]
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    mcDatasets = ['TTJets_LO']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
                   'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
 
@@ -95,7 +96,7 @@ if __name__ == '__main__':
     signalRegion = Region.region('signalRegion', 
                                  [cuts.METJetsSignalRegion],
                                  ['mll', 'met'],
-                                 [range(20,310, 5), range(0,210,10)],
+                                 [range(20,310,10), range(0,210,10)],
                                  True)
     regions.append(signalRegion)
 
@@ -127,22 +128,23 @@ if __name__ == '__main__':
         ## =================
         ## MAKE THE Mll PLOT for MC only
         ## =================
-        signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  8. if eta == 'central' else  5.)
+        signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  24. if eta == 'central' else  15.)
         signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
         signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
         plot_closure = Canvas.Canvas('results/plot_results_mll_MCClosure_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-        plot_closure.addHisto(signalRegion.mll_pred.getHisto('MC', eta), 'hist'   , 'SR - predicted', 'L', r.kBlue+1 , 1, 0)
-        plot_closure.addGraph(signalRegion.mll_pred.getGraph('MC', eta), '2,same' , 'SR - predicted', 'L', r.kBlue+1  , 1, -1)
-        plot_closure.addHisto(signalRegion.mll     .getHisto('MC', eta), 'PE,SAME', 'SR - observed' , 'PL', r.kBlack, 1, 1)
+        plot_closure.addHisto(signalRegion.mll_pred.getHisto('MC', eta), 'hist'   , 'SR - predicted (MC)', 'L', r.kBlue+1 , 1, 0)
+        plot_closure.addGraph(signalRegion.mll_pred.getGraph('MC', eta), '2,same' , 'SR - predicted (MC)', 'L', r.kBlue+1  , 1, -1)
+        plot_closure.addHisto(signalRegion.mll     .getHisto('MC', eta), 'PE,SAME', 'SR - observed  (MC)', 'PL', r.kBlack, 1, 1)
         plot_closure.addLatex(0.7, 0.8, eta)
         plot_closure.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('MC', eta), signalRegion.mll_pred.getHisto('MC', eta), 0.5, 1.5)
 
         ## these two only when not blinded!!!
+        isBlinded = True
         if not isBlinded:
             ## =================
             ## MAKE THE Mll PLOT for DATA MC comparison
             ## =================
-            signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  8. if eta == 'central' else  5.)
+            signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  24. if eta == 'central' else  15.)
             signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
             signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
             plot_dataMC = Canvas.Canvas('results/plot_results_mll_dataMC_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)
@@ -156,7 +158,7 @@ if __name__ == '__main__':
             ## =================
             ## MAKE THE Mll PLOT for DATA only
             ## =================
-            signalRegion.mll_pred.getHisto('DATA', eta).GetYaxis().SetRangeUser(0.,  8. if eta == 'central' else  5.)
+            signalRegion.mll_pred.getHisto('DATA', eta).GetYaxis().SetRangeUser(0.,  24. if eta == 'central' else  15.)
             signalRegion.mll_pred.getGraph('DATA', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
             signalRegion.mll_pred.getGraph('DATA', eta).SetFillStyle(3001)
             plot_result = Canvas.Canvas('results/plot_results_mll_data_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)

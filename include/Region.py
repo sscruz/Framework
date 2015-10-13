@@ -35,19 +35,15 @@ class collection:
         if   (dataMC, eta) == ('MC'  , 'central'): 
             self.cen_mc = histo
             self.cen_mc_gr = TGraphErrors(histo)
-            self.cen_mc.GetYaxis().SetRangeUser(0, 2)
         elif (dataMC, eta) == ('MC'  , 'forward'): 
             self.fwd_mc = histo
             self.fwd_mc_gr = TGraphErrors(histo)
-            self.fwd_mc.GetYaxis().SetRangeUser(0, 2)
         elif (dataMC, eta) == ('DATA', 'central'): 
             self.cen_da = histo
             self.cen_da_gr = TGraphErrors(histo)
-            self.cen_da.GetYaxis().SetRangeUser(0, 2)
         elif (dataMC, eta) == ('DATA', 'forward'): 
             self.fwd_da = histo
             self.fwd_da_gr = TGraphErrors(histo)
-            self.fwd_da.GetYaxis().SetRangeUser(0, 2)
         else:
             print 'you are not calling setHisto correctly'
 
@@ -108,16 +104,24 @@ class region():
         for v in self.rvars:
             if v == 'mll':
                 self.mll      = collection(self.bins[self.rvars.index(v)], v)
+                self.mll_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'met':
                 self.met      = collection(self.bins[self.rvars.index(v)], v)
+                self.met_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.met_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nj' :
                 self.nj       = collection(self.bins[self.rvars.index(v)], v)
+                self.nj_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_pred  = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nb' :
                 self.nb       = collection(self.bins[self.rvars.index(v)], v)
+                self.nb_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_pred  = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'nvtx' :
+                self.nvtx     = collection(self.bins[self.rvars.index(v)], v)
+                self.nvtx_dy  = collection(self.bins[self.rvars.index(v)], v)
+                self.nvtx_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'jzb' :
                 self.jzb      = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)

@@ -14,221 +14,234 @@
 #####################################################################
 
 import ROOT as r
-import math as math
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+import math, sys, optparse, array, copy
 import Rounder as rounder
 
+import include.helper     as helper
+import include.Region     as Region
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
-from optparse import OptionParser
-from ROOT import gROOT, TCanvas, TFile
-from Sample import Sample, Block, Tree
-from CutManager import CutManager
-from Canvas import Canvas
-from ROOT import TGraphErrors
-from array import array
+def calc_frac(Nin, Nout, Ein, Eout):
+
+    val = [0, 0]
+    if(Nin != 0):
+        val[0] = Nout/Nin
+        val[1] = math.sqrt((Eout * Eout) / (Nin * Nin) + (Ein * Ein) * (Nout*Nout) / (Nin * Nin * Nin * Nin))
+
+    return val
 
 
-def r_inout(massSF, massOF, refmassSF, refmassOF):
+def calc_rinout(NinSF, NinOF, NoutSF, NoutOF, EinSF, EinOF, EoutSF, EoutOF):
 
-    themass = massSF[0]-massOF[0]
-    themassE = math.sqrt(massSF[1]*massSF[1] + massOF[1]*massOF[1])
-    therefmass = refmassSF[0]-refmassOF[0]
-    therefmassE = math.sqrt(refmassSF[1]*refmassSF[1] + refmassOF[1]*refmassOF[1])
+    Nin  = NinSF  - NinOF
+    Nout = NoutSF - NoutOF
+    Ein  = sqrt(EinSF*EinSF   + EinOF*EinOF)
+    Eout = sqrt(EoutSF*EoutSF + EoutOF*EoutOF)
 
-    sol = [0, 0]
-    sol[0] = themass/therefmass
-    sol[1] = math.sqrt((themassE/therefmass)*(themassE/therefmass) + (themass*therefmassE/(therefmass*therefmass))*(themass*therefmassE/(therefmass*therefmass)))
+    return calc_frac(Nin, Nout, Ein, Eout)
 
-    return sol
 
-def prepareDefault(x, y, ex, ey, label):
- 
-    xarr = array("d", [x])
-    xarr_e = array("d", [ex])
-    yarr = array("d", [y])
-    yarr_e = array("d", [ey])
+def make_rinout(histo_in_SF, histo_in_OF, histo_out_SF, histo_out_OF):
 
-    graph = TGraphErrors(1, xarr, yarr, xarr_e, yarr_e)
-    graph.GetYaxis().SetTitle("r_{#mu e}")
-    graph.GetXaxis().SetTitle(label)
-    graph.SetFillColor(r.kBlue-9)
-    graph.SetMarkerSize(0)
-    graph.GetXaxis().SetRangeUser(x-ex, x+ex)
-    graph.GetYaxis().SetRangeUser(0, 2*y)
+    histo_in_SF .Add(histo_in_OF , -1.0)
+    histo_out_SF.Add(histo_out_OF, -1.0)
 
-    return graph
+    ratio = histo_out_SF.Clone("rinout_" + histo_out_SF.GetName())
+    ratio.GetYaxis().SetTitle("r_{in/out}")
+    ratio.Divide(histo_in_SF)
+  
+    return ratio
+
+
+def make_rinout_histo(histo_SF, histo_OF):
+
+    finalHisto = copy.deepcopy(histo_SF)
+    print ' i have %.3f events in the SF sample' %(histo_SF.Integral())
+    print ' i have %.3f events in the OF sample' %(histo_OF.Integral())
+    finalHisto.Add(histo_OF, -1.0)
+    print ' after subtraction i have %.3f events in the SF sample' %(finalHisto.Integral())
+
+    ratio = finalHisto.Clone("rinout_" + finalHisto.GetName())
+
+    # set every bin to the value at the Z
+    for _bin in range(1,finalHisto.GetNbinsX()+1):
+        finalHisto.SetBinContent(_bin, finalHisto.GetBinContent(finalHisto.FindBin(91.)))
+        finalHisto.SetBinError  (_bin, finalHisto.GetBinError  (finalHisto.FindBin(91.)))
+
+    ratio.GetYaxis().SetTitle("r_{in/out}")
+    ratio.Divide(finalHisto)
+  
+    return ratio
 
 
 if __name__ == "__main__":
 
-    parser = OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
+
+    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
-    if len(args) != 2:
-      parser.error("wrong number of arguments")
-
-    if args[1] != "MC" and args[1] != "DATA":
-      parser.error("Second argument must be MC or DATA")
-
     inputFileName = args[0]
-    typeOfSample = args[1]
-    isData = 1 if typeOfSample == 'DATA' else 0
 
-    tree = Tree(inputFileName, typeOfSample, isData)
-   
-    gROOT.ProcessLine('.L tdrstyle.C')
-    gROOT.SetBatch(1)
-    r.setTDRStyle() 
+    plotOnly = False
+    if 'plot' in args:
+        plotOnly = True
 
-    ####Cuts needed by rinout
-    cuts = CutManager()
+    if not plotOnly:
+        print 'Going to load DATA and MC trees...'
+        mcDatasets = ['TTJets_LO', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+        daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
+                      'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+        treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+        treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+        #tree = treeMC
+        print 'Trees successfully loaded...'
 
-    regionZ_CentralSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.Zmass, cuts.Central()])
-    regionZ_ForwardSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.Zmass, cuts.Forward()])
+        gROOT.ProcessLine('.L tdrstyle.C')
+        gROOT.SetBatch(1)
+        r.setTDRStyle()
 
-    regionHigh_CentralSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.highmass, cuts.Central()])
-    regionHigh_ForwardSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.highmass, cuts.Forward()])
+        cuts = CutManager.CutManager()
 
-    regionLow_CentralSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.lowmass, cuts.Central()])
-    regionLow_ForwardSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.lowmass, cuts.Forward()])
-
-    region_Central_nomassSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.Central()])
-    region_Forward_nomassSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYControlRegion, cuts.Forward()])
-
-    regionZ_Central_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.Zmass, cuts.Central()])
-    regionZ_Forward_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.Zmass, cuts.Forward()])
-
-    regionHigh_Central_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.highmass, cuts.Central()])
-    regionHigh_Forward_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.highmass, cuts.Forward()])
-
-    regionLow_Central_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.lowmass, cuts.Central()])
-    regionLow_Forward_nometSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.nj2, cuts.lowmass, cuts.Forward()])
-
-    regionZ_Central_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.Zmass, cuts.Central()])
-    regionZ_Forward_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.Zmass, cuts.Forward()])
-
-    regionHigh_Central_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.highmass, cuts.Central()])
-    regionHigh_Forward_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.highmass, cuts.Forward()])
-
-    regionLow_Central_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.lowmass, cuts.Central()])
-    regionLow_Forward_nojetsSF = cuts.AddList([cuts.GoodLeptonSF(), cuts.DYmet, cuts.lowmass, cuts.Forward()])
-
-    regionZ_CentralOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.Zmass, cuts.Central()])
-    regionZ_ForwardOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.Zmass, cuts.Forward()])
-
-    regionHigh_CentralOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.highmass, cuts.Central()])
-    regionHigh_ForwardOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.highmass, cuts.Forward()])
-
-    regionLow_CentralOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.lowmass, cuts.Central()])
-    regionLow_ForwardOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.lowmass, cuts.Forward()])
-
-    region_Central_nomassOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.Central()])
-    region_Forward_nomassOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYControlRegion, cuts.Forward()])
-
-    regionZ_Central_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.Zmass, cuts.Central()])
-    regionZ_Forward_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.Zmass, cuts.Forward()])
-
-    regionHigh_Central_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.highmass, cuts.Central()])
-    regionHigh_Forward_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.highmass, cuts.Forward()])
-
-    regionLow_Central_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.lowmass, cuts.Central()])
-    regionLow_Forward_nometOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.nj2, cuts.lowmass, cuts.Forward()])
-
-    regionZ_Central_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.Zmass, cuts.Central()])
-    regionZ_Forward_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.Zmass, cuts.Forward()])
-
-    regionHigh_Central_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.highmass, cuts.Central()])
-    regionHigh_Forward_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.highmass, cuts.Forward()])
-
-    regionLow_Central_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.lowmass, cuts.Central()])
-    regionLow_Forward_nojetsOF = cuts.AddList([cuts.GoodLeptonOF(), cuts.DYmet, cuts.lowmass, cuts.Forward()])
-
-
-    lumi = 0.042
-
-    ############# Mass plots to show the invariant mass distribution for SF and OF events #################################
-    mll_SF_central = tree.getTH1F(lumi, "mll_SF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassSF, "", "m_{ll} [GeV]")
-    mll_OF_central = tree.getTH1F(lumi, "mll_OF_central", "t.lepsMll_Edge", 28, 20, 300, region_Central_nomassOF, "", "m_{ll} [GeV]")
-    mll_SF_forward = tree.getTH1F(lumi, "mll_SF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassSF, "", "m_{ll} [GeV]")
-    mll_OF_forward = tree.getTH1F(lumi, "mll_OF_forward", "t.lepsMll_Edge", 28, 20, 300, region_Forward_nomassOF, "", "m_{ll} [GeV]")
-
-    plot_mll_central = Canvas("plot_mll_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_mll_central.addHisto(mll_SF_central, "HIST", "SF", "L", r.kRed, 1, 0)
-    plot_mll_central.addHisto(mll_OF_central, "HIST,SAME", "OF", "L", r.kBlue, 1, 0)
-    plot_mll_central.save(1, 0, 1, lumi)
-    
-    plot_mll_forward = Canvas("plot_mll_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_mll_forward.addHisto(mll_SF_forward, "HIST", "SF", "L", r.kRed, 1, 0)
-    plot_mll_forward.addHisto(mll_OF_forward, "HIST,SAME", "OF", "L", r.kBlue, 1, 0)
-    plot_mll_forward.save(1, 0, 1, lumi)
-
-
-
-    ########### Get yields ############################################################################################### 
-    rinZ_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_CentralSF)
-    rinZ_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_CentralOF)
-    rinlow_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_CentralSF)
-    rinlow_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_CentralOF)
-    rinhigh_SF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralSF)
-    rinhigh_OF_central = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_CentralOF)
-
-    rinZ_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardSF)
-    rinZ_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionZ_ForwardOF)
-    rinlow_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardSF)
-    rinlow_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionLow_ForwardOF)
-    rinhigh_SF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardSF)
-    rinhigh_OF_forward = tree.getYields(lumi, "t.lepsMll_Edge", 20, 1000, regionHigh_ForwardOF)
-
-    rinout_low_central = r_inout(rinlow_SF_central, rinlow_OF_central, rinZ_SF_central, rinZ_OF_central)
-    rinout_high_central = r_inout(rinhigh_SF_central, rinhigh_OF_central, rinZ_SF_central, rinZ_OF_central)
-    rinout_low_forward = r_inout(rinlow_SF_forward, rinlow_OF_forward, rinZ_SF_forward, rinZ_OF_forward)
-    rinout_high_forward = r_inout(rinhigh_SF_forward, rinhigh_OF_forward, rinZ_SF_forward, rinZ_OF_forward)
-
-    a = rounder.Rounder()
-    print "r_in/out central, low: " + a.toStringB(rinout_low_central[0], rinout_low_central[1]) + " +/- " + a.toString(rinout_low_central[0]*0.2)
-    print "r_in/out central, high: " + a.toStringB(rinout_high_central[0], rinout_high_central[1]) + " +/- " + a.toString(rinout_high_central[0]*0.2)
-    print "r_in/out forward, low: " + a.toStringB(rinout_low_forward[0], rinout_low_forward[1]) + " +/- " + a.toString(rinout_low_forward[0]*0.2)
-    print "r_in/out forward, high: " + a.toStringB(rinout_high_forward[0], rinout_high_forward[1]) +  " +/- " + a.toString(rinout_high_forward[0]*0.2)
-
-
-    
-
-    ########### Default histograms ############################################################################################
-    met_default_low_central = prepareDefault(50, rinout_low_central[0], 50, rinout_low_central[1], "MET [GeV]")
-    met_default_high_central = prepareDefault(50, rinout_high_central[0], 50, rinout_high_central[1], "MET [GeV]")
-    met_default_low_forward = prepareDefault(50, rinout_low_forward[0], 50, rinout_low_forward[1], "MET [GeV]")
-    met_default_high_forward = prepareDefault(50, rinout_high_forward[0], 50, rinout_high_forward[1], "MET [GeV]")
-    
-    jets_default_low_central = prepareDefault(5, rinout_low_central[0], 5, rinout_low_central[1], "MET [GeV]")
-    jets_default_high_central = prepareDefault(5, rinout_high_central[0], 5, rinout_high_central[1], "MET [GeV]")
-    jets_default_low_forward = prepareDefault(5, rinout_low_forward[0], 5, rinout_low_forward[1], "MET [GeV]")
-    jets_default_high_forward = prepareDefault(5, rinout_high_forward[0], 5, rinout_high_forward[1], "MET [GeV]")
-
-
-
-    ########### Get Systematics ############################################################################################### 
-    met_rinZ_SF_central = tree.getTH1F(lumi, "met_rinZ_SF_central", "met_pt", 10, 0, 100, regionZ_Central_nometSF, "", "MET [GeV]")
-    met_rinZ_OF_central = tree.getTH1F(lumi, "met_rinZ_OF_central", "met_pt", 10, 0, 100, regionZ_Central_nometOF, "", "MET [GeV]")
-    met_rinlow_SF_central = tree.getTH1F(lumi, "met_rinlow_SF_central", "met_pt", 10, 0, 100, regionLow_Central_nometSF, "", "MET [GeV]")
-    met_rinlow_OF_central = tree.getTH1F(lumi, "met_rinlow_OF_central", "met_pt", 10, 0, 100, regionLow_Central_nometOF, "", "MET [GeV]")
-    met_rinhigh_SF_central = tree.getTH1F(lumi, "met_rinhigh_SF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometSF , "", "MET [GeV]")
-    met_rinhigh_OF_central = tree.getTH1F(lumi, "met_rinhigh_OF_central", "met_pt", 10, 0, 100, regionHigh_Central_nometOF , "", "MET [GeV]")
-
-    met_rinZ_central = met_rinZ_SF_central.Clone("met_rinZ_central")
-    met_rinZ_central.Add(met_rinZ_OF_central, -1.0)
-    met_rinlow_central = met_rinlow_SF_central.Clone("met_rinlow_central")
-    met_rinlow_central.Add(met_rinlow_OF_central, -1.0)
-    met_rinhigh_central = met_rinhigh_SF_central.Clone("met_rinhigh_central")
-    met_rinhigh_central.Add(met_rinhigh_OF_central, -1.0)
-    met_rinhigh_central.Divide(met_rinZ_central)
-    met_rinlow_central.Divide(met_rinZ_central)
-
-    plot_metrinhigh_central = Canvas("plot_metrinhigh_central", "png",0.6, 0.6, 0.8, 0.8)
-    plot_metrinhigh_central.addGraph(met_default_high_central, "AP2", "Measured", "F", r.kBlue-9, 1, 0)
-    plot_metrinhigh_central.addLine(0, rinout_high_central[0], 100, rinout_high_central[0], r.kBlue-4)
-    plot_metrinhigh_central.addHisto(met_rinhigh_central, "E1,SAME", "data", "P", r.kRed, 1, 0)
-    plot_metrinhigh_central.save(1, 0, 0, lumi)
-
-
-
+        lumi = 0.225
  
+        regions = []
+        dy_nomass = Region.region('DY_nomass',
+                           [cuts.DYControlRegion],
+                           ['mll', 'met', 'nj'],
+                           [ range(20,125,5),
+                             range(0,70,10),
+                             range(0,8,1) ],
+                           True)
+        regions.append(dy_nomass)
+
+        ## ===================================================
+        ## calculate the rinout values for central and forward
+        ## ===================================================
+
+        rinout_meas = Region.region('rinout_meas',
+                           [cuts.DYControlRegion],
+                           ['mll'],
+                           [ [ 20., 70., 81., 101., 120., 300. ] ],
+                           True)
+         ## ==================================================
+
+        doetas = ['central', 'forward']
+
+        for reg in regions:
+            print 'i am at region', reg.name
+            for eta in doetas:
+                print '... in %s' %(eta)
+                etacut = cuts.Central() if eta == 'central' else cuts.Forward()
+
+                thecutsSF_in  = cuts.AddList([cuts.GoodLeptonSF()] + [etacut] + reg.cuts + [cuts.Zmass])
+                thecutsOF_in  = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + reg.cuts + [cuts.Zmass])
+                thecutsSF_out = cuts.AddList([cuts.GoodLeptonSF()] + [etacut] + reg.cuts + [cuts.lowmass])
+                thecutsOF_out = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + reg.cuts + [cuts.lowmass])
+
+                for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+                    dataMC = 'DATA' if tree == treeDA else 'MC'
+
+                    if 'met' in reg.rvars:
+                        reg.met_SF_in  = tree.getTH1F(lumi, "met_SF_in" +eta+reg.name+dataMC , "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, thecutsSF_in , "", "E_{T}^{miss.} (GeV)")
+                        reg.met_OF_in  = tree.getTH1F(lumi, "met_OF_in" +eta+reg.name+dataMC , "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, thecutsOF_in , "", "E_{T}^{miss.} (GeV)")
+
+                        reg.met_SF_out = tree.getTH1F(lumi, "met_SF_out"+eta+reg.name+dataMC , "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, thecutsSF_out, "", "E_{T}^{miss.} (GeV)")
+                        reg.met_OF_out = tree.getTH1F(lumi, "met_OF_out"+eta+reg.name+dataMC , "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, thecutsOF_out, "", "E_{T}^{miss.} (GeV)")
+                        reg.met.setHisto(make_rinout(reg.met_SF_in, reg.met_OF_in, reg.met_SF_out, reg.met_OF_out), dataMC, eta)
+
+                    if 'nj' in reg.rvars:
+                        reg.nj_SF_in  = tree.getTH1F(lumi, "nj_SF_in" +eta+reg.name+dataMC , "t.nJetSel_Edge", reg.bins[reg.rvars.index('nj')], 1, 1, thecutsSF_in , "", "N_{jets}")
+                        reg.nj_OF_in  = tree.getTH1F(lumi, "nj_OF_in" +eta+reg.name+dataMC , "t.nJetSel_Edge", reg.bins[reg.rvars.index('nj')], 1, 1, thecutsOF_in , "", "N_{jets}")
+
+                        reg.nj_SF_out = tree.getTH1F(lumi, "nj_SF_out"+eta+reg.name+dataMC , "t.nJetSel_Edge", reg.bins[reg.rvars.index('nj')], 1, 1, thecutsSF_out, "", "N_{jets}")
+                        reg.nj_OF_out = tree.getTH1F(lumi, "nj_OF_out"+eta+reg.name+dataMC , "t.nJetSel_Edge", reg.bins[reg.rvars.index('nj')], 1, 1, thecutsOF_out, "", "N_{jets}")
+                        reg.nj.setHisto(make_rinout(reg.nj_SF_in, reg.nj_OF_in, reg.nj_SF_out, reg.nj_OF_out), dataMC, eta)
+
+
+                    ## do the actual calculus only once
+                    if not regions.index(reg):
+                        meas_cuts_SF = cuts.AddList([cuts.GoodLeptonSF()] + [etacut] + rinout_meas.cuts)
+                        meas_cuts_OF = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + rinout_meas.cuts)
+                        rinout_meas.mll_SF   = tree.getTH1F(lumi, "mll_SF" +eta+rinout_meas.name+dataMC , "t.lepsMll_Edge", rinout_meas.bins[rinout_meas.rvars.index('mll')], 1, 1, meas_cuts_SF , "", "m_{ll} (GeV)")
+                        rinout_meas.mll_OF   = tree.getTH1F(lumi, "mll_OF" +eta+rinout_meas.name+dataMC , "t.lepsMll_Edge", rinout_meas.bins[rinout_meas.rvars.index('mll')], 1, 1, meas_cuts_OF , "", "m_{ll} (GeV)")
+                        rinout_meas.mll.setHisto(make_rinout_histo(rinout_meas.mll_SF, rinout_meas.mll_OF), dataMC, eta)
+
+
+        
+    for eta in doetas:
+
+        ## ==============================================================
+        ## get the mll distribution from the measurement region of rinout
+        ## ==============================================================
+        etacut = cuts.Central() if eta == 'central' else cuts.Forward()
+        thecutsSF_nomass = cuts.AddList([cuts.GoodLeptonSF()] + [etacut] + dy_nomass.cuts)
+        thecutsOF_nomass = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + dy_nomass.cuts)
+
+        dy_nomass.mll_SF_data  = treeDA.getTH1F(lumi, "mll_SF_in" +eta+dy_nomass.name+'data' , "t.lepsMll_Edge", dy_nomass.bins[dy_nomass.rvars.index('mll')], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)")
+        dy_nomass.mll_OF_data  = treeDA.getTH1F(lumi, "mll_OF_in" +eta+dy_nomass.name+'data' , "t.lepsMll_Edge", dy_nomass.bins[dy_nomass.rvars.index('mll')], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)")
+        dy_nomass.mll_SF_mc    = treeMC.getTH1F(lumi, "mll_SF_in" +eta+dy_nomass.name+'mc'   , "t.lepsMll_Edge", dy_nomass.bins[dy_nomass.rvars.index('mll')], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)")
+        dy_nomass.mll_OF_mc    = treeMC.getTH1F(lumi, "mll_OF_in" +eta+dy_nomass.name+'mc'   , "t.lepsMll_Edge", dy_nomass.bins[dy_nomass.rvars.index('mll')], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)")
+
+        dy_nomass.mll_SF_mc.GetYaxis().SetRangeUser(1., dy_nomass.mll_SF_mc.GetMaximum()*1.2)
+        plot_rinout_mll = Canvas.Canvas("rinout/plot_rinout_mll_"+eta, "png,pdf", 0.2, 0.6, 0.4, 0.8)
+        plot_rinout_mll.addHisto(dy_nomass.mll_SF_mc  , "HIST,SAME", "MC - SF", "L" , r.kBlue-4 , 1, 0)
+        plot_rinout_mll.addHisto(dy_nomass.mll_OF_mc  , "HIST,SAME", "MC - OF", "L" , r.kRed-4  , 1, 1)
+        plot_rinout_mll.addHisto(dy_nomass.mll_SF_data, "PE,SAME", "DATA - SF", "PL", r.kBlue+2 , 1, 2)
+        plot_rinout_mll.addHisto(dy_nomass.mll_OF_data, "PE,SAME", "DATA - OF", "PL", r.kRed+2  , 1, 3)
+        plot_rinout_mll.addLine ( 81., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(),  81., dy_nomass.mll_SF_mc.GetMaximum(), r.kGreen-3 , 2)
+        plot_rinout_mll.addLine (101., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(), 101., dy_nomass.mll_SF_mc.GetMaximum(), r.kGreen-3 , 2)
+        plot_rinout_mll.addBand ( 81., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(), 101., dy_nomass.mll_SF_mc.GetMaximum(), r.kGreen-3 , 0.1)
+        plot_rinout_mll.addLine ( 70., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(),  70., dy_nomass.mll_SF_mc.GetMaximum(), r.kPink-3, 2)
+        plot_rinout_mll.addArrow( 60., 200.,  70., 200., r.kPink-3, "<", 2)
+        plot_rinout_mll.addLatex(0.2, 0.2, eta)
+        plot_rinout_mll.save(1, 0, 1, lumi)
+
+        ## ============================
+        ## get the measured values here
+        ## ============================
+
+        rinout_meas.mll.getHisto('MC', eta).GetYaxis().SetRangeUser(0., 0.15)
+        meas_histo = rinout_meas.mll.getHisto('DATA', eta)
+        meas_value = meas_histo.GetBinContent(meas_histo.FindBin(45.))
+        meas_err   = meas_histo.GetBinError  (meas_histo.FindBin(45.))
+        full_err = math.sqrt(meas_err**2 + (0.25*meas_value)**2 )
+        minus = meas_value - full_err
+        plus  = meas_value + full_err
+        plot_rinout_meas = Canvas.Canvas("rinout/plot_rinout_measured_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
+        plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 1)
+        plot_rinout_meas.addBand (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
+        plot_rinout_meas.addLine (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), meas_value, rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), meas_value, r.kGreen)
+        plot_rinout_meas.addLatex(0.2, 0.2, eta)
+        plot_rinout_meas.save(1, 0, 0, lumi)
+
+        ## ===========================
+        ## make the depency plots here
+        ## ===========================
+        
+        dy_nomass.met.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 0.15)
+        plot_rinout_met = Canvas.Canvas("rinout/plot_rinout_met_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_met.addHisto(dy_nomass.met.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
+        plot_rinout_met.addHisto(dy_nomass.met.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 0)
+        plot_rinout_met.addBand (dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
+        plot_rinout_met.addLine (dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmin(), meas_value, dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmax(), meas_value, r.kGreen)
+        plot_rinout_met.addLatex(0.2, 0.2, eta)
+        plot_rinout_met.save(1, 0, 0, lumi)
+
+        dy_nomass.nj.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 0.15)
+        plot_rinout_nj = Canvas.Canvas("rinout/plot_rinout_nj_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_nj.addHisto(dy_nomass.nj.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
+        plot_rinout_nj.addHisto(dy_nomass.nj.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 0)
+        plot_rinout_nj.addBand (dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
+        plot_rinout_nj.addLine (dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmin(), meas_value, dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmax(), meas_value, r.kGreen)
+        plot_rinout_nj.addLatex(0.2, 0.2, eta)
+        plot_rinout_nj.save(1, 0, 0, lumi)
+
+    ## =================
+    ## PRINT AND SAVE ==
+    ## =================
+    rinout_meas.mll.saveInFile(['rinout', 'dy_cr' ], 0.25,  45.)
