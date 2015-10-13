@@ -66,7 +66,7 @@ if __name__ == '__main__':
     inputFileName = args[0]
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTJets']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    mcDatasets = ['TTJets_LO']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
                   'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
