@@ -1,4 +1,4 @@
-from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph
+from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
 import ROOT as r
 
 class Canvas:
@@ -13,6 +13,7 @@ class Canvas:
       self.orderForLegend = []
       self.histos = []
       self.lines = []
+      self.arrows= []
       self.latexs= []
       self.bands = []
       self.options = []
@@ -105,10 +106,19 @@ class Canvas:
       grshade.SetFillColorAlpha(color, opacity)
       self.bands.append(grshade)
 
-   def addLine(self, x1, y1, x2, y2, color):
+   def addLine(self, x1, y1, x2, y2, color, thickness = 0.):
       line = TLine(x1,y1,x2,y2)
       line.SetLineColor(color)
+      if thickness:
+          line.SetLineWidth(thickness)
       self.lines.append(line)
+
+   def addArrow(self, x1, y1, x2, y2, color, option, thickness = 0.):
+      arrow = TArrow(x1,y1,x2,y2, 0.05, option)
+      arrow.SetLineColor(color)
+      if thickness:
+          arrow.SetLineWidth(thickness)
+      self.arrows.append(arrow)
 
    def addLatex(self, x1, y1, text, font=42, size = 0.04):
       lat = [x1, y1, text, font, size]
@@ -198,6 +208,9 @@ class Canvas:
       for line in self.lines:
           line.Draw()
   
+      for arrow in self.arrows:
+          arrow.Draw()
+  
       for latex in self.latexs:
           lat = TLatex()
           lat.SetNDC()
@@ -257,6 +270,9 @@ class Canvas:
   
       for line in self.lines:
           line.Draw()
+  
+      for arrow in self.arrows:
+          arrow.Draw()
   
       for latex in self.latexs:
           lat = TLatex()

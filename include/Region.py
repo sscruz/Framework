@@ -35,23 +35,15 @@ class collection:
         if   (dataMC, eta) == ('MC'  , 'central'): 
             self.cen_mc = histo
             self.cen_mc_gr = TGraphErrors(histo)
-#            self.cen_mc.GetYaxis().SetRangeUser(0, histo.GetMaximum()*1.2)
-#            self.cen_mc.GetYaxis().SetRangeUser(0,125)
         elif (dataMC, eta) == ('MC'  , 'forward'): 
             self.fwd_mc = histo
             self.fwd_mc_gr = TGraphErrors(histo)
-#            self.fwd_mc.GetYaxis().SetRangeUser(0, histo.GetMaximum()*1.2)
-#            self.fwd_mc.GetYaxis().SetRangeUser(0, 125)
         elif (dataMC, eta) == ('DATA', 'central'): 
             self.cen_da = histo
             self.cen_da_gr = TGraphErrors(histo)
-#            self.cen_da.GetYaxis().SetRangeUser(0, histo.GetMaximum()*1.2)
-#            self.cen_da.GetYaxis().SetRangeUser(0, 125)
         elif (dataMC, eta) == ('DATA', 'forward'): 
             self.fwd_da = histo
             self.fwd_da_gr = TGraphErrors(histo)
-#            self.fwd_da.GetYaxis().SetRangeUser(0, histo.GetMaximum()*1.2)
-#            self.fwd_da.GetYaxis().SetRangeUser(0, 125)
         else:
             print 'you are not calling setHisto correctly'
 
