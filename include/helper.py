@@ -9,6 +9,7 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     typeList    = []
     for line in f.readlines():
         if '#' in line: continue
+        if not len(line.rstrip('\n')): continue
         for _sample in selList:
             if _sample == line.split()[2]:
                 tmp_file.write(line)

@@ -276,3 +276,11 @@ class CutManager:
 
 	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
       
+   def InclusiveCROF(self):
+
+    return self.brackets(self.nj2 + " && "  + self.GoodLeptonOF())
+   
+   def InclusiveCRSF(self):
+
+	return self.brackets(self.nj2 + " && "  + self.GoodLeptonSF())
+      
