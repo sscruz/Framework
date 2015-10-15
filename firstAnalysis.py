@@ -252,7 +252,7 @@ if __name__ == "__main__":
             plot_min_mlb.addHisto(reg.min_mlb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
             plot_min_mlb.addHisto(reg.min_mlb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
 #            plot_min_mlb.addHisto(reg.min_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-            plot_min_mlb.saveRatio(1, 1, 1, lumi, reg.min_mlb.getHisto('MC', eta), reg.min_mlb.getHisto('MC', eta))
+            plot_min_mlb.saveRatio(1, 1, 0, lumi, reg.min_mlb.getHisto('MC', eta), reg.min_mlb.getHisto('MC', eta))
             #del plot_min_mlb1    
             time.sleep(0.1)
 
@@ -263,6 +263,6 @@ if __name__ == "__main__":
             plot_max_mlb.addHisto(reg.max_mlb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
             plot_max_mlb.addHisto(reg.max_mlb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)     
 #            plot_max_mlb.addHisto(reg.max_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-            plot_max_mlb.saveRatio(1, 1, 1, lumi, reg.max_mlb.getHisto('MC', eta), reg.max_mlb.getHisto('MC', eta))
+            plot_max_mlb.saveRatio(1, 1, 0, lumi, reg.max_mlb.getHisto('MC', eta), reg.max_mlb.getHisto('MC', eta))
             time.sleep(0.1)  
 
