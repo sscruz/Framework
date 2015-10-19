@@ -128,11 +128,11 @@ class region():
 
             if v == 'min_mlb' :
                 self.min_mlb      = collection(self.bins[self.rvars.index(v)], v)
-                self.min_mlb_dy  = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.min_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
 
             if v == 'max_mlb' :
                 self.max_mlb      = collection(self.bins[self.rvars.index(v)], v)
-                self.max_mlb_dy  = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.max_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
 

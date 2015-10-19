@@ -25,8 +25,10 @@ class CutManager:
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
+      self.METBJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=2 )"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
       self.DYmet = "(met_pt < 50)"
+      self.TestMET = "(met_pt < 170 && met_pt > 160)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
       self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
@@ -122,8 +124,12 @@ class CutManager:
    
    def ControlNoMassLeptonOF(self):
 
-      return self.brackets(self.GoodLeptonOF() + " && " + self.METJetsControlRegion  + " && " + self.trigger)
+      return self.brackets(self.GoodLeptonOF() + " && " + self.METJetsControlRegion  + " && " + self.trigger )
    
+   def METBJetsOFControlRegion(self):
+
+      return self.brackets(self.GoodLeptonOF() + " && " + self.METBJetsControlRegion  + " && " + self.trigger )
+
    def ControlNoMassLeptonee(self):
 
       return self.brackets(self.GoodLeptonee() + " && " + self.METJetsControlRegion)
@@ -139,7 +145,7 @@ class CutManager:
    def DYControlNoMassLeptonOF(self):
 
       return self.brackets(self.GoodLeptonOF() + " && " + self.DYControlRegion  + " && " + self.trigger)
-   
+
    def DYControlNoMassLeptonee(self):
 
       return self.brackets(self.GoodLeptonee() + " && " + self.DYControlRegion)
