@@ -15,16 +15,22 @@ MuonEG       r.kBlack   MuonEG_Run2015B       MuonEG_Run2015B       /afs/cern.ch
 HTMHT        r.kBlack   HTMHT_Run2015B        HTMHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
 JetHT        r.kBlack   JetHT_Run2015B        JetHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
 #-------------------------- 25 ns --------------------------
-DoubleMuon   r.kBlack   DoubleMuon_Run2015C   DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015C     DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015C       MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-HTMHT        r.kBlack   HTMHT_Run2015C        HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-JetHT        r.kBlack   JetHT_Run2015C        JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-DoubleMuon   r.kBlack   DoubleMuon_Run2015D   DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015D     DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015D       MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-HTMHT        r.kBlack   HTMHT_Run2015D        HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
-JetHT        r.kBlack   JetHT_Run2015D        JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataSamplesOct17/   friends/   1         1
+DoubleMuon   r.kBlack   DoubleMuon_Run2015C      DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+DoubleEG     r.kBlack   DoubleEG_Run2015C        DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+MuonEG       r.kBlack   MuonEG_Run2015C          MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+DoubleMuon   r.kBlack   DoubleMuon_Run2015D      DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+DoubleEG     r.kBlack   DoubleEG_Run2015D        DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+MuonEG       r.kBlack   MuonEG_Run2015D          MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+DoubleMuon   r.kBlack   DoubleMuon_Run2015D_v4   DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+DoubleEG     r.kBlack   DoubleEG_Run2015D_v4     DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+MuonEG       r.kBlack   MuonEG_Run2015D_v4       MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_leptonic_Oct19/   friends/   1         1
+# hadronics
+HTMHT        r.kBlack   HTMHT_Run2015C_v1        HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
+JetHT        r.kBlack   JetHT_Run2015C_v1        JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015D_v3        HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
+JetHT        r.kBlack   JetHT_Run2015D_v3        JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015D_v4        HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
+JetHT        r.kBlack   JetHT_Run2015D_v4        JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_hadronic_Oct19/   friends/   1         1
 #
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
@@ -36,4 +42,6 @@ DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /af
 DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/   6024000.   0
 TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/    831760.   0
 TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/     87314.8  0
+#
+synchfile             r.kPink    TTLep_pow_synch       TTLep_pow_synch       /afs/cern.ch/work/m/mdunser/public/synchFiles/      friends/     87314.8  0
 #
