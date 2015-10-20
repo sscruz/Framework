@@ -24,6 +24,32 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 
+def makeTable(myregion, dataMC, eta): ## for this to make sense the region should be properly binned!!
+    line0 = ' %30s &           & '  %('')
+    line1 = ' %30s & MC pred.  & ' %('\multirow{3}{*}{%s}' %(myregion.name))
+    line2 = ' %30s & MC obs.   & ' %('')
+    line3 = ' %30s &  ratio    & ' %('')
+    tmp_histo_obs  = myregion.mll     .getHisto(dataMC, eta)
+    tmp_histo_pred = myregion.mll_pred.getHisto(dataMC, eta)
+    my_range = range(1,tmp_histo_obs.GetNbinsX()+1)
+    for i in my_range:
+        tmp_ratio   = tmp_histo_obs.GetBinContent(i) / tmp_histo_pred.GetBinContent(i)
+        tmp_ratio_e = math.sqrt( (tmp_histo_obs.GetBinError(i)/tmp_histo_obs.GetBinContent(i))**2  +  (tmp_histo_pred.GetBinError(i)/tmp_histo_obs.GetBinContent(i))**2)  * tmp_ratio
+        line0 += '%.0f $<$ \\mll $<$ %.0f ' %(tmp_histo_pred.GetXaxis().GetBinLowEdge(i), tmp_histo_pred.GetXaxis().GetBinUpEdge(i))
+        line1 += '  %.2f $\\pm$ %.2f      ' %(tmp_histo_pred.GetBinContent(i), tmp_histo_pred.GetBinError(i))
+        line2 += '  %.2f $\\pm$ %.2f      ' %(tmp_histo_obs.GetBinContent(i), tmp_histo_obs.GetBinError(i))
+        line3 += '  %.2f $\\pm$ %.2f      ' %(tmp_ratio, tmp_ratio_e)
+        if i != max(my_range):
+            line0+=' & '
+            line1+=' & '
+            line2+=' & '
+            line3+=' & '
+        else:
+            line0+=' \\\\ '
+            line1+=' \\\\ '
+            line2+=' \\\\ '
+            line3+=' \\\\ '
+    return line0, line1, line2, line3
 
 def makePrediction(of_histo, ing, eta):
     central = (eta == 'central')
@@ -98,7 +124,13 @@ if __name__ == '__main__':
                                  ['mll', 'met'],
                                  [range(20,310,10), range(0,210,10)],
                                  True)
+    binnedSR     = Region.region('SR8TeV', 
+                                 [cuts.METJetsSignalRegion],
+                                 ['mll'],
+                                 [ [20., 70., 81., 101., 120., 500.] ],
+                                 True)
     regions.append(signalRegion)
+    regions.append(binnedSR)
 
 
     for reg in regions:
@@ -106,8 +138,8 @@ if __name__ == '__main__':
         for eta in ['central', 'forward']:
             print '... in %s' %(eta)
 
-            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
+            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
 
@@ -123,6 +155,7 @@ if __name__ == '__main__':
                     del reg.mll_sf, reg.mll_of
 
 
+    tables = []
 
     for eta in ['central', 'forward']:
         ## =================
@@ -138,23 +171,24 @@ if __name__ == '__main__':
         plot_closure.addLatex(0.7, 0.8, eta)
         plot_closure.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('MC', eta), signalRegion.mll_pred.getHisto('MC', eta), 0.5, 1.5)
 
+        ## =================
+        ## MAKE THE Mll PLOT for DATA MC comparison
+        ## =================
+        signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  24. if eta == 'central' else  15.)
+        signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
+        signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
+        plot_dataMC = Canvas.Canvas('results/plot_results_mll_dataMC_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)
+        plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('MC', eta)  , 'hist'   , 'SR - predicted (MC)'  , 'L', r.kBlue+1 , 1, 0)
+        plot_dataMC.addGraph(signalRegion.mll_pred.getGraph('MC', eta)  , '2,same' , 'SR - predicted (MC)'  , 'L', r.kBlue+1  , 1, -1)
+        plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('DATA', eta), 'PE,SAME', 'SR - predicted (DATA)', 'PL', r.kBlack, 1, 1)
+        plot_dataMC.addLatex(0.7, 0.8, eta)
+        plot_dataMC.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('DATA', eta), signalRegion.mll_pred.getHisto('DATA', eta), 0.5, 1.5)
+
+        tables.append(makeTable(binnedSR, 'MC', eta))
+
         ## these two only when not blinded!!!
         isBlinded = True
         if not isBlinded:
-            ## =================
-            ## MAKE THE Mll PLOT for DATA MC comparison
-            ## =================
-            signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  24. if eta == 'central' else  15.)
-            signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
-            signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
-            plot_dataMC = Canvas.Canvas('results/plot_results_mll_dataMC_'+eta, 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-            plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('MC', eta)  , 'hist'   , 'SR - predicted (MC)'  , 'L', r.kBlue+1 , 1, 0)
-            plot_dataMC.addGraph(signalRegion.mll_pred.getGraph('MC', eta)  , '2,same' , 'SR - predicted (MC)'  , 'L', r.kBlue+1  , 1, -1)
-            plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('DATA', eta), 'PE,SAME', 'SR - predicted (DATA)', 'PL', r.kBlack, 1, 1)
-            plot_dataMC.addLatex(0.7, 0.8, eta)
-            plot_dataMC.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('DATA', eta), signalRegion.mll_pred.getHisto('DATA', eta), 0.5, 1.5)
-
-
             ## =================
             ## MAKE THE Mll PLOT for DATA only
             ## =================
@@ -169,5 +203,4 @@ if __name__ == '__main__':
             plot_result.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('DATA', eta), signalRegion.mll_pred.getHisto('DATA', eta), 0.5, 1.5)
         else:
             print 'you sneaky bastard. stop this!!!'
-            sys.exit('...exiting!')
 
