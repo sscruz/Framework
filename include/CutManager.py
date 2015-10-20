@@ -22,6 +22,7 @@ class CutManager:
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.nj2 = "(t.nJetSel_Edge >= 2)"
+      self.InclusiveCR = "(t.nJetSel_Edge >= 1 && t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120)"
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
@@ -284,9 +285,9 @@ class CutManager:
       
    def InclusiveCROF(self):
 
-    return self.brackets(self.nj2 + " && "  + self.GoodLeptonOF())
+    return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonOF())
    
    def InclusiveCRSF(self):
 
-	return self.brackets(self.nj2 + " && "  + self.GoodLeptonSF())
+	return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonSF())
       

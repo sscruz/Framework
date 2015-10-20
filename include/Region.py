@@ -124,15 +124,21 @@ class region():
                 self.nvtx_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'jzb' :
                 self.jzb      = collection(self.bins[self.rvars.index(v)], v)
+                self.jzb_dy      = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)
-
             if v == 'min_mlb' :
                 self.min_mlb      = collection(self.bins[self.rvars.index(v)], v)
                 self.min_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.min_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
-
             if v == 'max_mlb' :
                 self.max_mlb      = collection(self.bins[self.rvars.index(v)], v)
                 self.max_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.max_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
-
+            if v == 'met_x' :
+                self.met_x      = collection(self.bins[self.rvars.index(v)], v)
+                self.met_x_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.met_x_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'met_y' :
+                self.met_y      = collection(self.bins[self.rvars.index(v)], v)
+                self.met_y_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.met_y_pred = collection(self.bins[self.rvars.index(v)], v)
