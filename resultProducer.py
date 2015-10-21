@@ -59,14 +59,14 @@ def makePrediction(of_histo, ing, eta):
         tmp_err   = of_histo.GetBinError  (_bin)
         tmp_mass  = of_histo.GetXaxis().GetBinCenter(_bin)
         if   20 <= tmp_mass <=  70.:
-            scale = ing.rsfof_ttcr_lm.cen_val  if central else ing.rsfof_ttcr_lm.fwd_val
-            s_err = ing.rsfof_ttcr_lm.cen_err  if central else ing.rsfof_ttcr_lm.fwd_err
+            scale = ing.rsfof_ttcr_lm.cen_val   if central else ing.rsfof_ttcr_lm.fwd_val
+            s_err = ing.rsfof_ttcr_lm.cen_stat  if central else ing.rsfof_ttcr_lm.fwd_stat
         elif 70 <  tmp_mass <= 120.:
-            scale = ing.rsfof_ttcr_onZ.cen_val if central else ing.rsfof_ttcr_onZ.fwd_val
-            s_err = ing.rsfof_ttcr_onZ.cen_err if central else ing.rsfof_ttcr_onZ.fwd_err
+            scale = ing.rsfof_ttcr_onZ.cen_val  if central else ing.rsfof_ttcr_onZ.fwd_val
+            s_err = ing.rsfof_ttcr_onZ.cen_stat if central else ing.rsfof_ttcr_onZ.fwd_stat
         elif 120 < tmp_mass:
-            scale = ing.rsfof_ttcr_hm.cen_val  if central else ing.rsfof_ttcr_hm.fwd_val
-            s_err = ing.rsfof_ttcr_hm.cen_err  if central else ing.rsfof_ttcr_hm.fwd_err
+            scale = ing.rsfof_ttcr_hm.cen_val   if central else ing.rsfof_ttcr_hm.fwd_val
+            s_err = ing.rsfof_ttcr_hm.cen_stat  if central else ing.rsfof_ttcr_hm.fwd_stat
         print 'using rsfof: %.4f' %(scale)
         tmp_pred  = scale*tmp_cont
         tmp_prede = math.sqrt(tmp_err*tmp_err + s_err*s_err*tmp_cont*tmp_cont)

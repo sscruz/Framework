@@ -1,5 +1,6 @@
 from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
 import ROOT as r
+import os
 
 class Canvas:
    'Common base class for all Samples'
@@ -177,6 +178,10 @@ class Canvas:
                   self.myLegend.AddEntry(self.histos[j], self.labels[j], self.labelsOption[j])
           
 
+   def ensurePath(self, _path):
+      d = os.path.dirname(_path)
+      if not os.path.exists(d):
+         os.makedirs(d)
 
    def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2):
 
@@ -248,7 +253,9 @@ class Canvas:
       pad1.cd()
       self.banner(isData, lumi)
       for plotName in self.plotNames:
-          self.myCanvas.SaveAs('plots/'+plotName)
+          path = 'plots/'+plotName
+          self.ensurePath(path)
+          self.myCanvas.SaveAs(path)
 
 
       #del self.myCanvas
@@ -296,7 +303,9 @@ class Canvas:
 
       self.banner2(isData, lumi)
       for plotName in self.plotNames:
-          self.myCanvas.SaveAs('plots/'+plotName)
+          path = 'plots/'+plotName
+          self.ensurePath(path)
+          self.myCanvas.SaveAs(path)
 
       #del self.myCanvas
 

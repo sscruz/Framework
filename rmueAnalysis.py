@@ -24,6 +24,21 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 
+
+def make_rmue_table(reg):
+    lines = []
+    for eta in ['central', 'forward']:
+        da_nee, da_nmm, da_rmue, da_rmue_err = getattr(reg, 'rmue_yield_DATA_'+eta+'_ee'), getattr(reg, 'rmue_yield_DATA_'+eta+'_mm'), getattr(reg, 'rmue_DATA_'+eta), getattr(reg, 'rmue_DATA_'+eta+'_err') 
+        mc_nee, mc_nmm, mc_rmue, mc_rmue_err = getattr(reg, 'rmue_yield_MC_'+eta+'_ee')  , getattr(reg, 'rmue_yield_MC_'+eta+'_mm')  , getattr(reg, 'rmue_MC_'+eta)  , getattr(reg, 'rmue_MC_'+eta+'_err') 
+        mc_nee_err, mc_nmm_err = getattr(reg, 'rmue_yield_MC_'+eta+'_ee_err')  , getattr(reg, 'rmue_yield_MC_'+eta+'_mm_err')
+        lines.append(' \\multicolumn{4}{c}{ \\textbf{%s}} \\\\' %(eta))
+        lines.append(' \\multirow{2}{*}{Data}   & N$_{\\mu\\mu}$   & %5d   & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(da_nmm, da_rmue, da_rmue_err, 0.1) )
+        lines.append('                          & N$_{ee}$         & %5d   &                                            \\\\ ' %(da_nee) )
+        lines.append(' \\multirow{2}{*}{MC}     & N$_{\\mu\\mu}$   & %.0f \\pm %.0f & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(mc_nmm, mc_nmm_err, mc_rmue, mc_rmue_err, 0.1 ) )
+        lines.append('                          & N$_{ee}$         & %.0f \\pm %.0f &                                            \\\\ ' %(mc_nee, mc_nee_err))
+    return lines
+
+
 def calc_rmue(Nmm, Nee, Emm, Eee):
 
     val = [0, 0]
@@ -63,9 +78,11 @@ if __name__ == "__main__":
     inputFileName = args[0]
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTJets_LO', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
-                  'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    ##daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
+    ##              'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
+                  'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -78,14 +95,17 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    lumi = 0.225
+    ##lumi = 0.849
+    lumi = 1.28
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
 
+    print flarp
 
     regions = []
     dy_nomass = Region.region('DY_nomass',
                        [cuts.DYControlRegion],
                        ['mll'],
-                       [[20, 30, 40, 50, 60, 70, 81, 101, 120, 150, 180, 220, 260, 300]],
+                       [[20, 45, 70, 81, 101, 120, 210, 300]],
                        True)
     regions.append(dy_nomass)
     dy_onZ    = Region.region('DY_onZ',
@@ -134,16 +154,27 @@ if __name__ == "__main__":
                 dataMC = 'DATA' if tree == treeDA else 'MC'
 
                 if 'mll' in reg.rvars:
-                    reg.mll_ee = tree.getTH1F(lumi, "mll_ee_"+eta, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_ee, "", "m_{ll} (GeV)")
-                    reg.mll_mm = tree.getTH1F(lumi, "mll_mm_"+eta, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_mm, "", "m_{ll} (GeV)")
+                    reg.mll_ee = tree.getTH1F(lumi, "mll_ee_"+eta+reg.name+dataMC, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_ee, "", "m_{ll} (GeV)")
+                    reg.mll_mm = tree.getTH1F(lumi, "mll_mm_"+eta+reg.name+dataMC, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_mm, "", "m_{ll} (GeV)")
     
-                    reg.mll.setHisto(make_rmue(reg.mll_mm, reg.mll_ee), dataMC, eta)
+
+                    tmp_rmue_histo = make_rmue(reg.mll_mm, reg.mll_ee)
+                    setattr(reg, "%s_%s_%s_%s"    %("rmue_yield", dataMC, eta, "ee"), reg.mll_ee.GetBinContent( reg.mll_ee.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s_%s"    %("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinContent( reg.mll_mm.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "ee"), reg.mll_ee.GetBinError  ( reg.mll_ee.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinError  ( reg.mll_mm.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s"    %("rmue", dataMC, eta), tmp_rmue_histo.GetBinContent( tmp_rmue_histo.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s_err"%("rmue", dataMC, eta), tmp_rmue_histo.GetBinError  ( tmp_rmue_histo.FindBin(91) ) )
+
+                    reg.mll.setHisto(tmp_rmue_histo, dataMC, eta)
     
                 if 'met' in reg.rvars:
-                    reg.met_ee = tree.getTH1F(lumi, "met_ee_"+eta, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_ee, "", "ME_{T} (GeV)")
-                    reg.met_mm = tree.getTH1F(lumi, "met_mm_"+eta, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_mm, "", "ME_{T} (GeV)")
+                    reg.met_ee = tree.getTH1F(lumi, "met_ee_"+eta+reg.name+dataMC, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_ee, "", "ME_{T} (GeV)")
+                    reg.met_mm = tree.getTH1F(lumi, "met_mm_"+eta+reg.name+dataMC, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_mm, "", "ME_{T} (GeV)")
     
                     reg.met.setHisto(make_rmue(reg.met_mm, reg.met_ee), dataMC, eta)
+
+
     
     
     
@@ -159,7 +190,8 @@ if __name__ == "__main__":
         dnEdge = meas_rmue_da-meas_rmue_da_e
         middle = meas_rmue_da
         
-        plot_rmue_mll = Canvas.Canvas("rmue/plot_rmue_mll_"+eta, "png,pdf", 0.6, 0.15, 0.8, 0.35)
+        dy_nomass.mll.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 2.)
+        plot_rmue_mll = Canvas.Canvas("rmue/%s/plot_rmue_mll_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
         plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
         plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 5)
         plot_rmue_mll.addGraph(sig_lm   .mll.getGraph('MC'  ,eta), "PZ", "SR low - MC"  , "PL", r.kBlue-7, 1, 1)
@@ -175,7 +207,8 @@ if __name__ == "__main__":
         ## =================
         ## MAKE THE MET PLOT
         ## =================
-        plot_rmue_met = Canvas.Canvas("rmue/plot_rmue_met_"+eta, "png,pdf", 0.6, 0.15, 0.8, 0.35)
+        dy_nomet.met.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 2.)
+        plot_rmue_met = Canvas.Canvas("rmue/%s/plot_rmue_met_%s" %(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
         plot_rmue_met.addHisto(dy_nomet.met.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
         plot_rmue_met.addHisto(dy_nomet.met.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 1)
         plot_rmue_met.addLine (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(),     1., dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(),     1., r.kGreen)
@@ -196,4 +229,8 @@ if __name__ == "__main__":
     sig_lm .mll.saveInFile(['rmue', 'sr_lm'   ], 0.1)
     sig_onZ.mll.saveInFile(['rmue', 'sr_onZ'  ], 0.1)
     sig_hm .mll.saveInFile(['rmue', 'sr_hm'   ], 0.1)
+
+    rmue_table = make_rmue_table(dy_onZ)
+    for line in rmue_table: 
+        print line
 

@@ -15,13 +15,28 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
-import math, sys, optparse
+import math, sys, optparse, copy
 
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
+
+def make_rsfof_table(reg):
+    lines = []
+    for eta in ['central', 'forward']:
+        da_nof, da_nsf, da_rsfof, da_rsfof_err = getattr(reg, 'rsfof_yield_DATA_'+eta+'_of'), getattr(reg, 'rsfof_yield_DATA_'+eta+'_sf'), getattr(reg, 'rsfof_DATA_'+eta), getattr(reg, 'rsfof_DATA_'+eta+'_err') 
+        mc_nof, mc_nsf, mc_rsfof, mc_rsfof_err = getattr(reg, 'rsfof_yield_MC_'+eta+'_of')  , getattr(reg, 'rsfof_yield_MC_'+eta+'_sf')  , getattr(reg, 'rsfof_MC_'+eta)  , getattr(reg, 'rsfof_MC_'+eta+'_err') 
+        mc_nof_err, mc_nsf_err = getattr(reg, 'rsfof_yield_MC_'+eta+'_of_err')  , getattr(reg, 'rsfof_yield_MC_'+eta+'_sf_err')
+        lines.append(' \\multicolumn{4}{c}{ \\textbf{%s}} \\\\' %(eta))
+        lines.append(' \\multirow{2}{*}{Data}   & N$_{SF}$   & %5d   & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(da_nsf, da_rsfof, da_rsfof_err, 0.1) )
+        lines.append('                          & N$_{OF}$   & %5d   &                                            \\\\ ' %(da_nof) )
+        lines.append(' \\multirow{2}{*}{MC}     & N$_{SF}$   & %.0f \\pm %.0f & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(mc_nsf, mc_nsf_err, mc_rsfof, mc_rsfof_err, 0.1 ) )
+        lines.append('                          & N$_{OF}$   & %.0f \\pm %.0f &                                            \\\\ ' %(mc_nof, mc_nof_err))
+    for line in lines:
+        print line
+    return lines
 
 def make_rsfof(histo_sf, histo_of, dataMC):
 
@@ -66,16 +81,21 @@ if __name__ == '__main__':
     inputFileName = args[0]
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTJets_LO']#, 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
-                  'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
+                  'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     print 'Trees successfully loaded...'
 
 
-    lumi = 0.225
+    # lumi = 0.58; maxrun = 258159 ## this includes that last run
+    lumi = 1.28; maxrun = 999999
+
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
     print 'Running with an integrated luminosity of', lumi,'fb-1'
+
+    saveValues = True
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
@@ -89,6 +109,18 @@ if __name__ == '__main__':
                                    [[20, 70, 81, 101, 120, 300]],
                                    True)
     regions.append(ttjets_meas)
+    ttjets_meas_noM= Region.region('ttjets_meas_noM', 
+                                   [cuts.METJetsControlRegion],
+                                   ['mll'],
+                                   [[20, 13000]],
+                                   True)
+    regions.append(ttjets_meas_noM)
+    ttjets_meas_noZ= Region.region('ttjets_meas_noZ', 
+                                   [cuts.METJetsControlRegion, cuts.ZmassVeto],
+                                   ['mll'],
+                                   [[20, 13000]],
+                                   True)
+    regions.append(ttjets_meas_noZ)
     ttjets_sig_lm  = Region.region('ttjets_sig_lm',
                                    [cuts.METJetsSignalRegion, cuts.lowmass],
                                    ['mll'],
@@ -119,25 +151,34 @@ if __name__ == '__main__':
         for eta in ['central', 'forward']:
             print '... in %s' %(eta)
 
-            cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-            cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_sf = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonSF(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_of = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonOF(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
 
-                reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
-                reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
-
                 dataMC = 'DATA' if tree == treeDA else 'MC'
-                reg.mll.setHisto(make_rsfof(reg.mll_sf, reg.mll_of, dataMC), dataMC, eta)
+                reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
+                reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
 
-                del reg.mll_sf, reg.mll_of
+                tmp_rsfof_histo = make_rsfof(reg.mll_sf, reg.mll_of, dataMC)
+                setattr(reg, "%s_%s_%s_%s"    %("rsfof_yield", dataMC, eta, "of"), reg.mll_of.GetBinContent( reg.mll_of.FindBin(45) ) )
+                setattr(reg, "%s_%s_%s_%s"    %("rsfof_yield", dataMC, eta, "sf"), reg.mll_sf.GetBinContent( reg.mll_sf.FindBin(45) ) )
+                setattr(reg, "%s_%s_%s_%s_err"%("rsfof_yield", dataMC, eta, "of"), reg.mll_of.GetBinError  ( reg.mll_of.FindBin(45) ) )
+                setattr(reg, "%s_%s_%s_%s_err"%("rsfof_yield", dataMC, eta, "sf"), reg.mll_sf.GetBinError  ( reg.mll_sf.FindBin(45) ) )
+                setattr(reg, "%s_%s_%s"    %("rsfof", dataMC, eta), tmp_rsfof_histo.GetBinContent( tmp_rsfof_histo.FindBin(45) ) )
+                setattr(reg, "%s_%s_%s_err"%("rsfof", dataMC, eta), tmp_rsfof_histo.GetBinError  ( tmp_rsfof_histo.FindBin(45) ) )
+
+                reg.mll.setHisto(tmp_rsfof_histo, dataMC, eta)
+
+                #del reg.mll_sf, reg.mll_of
     
 
     for eta in ['central', 'forward']:
         ## =================
         ## MAKE THE Mll PLOT
         ## =================
-        plot_rsfof = Canvas.Canvas('rsfof/plot_rsfof_mll_'+eta, 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+        ttjets_meas   .mll.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0.5, 1.5)
+        plot_rsfof = Canvas.Canvas('rsfof/%s/plot_rsfof_mll_%s'%(lumi_str,eta), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
         plot_rsfof.addHisto(ttjets_meas   .mll.getHisto('MC'  , eta), 'PE'     , 'ttjets region - MC'  , 'PL', r.kRed+1 , 1, 0)
         plot_rsfof.addHisto(ttjets_meas   .mll.getHisto('DATA', eta), 'PE,SAME', 'ttjets region - DATA', 'PL', r.kBlack , 1, 1)
         plot_rsfof.addGraph(ttjets_sig_lm .mll.getGraph('MC'  , eta), 'PZ,SAME', 'signal lowmass - MC' , 'PL', r.kBlue-8, 1, 2)
@@ -152,9 +193,15 @@ if __name__ == '__main__':
     ## =================
     ## PRINT AND SAVE ==
     ## =================
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_lm' ], 0.1,  50)
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_onZ'], 0.1,  91)
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_hm' ], 0.1, 150)
-    ttjets_sig_lm .mll.saveInFile(['rsfof', 'sr_lm'   ], 0.1)
-    ttjets_sig_onZ.mll.saveInFile(['rsfof', 'sr_onZ'  ], 0.1)
-    ttjets_sig_hm .mll.saveInFile(['rsfof', 'sr_hm'   ], 0.1)
+    if saveValues:
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_lm' ], 0.1,  50)
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_onZ'], 0.1,  91)
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_hm' ], 0.1, 150)
+        ttjets_sig_lm .mll.saveInFile(['rsfof', 'sr_lm'   ], 0.1)
+        ttjets_sig_onZ.mll.saveInFile(['rsfof', 'sr_onZ'  ], 0.1)
+        ttjets_sig_hm .mll.saveInFile(['rsfof', 'sr_hm'   ], 0.1)
+
+
+    rsfof_table_fullMass = make_rsfof_table(ttjets_meas_noM)
+    rsfof_table_lowMass  = make_rsfof_table(ttjets_meas)
+    rsfof_table_noZ      = make_rsfof_table(ttjets_meas_noZ)
