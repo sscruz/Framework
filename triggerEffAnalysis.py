@@ -77,6 +77,9 @@ if __name__ == '__main__':
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
 
+    effs = {}
+    uncs = []
+
     denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT])
     denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT])
     denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT])
@@ -84,11 +87,23 @@ if __name__ == '__main__':
     numerator_MM = cuts.AddList([denominator_MM, cuts.trigMMc])
     numerator_EM = cuts.AddList([denominator_EM, cuts.trigEMc])
 
+    denominator_HT = cuts.AddList([cuts.goodLepton, cuts.HT])
+    numerator_HT   = cuts.AddList([denominator_HT, cuts.triggerHT])
+    effs['ht_da'] = getTriggerEffs(treeDA, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
+    effs['ht_mc'] = getTriggerEffs(treeMC, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
+
+    print asdfasd
     
+    plot_ht = Canvas.Canvas('trigger/%s/plot_eff_ht'%(lumi_str), 'png', 0.6, 0.6, 0.8, 0.8)
+    effs['ht_mc'][0].GetHistogram().SetMarkerColor(r.kRed+1)
+    #effs['ht_mc'][0].GetHistogram().Draw()
+    effs['ht_mc'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
+    effs['ht_mc'][0].Draw('apz')
+    #effs['ht_da'][0].Draw('apz same')
+    plot_ht.save(0, 0, 0, lumi)
+
     ##sys.exit(0)
 
-    effs = []
-    uncs = []
     for flavor in ['ee', 'mm', 'em']:
 
         if   flavor is 'ee': 
@@ -118,49 +133,43 @@ if __name__ == '__main__':
         else: 
             print 'something is wrong...'
 
-        [eff_mll, eff, unc]  = getTriggerEffs(treeDA, numcut, dencut, 't.lepsMll_Edge', mllvar, [20,  0, 200], lumi)
-        effs.append(eff)
-        uncs.append(unc)
-        [eff_l1pt, eff, unc] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], lumi)
-        effs.append(eff)
-        uncs.append(unc)
-        [eff_l2pt, eff, unc] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], lumi)
-        effs.append(eff)
-        uncs.append(unc)
+        effs[flavor+'mll'] = getTriggerEffs(treeDA, numcut, dencut, 't.lepsMll_Edge', mllvar, [20,  0, 200], lumi)
+        effs[flavor+'pt1'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], lumi)
+        effs[flavor+'pt2'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], lumi)
 
         plot_mll = Canvas.Canvas('trigger/%s/plot_eff_%s_mll'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        eff_mll.GetHistogram().Draw()
-        eff_mll.GetYaxis().SetRangeUser(-0.05, 1.05)
-        eff_mll.Draw('apz')
+        effs[flavor+'mll'][0].GetHistogram().Draw()
+        effs[flavor+'mll'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
+        effs[flavor+'mll'][0].Draw('apz')
         plot_mll.save(0, 0, 0, lumi)
 
         plot_l1pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l1pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        eff_l1pt.GetHistogram().Draw()
-        eff_l1pt.GetYaxis().SetRangeUser(-0.05, 1.05)
-        eff_l1pt.Draw('apz')
+        effs[flavor+'pt1'][0].GetHistogram().Draw()
+        effs[flavor+'pt1'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
+        effs[flavor+'pt1'][0].Draw('apz')
         plot_l1pt.save(0, 0, 0, lumi)
 
         plot_l2pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l2pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        eff_l2pt.GetHistogram().Draw()
-        eff_l2pt.GetYaxis().SetRangeUser(-0.05, 1.05)
-        eff_l2pt.Draw('apz')
+        effs[flavor+'pt2'][0].GetHistogram().Draw()
+        effs[flavor+'pt2'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
+        effs[flavor+'pt2'][0].Draw('apz')
         plot_l2pt.save(0, 0, 0, lumi)
 
-        del plot_mll, plot_l1pt, plot_l2pt
+        #del plot_mll, plot_l1pt, plot_l2pt
 
 
     a = rounder.Rounder()
  
-    print "Summary of values"
-    print "EE efficiency ", a.toStringB(effs[0][0], effs[0][1])
-    print "MM efficiency ", a.toStringB(effs[1][0], effs[1][1])
-    print "EM efficiency ", a.toStringB(effs[2][0], effs[2][1])
+    #print "Summary of values"
+    #print "EE efficiency ", a.toStringB(effs[0][0], effs[0][1])
+    #print "MM efficiency ", a.toStringB(effs[1][0], effs[1][1])
+    #print "EM efficiency ", a.toStringB(effs[2][0], effs[2][1])
 
-    RT = math.sqrt(effs[0][0]*effs[1][0])/effs[2][0]
-    uncRTee = (math.sqrt(effs[1][0])/effs[2][0])*0.5*(effs[0][1]/math.sqrt(effs[0][0])) 
-    uncRTmm = (math.sqrt(effs[0][0])/effs[2][0])*0.5*(effs[1][1]/math.sqrt(effs[1][0])) 
-    uncRTem = math.sqrt(effs[0][0]*effs[1][0])*(math.sqrt(effs[2][1])/(effs[2][0]*effs[2][0])) 
-    uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
+    #RT = math.sqrt(effs[0][0]*effs[1][0])/effs[2][0]
+    #uncRTee = (math.sqrt(effs[1][0])/effs[2][0])*0.5*(effs[0][1]/math.sqrt(effs[0][0])) 
+    #uncRTmm = (math.sqrt(effs[0][0])/effs[2][0])*0.5*(effs[1][1]/math.sqrt(effs[1][0])) 
+    #uncRTem = math.sqrt(effs[0][0]*effs[1][0])*(math.sqrt(effs[2][1])/(effs[2][0]*effs[2][0])) 
+    #uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
 
 
 

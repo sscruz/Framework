@@ -89,12 +89,13 @@ if __name__ == '__main__':
     print 'Trees successfully loaded...'
 
 
-    ##lumi = 0.592
-    ## lumi = 1.28
-    lumi = 0.58
-    maxrun = 258159
+    # lumi = 0.58; maxrun = 258159 ## this includes that last run
+    lumi = 1.28; maxrun = 999999
+
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')
     print 'Running with an integrated luminosity of', lumi,'fb-1'
+
+    saveValues = True
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
@@ -192,12 +193,13 @@ if __name__ == '__main__':
     ## =================
     ## PRINT AND SAVE ==
     ## =================
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_lm' ], 0.1,  50)
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_onZ'], 0.1,  91)
-    ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_hm' ], 0.1, 150)
-    ttjets_sig_lm .mll.saveInFile(['rsfof', 'sr_lm'   ], 0.1)
-    ttjets_sig_onZ.mll.saveInFile(['rsfof', 'sr_onZ'  ], 0.1)
-    ttjets_sig_hm .mll.saveInFile(['rsfof', 'sr_hm'   ], 0.1)
+    if saveValues:
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_lm' ], 0.1,  50)
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_onZ'], 0.1,  91)
+        ttjets_meas   .mll.saveInFile(['rsfof', 'ttcr_hm' ], 0.1, 150)
+        ttjets_sig_lm .mll.saveInFile(['rsfof', 'sr_lm'   ], 0.1)
+        ttjets_sig_onZ.mll.saveInFile(['rsfof', 'sr_onZ'  ], 0.1)
+        ttjets_sig_hm .mll.saveInFile(['rsfof', 'sr_hm'   ], 0.1)
 
 
     rsfof_table_fullMass = make_rsfof_table(ttjets_meas_noM)
