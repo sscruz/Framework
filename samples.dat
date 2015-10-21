@@ -38,12 +38,12 @@ JetHT        r.kBlack   JetHT_Run2015D_v4_runs_246908_258751              JetHT_
 # BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-DYJets                r.kBlue+9    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees/  18610000.0   0
-DYJets                r.kBlue+9    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees/   6024000.0   0
-TTLep_pow             r.kRed+9     TTLep_pow             TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees/     87314.8   0
-WWTo2L2Nu             r.kGreen+9   WWTo2L2Nu             WWTo2L2Nu             /afs/cern.ch/work/p/pablom/public/MC/      friends/                                                                12178.0   0
-WZTo2L2Q              r.kViolet+9  WZTo2L2Q              WZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees/      5595.0   0
-ZZTo2L2Q              r.kOrange+9  ZZTo2L2Q              ZZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees/      3220.0   0
+DYJets                r.kBlue+9    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/  18610000.0   0
+DYJets                r.kBlue+9    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/   6024000.0   0
+TTLep_pow             r.kRed+9     TTLep_pow             TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/     87314.8   0
+WWTo2L2Nu             r.kGreen+9   WWTo2L2Nu             WWTo2L2Nu             /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/     12178.0   0
+WZTo2L2Q              r.kViolet+9  WZTo2L2Q              WZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/      5595.0   0
+ZZTo2L2Q              r.kOrange+9  ZZTo2L2Q              ZZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_PU1p28/      3220.0   0
 ##
 ### miniAOD-v1 MC
 ##TTJets                r.kBlue    TTJets                TT+Jets_NLO           /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/    831760.   0
