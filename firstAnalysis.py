@@ -37,14 +37,12 @@ if __name__ == "__main__":
     inputFileName = args[0]
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTJets_LO', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
- #   mcDatasets = ['DYJetsToLL_M50']
+    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M50', 'DYJetsToLL_M10to50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q']
     dyDatasets = ['DYJetsToLL_M50','DYJetsToLL_M10to50']
-#   daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
- #                 'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+    daDatasets = ['DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleMuon_Run2015D_v4_runs_246908_258751',                           'MuonEG_Run2015D_05Oct_v2_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(inputFileName, dyDatasets, 'DY'), 'DY'  , 0)
- #   treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DATA'), 'DATA', 1)
     #tree = treeMC
     print 'Trees successfully loaded...'
 
@@ -55,18 +53,18 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    lumi = 0.225
+    lumi = 1.264
 
 
     regions = []
     setLog = []
-#    Control2JetsMETSF = Region.region('Control2JetsMETSF',
-#                       [cuts.Control2JetsMETSF()],
-#                       ['min_mlb', 'max_mlb'],
-#                       [range(10,310,10), range(10,310,10)],
-#                       True)
-#    regions.append(Control2JetsMETSF)
-#    setLog.append(True)
+    Control2JetsMETSF = Region.region('Control2JetsMETSF',
+                       [cuts.Control2JetsMETSF()],
+                       ['min_mlb', 'max_mlb'],
+                       [range(10,310,10), range(10,310,10)],
+                       True)
+    regions.append(Control2JetsMETSF)
+    setLog.append(True)
 #    Control2JetsMETOF = Region.region('Control2JetsMETOF',
 #                        [cuts.Control2JetsMETOF()],
 #                        ['min_mlb', 'max_mlb'],
@@ -90,31 +88,32 @@ if __name__ == "__main__":
 #    setLog.append(False)                      
 #    DYControlNoMassLeptonSF = Region.region('DYControlNoMassLeptonSF',
 #                        [cuts.DYControlNoMassLeptonSF()],
-#                        ['min_mlb', 'max_mlb'],
-#                        [range(10,310,10), range(10,310,10),],
+#                        ['mll', 'met'],
+#                        [range(10,310,10), range(10,310,10)],
 #                        True)
 #    regions.append(DYControlNoMassLeptonSF)
 #    setLog.append(True)
 #    DYControlNoMassLeptonOF = Region.region('DYControlNoMassLeptonOF',
 #                        [cuts.DYControlNoMassLeptonOF()],
-#                        ['min_mlb', 'max_mlb'],
-#                        [range(10,310,10), range(10,310,10),],
+#                        ['mll', 'met'],
+#                        [range(10,310,10), range(10,310,10)],
 #                        True)
 #    regions.append(DYControlNoMassLeptonOF)                       
 #    setLog.append(True)
 #    ControlNoMassLeptonSF = Region.region('ControlNoMassLeptonSF',
 #                        [cuts.ControlNoMassLeptonSF()],
-#                        ['min_mlb', 'max_mlb'],
-#                        [range(10,310,10), range(10,310,10),],
+#                        ['mll', 'met'],
+#                        [range(10,310,10), range(10,310,10)],
 #                        True)
 #    regions.append(ControlNoMassLeptonSF)
 #    setLog.append(True)
-    METBJetsOFControlRegion = Region.region('METBJetsOFControlRegion',
-                        [cuts.METBJetsOFControlRegion()], ['min_mlb', 'max_mlb'],
-                        [range(10,310,10), range(10,310,10),],
-                        True)
-    regions.append(METBJetsOFControlRegion)                       
-    setLog.append(True)
+#    ControlNoMassLeptonOF = Region.region('ControlNoMassLeptonOF',
+#                        [cuts.ControlNoMassLeptonOF()], 
+#                        ['mll', 'met'],
+#                        [range(10,310,10), range(10,310,10)],      
+#                        True)
+#    regions.append(ControlNoMassLeptonOF)
+#    setLog.append(True) 
 #    Control2JetsMETee = Region.region('Control2JetsMETee',
 #                        [cuts.Control2JetsMETee()],
 #                        ['mll', 'met'],
@@ -162,14 +161,12 @@ if __name__ == "__main__":
         for eta in ['central', 'forward']:
                     
             my_cuts = cuts.AddList([cuts.goodLepton]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-       #     for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
-            for tree in [treeMC]:
- #               if tree == treeDA: 
- #                   dataMC = 'DATA'
-                if tree == treeMC: 
-                    dataMC = 'MC' 
+            for tree in ([treeMC, treeDY, treeDA] if reg.doData else [treeMC, treeDY]):
+       #     for tree in [treeMC, treeDA]:
+                if tree == treeDA: 
+                    dataMC = 'DATA'
                 else: 
-                    dataMC = 'DY' 
+                    dataMC = 'MC' 
 
 #                if 'mll' in reg.rvars:
 #                    reg.mll.setHisto(tree.getTH1F(lumi, "mll_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge",     reg.bins[reg.rvars.index('mll')], 1, 1, my_cuts, "", "m_{ll} (GeV)"), dataMC, eta)
@@ -188,13 +185,13 @@ if __name__ == "__main__":
 #                    if dataMC == "MC":
 #                        reg.nj_dy.setHisto(treeDY.getTH1F(lumi, "nj_dy_"+eta+reg.name+str(dataMC), "t.nJetSel_Edge",     reg.bins[reg.rvars.index('nj')], 1, 1, my_cuts, "", "nJets"), 'MC', eta)
                 if 'max_mlb' in reg.rvars:
-                    reg.max_mlb.setHisto(tree.getTH1F(lumi, "max_mlb_"+eta+reg.name+str(dataMC), "t.min_mlb2_Edge ",     reg.bins[reg.rvars.index('max_mlb')], 1, 1, my_cuts, "", "next to min Mlb"), dataMC, eta)
+                    reg.max_mlb.setHisto(tree.getTH1F(lumi, "max_mlb_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge ",     reg.bins[reg.rvars.index('max_mlb')], 1, 1, my_cuts, "", "next to min Mlb"), dataMC, eta)
                     if dataMC == "MC":
-                        reg.max_mlb_dy.setHisto(treeDY.getTH1F(lumi, "max_mlb_dy_"+eta+reg.name+str(dataMC), "t.min_mlb2_Edge",     reg.bins[reg.rvars.index('max_mlb')], 1, 1, my_cuts, "", "max Mlb"), 'MC', eta)
-                if 'min_mlb' in reg.rvars:                                                                                                                                                                     
-                    reg.min_mlb.setHisto(tree.getTH1F(lumi, "min_mlb_"+eta+reg.name+str(dataMC), "t.min_mlb1_Edge ",     reg.bins[reg.rvars.index('min_mlb')], 1, 1, my_cuts, "", "min Mlb"), dataMC, eta)
-                    if dataMC == "MC":
-                        reg.min_mlb_dy.setHisto(treeDY.getTH1F(lumi, "min_mlb_dy_"+eta+reg.name+str(dataMC), "t.min_mlb1_Edge",     reg.bins[reg.rvars.index('min_mlb')], 1, 1, my_cuts, "", "min Mlb"), 'MC', eta)
+                        reg.max_mlb_dy.setHisto(treeDY.getTH1F(lumi, "max_mlb_dy_"+eta+reg.name+"DY", "t.lepsMll_Edge",     reg.bins[reg.rvars.index('max_mlb')], 1, 1, my_cuts, "", "max Mlb"), 'MC', eta)
+    #            if 'min_mlb' in reg.rvars:                                                                                                                                                                     
+    #                reg.min_mlb.setHisto(tree.getTH1F(lumi, "min_mlb_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge ",     reg.bins[reg.rvars.index('min_mlb')], 1, 1, my_cuts, "", "min Mlb"), dataMC, eta)
+     #               if dataMC == "MC":
+     #                   reg.min_mlb_dy.setHisto(treeDY.getTH1F(lumi, "min_mlb_dy_"+eta+reg.name+str(dataMC), "t.lepsMll_Edge",     reg.bins[reg.rvars.index('min_mlb')], 1, 1, my_cuts, "", "min Mlb"), 'MC', eta)
 
 
     for reg in regions:
@@ -204,22 +201,23 @@ if __name__ == "__main__":
 #            reg.mll_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
 #            reg.mll_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
 #            plot_mll = Canvas.Canvas("mll/mll_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-#            plot_mll.addHisto(reg.mll   .getHisto('MC', eta), "HIST", "DY+TTJets"  , "PL", r.kRed+1 , 1, 0)        
+#            plot_mll.addHisto(reg.mll.getHisto('MC', eta), "HIST", "DY+TTJets"  , "PL", r.kRed+1 , 1, 0)        
 #            plot_mll.addHisto(reg.mll_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
-#            plot_mll.addHisto(reg.mll   .getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-#            plot_mll.saveRatio(1, 1, 1, lumi, reg.mll.getHisto('DATA', eta), reg.mll.getHisto('MC', eta))
+#            plot_mll.addHisto(reg.mll.getHisto('DATA', eta), "HIST SAME", "Data", "PL", "" , 1, 1)
+           # plot_mll.saveRatio(1, 1, 1, lumi, reg.mll.getHisto('DATA', eta), reg.mll.getHisto('MC', eta))
 #            plot_mll.save(1, 0, 0, lumi)
-#            #del plot_mll  
+            #del plot_mll  
 #            time.sleep(0.1)
+
 
 #            reg.met_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
 #            reg.met_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)
-#            plot_met = Canvas.Canvas("met/met_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-#            plot_met.addHisto(reg.met.getHisto('MC', eta), "HIST", "DY+TTJets"  , "PL", r.kRed+1 , 1, 0)        
-#            plot_met.addHisto(reg.met_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)        
-#            plot_met.addHisto(reg.met.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+#            plot_met = Canvas.Canvas("1.2fb/met_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+#            plot_met.addHisto(reg.met.getHisto('MC', eta), "HIST", "MC"  , "P", r.kRed+1 , 1, 0)        
+#            plot_met.addHisto(reg.met_dy.getHisto('MC', eta), "HIST SAME", "DY", "PL", r.kBlue+1 , 1, 0)        
+#            plot_met.addHisto(reg.met.getHisto('DATA', eta), "E,SAME", "Data",    "PL", r.kBlack , 1, 1)
 #            plot_met.saveRatio(1, 1, 1, lumi, reg.met.getHisto('DATA', eta), reg.met.getHisto('MC', eta))
-#            #del plot_met    
+            #del plot_met    
 #            time.sleep(0.1)
 
 #            reg.nb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)
@@ -242,26 +240,25 @@ if __name__ == "__main__":
 #            #del plot_nj    
 #            time.sleep(0.1)
 
-            reg.min_mlb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)  
-            reg.min_mlb_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)  
-            plot_min_mlb = Canvas.Canvas("min_mlb_fixed/min_mlb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
-            plot_min_mlb.addHisto(reg.min_mlb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
-            plot_min_mlb.addHisto(reg.min_mlb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)   
-#            plot_min_mlb.addHisto(reg.max_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-#            plot_min_mlb.saveRatio(1, 1, 0, lumi, reg.min_mlb.getHisto('MC', eta), reg.min_mlb.getHisto('MC', eta))
-            plot_min_mlb.save(1, 0, 0, lumi)
-            time.sleep(0.1)  
+      #      reg.min_mlb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)  
+      #      reg.min_mlb_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)  
+      #      plot_min_mlb = Canvas.Canvas("1.2fb/min_mlb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+      #      plot_min_mlb.addHisto(reg.min_mlb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
+      #      plot_min_mlb.addHisto(reg.min_mlb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)   
+      #      plot_min_mlb.addHisto(reg.max_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+      #      plot_min_mlb.saveRatio(1, 1, 0, lumi, reg.min_mlb.getHisto('MC', eta), reg.min_mlb.getHisto('MC', eta))
+#            plot_min_mlb.save(1, 0, 0, lumi)
+      #      time.sleep(0.1)  
 
 
 
  
             reg.max_mlb_dy.getHisto('MC', eta).SetFillColor(r.kBlue+1)  
             reg.max_mlb_dy.getHisto('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.5)  
-            plot_max_mlb = Canvas.Canvas("min_mlb_fixed/max_mlb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)
+            plot_max_mlb = Canvas.Canvas("1.2fb/max_mlb_"+eta+"_"+reg.name, "png,pdf", 0.6, 0.6, 0.8, 0.8)                 
             plot_max_mlb.addHisto(reg.max_mlb.getHisto('MC', eta), "HIST", "MC"  , "PL", r.kRed+1 , 1, 0)        
             plot_max_mlb.addHisto(reg.max_mlb_dy.getHisto('MC', eta), "HIST SAME", "DY"  , "PL", r.kBlue+1 , 1, 0)     
-#            plot_max_mlb.addHisto(reg.max_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
-#            plot_max_mlb.saveRatio(1, 1, 0, lumi, reg.max_mlb.getHisto('MC', eta), reg.max_mlb.getHisto('MC', eta))
-            plot_max_mlb.save(1, 0, 0, lumi)
-            ime.sleep(0.1)  
+            plot_max_mlb.addHisto(reg.max_mlb.getHisto('DATA', eta), "E,SAME", "Data", "PL", r.kBlack , 1, 1)
+            plot_max_mlb.saveRatio(1, 1, 0, lumi, reg.max_mlb.getHisto('DATA', eta), reg.max_mlb.getHisto('MC', eta))
+#            plot_max_mlb.save(1, 0, 0, lumi) 
 

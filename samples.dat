@@ -37,20 +37,6 @@ JetHT        r.kBlack   JetHT_Run2015D_v4        JetHT_Run2015D        /afs/cern
 #-----------------------------------------------------------
 # BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-
-DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50   /afs/cern.ch/user/m/mvesterb/edgeSW/Framework/TREES/   Leonoras_friends  18610000.   0
-DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50       /afs/cern.ch/user/m/mvesterb/edgeSW/Framework/TREES/   Leonoras_friends  6024000.   0
-TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO            /afs/cern.ch/user/m/mvesterb/edgeSW/Framework/TREES/   Leonoras_friends  831760.   0
-TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow            /afs/cern.ch/user/m/mvesterb/edgeSW/Framework/TREES/   Leonoras_friends  87314.8  0
-TTJets                r.kBlue    TTJets                TT+Jets_NLO          /afs/cern.ch/user/m/mvesterb/edgeSW/Framework/TREES/   Leonoras_friends  831760.   0
-=======
-##TTJets                r.kBlue    TTJets                TT+Jets_NLO           /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/    831760.   0
-##DYJets                r.kBlue    DYJetsToLL_M10to50    DYJetsToLL_M10to50    /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/  18610000.   0
-##DYJets                r.kBlue    DYJetsToLL_M50        DYJetsToLL_M50        /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/   6024000.   0
-##TTJets_LO             r.kBlue    TTJets_LO             TTJets_LO             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/    831760.   0
-##TTLep_pow             r.kBlue    TTLep_pow             TTLep_pow             /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcSamplesSep17_newJECs/      friends/     87314.8  0
->>>>>>> origin/HEAD
 #
 synchfile             r.kPink    TTLep_pow_synch       TTLep_pow_synch       /afs/cern.ch/work/m/mdunser/public/synchFiles/      friends/     87314.8  0
 #

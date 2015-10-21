@@ -290,4 +290,13 @@ class CutManager:
    def InclusiveCRSF(self):
 
 	return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonSF())
-      
+  
+   def InclusiveCRee(self):
+
+    return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonee())
+    
+   def InclusiveCRmm(self):
+
+    return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonmm())
+
+
