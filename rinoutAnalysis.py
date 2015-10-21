@@ -92,9 +92,9 @@ if __name__ == "__main__":
 
     if not plotOnly:
         print 'Going to load DATA and MC trees...'
-        mcDatasets = ['TTJets_LO', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-        daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
-                      'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
+        mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+        daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
+                   'DoubleMuon_Run2015D_v4_runs_246908_258751'         , 'DoubleEG_Run2015D_v4_runs_246908_258751'      , 'MuonEG_Run2015D_v4_runs_246908_258751']
         treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
         treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
         #tree = treeMC
@@ -106,7 +106,8 @@ if __name__ == "__main__":
 
         cuts = CutManager.CutManager()
 
-        lumi = 0.225
+        lumi = 1.28
+        lumi_str = 'lumi'+str(lumi).replace('.', 'p')
  
         regions = []
         dy_nomass = Region.region('DY_nomass',
@@ -187,7 +188,7 @@ if __name__ == "__main__":
         dy_nomass.mll_OF_mc    = treeMC.getTH1F(lumi, "mll_OF_in" +eta+dy_nomass.name+'mc'   , "t.lepsMll_Edge", dy_nomass.bins[dy_nomass.rvars.index('mll')], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)")
 
         dy_nomass.mll_SF_mc.GetYaxis().SetRangeUser(1., dy_nomass.mll_SF_mc.GetMaximum()*1.2)
-        plot_rinout_mll = Canvas.Canvas("rinout/plot_rinout_mll_"+eta, "png,pdf", 0.2, 0.6, 0.4, 0.8)
+        plot_rinout_mll = Canvas.Canvas("rinout/%s/plot_rinout_mll_%s"%(lumi_str, eta), "png,pdf", 0.2, 0.6, 0.4, 0.8)
         plot_rinout_mll.addHisto(dy_nomass.mll_SF_mc  , "HIST,SAME", "MC - SF", "L" , r.kBlue-4 , 1, 0)
         plot_rinout_mll.addHisto(dy_nomass.mll_OF_mc  , "HIST,SAME", "MC - OF", "L" , r.kRed-4  , 1, 1)
         plot_rinout_mll.addHisto(dy_nomass.mll_SF_data, "PE,SAME", "DATA - SF", "PL", r.kBlue+2 , 1, 2)
@@ -211,7 +212,7 @@ if __name__ == "__main__":
         full_err = math.sqrt(meas_err**2 + (0.25*meas_value)**2 )
         minus = meas_value - full_err
         plus  = meas_value + full_err
-        plot_rinout_meas = Canvas.Canvas("rinout/plot_rinout_measured_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_meas = Canvas.Canvas("rinout/%s/plot_rinout_measured_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.70, 0.8, 0.80)
         plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
         plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 1)
         plot_rinout_meas.addBand (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
@@ -224,7 +225,7 @@ if __name__ == "__main__":
         ## ===========================
         
         dy_nomass.met.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 0.15)
-        plot_rinout_met = Canvas.Canvas("rinout/plot_rinout_met_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_met = Canvas.Canvas("rinout/%s/plot_rinout_met_%s"%(lumi_str,eta), "png,pdf", 0.6, 0.70, 0.8, 0.80)
         plot_rinout_met.addHisto(dy_nomass.met.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
         plot_rinout_met.addHisto(dy_nomass.met.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 0)
         plot_rinout_met.addBand (dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , dy_nomass.met.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
@@ -233,7 +234,7 @@ if __name__ == "__main__":
         plot_rinout_met.save(1, 0, 0, lumi)
 
         dy_nomass.nj.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 0.15)
-        plot_rinout_nj = Canvas.Canvas("rinout/plot_rinout_nj_"+eta, "png,pdf", 0.6, 0.70, 0.8, 0.80)
+        plot_rinout_nj = Canvas.Canvas("rinout/%s/plot_rinout_nj_%s"%(lumi_str,eta), "png,pdf", 0.6, 0.70, 0.8, 0.80)
         plot_rinout_nj.addHisto(dy_nomass.nj.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
         plot_rinout_nj.addHisto(dy_nomass.nj.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 0)
         plot_rinout_nj.addBand (dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , dy_nomass.nj.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
