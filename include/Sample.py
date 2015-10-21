@@ -12,7 +12,8 @@ class Sample:
       self.xSection = xsection
       self.isData = isdata
       self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
-      self.ftfile = TFile(self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
+      ftfileloc = (friendlocation+'/evVarFriend_'+self.name+'.root' if '/afs' in friendlocation else self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
+      self.ftfile = TFile(ftfileloc)
       self.ttree = self.tfile.Get('tree')
       self.ttree.AddFriend('sf/t',self.ftfile)
       if not self.isData:
@@ -28,8 +29,8 @@ class Sample:
         self.lumWeight = self.xSection / self.count
       self.puWeight = "1.0"
       if(self.isData == 0):
-#        self.puWeight = "t.PileupW_Edge"
-        self.puWeight = "1.0"
+        self.puWeight = "t.PileupW_Edge"
+#        self.puWeight = "1.0"
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
