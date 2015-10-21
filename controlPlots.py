@@ -74,22 +74,17 @@ if __name__ == "__main__":
 
     regions = []
     setLog = []
+
+    doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb']
+    binnings    = [range(20,310,10), range(0,310,10), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10)]
+
     Control2JetsSF = Region.region('Control2JetsSF',
-                       [cuts.Control2JetsSF()],
-                       #['mll', 'met', 'nb', 'nj', 'nvtx'],
-                       #[range(20,310,10), range(0,310,10), range(0,5,1), range(0,8,1), range(0,35)],
-                       ['mlb'], [range(0,310,10)],
-                       True)
+                       [cuts.Control2JetsSF()], doVariables, binnings, True)
     regions.append(Control2JetsSF)
-    setLog.append(True)
+    
     Control2JetsOF = Region.region('Control2JetsOF',
-                       [cuts.Control2JetsOF()],
-                       #['mll', 'met', 'nb', 'nj', 'nvtx'],
-                       #[range(10,310,10), range(10,310,10), range(0,5,1), range(0,8,1), range(0,35)],
-                       ['mlb'], [range(0,310,10)],
-                       True)
+                       [cuts.Control2JetsOF()], doVariables, binnings, True)
     regions.append(Control2JetsOF) 
-    setLog.append(False)                      
 
     for reg in regions:
         print 'i am at region', reg.name
