@@ -23,7 +23,7 @@ class Canvas:
       self.myLegend = TLegend(x1, y1, x2, y2)
       self.myLegend.SetFillColor(r.kWhite)
       self.myLegend.SetTextFont(42)
-      self.myLegend.SetTextSize(0.028)
+      self.myLegend.SetTextSize(0.04)
       self.myLegend.SetLineWidth(0)
       self.myLegend.SetBorderSize(0)
 
@@ -237,6 +237,7 @@ class Canvas:
       ratio.GetYaxis().SetNdivisions(4);
       ratio.GetYaxis().SetTitleSize(0.14);
       ratio.GetXaxis().SetTitleSize(0.14);
+      ratio.GetXaxis().SetTitle('');
       ratio.SetMarkerStyle(20);
       ratio.SetMarkerSize(0.8*ratio.GetMarkerSize());
       ratio.SetMarkerColor(r.kGray+3);

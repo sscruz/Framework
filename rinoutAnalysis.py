@@ -50,7 +50,7 @@ def make_rinout(histo_in_SF, histo_in_OF, histo_out_SF, histo_out_OF):
     histo_out_SF.Add(histo_out_OF, -1.0)
 
     ratio = histo_out_SF.Clone("rinout_" + histo_out_SF.GetName())
-    ratio.GetYaxis().SetTitle("r_{in/out}")
+    ratio.GetYaxis().SetTitle("r_{out/in}")
     ratio.Divide(histo_in_SF)
   
     return ratio
@@ -71,7 +71,7 @@ def make_rinout_histo(histo_SF, histo_OF):
         finalHisto.SetBinContent(_bin, finalHisto.GetBinContent(finalHisto.FindBin(91.)))
         finalHisto.SetBinError  (_bin, finalHisto.GetBinError  (finalHisto.FindBin(91.)))
 
-    ratio.GetYaxis().SetTitle("r_{in/out}")
+    ratio.GetYaxis().SetTitle("r_{out/in}")
     ratio.Divide(finalHisto)
   
     return ratio
@@ -106,7 +106,7 @@ if __name__ == "__main__":
 
         cuts = CutManager.CutManager()
 
-        lumi = 1.28
+        lumi = 1.3
         lumi_str = 'lumi'+str(lumi).replace('.', 'p')
  
         regions = []
@@ -197,7 +197,7 @@ if __name__ == "__main__":
         plot_rinout_mll.addLine (101., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(), 101., dy_nomass.mll_SF_mc.GetMaximum(), r.kGreen-3 , 2)
         plot_rinout_mll.addBand ( 81., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(), 101., dy_nomass.mll_SF_mc.GetMaximum(), r.kGreen-3 , 0.1)
         plot_rinout_mll.addLine ( 70., dy_nomass.mll_SF_mc.GetYaxis().GetXmin(),  70., dy_nomass.mll_SF_mc.GetMaximum(), r.kPink-3, 2)
-        plot_rinout_mll.addArrow( 60., 200.,  70., 200., r.kPink-3, "<", 2)
+        plot_rinout_mll.addArrow( 60., 10.,  70., 10., r.kPink-3, "<", 2)
         plot_rinout_mll.addLatex(0.2, 0.2, eta)
         plot_rinout_mll.save(1, 0, 1, lumi)
 
@@ -215,8 +215,8 @@ if __name__ == "__main__":
         plot_rinout_meas = Canvas.Canvas("rinout/%s/plot_rinout_measured_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.70, 0.8, 0.80)
         plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('MC'  , eta), "PE,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
         plot_rinout_meas.addHisto(rinout_meas.mll.getHisto('DATA', eta), "PE,SAME", "data"     , "PL", r.kBlack , 1, 1)
-        plot_rinout_meas.addBand (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
-        plot_rinout_meas.addLine (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), meas_value, rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), meas_value, r.kGreen)
+        ##plot_rinout_meas.addBand (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), minus     , rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), plus      , r.kGreen, 0.2)
+        ##plot_rinout_meas.addLine (rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmin(), meas_value, rinout_meas.mll.getHisto('MC', eta).GetXaxis().GetXmax(), meas_value, r.kGreen)
         plot_rinout_meas.addLatex(0.2, 0.2, eta)
         plot_rinout_meas.save(1, 0, 0, lumi)
 

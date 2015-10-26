@@ -18,11 +18,14 @@ class CutManager:
       self.mm = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)"
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
+      self.AF = "(" + self.SF + " || " +  self.OF + ")"
       self.nj2 = "(t.nJetSel_Edge >= 2)"
+      self.nj0 = "(t.nJetSel_Edge >= 0)"
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
+      self.blinded = "!"+self.METJetsSignalRegion
       self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.ZmassVeto = "(t.lepsMll_Edge < 81 || t.lepsMll_Edge > 101)"
@@ -93,6 +96,14 @@ class CutManager:
    def GoodLeptonNoTriggermm(self):
 
       return self.brackets(self.goodLepton + " && " + self.mm) 
+
+   def GoodLepton(self):
+
+      return self.brackets(self.goodLepton + " && " + self.trigger)
+
+   def GoodLeptonAF(self):
+
+      return self.brackets(self.goodLepton + " && " + self.AF + " && " + self.trigger)
 
    def GoodLeptonSF(self):
 
@@ -257,6 +268,10 @@ class CutManager:
    def Control2JetsOF(self):
 
       return self.brackets(self.nj2 + " && " + self.GoodLeptonOF()  + " && " + self.trigger)
+   
+   def Control2JetsAF(self):
+
+      return self.brackets(self.nj2 + " && " + self.GoodLeptonAF()  + " && " + self.trigger)
    
    def RSFOFControlRegion(self):
 

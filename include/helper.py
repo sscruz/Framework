@@ -24,6 +24,17 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
             
     return tmp_file.name
 
+class color:
+       purple = '\033[95m'
+       cyan = '\033[96m'
+       darkcyan = '\033[36m'
+       blue = '\033[94m'
+       green = '\033[92m'
+       yellow = '\033[93m'
+       red = '\033[91m'
+       bold = '\033[1m'
+       underline = '\033[4m'
+       end = '\033[0m'
 
 class valErrs:
     def __init__(self, cen_val, cen_sys, cen_stat, fwd_val, fwd_sys, fwd_stat, name):
