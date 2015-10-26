@@ -108,60 +108,53 @@ class region():
                 self.mll_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.mll_st   = collection(self.bins[self.rvars.index(v)], v)
             if v == 'met':
                 self.met      = collection(self.bins[self.rvars.index(v)], v)
                 self.met_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.met_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.met_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.met_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.met_st   = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nj' :
                 self.nj       = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_ra    = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_tt    = collection(self.bins[self.rvars.index(v)], v)
                 self.nj_pred  = collection(self.bins[self.rvars.index(v)], v)
+                self.nj_st    = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nb' :
                 self.nb       = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_dy    = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_ra    = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_tt    = collection(self.bins[self.rvars.index(v)], v)
                 self.nb_pred  = collection(self.bins[self.rvars.index(v)], v)
+                self.nb_st    = collection(self.bins[self.rvars.index(v)], v)
             if v == 'nvtx' :
                 self.nvtx     = collection(self.bins[self.rvars.index(v)], v)
                 self.nvtx_dy  = collection(self.bins[self.rvars.index(v)], v)
                 self.nvtx_ra  = collection(self.bins[self.rvars.index(v)], v)
                 self.nvtx_tt  = collection(self.bins[self.rvars.index(v)], v)
                 self.nvtx_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.nvtx_st   = collection(self.bins[self.rvars.index(v)], v)
             if v == 'jzb' :
                 self.jzb      = collection(self.bins[self.rvars.index(v)], v)
-<<<<<<< HEAD
-                self.jzb_dy      = collection(self.bins[self.rvars.index(v)], v)
-                self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)
-            if v == 'min_mlb' :
-                self.min_mlb      = collection(self.bins[self.rvars.index(v)], v)
-                self.min_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
-                self.min_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
-            if v == 'max_mlb' :
-                self.max_mlb      = collection(self.bins[self.rvars.index(v)], v)
-                self.max_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
-                self.max_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
-            if v == 'met_x' :
-                self.met_x      = collection(self.bins[self.rvars.index(v)], v)
-                self.met_x_dy   = collection(self.bins[self.rvars.index(v)], v)
-                self.met_x_pred = collection(self.bins[self.rvars.index(v)], v)
-            if v == 'met_y' :
-                self.met_y      = collection(self.bins[self.rvars.index(v)], v)
-                self.met_y_dy   = collection(self.bins[self.rvars.index(v)], v)
-                self.met_y_pred = collection(self.bins[self.rvars.index(v)], v)
-=======
                 self.jzb_dy   = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)
-            if v == 'mlb' :
-                self.mlb      = collection(self.bins[self.rvars.index(v)], v)
-                self.mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
-                self.mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
-                self.mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
-                self.mlb_pred = collection(self.bins[self.rvars.index(v)], v)
->>>>>>> origin/HEAD
+                self.jzb_st   = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'min_mlb' :
+                self.min_mlb      = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.min_mlb_st   = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'max_mlb' :                                                                  
+                self.max_mlb      = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.max_mlb_st = collection(self.bins[self.rvars.index(v)], v)
