@@ -56,7 +56,8 @@ class onZResult:
         self.fwd_2b_e = math.sqrt(self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
 
 
-def makeTable(myregion, dataMC, eta): ## for this to make sense the region should be properly binned!!
+def makeTable(myregion, dataMC, eta, nbs): ## for this to make sense the region should be properly binned!!
+    header= 'THIS IS THE TABLE FOR %s in %s for %s b-tags'%(dataMC, eta, str(nbs))
     line0 = ' %30s &           & '  %('')
     line1 = ' %30s & MC pred.  & ' %('\multirow{3}{*}{%s}' %(myregion.name))
     line2 = ' %30s & MC obs.   & ' %('')
@@ -81,33 +82,45 @@ def makeTable(myregion, dataMC, eta): ## for this to make sense the region shoul
             line1+=' \\\\ '
             line2+=' \\\\ '
             line3+=' \\\\ '
-    return line0, line1, line2, line3
+    return header, line0, line1, line2, line3
 
-def scaleZ(histo, onZ_pred, eta):
+def scaleZ(histo, onZ_pred, eta, nbs):
     bin81  = histo.FindBin(81)
-    bin101 = histo.FindBin(101)
-    scale  = (onZ_pred.cen_0b if eta == 'central' else onZ_pred.fwd_0b) / histo.Integral(bin81, bin101)
+    bin101 = histo.FindBin(100)
+    nb_pred = getattr(onZ_pred, '%s_%db'%( ('cen' if eta == 'central' else 'fwd'), nbs))
     ret_hist = copy.deepcopy(histo)
-    ret_hist.Scale(scale)
+    integral = ret_hist.Integral(bin81, bin101)
+    if not integral:
+        print 'WARNING: the DY shape histogram has no content around the Z-mass !!!'
+        print 'WARNING: this happens for nb %s' %(str(nbs))
+        print 'WARNING: putting the whole prediction into one bin at the Z-mass'
+        ret_hist.SetBinContent(ret_hist.FindBin(91.), nb_pred)
+    else:
+        scale  = nb_pred / histo.Integral(bin81, bin101)
+        ret_hist.Scale(scale)
     return ret_hist
 
 def makePrediction(of_histo, ing, eta):
     central = (eta == 'central')
     sf_pred = copy.deepcopy(of_histo)
+    scale = ing.rsfof_ttcr_lm.cen_val   if central else ing.rsfof_ttcr_lm.fwd_val
+    s_err = ing.rsfof_ttcr_lm.cen_stat  if central else ing.rsfof_ttcr_lm.fwd_stat
+    print '========================================='
+    print 'using rsfof: %.4f' %(scale)
+    print '========================================='
     for _bin in range(1,of_histo.GetNbinsX()+1):
         tmp_cont  = of_histo.GetBinContent(_bin)
         tmp_err   = of_histo.GetBinError  (_bin)
         tmp_mass  = of_histo.GetXaxis().GetBinCenter(_bin)
-        if   20 <= tmp_mass <=  70.:
-            scale = ing.rsfof_ttcr_lm.cen_val   if central else ing.rsfof_ttcr_lm.fwd_val
-            s_err = ing.rsfof_ttcr_lm.cen_stat  if central else ing.rsfof_ttcr_lm.fwd_stat
-        elif 70 <  tmp_mass <= 120.:
-            scale = ing.rsfof_ttcr_onZ.cen_val  if central else ing.rsfof_ttcr_onZ.fwd_val
-            s_err = ing.rsfof_ttcr_onZ.cen_stat if central else ing.rsfof_ttcr_onZ.fwd_stat
-        elif 120 < tmp_mass:
-            scale = ing.rsfof_ttcr_hm.cen_val   if central else ing.rsfof_ttcr_hm.fwd_val
-            s_err = ing.rsfof_ttcr_hm.cen_stat  if central else ing.rsfof_ttcr_hm.fwd_stat
-        # print 'using rsfof: %.4f' %(scale)
+        ##if   20 <= tmp_mass <=  70.:
+        ##    scale = ing.rsfof_ttcr_lm.cen_val   if central else ing.rsfof_ttcr_lm.fwd_val
+        ##    s_err = ing.rsfof_ttcr_lm.cen_stat  if central else ing.rsfof_ttcr_lm.fwd_stat
+        ##elif 70 <  tmp_mass <= 120.:
+        ##    scale = ing.rsfof_ttcr_onZ.cen_val  if central else ing.rsfof_ttcr_onZ.fwd_val
+        ##    s_err = ing.rsfof_ttcr_onZ.cen_stat if central else ing.rsfof_ttcr_onZ.fwd_stat
+        ##elif 120 < tmp_mass:
+        ##    scale = ing.rsfof_ttcr_hm.cen_val   if central else ing.rsfof_ttcr_hm.fwd_val
+        ##    s_err = ing.rsfof_ttcr_hm.cen_stat  if central else ing.rsfof_ttcr_hm.fwd_stat
         tmp_pred  = scale*tmp_cont
         tmp_prede = math.sqrt(tmp_err*tmp_err + s_err*s_err*tmp_cont*tmp_cont)
         sf_pred.SetBinContent(_bin, tmp_pred )
@@ -119,37 +132,43 @@ def makePrediction(of_histo, ing, eta):
 if __name__ == '__main__':
 
     print 'Starting to produce some good ol\' results...'
-    parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples FilenameWithIngredients', version='%prog 1.0')
+    parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples FilenameWithIngredients', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    (options, args) = parser.parse_args()
+    #parser.add_option('-p', action='store_true', dest='plotOnly', help='just make the plots, don\t load anything')
+    parser.add_option('-t', action='store_true', dest='onlyTTbar', default=False, help='just do OF closure test')
+    parser.add_option('-c', action='store_true', dest='onlyClosure', default=False, help='just do the closure test. don\'t bother with data')
+    parser.add_option('-b', '--nbs', action='store', type=int, dest='nbs', default=0, help='do this for different numbers of b\'s')
+    parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
 
+    (opts, args) = parser.parse_args()
 
-    if len(args) != 2:
-      parser.error('wrong number of arguments')
+    print opts.onlyTTbar
 
-    sampleFile     = args[0]
-    ingredientFile = args[1]
+    ## if len(args) < 2:
+    ##   parser.error('wrong number of arguments')
+    print 'using sampleFile %s'%opts.sampleFile
+    print 'using ingredients file %s'%opts.ingredientFile
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
     daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
                   'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
 
-    treeMC = Sample.Tree(helper.selectSamples(sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(helper.selectSamples(sampleFile, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print 'Trees successfully loaded...'
 
 
-    lumi = 1.28
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
+    lumi = 1.3 
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_exclB'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lumi)
 
     isBlinded = True
 
     ## load the on-Z results from the MET templates
     onZ = onZResult('vinceResults.txt')
-    #print asdfasdf
 
    
     gROOT.ProcessLine('.L tdrstyle.C')
@@ -158,26 +177,28 @@ if __name__ == '__main__':
     cuts = CutManager.CutManager()
 
 
-    ingMC = helper.ingredients(ingredientFile, 'MC'  )
-    ingDA = helper.ingredients(ingredientFile, 'DATA')
+    ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
+    ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
 
-
+    finalBinning = (range(20,80,10) + range(81,111,10) + range(110,310,10))
     regions = []
+    nbcut = 't.nBJetMedium35_Edge == 0'
+    if   opts.nbs == 1:
+        nbcut = 't.nBJetMedium35_Edge == 1'
+    elif opts.nbs == 2:
+        nbcut = 't.nBJetMedium35_Edge >= 2'
+
     signalRegion = Region.region('signalRegion', 
-                                 [cuts.METJetsSignalRegion],
+                                 [cuts.METJetsSignalRegion, nbcut],
                                  ['mll', 'met'],
-                                 [range(20,310,10), range(0,210,10)],
-                                 True)
+                                 #[range(20,310,10), range(0,210,10)],
+                                 [finalBinning, range(0,210,10)],
+                                 True if not opts.onlyClosure else False)
     binnedSR     = Region.region('SR8TeV', 
-                                 [cuts.METJetsSignalRegion],
+                                 [cuts.METJetsSignalRegion, nbcut],
                                  ['mll'],
                                  [ [20., 70., 81., 101., 120., 500.] ],
-                                 True)
-    rinoutCR     = Region.region('rinoutR', 
-                                 [cuts.METJetsSignalRegion],
-                                 ['mll', 'met'],
-                                 [range(20,310,10), range(0,210,10)],
-                                 True)
+                                 True if not opts.onlyClosure else False)
 
     regions.append(signalRegion)
     regions.append(binnedSR)
@@ -192,12 +213,12 @@ if __name__ == '__main__':
             cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+                dataMC = 'DATA' if tree == treeDA else 'MC'
 
                 if 'mll' in reg.rvars:
-                    reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
-                    reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
+                    reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
+                    reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
 
-                    dataMC = 'DATA' if tree == treeDA else 'MC'
                     isData = (dataMC == 'DATA')
                     reg.mll     .setHisto(reg.mll_sf, dataMC, eta)
                     reg.mll_pred.setHisto(makePrediction(reg.mll_of, ingDA if isData else ingMC, eta), dataMC, eta)
@@ -207,75 +228,123 @@ if __name__ == '__main__':
 
 
 
-    dy_nomass    = Region.region('DY_nomass', [cuts.DYControlRegion], ['mll'], [range(20,301)], True)
-    for eta in ['central', 'forward']:
-        ## ==============================================================
-        ## get the mll distribution from the measurement region of rinout
-        ## ==============================================================
+    if not opts.onlyTTbar:
+        dy_nomass          = Region.region('DY_nomass'         , [cuts.DYControlRegion], ['mll']       , [range(20,302,2)], True)
+        dy_nomass_rightBin = Region.region('DY_nomass_rightBin', [cuts.DYControlRegion], ['mll']       , [finalBinning]   , True)
+        dy_nomass_binned   = Region.region('DY_nomass_binned'  , [cuts.DYControlRegion], binnedSR.rvars, binnedSR.bins    , True)
+        dy_nomasses = [dy_nomass, dy_nomass_rightBin, dy_nomass_binned]
+        for dy_reg in dy_nomasses:
+            for eta in ['central', 'forward']:
+                ## ==============================================================
+                ## get the mll distribution from the measurement region of rinout
+                ## ==============================================================
 
-        etacut = cuts.Central() if eta == 'central' else cuts.Forward()
-        thecutsSF_nomass = cuts.AddList([cuts.GoodLeptonSF(), cuts.trigger] + [etacut] + dy_nomass.cuts)
-        thecutsOF_nomass = cuts.AddList([cuts.GoodLeptonOF(), cuts.trigger] + [etacut] + dy_nomass.cuts)
-        setattr(dy_nomass, 'mll_SF_da_'+eta, treeDA.getTH1F(lumi, "mll_SF_in" +eta+dy_nomass.name+'data' , "t.lepsMll_Edge", dy_nomass.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
-        setattr(dy_nomass, 'mll_OF_da_'+eta, treeDA.getTH1F(lumi, "mll_OF_in" +eta+dy_nomass.name+'data' , "t.lepsMll_Edge", dy_nomass.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
-        setattr(dy_nomass, 'mll_SF_mc_'+eta, treeMC.getTH1F(lumi, "mll_SF_in" +eta+dy_nomass.name+'mc'   , "t.lepsMll_Edge", dy_nomass.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
-        setattr(dy_nomass, 'mll_OF_mc_'+eta, treeMC.getTH1F(lumi, "mll_OF_in" +eta+dy_nomass.name+'mc'   , "t.lepsMll_Edge", dy_nomass.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
+                etacut = cuts.Central() if eta == 'central' else cuts.Forward()
+                thecutsSF_nomass = cuts.AddList([cuts.GoodLeptonSF(), cuts.trigger] + [etacut] + dy_reg.cuts)
+                thecutsOF_nomass = cuts.AddList([cuts.GoodLeptonOF(), cuts.trigger] + [etacut] + dy_reg.cuts)
+                setattr(dy_reg, 'mll_SF_da_'+eta, treeDA.getTH1F(lumi, "mll_SF_in_" +eta+dy_reg.name+'_data' , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
+                setattr(dy_reg, 'mll_OF_da_'+eta, treeDA.getTH1F(lumi, "mll_OF_in_" +eta+dy_reg.name+'_data' , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
+                setattr(dy_reg, 'mll_SF_mc_'+eta, treeMC.getTH1F(lumi, "mll_SF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
+                setattr(dy_reg, 'mll_OF_mc_'+eta, treeMC.getTH1F(lumi, "mll_OF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
 
-        setattr(dy_nomass, 'dy_shape_da_'+eta, getattr(dy_nomass, 'mll_SF_da_'+eta).Clone('dy_shape_da_'+eta))
-        setattr(dy_nomass, 'dy_shape_mc_'+eta, getattr(dy_nomass, 'mll_SF_mc_'+eta).Clone('dy_shape_mc_'+eta))
-        getattr(dy_nomass, 'dy_shape_da_'+eta).Add(getattr(dy_nomass, 'mll_OF_da_'+eta), -1.)
-        getattr(dy_nomass, 'dy_shape_mc_'+eta).Add(getattr(dy_nomass, 'mll_OF_mc_'+eta), -1.)
-        
+                setattr(dy_reg, 'dy_shape_da_'+eta, getattr(dy_reg, 'mll_SF_da_'+eta).Clone('dy_shape_da_'+eta))
+                setattr(dy_reg, 'dy_shape_mc_'+eta, getattr(dy_reg, 'mll_SF_mc_'+eta).Clone('dy_shape_mc_'+eta))
+                getattr(dy_reg, 'dy_shape_da_'+eta).Add(getattr(dy_reg, 'mll_OF_da_'+eta), -1.)
+                getattr(dy_reg, 'dy_shape_mc_'+eta).Add(getattr(dy_reg, 'mll_OF_mc_'+eta), -1.)
+            
 
-    dy_shape_cen_mc_0b = scaleZ(dy_nomass.dy_shape_mc_central, onZ, 'central')
-    dy_shape_fwd_mc_0b = scaleZ(dy_nomass.dy_shape_mc_forward, onZ, 'forward')
-    dy_shape_cen_da_0b = scaleZ(dy_nomass.dy_shape_da_central, onZ, 'central')
-    dy_shape_fwd_da_0b = scaleZ(dy_nomass.dy_shape_da_forward, onZ, 'forward')
+        dy_shapes = {}
+        dy_shapes['%db_mc_central'%(opts.nbs)] = scaleZ(dy_nomass.dy_shape_mc_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_mc_forward'%(opts.nbs)] = scaleZ(dy_nomass.dy_shape_mc_forward, onZ, 'forward', opts.nbs)
+        dy_shapes['%db_da_central'%(opts.nbs)] = scaleZ(dy_nomass.dy_shape_da_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_da_forward'%(opts.nbs)] = scaleZ(dy_nomass.dy_shape_da_forward, onZ, 'forward', opts.nbs)
+        dy_shapes['%db_mc_central_rightbin'%(opts.nbs)] = scaleZ(dy_nomass_rightBin.dy_shape_mc_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_mc_forward_rightbin'%(opts.nbs)] = scaleZ(dy_nomass_rightBin.dy_shape_mc_forward, onZ, 'forward', opts.nbs)
+        dy_shapes['%db_da_central_rightbin'%(opts.nbs)] = scaleZ(dy_nomass_rightBin.dy_shape_da_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_da_forward_rightbin'%(opts.nbs)] = scaleZ(dy_nomass_rightBin.dy_shape_da_forward, onZ, 'forward', opts.nbs)
+        dy_shapes['%db_mc_central_binned'%(opts.nbs)] = scaleZ(dy_nomass_binned.dy_shape_mc_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_mc_forward_binned'%(opts.nbs)] = scaleZ(dy_nomass_binned.dy_shape_mc_forward, onZ, 'forward', opts.nbs)
+        dy_shapes['%db_da_central_binned'%(opts.nbs)] = scaleZ(dy_nomass_binned.dy_shape_da_central, onZ, 'central', opts.nbs)
+        dy_shapes['%db_da_forward_binned'%(opts.nbs)] = scaleZ(dy_nomass_binned.dy_shape_da_forward, onZ, 'forward', opts.nbs)
+        for key,value in dy_shapes.items():
+            value.SetLineStyle(2)
+            value.SetLineColor(r.kRed+2)
+            if 'rightbin' in key:
+                value.SetLineColor(r.kGreen+2)
 
     tables = []
     for eta in ['central', 'forward']:
+        yscale = 75. if eta == 'central' else 40.
         ## =================
         ## MAKE THE Mll PLOT for MC only
         ## =================
-        signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  80.*lumi if eta == 'central' else  50.*lumi)
-        signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
-        signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
-        plot_closure = Canvas.Canvas('results/%s/plot_results_mll_MCClosure_%s'%(lumi_str, eta), 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-        plot_closure.addHisto(signalRegion.mll_pred.getHisto('MC', eta), 'hist'   , 'SR - predicted (MC)', 'L', r.kBlue+1 , 1, 0)
-        plot_closure.addGraph(signalRegion.mll_pred.getGraph('MC', eta), '2,same' , 'SR - predicted (MC)', 'L', r.kBlue+1  , 1, -1)
-        plot_closure.addHisto(signalRegion.mll     .getHisto('MC', eta), 'PE,SAME', 'SR - observed  (MC)', 'PL', r.kBlack, 1, 1)
-        plot_closure.addLatex(0.7, 0.8, eta)
-        plot_closure.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('MC', eta), signalRegion.mll_pred.getHisto('MC', eta), 0.5, 1.5)
+        plot_closure = Canvas.Canvas('results/%s/plot_results_mll_MCClosure_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
 
-        ## =================
-        ## MAKE THE Mll PLOT for DATA MC comparison
-        ## =================
-        signalRegion.mll_pred.getHisto('MC', eta).GetYaxis().SetRangeUser(0.,  80.*lumi if eta == 'central' else  50.*lumi)
-        signalRegion.mll_pred.getGraph('MC', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
-        signalRegion.mll_pred.getGraph('MC', eta).SetFillStyle(3001)
-        plot_dataMC = Canvas.Canvas('results/%s/plot_results_mll_dataMC_%s'%(lumi_str, eta), 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-        plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('MC', eta)  , 'hist'   , 'SR - predicted (MC)'  , 'L', r.kBlue+1 , 1, 0)
-        plot_dataMC.addGraph(signalRegion.mll_pred.getGraph('MC', eta)  , '2,same' , 'SR - predicted (MC)'  , 'L', r.kBlue+1  , 1, -1)
-        plot_dataMC.addHisto(signalRegion.mll_pred.getHisto('DATA', eta), 'PE,SAME', 'SR - predicted (DATA)', 'PL', r.kBlack, 1, 1)
-        plot_dataMC.addLatex(0.7, 0.8, eta)
-        plot_dataMC.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('DATA', eta), signalRegion.mll_pred.getHisto('DATA', eta), 0.5, 1.5)
+        mcPredHisto = signalRegion.mll_pred.getHisto('MC'  , eta).Clone('mcPredHisto_'+eta)
+        daPredHisto = signalRegion.mll_pred.getHisto('DATA', eta)
+        mcObsHisto  = signalRegion.mll.getHisto('MC', eta)
 
-        tables.append(makeTable(binnedSR, 'MC', eta))
+        if not opts.onlyTTbar: 
+            mcPredHisto.Add(dy_shapes['%db_mc_%s'%(opts.nbs,eta)+'_rightbin'], 1.)
+            daPredHisto.Add(dy_shapes['%db_da_%s'%(opts.nbs,eta)+'_rightbin'], 1.)
 
-        ## these two only when not blinded!!!
-        if not isBlinded:
-            ## =================
-            ## MAKE THE Mll PLOT for DATA only
-            ## =================
-            signalRegion.mll_pred.getHisto('DATA', eta).GetYaxis().SetRangeUser(0.,  80.*lumi if eta == 'central' else  50.*lumi)
-            signalRegion.mll_pred.getGraph('DATA', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
-            signalRegion.mll_pred.getGraph('DATA', eta).SetFillStyle(3001)
-            plot_result = Canvas.Canvas('results/%s/plot_results_mll_data_%s'%(lumi_str, eta), 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-            plot_result.addHisto(signalRegion.mll_pred.getHisto('DATA', eta), 'hist'   , 'SR - predicted (DATA)', 'L', r.kBlue+1 , 1, 0)
-            plot_result.addGraph(signalRegion.mll_pred.getGraph('DATA', eta), '2,same' , 'SR - predicted (DATA)', 'L', r.kBlue+1  , 1, -1)
-            plot_result.addHisto(signalRegion.mll     .getHisto('DATA', eta), 'PE,SAME', 'SR - observed  (DATA)' , 'PL', r.kBlack, 1, 1)
-            plot_result.addLatex(0.7, 0.8, eta)
-            plot_result.saveRatio(1, 0, 0, lumi, signalRegion.mll.getHisto('DATA', eta), signalRegion.mll_pred.getHisto('DATA', eta), 0.5, 1.5)
-        else:
-            print 'you sneaky bastard. stop this!!!'
+        mcPredGraph = r.TGraphErrors(mcPredHisto)
+        mcPredGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
+        mcPredGraph.SetFillStyle(3001)
+
+        #mcPredHisto.GetYaxis().SetRangeUser(0.,  yscale*lumi)
+        mcPredHisto.GetYaxis().SetRangeUser(0.,  1.4*mcPredHisto.GetMaximum() )
+
+        plot_closure.addHisto(mcPredHisto, 'hist'     , 'predicted (MC)', 'L', r.kBlue+1 , 1, 0)
+        plot_closure.addGraph(mcPredGraph, '2,same'   , 'predicted (MC)', 'L', r.kBlue+1  , 1, -1)
+        plot_closure.addHisto(mcObsHisto , 'PE,SAME'  , 'observed  (MC)', 'PL', r.kBlack, 1, 1)
+        if not opts.onlyTTbar: plot_closure.addHisto(dy_shapes['%db_mc_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (MC)', 'L', r.kRed+2, 1, 1)
+        plot_closure.addLatex(0.7, 0.8, eta, 62)
+        plot_closure.addLatex(0.7, 0.45, 'n_{b} '+('= ' if opts.nbs !=2 else '#geq ')+str(opts.nbs), 62)
+        plot_closure.saveRatio(1, 0, 0, lumi, mcObsHisto, mcPredHisto, 0.5, 1.5)
+
+        if not opts.onlyClosure:
+            ## ============================================================
+            ## MAKE THE Mll PLOT for DATA MC PREDICTION COMPARISON
+            ## ============================================================
+            plot_dataMC = Canvas.Canvas('results/%s/plot_results_mll_dataMCPred_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
+            plot_dataMC.addHisto(mcPredHisto, 'hist'   , 'predicted (MC)'  , 'L', r.kBlue+1 , 1, 0)
+            plot_dataMC.addGraph(mcPredGraph, '2,same' , 'predicted (MC)'  , 'L', r.kBlue+1  , 1, -1)
+            plot_dataMC.addHisto(daPredHisto, 'PE,SAME', 'predicted (DATA)', 'PL', r.kBlack, 1, 1)
+            if not opts.onlyTTbar: plot_dataMC.addHisto(dy_shapes['%db_da_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (DATA)', 'L', r.kRed+2, 1, 1)
+            plot_dataMC.addLatex(0.7, 0.8, eta, 62)
+            plot_dataMC.addLatex(0.7, 0.45, 'n_{b} '+('= ' if opts.nbs !=2 else '#geq ')+str(opts.nbs), 62)
+            plot_dataMC.saveRatio(1, 0, 0, lumi, daPredHisto, mcPredHisto, 0.5, 1.5)
+
+            tables.append(makeTable(binnedSR, 'MC', eta, opts.nbs))
+
+            ## ============================================================
+            ## MAKE THE Mll PLOT for DATA PREDICTION vs MC OBSERVATION
+            ## ============================================================
+            plot_predDataMC = Canvas.Canvas('results/%s/plot_results_mll_predDataObsMC_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
+            plot_predDataMC.addHisto(daPredHisto, 'hist'   , 'SR - predicted (DATA)', 'PL', r.kBlack, 1, 1)
+            plot_predDataMC.addGraph(mcPredHisto, 'PE,same', 'SR - observed (MC)'   , 'L' , r.kBlue+1  , 1, -1)
+            if not opts.onlyTTbar: plot_predDataMC.addHisto(dy_shapes['%db_da_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (DATA)', 'L', r.kRed+2, 1, 1)
+            plot_predDataMC.addLatex(0.7, 0.8, eta, 62)
+            plot_predDataMC.addLatex(0.7, 0.45, 'n_{b} '+('= ' if opts.nbs !=2 else '#geq ')+str(opts.nbs), 62)
+            plot_predDataMC.saveRatio(1, 0, 0, lumi, mcPredHisto, daPredHisto, 0.5, 1.5)
+
+
+            ## these two only when not blinded!!!
+            if not isBlinded:
+                ## =================
+                ## MAKE THE Mll PLOT for DATA only
+                ## =================
+                daObsHisto = signalRegion.mll.getHisto('DATA', eta)
+                signalRegion.mll_pred.getHisto('DATA', eta).GetYaxis().SetRangeUser(0.,  yscale*lumi)
+                signalRegion.mll_pred.getGraph('DATA', eta).SetFillColorAlpha(r.kBlue+1, 0.2)
+                signalRegion.mll_pred.getGraph('DATA', eta).SetFillStyle(3001)
+                plot_result = Canvas.Canvas('results/%s/plot_results_mll_data_%s'%(lumi_str, eta), 'png,pdf', 0.6, 0.5, 0.80, 0.7)
+                plot_result.addHisto(daPredHisto, 'hist'   , 'SR - predicted (DATA)', 'L', r.kBlue+1 , 1, 0)
+                plot_result.addGraph(daPredHisto, '2,same' , 'SR - predicted (DATA)', 'L', r.kBlue+1  , 1, -1)
+                plot_result.addHisto(daObsHisto , 'PE,SAME', 'SR - observed  (DATA)' , 'PL', r.kBlack, 1, 1)
+                plot_result.addLatex(0.7, 0.8, eta)
+                plot_result.saveRatio(1, 0, 0, lumi, daObsHisto, daPredHisto, 0.5, 1.5)
+            else:
+                print 'you sneaky bastard. stop this!!!'
 
