@@ -14,8 +14,13 @@
 #####################################################################
 
 import ROOT as r
+<<<<<<< HEAD
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors, SetOwnership
 import math, sys, optparse, array, time
+=======
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+import math, sys, optparse, array, time, copy
+>>>>>>> origin/HEAD
 import Rounder as rounder
 
 import include.helper     as helper
@@ -30,9 +35,10 @@ import include.Sample     as Sample
 if __name__ == "__main__":
 
 
-    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
+    parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
-    (options, args) = parser.parse_args()
+    parser.add_option("-t", "--test", action="store_true", dest="test", default=False, help="just do a testrun. takes one variable in one eta for one region")
+    (opts, args) = parser.parse_args()
 
     inputFileName = args[0]
 
@@ -56,12 +62,12 @@ if __name__ == "__main__":
     treeTT = Sample.Tree(helper.selectSamples(inputFileName, ttDatasets, 'TT'), 'TT'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(inputFileName, dyDatasets, 'DY'), 'DY'  , 0)
     treeRA = Sample.Tree(helper.selectSamples(inputFileName, raDatasets, 'RA'), 'RA'  , 0)
-   # treeST = Sample.Tree(helper.selectSamples(inputFileName, stDatasets, 'ST'), 'ST',   0)
+
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
 
-   # mcTrees = [treeDY, treeRA, treeTT]
-    mcTrees = [treeRA, treeTT, treeRA]
-   # mcTrees = [treeTT]
+    mcTrees = [treeRA, treeDY, treeTT]
+    #tree = treeMC
+
     print 'Trees successfully loaded...'
 
     gROOT.ProcessLine('.L tdrstyle.C')
@@ -71,122 +77,140 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    #lumi = 0.849
+    color = helper.color
+
+    #lumi = 1.28
     lumi = 1.3
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_blind'
+
 
 
     regions = []
     setLog = []
-    Control2JetsSF = Region.region('Control2JetsSF',
-                       [cuts.Control2JetsSF()],
-                       #['mll', 'met', 'nb', 'nj', 'nvtx'],
-                       #[range(20,310,10), range(0,310,10), range(0,5,1), range(0,8,1), range(0,35)],
-                       ['mll'], [range(0,310,10)],
-                       True)
-    regions.append(Control2JetsSF)
-    setLog.append(True)
+    doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb', 'l1pt', 'l2pt', 'ht']
+    binnings    = [range(20,310,10), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
 
-#    Control2JetsOF = Region.region('Control2JetsOF',
-#                       [cuts.Control2JetsOF()],
-#                       #['mll', 'met', 'nb', 'nj', 'nvtx'],
-#                       #[range(10,310,10), range(10,310,10), range(0,5,1), range(0,8,1), range(0,35)],
-#                       ['mll'], [range(0,310,10)],
-#                       True)
-#    regions.append(Control2JetsOF) 
-#    setLog.append(False)                      
+    if opts.test:
+        doVariables = [doVariables[1]]
+        binnings    = [binnings[1]]
+    doVariables =doVariables[-4:]
+    binnings =binnings[-4:]
+
+    Control2JetsAF_blind = Region.region('Control2JetsAF_blind',
+                       [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, True)
+    regions.append(Control2JetsAF_blind) 
+
+    ##Control0JetsSF = Region.region('Control0JetsSF',
+    ##                   [cuts.nj0, cuts.SF], doVariables, binnings, True)
+    ##regions.append(Control0JetsSF)
+
+    ##Control0JetsOF = Region.region('Control0JetsOF',
+    ##                   [cuts.nj0, cuts.OF], doVariables, binnings, True)
+    ##regions.append(Control0JetsOF)
+    ##
+    ##Control2JetsSF = Region.region('Control2JetsSF',
+    ##                   [cuts.Control2JetsSF()], doVariables, binnings, True)
+    ##regions.append(Control2JetsSF)
+    ##
+    ##Control2JetsOF = Region.region('Control2JetsOF',
+    ##                   [cuts.Control2JetsOF()], doVariables, binnings, True)
+    ##regions.append(Control2JetsOF) 
+
+
+    etas = ['central' , 'forward']
+    if opts.test:
+        regions = regions[:1]
+        etas = etas[:1]
+        
+>>>>>>> origin/HEAD
 
     for reg in regions:
+        print color.bold+color.red+'=========================================='
         print 'i am at region', reg.name
-        for eta in ['central', 'forward']:         
-            my_cuts = cuts.AddList([cuts.goodLepton, cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-            for tree in ( (mcTrees+[treeDA]) if reg.doData else mcTrees):
-           
-                if tree == treeDA: 
-                    dataMC = 'DATA'
-                else: 
-                    dataMC = 'MC' 
+        print '=========================================='+color.end
+        #for eta in ['central', 'forward']:
+        for eta in etas:
+                    
+>>>>>>> origin/HEAD
 
-                for var in reg.rvars:
+            for var in reg.rvars:
 
-                    if   var == 'mll':
-                        varTitle    = 'm_{ll} (GeV)'
-                        varVariable = 't.lepsMll_Edge'
-                    elif var == 'met':
-                        varTitle    = 'ME_{T} (GeV)'
-                        varVariable = 'met_pt'
-                    elif var == 'nj':
-                        varTitle    = 'n-{jets}'
-                        varVariable = 't.nJetSel_Edge'
-                    elif var == 'nb':
-                        varTitle    = 'n_{b-jets}'
-                        varVariable = 't.nBJetMedium35_Edge'
-                    elif var == 'nvtx':
-                        varTitle    = 'n_{vertices}'
-                        varVariable = 'nVert'
-                    elif var == 'min_mlb':
-                        varTitle    = 'min(m_{lb})'
-                        varVariable = 't.min_mlb1_Edge'
-                    elif var == 'max_mlb':
-                        varTitle    = 'max(m_{lb})'
-                        varVariable = 't.min_mlb2_Edge'
+                if   var == 'mll':
+                    varTitle    = 'm_{ll} (GeV)'
+                    varVariable = 't.lepsMll_Edge'
+                elif var == 'met':
+                    varTitle    = 'ME_{T} (GeV)'
+                    varVariable = 'met_pt'
+                elif var == 'nj':
+                    varTitle    = 'n-{jets}'
+                    varVariable = 't.nJetSel_Edge'
+                elif var == 'nb':
+                    varTitle    = 'n_{b-jets}'
+                    varVariable = 't.nBJetMedium35_Edge'
+                elif var == 'nvtx':
+                    varTitle    = 'n_{vertices}'
+                    varVariable = 'nVert'
+                elif var == 'mlb':
+                    varTitle    = 'min(m_{lb})'
+                    varVariable = 't.min_mlb1_Edge'
+                elif var == 'l1pt':
+                    varTitle    = 'p_{T, l1}'
+                    varVariable = 't.Lep1_pt_Edge'
+                elif var == 'l2pt':
+                    varTitle    = 'p_{T, l2}'
+                    varVariable = 't.Lep2_pt_Edge'
+                elif var == 'ht':
+                    varTitle    = 'H_{T}'
+                    varVariable = 't.htJet35j_Edge'
 
+                print 'loading variable %s in %s'%(var, eta)
+                mc_histo = 0
+                mc_stack = r.THStack()
 
-                    print 'loading variable %s in %s for %s'%(var, eta, tree.name)
-
-                    attr = var+('' if tree.name in ['DATA', 'MC'] else '_'+tree.name.lower())
-                    tmp_full= tree.getTH1F(lumi, var+"_"+eta+reg.name+tree.name, varVariable, reg.bins[reg.rvars.index(var)], 1, 1, my_cuts, "", varTitle)
-                    getattr(reg, attr).setHisto(tmp_full, dataMC, eta) 
-
-
-    for reg in regions:
-        for var in reg.rvars:
-            for eta in ['central', 'forward']:
-                print 'in region ', eta
-                stack = r.THStack()
-            ## add the MCs up in the MC histo
-                mc_hist = 0
-                vhists = []
-                for tree in mcTrees:
+                for tree in ( (mcTrees+[treeDA]) if reg.doData else mcTrees):
+                    ind = 0
                     treename = tree.name.lower()
-                    tmp_hist = getattr(reg, var+'_'+treename).getHisto('MC', eta).Clone(var+eta+reg.name)
-                    getattr(reg, var).setHisto(tmp_hist, 'MC', eta)
-                    if treename == 'dy':
-                        tmp_hist.SetFillColorAlpha(r.kBlue, 0.5)
-                    elif treename == 'tt':
-                        tmp_hist.SetFillColorAlpha(r.kRed, 0.5)
-                    elif treename == 'ra':
-                        tmp_hist.SetFillColorAlpha(r.kYellow, 0.5)
-                    vhists.append(tmp_hist)
-                    if not mc_hist:
-                        mc_hist = tmp_hist
-                    else:
-                        mc_hist.Add(tmp_hist, 1.) 
-                    #print 'mc_hist is', mc_hist.GetEntries()
-                    #print "tmp_hist is", tmp_hist.GetName(), tmp_hist.GetEntries()
-                    #stack.Add(tmp_hist, "")
-                    #del tmp_hist
-                    del tmp_hist
-                getattr(reg, var).setHisto(mc_hist, 'MC', eta)
+                    print '... doing tree %s' %treename
 
-                stack.Add(vhists[0])
-                stack.Add(vhists[1])
-                stack.Add(vhists[2])
-                # done adding the MC hist
-                print 'plotting %s in region %s in %s' %(var, reg.name, eta) 
-                
-                plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name), "png,pdf", 0.6, 0.6, 0.8, 0.8)
-                SetOwnership(stack, False )
-                #plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta)  , "E"     , "Data", "PL", r.kBlack , 1, 1)
-                plot_var.addStack(stack, "HIST", 1, 1)  
-                plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E, SAME"   , "Data"  , "PL", r.kBlack , 1, 1)   
-                print 'data is (getEntries)', getattr(reg, var).getHisto('DATA', eta).GetEntries()
-                print 'data is (integral)', getattr(reg, var).getHisto('DATA', eta).Integral()
-                print 'total mc is (getEntries)', getattr(reg, var).getHisto('MC', eta).GetEntries()
-                print 'total mc is (integral)', getattr(reg, var).getHisto('MC', eta).Integral()
-                plot_var.saveRatio(1, 1, 1, lumi, getattr(reg, var).getHisto('DATA', eta), getattr(reg, var).getHisto('MC', eta))
-                del plot_var  
-                del stack
+                    my_cuts = cuts.AddList([cuts.GoodLepton()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+
+                    block = tree.blocks[0]
+            
+                    dataMC = ('DATA' if tree == treeDA else 'MC'); isData = dataMC == 'DATA';
+
+                    attr = var+('' if tree.name in ['DATA', 'MC'] else '_'+treename)
+                    tmp_full= tree.getTH1F(lumi, var+"_"+eta+reg.name+treename, varVariable, reg.bins[reg.rvars.index(var)], 1, 1, my_cuts, "", varTitle)
+                    if tree == treeTT:
+                        tmp_full.SetLineColor(r.kRed+1)
+                        tmp_full.SetFillColor(block.color)
+                    else:
+                        tmp_full.SetFillColorAlpha(block.color, 0.5)
+                    tmp_full.SetTitle(block.name)
+
+                    getattr(reg, attr).setHisto(tmp_full, dataMC, eta)
+
+                    ## don't do any adding for data
+                    if isData: 
+                        continue
+
+                    tmp_histo = copy.deepcopy(tmp_full.Clone(var+eta+reg.name))
+                    mc_stack.Add(tmp_histo)
+                    if not ind: mc_stack.Draw()
+                    ind+=1
+                    mc_stack.GetXaxis().SetTitle(tmp_histo.GetXaxis().GetTitle())
+                    print 'tmp_histo has integral %.2f'%tmp_histo.Integral()
+                    if not mc_histo:
+                        mc_histo = copy.deepcopy(tmp_histo)
+                    else:
+                        mc_histo.Add(tmp_histo, 1.)
+                setattr(reg, '%s_mc_histo_%s'%(var, eta), mc_histo)
+                setattr(reg, '%s_mc_stack_%s'%(var, eta), mc_stack)
+
+                print 'plotting %s in region %s in %s' %(var, reg.name, eta)
+                plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name), "png,pdf", 0.6, 0.7, 0.8, 0.9)
+                plot_var.addStack(mc_stack  , "hist" , 1, 1)
+                plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E,SAME"   , "Data"  , "PL", r.kBlack , 1, 0)
+                plot_var.saveRatio(1, 1, 1, lumi, getattr(reg, var).getHisto('DATA', eta), mc_histo )
                 time.sleep(0.1)
 
 

@@ -265,12 +265,18 @@ class Tree:
    def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel):
    
      if(xmin == xmax):
-       h = TH1F(name, "", len(nbin)-1, array('d', nbin))
+       _nbins = len(nbin)-1
+       _arr = array('d', nbin)
+       h = TH1F(name, "", _nbins, _arr)
+       _newarr = _arr + array('d', [ 2*_arr[-1]-_arr[-2] ])
+       h_of = TH1F(name+'_of', "", _nbins+1, _newarr)
        ylabel = "# events"
      else:
        h = TH1F(name, "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
        ylabel = "Events / " + str(bw) + " GeV"
+       h_of = TH1F(name+'_of', '', nbin+1, xmin, xmax+bw)
+
      h.Sumw2()
      h.GetXaxis().SetTitle(xlabel)
      h.GetYaxis().SetTitle(ylabel)
@@ -281,7 +287,11 @@ class Tree:
        h.Add(haux)
        del haux
 
-     return h   
+     for _bin in range(1, h_of.GetNbinsX()+1):
+         h_of.SetBinContent(_bin, h.GetBinContent(_bin))
+         h_of.SetBinError  (_bin, h.GetBinError  (_bin))
+
+     return h_of
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
    
