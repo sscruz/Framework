@@ -14,17 +14,17 @@ class CutManager:
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
       self.leptonsMll = "t.lepsMll_Edge > 20"
       self.goodLepton = self.twoLeptons + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll
+      self.SSee = "(t.Lep1_pdgId_Edge * t.Lep2_pdgId_Edge == 121)"
+      self.SSmm = "(t.Lep1_pdgId_Edge * t.Lep2_pdgId_Edge == 169)"
+      self.SSOF = "(t.Lep1_pdgId_Edge * t.Lep2_pdgId_Edge == 143)" 
       self.ee = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121)"
       self.mm = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)"
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
       self.nj2 = "(t.nJetSel_Edge >= 2)"
-<<<<<<< HEAD
       self.InclusiveCR = "(t.nJetSel_Edge >= 1 && t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120)"
-=======
       self.nj0 = "(t.nJetSel_Edge >= 0)"
->>>>>>> origin/HEAD
       self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
@@ -41,6 +41,7 @@ class CutManager:
       self.central = "(abs(t.Lep1_eta_Edge)<1.4 && abs(t.Lep2_eta_Edge)<1.4)"
       self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
+      self.noOStrigger = "((" + self.trigMMc +") || (" + self.trigEEc + ") || (" + self.trigEMc + "))"
       self.HT = "(t.htJet35j_Edge > 200)"
       self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht300 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0 || HLT_at51>0 || HLT_at52 >0 || HLT_at53 > 0 || HLT_at55 > 0)"
 
@@ -107,9 +108,17 @@ class CutManager:
 
       return self.brackets(self.goodLepton + " && " + self.trigger)
 
+   def GoodLeptonNoOSTrigger(self):
+
+      return self.brackets(self.goodLepton + " && " + self.noOStrigger)
+
    def GoodLeptonAF(self):
 
       return self.brackets(self.goodLepton + " && " + self.AF + " && " + self.trigger)
+
+   def GoodLeptonSS(self):
+
+      return self.brackets( self.SS )
 
    def GoodLeptonSF(self):
 
@@ -126,6 +135,18 @@ class CutManager:
    def GoodLeptonmm(self):
 
       return self.brackets(self.goodLepton + " && " + self.mm + " && " + self.trigger)
+
+   def GoodLeptonSSee(self):
+
+      return self.brackets(self.goodLepton + " && " + self.SSee + " && " + self.trigger)
+
+   def GoodLeptonSSmm(self):                                                               
+  
+        return self.brackets(self.goodLepton + " && " + self.SSmm + " && " + self.trigger)
+  
+   def GoodLeptonSSem(self):
+
+      return self.brackets(self.goodLepton + " && " + self.SSem + " && " + self.trigger)   
 
    def SignalNoMassLeptonSF(self):
 
@@ -293,7 +314,7 @@ class CutManager:
    
    def Control2Jetsmm(self):
 
-	return self.brackets(self.nj2 + " && " + self.GoodLeptonmm())
+	  return self.brackets(self.nj2 + " && " + self.GoodLeptonmm())
       
    def Control2JetsMETSF(self):
 
@@ -309,22 +330,36 @@ class CutManager:
    
    def Control2JetsMETmm(self):
 
-	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
+	  return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
       
    def InclusiveCROF(self):
 
-    return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonOF())
+      return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonOF())
    
    def InclusiveCRSF(self):
 
-	return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonSF())
+	  return self.brackets(self.InclusiveCR + " && "  + self.GoodLeptonSF())
   
    def InclusiveCRee(self):
 
-    return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonee())
+      return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonee())
     
    def InclusiveCRmm(self):
 
-    return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonmm())
+      return self.brackets(self.InclusiveCR + " && " + self.GoodLeptonmm())
 
+   def DYSameSignEE(self):
 
+      return self.brackets(self.DYControlRegion + " && " + self.GoodLeptonNoOSTrigger() + " && " + self.SSee)
+
+   def DYSameSignMM(self):
+
+      return self.brackets(self.DYControlRegion + " && " + self.GoodLeptonNoOSTrigger() + " && " + self.SSmm)
+
+   def DYSameSignOF(self):
+
+      return self.brackets(self.DYControlRegion + " && " + self.GoodLeptonNoOSTrigger() + " && " + self.SSOF)
+
+   def test(self):
+
+      return self.brackets(slef.SSem)

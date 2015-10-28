@@ -144,6 +144,13 @@ class region():
                 self.jzb_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_pred = collection(self.bins[self.rvars.index(v)], v)
                 self.jzb_st   = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'mlb' :
+                self.mlb      = collection(self.bins[self.rvars.index(v)], v)
+                self.mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.mlb_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.mlb_st   = collection(self.bins[self.rvars.index(v)], v)
             if v == 'min_mlb' :
                 self.min_mlb      = collection(self.bins[self.rvars.index(v)], v)
                 self.min_mlb_dy   = collection(self.bins[self.rvars.index(v)], v)
@@ -158,3 +165,11 @@ class region():
                 self.max_mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.max_mlb_pred = collection(self.bins[self.rvars.index(v)], v)
                 self.max_mlb_st = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'l1pt' :                                                  
+                self.l1pt      = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_st = collection(self.bins[self.rvars.index(v)], v)
+
