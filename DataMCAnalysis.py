@@ -14,46 +14,50 @@
 #####################################################################
 
 import ROOT as r
-import math as math
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+import math, sys, optparse, array
+import Rounder as rounder
 
-from optparse import OptionParser
-from ROOT import gROOT, TCanvas, TFile
-from Sample import Sample, Block, Tree
-from CutManager import CutManager
-from Canvas import Canvas
-
-
+import include.helper     as helper
+import include.Region     as Region
+import include.Canvas     as Canvas
+import include.CutManager as CutManager
+import include.Sample     as Sample
 
 
 if __name__ == "__main__":
 
-    parser = OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
+
+
+    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     (options, args) = parser.parse_args()
 
-    if len(args) != 2:
-        parser.error("wrong number of arguments")
+    inputFileName = args[0]
 
-    inputFileNameMC = args[0]
-    inputFileNameData = args[1]
-  
-    treeMC = Tree(inputFileNameMC, "MC", 0)
-    treeData = Tree(inputFileNameData, "Data", 0)
-   
+    print 'Going to load DATA and MC trees...'
+    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q']
+    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751', 'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']  
+    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    #tree = treeMC
+    print 'Trees successfully loaded...'
+
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
-    r.setTDRStyle() 
+    r.setTDRStyle()
 
-    cuts = CutManager()
+    ####Cuts needed by rmue
+    cuts = CutManager.CutManager()
 
-    lumi = 0.042
+    lumi = 0.225
 
     #inclusive region
-    mll_SF_central_data = treeData.getTH1F(lumi, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_SF_central_data = treeDA.getTH1F(lumi, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mll_SF_central_mc = treeMC.getStack(lumi, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mll_SF_central_mc_h = treeMC.getTH1F(lumi, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     
-    mll_OF_central_data = treeData.getTH1F(lumi, "mll_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mll_OF_central_data = treeDA.getTH1F(lumi, "mll_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mll_OF_central_mc = treeMC.getStack(lumi, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mll_OF_central_mc_h = treeMC.getTH1F(lumi, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
  
@@ -68,11 +72,11 @@ if __name__ == "__main__":
     plot_OF_central.saveRatio(1, 1, 1, lumi, mll_OF_central_data, mll_OF_central_mc_h)
    
 
-    mll_SF_forward_data = treeData.getTH1F(lumi, "mll_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mll_SF_forward_data = treeDA.getTH1F(lumi, "mll_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mll_SF_forward_mc = treeMC.getStack(lumi, "mll_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mll_SF_forward_mc_h = treeMC.getTH1F(lumi, "mll_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     
-    mll_OF_forward_data = treeData.getTH1F(lumi, "mll_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mll_OF_forward_data = treeDA.getTH1F(lumi, "mll_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mll_OF_forward_mc = treeMC.getStack(lumi, "mll_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mll_OF_forward_mc_h = treeMC.getTH1F(lumi, "mll_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
  
@@ -88,11 +92,11 @@ if __name__ == "__main__":
 
     #DY region
 
-    mllDY_SF_central_data = treeData.getTH1F(lumi, "mllDY_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mllDY_SF_central_data = treeDA.getTH1F(lumi, "mllDY_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllDY_SF_central_mc = treeMC.getStack(lumi, "mllDY_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllDY_SF_central_mc_h = treeMC.getTH1F(lumi, "mllDY_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     
-    mllDY_OF_central_data = treeData.getTH1F(lumi, "mllDY_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mllDY_OF_central_data = treeDA.getTH1F(lumi, "mllDY_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllDY_OF_central_mc = treeMC.getStack(lumi, "mllDY_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllDY_OF_central_mc_h = treeMC.getTH1F(lumi, "mllDY_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
  
@@ -107,11 +111,11 @@ if __name__ == "__main__":
     plotDY_OF_central.saveRatio(1, 1, 1, lumi, mllDY_OF_central_data, mllDY_OF_central_mc_h)
    
 
-    mllDY_SF_forward_data = treeData.getTH1F(lumi, "mllDY_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mllDY_SF_forward_data = treeDA.getTH1F(lumi, "mllDY_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllDY_SF_forward_mc = treeMC.getStack(lumi, "mllDY_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllDY_SF_forward_mc_h = treeMC.getTH1F(lumi, "mllDY_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     
-    mllDY_OF_forward_data = treeData.getTH1F(lumi, "mllDY_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mllDY_OF_forward_data = treeDA.getTH1F(lumi, "mllDY_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllDY_OF_forward_mc = treeMC.getStack(lumi, "mllDY_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllDY_OF_forward_mc_h = treeMC.getTH1F(lumi, "mllDY_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
  
@@ -129,11 +133,11 @@ if __name__ == "__main__":
  
     #ttbar Control region
  
-    mllCR_SF_central_data = treeData.getTH1F(lumi, "mllCR_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mllCR_SF_central_data = treeDA.getTH1F(lumi, "mllCR_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllCR_SF_central_mc = treeMC.getStack(lumi, "mllCR_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllCR_SF_central_mc_h = treeMC.getTH1F(lumi, "mllCR_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
     
-    mllCR_OF_central_data = treeData.getTH1F(lumi, "mllCR_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
+    mllCR_OF_central_data = treeDA.getTH1F(lumi, "mllCR_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllCR_OF_central_mc = treeMC.getStack(lumi, "mllCR_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
     mllCR_OF_central_mc_h = treeMC.getTH1F(lumi, "mllCR_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
  
@@ -148,11 +152,11 @@ if __name__ == "__main__":
     plotCR_OF_central.saveRatio(1, 1, 1, lumi, mllCR_OF_central_data, mllCR_OF_central_mc_h)
    
 
-    mllCR_SF_forward_data = treeData.getTH1F(lumi, "mllCR_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mllCR_SF_forward_data = treeDA.getTH1F(lumi, "mllCR_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllCR_SF_forward_mc = treeMC.getStack(lumi, "mllCR_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllCR_SF_forward_mc_h = treeMC.getTH1F(lumi, "mllCR_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     
-    mllCR_OF_forward_data = treeData.getTH1F(lumi, "mllCR_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
+    mllCR_OF_forward_data = treeDA.getTH1F(lumi, "mllCR_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllCR_OF_forward_mc = treeMC.getStack(lumi, "mllCR_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
     mllCR_OF_forward_mc_h = treeMC.getTH1F(lumi, "mllCR_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
  

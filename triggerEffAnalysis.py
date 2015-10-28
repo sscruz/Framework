@@ -28,6 +28,22 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 
 
+
+
+def getRT(self, eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
+    RT = math.sqrt(eff_ee*eff_mm)/eff_em
+    uncRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(unc_ee/math.sqrt(eff_ee)) 
+    uncRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(unc_mm/math.sqrt(eff_mm)) 
+    uncRTem = math.sqrt(eff_ee*eff_mm)*((unc_em)/(eff_em*eff_em])) 
+    uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
+    uncsysRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(0.05*eff_ee/math.sqrt(eff_ee)) 
+    uncsysRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(0.05*eff_mm/math.sqrt(eff_mm)) 
+    uncsysRTem = math.sqrt(eff_ee*eff_mm)*((0.05*eff_em)/(eff_em*eff_em])) 
+    uncsysRT = math.sqrt(uncsysRTee * uncsysRTee + uncsysRTmm * uncsysRTmm + uncsysRTem * uncsysRTem)
+
+    return [RT, uncRT, uncsysRT]
+
+
 def getTriggerEffs(tree, numcut, dencut, var, varname, binning, lumi):
 
 
@@ -37,11 +53,6 @@ def getTriggerEffs(tree, numcut, dencut, var, varname, binning, lumi):
     allYields = tree.getYields(lumi, 't.lepsMll_Edge', 0, 1000, dencut)
     eff = passYields[0]/allYields[0]
     unc = math.sqrt((passYields[1]*passYields[1])/(allYields[0]*allYields[0]) + (passYields[0]*passYields[0]*allYields[1]*allYields[1])/(allYields[0]*allYields[0]*allYields[0]*allYields[0]))    
-
-
-    for i in range(1,passHisto.GetNbinsX()+1):
-        print 'at variable %s events passing/total %.2f  of  %.2f' %(varname, passHisto.GetBinContent(i), allHisto.GetBinContent(i) )
-
 
     errs = TGraphAsymmErrors(passHisto, allHisto, 'a')
 
@@ -76,103 +87,62 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-
-    effs = {}
-    uncs = []
-
-    denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT])
-    denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT])
-    denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT])
-    numerator_EE = cuts.AddList([denominator_EE, cuts.trigEEc])
-    numerator_MM = cuts.AddList([denominator_MM, cuts.trigMMc])
-    numerator_EM = cuts.AddList([denominator_EM, cuts.trigEMc])
-
-    denominator_HT = cuts.AddList([cuts.goodLepton, cuts.HT])
-    numerator_HT   = cuts.AddList([denominator_HT, cuts.triggerHT])
-    effs['ht_da'] = getTriggerEffs(treeDA, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
-    effs['ht_mc'] = getTriggerEffs(treeMC, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
-
-    print asdfasd
-    
-    plot_ht = Canvas.Canvas('trigger/%s/plot_eff_ht'%(lumi_str), 'png', 0.6, 0.6, 0.8, 0.8)
-    effs['ht_mc'][0].GetHistogram().SetMarkerColor(r.kRed+1)
-    #effs['ht_mc'][0].GetHistogram().Draw()
-    effs['ht_mc'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-    effs['ht_mc'][0].Draw('apz')
-    #effs['ht_da'][0].Draw('apz same')
-    plot_ht.save(0, 0, 0, lumi)
-
-    ##sys.exit(0)
-
-    for flavor in ['ee', 'mm', 'em']:
-
-        if   flavor is 'ee': 
-            trigger = cuts.trigEEc
-            mllvar  = 'm_{ee} (GeV)'
-            pt1var  = 'p_{T}^{e,lead} (GeV)'
-            pt2var  = 'p_{T}^{e,trail} (GeV)'
-            numcut = numerator_EE
-            dencut = denominator_EE
-            tag    = "EE"
-        elif flavor is 'mm': 
-            trigger = cuts.trigMMc
-            mllvar  = 'm_{#mu#mu} (GeV)'
-            pt1var  = 'p_{T}^{#mu,lead} (GeV)'
-            pt2var  = 'p_{T}^{#mu,trail} (GeV)'
-            numcut = numerator_MM
-            dencut = denominator_MM
-            tag    = "MM"
-        elif flavor is 'em': 
-            trigger = cuts.trigEMc
-            mllvar  = 'm_{e#mu} (GeV)'
-            pt1var  = 'p_{T}^{lep,lead} (GeV)'
-            pt2var  = 'p_{T}^{lep,trail} (GeV)'
-            numcut = numerator_EM
-            dencut = denominator_EM
-            tag    = "EM"
-        else: 
-            print 'something is wrong...'
-
-        effs[flavor+'mll'] = getTriggerEffs(treeDA, numcut, dencut, 't.lepsMll_Edge', mllvar, [20,  0, 200], lumi)
-        effs[flavor+'pt1'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], lumi)
-        effs[flavor+'pt2'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], lumi)
-
-        plot_mll = Canvas.Canvas('trigger/%s/plot_eff_%s_mll'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'mll'][0].GetHistogram().Draw()
-        effs[flavor+'mll'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'mll'][0].Draw('apz')
-        plot_mll.save(0, 0, 0, lumi)
-
-        plot_l1pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l1pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'pt1'][0].GetHistogram().Draw()
-        effs[flavor+'pt1'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'pt1'][0].Draw('apz')
-        plot_l1pt.save(0, 0, 0, lumi)
-
-        plot_l2pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l2pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'pt2'][0].GetHistogram().Draw()
-        effs[flavor+'pt2'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'pt2'][0].Draw('apz')
-        plot_l2pt.save(0, 0, 0, lumi)
-
-        #del plot_mll, plot_l1pt, plot_l2pt
-
-
-    a = rounder.Rounder()
  
-    #print "Summary of values"
-    #print "EE efficiency ", a.toStringB(effs[0][0], effs[0][1])
-    #print "MM efficiency ", a.toStringB(effs[1][0], effs[1][1])
-    #print "EM efficiency ", a.toStringB(effs[2][0], effs[2][1])
+    vetoSignalCR = "(!(" + cuts.METJetsSignalRegion + ")&& !(" + cuts.METJetsControlRegion + "))"
+    denominator_EE_c = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_MM_c = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_EM_c = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    numerator_EE_c = cuts.AddList([denominator_EE, cuts.trigEEc])
+    numerator_MM_c = cuts.AddList([denominator_MM, cuts.trigMMc])
+    numerator_EM_c = cuts.AddList([denominator_EM, cuts.trigEMc])
+    denominator_EE_f = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_MM_f = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_EM_f = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
+    numerator_EE_f = cuts.AddList([denominator_EE, cuts.trigEEc])
+    numerator_MM_f = cuts.AddList([denominator_MM, cuts.trigMMc])
+    numerator_EM_f = cuts.AddList([denominator_EM, cuts.trigEMc])
 
-    #RT = math.sqrt(effs[0][0]*effs[1][0])/effs[2][0]
-    #uncRTee = (math.sqrt(effs[1][0])/effs[2][0])*0.5*(effs[0][1]/math.sqrt(effs[0][0])) 
-    #uncRTmm = (math.sqrt(effs[0][0])/effs[2][0])*0.5*(effs[1][1]/math.sqrt(effs[1][0])) 
-    #uncRTem = math.sqrt(effs[0][0]*effs[1][0])*(math.sqrt(effs[2][1])/(effs[2][0]*effs[2][0])) 
-    #uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
+
+    for dType in ['MC', 'DATA']:
+        [eff_mll_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.lepsMll_Edge', 'm_{ee} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.Lep1_pt_Edge', 'p_{T}^{e,lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.Lep2_pt_Edge', 'p_{T}^{e,trail} (GeV)', [10,  20, 120], lumi)
+        [eff_mll_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.lepsMll_Edge', 'm_{ee} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.Lep1_pt_Edge', 'p_{T}^{e,lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.Lep2_pt_Edge', 'p_{T}^{e,trail} (GeV)', [10,  20, 120], lumi)
+    
+        [eff_mll_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.lepsMll_Edge', 'm_{mm} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.Lep1_pt_Edge', 'p_{T}^{m,lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.Lep2_pt_Edge', 'p_{T}^{m,trail} (GeV)', [10,  20, 120], lumi)
+        [eff_mll_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.lepsMll_Edge', 'm_{mm} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.Lep1_pt_Edge', 'p_{T}^{m,lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.Lep2_pt_Edge', 'p_{T}^{m,trail} (GeV)', [10,  20, 120], lumi)
+
+        [eff_mll_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.lepsMll_Edge', 'm_{em} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.Lep1_pt_Edge', 'p_{T}^{lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.Lep2_pt_Edge', 'p_{T}^{trail} (GeV)', [10,  20, 120], lumi)
+        [eff_mll_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.lepsMll_Edge', 'm_{em} (GeV)', [20,  0, 200], lumi)
+        [eff_pt1_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.Lep1_pt_Edge', 'p_{T}^{lead} (GeV)', [10,  20, 120], lumi)
+        [eff_pt2_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.Lep2_pt_Edge', 'p_{T}^{trail} (GeV)', [10,  20, 120], lumi)
+    
+        [RT_c, uncRT_c, sysRT_c] = getRT(eff_ee_ce, unc_ee_ce, eff_mm_ce, unc_mm_ce, eff_em_ce, unc_em_ce)
+        [RT_f, uncRT_f, sysRT_f] = getRT(eff_ee_fo, unc_ee_fo, eff_mm_fo, unc_mm_fo, eff_em_fo, unc_em_fo)
 
 
+        a = rounder.Rounder()
+        print effs 
+        print "------------ Summary of values for", dType, "---------------"
+        print "EE efficiency central", a.toStringB(eff_ee_ce, unc_ee_ce)
+        print "MM efficiency central", a.toStringB(eff_mm_ce, unc_mm_ce)
+        print "EM efficiency central", a.toStringB(eff_em_ce, unc_em_ce)
+        print "EE efficiency forward", a.toStringB(eff_ee_fo, unc_ee_fo)
+        print "MM efficiency forward", a.toStringB(eff_mm_fo, unc_mm_fo)
+        print "EM efficiency forward", a.toStringB(eff_em_fo, unc_em_fo)
+        print "RT central", a.toStringB(RT_c, uncRT_c), "+/-", a.toString(sysRT_c)
+        print "RT central", a.toStringB(RT_f, uncRT_f), "+/-", a.toString(sysRT_f)
 
+        ing = ingredients("ingredients.dat", dType)
+        ing.UpdateRTValues([RT_c, uncRT_c, sysRT_c], [RT_f, uncRT_f, sysRT_f])
 
 
 
