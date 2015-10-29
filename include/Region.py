@@ -144,3 +144,21 @@ class region():
                 self.mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.mlb_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'l1pt' :
+                self.l1pt      = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1pt_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'l2pt' :
+                self.l2pt      = collection(self.bins[self.rvars.index(v)], v)
+                self.l2pt_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2pt_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2pt_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2pt_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'ht' :
+                self.ht      = collection(self.bins[self.rvars.index(v)], v)
+                self.ht_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.ht_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.ht_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.ht_pred = collection(self.bins[self.rvars.index(v)], v)

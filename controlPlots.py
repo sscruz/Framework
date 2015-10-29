@@ -31,31 +31,23 @@ if __name__ == "__main__":
 
 
     parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
-    parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     parser.add_option("-t", "--test", action="store_true", dest="test", default=False, help="just do a testrun. takes one variable in one eta for one region")
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
     (opts, args) = parser.parse_args()
 
-    inputFileName = args[0]
-
     print 'Going to load DATA and MC trees...'
-    ##mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    ##dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    ##daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
-    ##              'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D',
-    ##              'DoubleMuon_Run2015D_v4', 'DoubleEG_Run2015D_v4', 'MuonEG_Run2015D_v4']
-    #mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     ttDatasets = ['TTLep_pow']
     dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     raDatasets = ['WWTo2L2Nu', 'ZZTo2L2Q', 'TToLeptons_tch_amcatnlo']#'WZTo2L2Q']
-    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
+    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
 
-    ##treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeTT = Sample.Tree(helper.selectSamples(inputFileName, ttDatasets, 'TT'), 'TT'  , 0)
-    treeDY = Sample.Tree(helper.selectSamples(inputFileName, dyDatasets, 'DY'), 'DY'  , 0)
-    treeRA = Sample.Tree(helper.selectSamples(inputFileName, raDatasets, 'RA'), 'RA'  , 0)
+    treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT'  , 0)
+    treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
+    treeRA = Sample.Tree(helper.selectSamples(opts.sampleFile, raDatasets, 'RA'), 'RA'  , 0)
 
-    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     mcTrees = [treeRA, treeDY, treeTT]
     #tree = treeMC
@@ -80,17 +72,33 @@ if __name__ == "__main__":
     setLog = []
 
     doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb', 'l1pt', 'l2pt', 'ht']
-    binnings    = [range(20,310,10), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
+    binnings    = [range(20,75, 5)+range(72,112,2)+range(115,305,5), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
 
     if opts.test:
-        doVariables = [doVariables[1]]
-        binnings    = [binnings[1]]
-    doVariables =doVariables[-4:]
-    binnings =binnings[-4:]
+        doVariables = [doVariables[0]]
+        binnings    = [binnings[0]]
+    #doVariables =doVariables[-4:]
+    #binnings =binnings[-4:]
 
-    Control2JetsAF_blind = Region.region('Control2JetsAF_blind',
-                       [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsAF_blind) 
+    #Control2JetsAF_blind = Region.region('Control2JetsAF_blind',
+    #                   [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, True)
+    #regions.append(Control2JetsAF_blind) 
+
+    Control2JetsEE_blind = Region.region('Control2JetsEE_blind',
+                       [cuts.Control2Jetsee(), cuts.blinded], doVariables, binnings, True)
+    regions.append(Control2JetsEE_blind) 
+
+    Control2JetsMM_blind = Region.region('Control2JetsMM_blind',
+                       [cuts.Control2Jetsmm(), cuts.blinded], doVariables, binnings, True)
+    regions.append(Control2JetsMM_blind) 
+
+    Control2JetsSF_blind = Region.region('Control2JetsSF_blind',
+                       [cuts.Control2JetsSF(), cuts.blinded], doVariables, binnings, True)
+    regions.append(Control2JetsSF_blind) 
+
+    Control2JetsOF_blind = Region.region('Control2JetsOF_blind',
+                       [cuts.Control2JetsOF(), cuts.blinded], doVariables, binnings, True)
+    regions.append(Control2JetsOF_blind) 
 
     ##Control0JetsSF = Region.region('Control0JetsSF',
     ##                   [cuts.nj0, cuts.SF], doVariables, binnings, True)
@@ -110,9 +118,9 @@ if __name__ == "__main__":
 
 
     etas = ['central' , 'forward']
-    if opts.test:
-        regions = regions[:1]
-        etas = etas[:1]
+    #if opts.test:
+    #    regions = regions[:1]
+    #    etas = etas[:1]
         
 
     for reg in regions:
@@ -126,13 +134,13 @@ if __name__ == "__main__":
             for var in reg.rvars:
 
                 if   var == 'mll':
-                    varTitle    = 'm_{ll} (GeV)'
+                    varTitle    = 'm_{ll} (GeV)' if 'SF' in reg.name or 'OF' in reg.name else 'm_{ee}' if 'EE' in reg.name else 'm_{#mu#mu}'
                     varVariable = 't.lepsMll_Edge'
                 elif var == 'met':
                     varTitle    = 'ME_{T} (GeV)'
                     varVariable = 'met_pt'
                 elif var == 'nj':
-                    varTitle    = 'n-{jets}'
+                    varTitle    = 'n_{jets}'
                     varVariable = 't.nJetSel_Edge'
                 elif var == 'nb':
                     varTitle    = 'n_{b-jets}'
@@ -141,16 +149,16 @@ if __name__ == "__main__":
                     varTitle    = 'n_{vertices}'
                     varVariable = 'nVert'
                 elif var == 'mlb':
-                    varTitle    = 'min(m_{lb})'
+                    varTitle    = 'min(m_{lb}) (GeV)'
                     varVariable = 't.min_mlb1_Edge'
                 elif var == 'l1pt':
-                    varTitle    = 'p_{T, l1}'
+                    varTitle    = 'p_{T, l1} (GeV)'
                     varVariable = 't.Lep1_pt_Edge'
                 elif var == 'l2pt':
-                    varTitle    = 'p_{T, l2}'
+                    varTitle    = 'p_{T, l2} (GeV)'
                     varVariable = 't.Lep2_pt_Edge'
                 elif var == 'ht':
-                    varTitle    = 'H_{T}'
+                    varTitle    = 'H_{T} (GeV)'
                     varVariable = 't.htJet35j_Edge'
 
                 print 'loading variable %s in %s'%(var, eta)
@@ -184,6 +192,7 @@ if __name__ == "__main__":
                         continue
 
                     tmp_histo = copy.deepcopy(tmp_full.Clone(var+eta+reg.name))
+                    tmp_histo.GetXaxis().SetTitle(varTitle)
                     mc_stack.Add(tmp_histo)
                     if not ind: mc_stack.Draw()
                     ind+=1
@@ -200,6 +209,7 @@ if __name__ == "__main__":
                 plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name), "png,pdf", 0.6, 0.7, 0.8, 0.9)
                 plot_var.addStack(mc_stack  , "hist" , 1, 1)
                 plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E,SAME"   , "Data"  , "PL", r.kBlack , 1, 0)
+                plot_var.addLatex(0.45, 0.93, eta, 62)
                 plot_var.saveRatio(1, 1, 1, lumi, getattr(reg, var).getHisto('DATA', eta), mc_histo )
                 time.sleep(0.1)
 

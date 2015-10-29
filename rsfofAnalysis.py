@@ -54,14 +54,6 @@ def make_rsfof(histo_sf, histo_of, dataMC):
 
     ratio.GetYaxis().SetRangeUser(0.5,1.5)
 
-    # f = open('txts/'+ratio.GetName()+'_values.txt', 'w')
-    # for i in range(1, ratio.GetNbinsX()+1):
-    #     min, max = ratio.GetBinLowEdge(i), ratio.GetBinLowEdge(i)+ratio.GetBinWidth(i)
-    #     print    '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f'    %(dataMC, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) )
-    #     f.write( '%10s : R_SFOF in [%.2f, %.2f] GeV:\t%.3f +- %.3f \n' %(dataMC, min, max, ratio.GetBinContent(i), ratio.GetBinError(i) ) )
-    # f.close()
-
-
     return ratio
 
 
@@ -69,33 +61,27 @@ def make_rsfof(histo_sf, histo_of, dataMC):
 if __name__ == '__main__':
 
     print 'Starting r_SFOF analysis...'
-    parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    parser.add_option('-t', '--trigger', action='store', type='int', dest='triggerFlag', default='1', help='Trigger cut. Set to 0 if you want to run without trigger')
-    (options, args) = parser.parse_args()
-
-
-    if len(args) != 1:
-      parser.error('wrong number of arguments')
-
-    inputFileName = args[0]
+    parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    (opts, args) = parser.parse_args()
 
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
-    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
     print 'Trees successfully loaded...'
 
 
     # lumi = 0.58; maxrun = 258159 ## this includes that last run
-    lumi = 1.28; maxrun = 999999
+    lumi = 1.3 ; maxrun = 999999
 
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')
     print 'Running with an integrated luminosity of', lumi,'fb-1'
 
-    saveValues = True
+    saveValues = False
    
     gROOT.ProcessLine('.L tdrstyle.C')
     gROOT.SetBatch(1)
@@ -151,22 +137,35 @@ if __name__ == '__main__':
         for eta in ['central', 'forward']:
             print '... in %s' %(eta)
 
-            cuts_sf = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonSF(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            #cuts_sf = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonSF(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
             cuts_of = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonOF(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_ee = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonee(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+            cuts_mm = cuts.AddList([cuts.MaxRun(maxrun), cuts.GoodLeptonmm(),cuts.trigger]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
 
                 dataMC = 'DATA' if tree == treeDA else 'MC'
-                reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
+                reg.mll_ee = tree.getTH1F(lumi, 'mll_ee_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_ee, '', "m_{ll} (GeV)")
+                reg.mll_mm = tree.getTH1F(lumi, 'mll_mm_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_mm, '', "m_{ll} (GeV)")
+                reg.mll_sf = reg.mll_ee.Clone(reg.mll_ee.GetName().replace('ee','sf'))
+                reg.mll_sf.Add(reg.mll_mm, 1.)
+
+                #reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
                 reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
 
                 tmp_rsfof_histo = make_rsfof(reg.mll_sf, reg.mll_of, dataMC)
+                tmp_reeof_histo = make_rsfof(reg.mll_ee, reg.mll_of, dataMC)
+                tmp_rmmof_histo = make_rsfof(reg.mll_mm, reg.mll_of, dataMC)
                 setattr(reg, "%s_%s_%s_%s"    %("rsfof_yield", dataMC, eta, "of"), reg.mll_of.GetBinContent( reg.mll_of.FindBin(45) ) )
                 setattr(reg, "%s_%s_%s_%s"    %("rsfof_yield", dataMC, eta, "sf"), reg.mll_sf.GetBinContent( reg.mll_sf.FindBin(45) ) )
                 setattr(reg, "%s_%s_%s_%s_err"%("rsfof_yield", dataMC, eta, "of"), reg.mll_of.GetBinError  ( reg.mll_of.FindBin(45) ) )
                 setattr(reg, "%s_%s_%s_%s_err"%("rsfof_yield", dataMC, eta, "sf"), reg.mll_sf.GetBinError  ( reg.mll_sf.FindBin(45) ) )
                 setattr(reg, "%s_%s_%s"    %("rsfof", dataMC, eta), tmp_rsfof_histo.GetBinContent( tmp_rsfof_histo.FindBin(45) ) )
                 setattr(reg, "%s_%s_%s_err"%("rsfof", dataMC, eta), tmp_rsfof_histo.GetBinError  ( tmp_rsfof_histo.FindBin(45) ) )
+
+                ## set the falvor divided histograms into the region. generic, really
+                setattr(reg, 'reeof_%s_%s'%(dataMC[:2].lower(), eta), tmp_reeof_histo)
+                setattr(reg, 'rmmof_%s_%s'%(dataMC[:2].lower(), eta), tmp_rmmof_histo)
 
                 reg.mll.setHisto(tmp_rsfof_histo, dataMC, eta)
 

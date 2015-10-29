@@ -56,11 +56,39 @@ class onZResult:
         self.fwd_2b_e = math.sqrt(self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
 
 
-def makeTable(myregion, dataMC, eta, nbs): ## for this to make sense the region should be properly binned!!
+def makeResultsTable(binnedSR, dyShapes, dataMC, eta, nbs):
+    line0 = ' %30s &           & '  %('')
+    line1 = ' %30s & OF pred.  & ' %('\multirow{3}{*}{%s}' %(binnedSR.name))
+    line2 = ' %30s & DY pred.  & ' %('')
+    line3 = ' %30s & total     & ' %('')
+    line4 = ' %30s & obs.      & ' %('')
+    tmp_histo_obs  = binnedSR.mll     .getHisto(dataMC, eta)
+    tmp_histo_pred = binnedSR.mll_pred.getHisto(dataMC, eta)
+    tmp_histo_dy   = dyShapes['%db_%s_%s_binned'%(nbs, dataMC[:2].lower(), eta)]
+
+    my_range = range(1,tmp_histo_obs.GetNbinsX()+1)
+    for i in my_range:
+        tmp_dy   = tmp_histo_dy.GetBinContent(i)  ; tmp_dy_e   = tmp_histo_dy.GetBinError(i)
+        tmp_of   = tmp_histo_pred.GetBinContent(i); tmp_of_e   = tmp_histo_pred.GetBinError(i)
+        tmp_full = tmp_dy + tmp_of                ; tmp_full_e = math.sqrt(tmp_dy_e**2 + tmp_of_e**2)
+        tmp_obs  = tmp_histo_obs.GetBinContent(i) ; tmp_obs_e  = tmp_histo_obs.GetBinError(i)
+        mll_low , mll_high = tmp_histo_pred.GetXaxis().GetBinLowEdge(i), tmp_histo_pred.GetXaxis().GetBinUpEdge(i)
+
+        line0 += '%.0f $<$ \\mll $<$ %.0f %s' %(mll_low, mll_high   , ' & ' if i != max(my_range) else '\\\\')
+        line1 += '  %.2f $\\pm$ %.2f      %s' %(tmp_of  , tmp_of_e  , ' & ' if i != max(my_range) else '\\\\')
+        line2 += '  %.2f $\\pm$ %.2f      %s' %(tmp_dy  , tmp_dy_e  , ' & ' if i != max(my_range) else '\\\\')
+        line3 += '  %.2f $\\pm$ %.2f      %s' %(tmp_full, tmp_full_e, ' & ' if i != max(my_range) else '\\\\')
+        line4 += '  %.2f $\\pm$ %.2f      %s' %(tmp_obs , tmp_obs_e , ' & ' if i != max(my_range) else '\\\\')
+    line0 += '\\hline'; line2 += '\\hline'; line3 += '\\hline \\hline'
+
+    return line0, line1, line2, line3, line4
+
+
+def makeRatioTable(myregion, dataMC, eta, nbs): ## for this to make sense the region should be properly binned!!
     header= 'THIS IS THE TABLE FOR %s in %s for %s b-tags'%(dataMC, eta, str(nbs))
     line0 = ' %30s &           & '  %('')
-    line1 = ' %30s & MC pred.  & ' %('\multirow{3}{*}{%s}' %(myregion.name))
-    line2 = ' %30s & MC obs.   & ' %('')
+    line1 = ' %30s & %s pred.  & ' %('\multirow{3}{*}{%s}' %(myregion.name), dataMC)
+    line2 = ' %30s & %s obs.   & ' %('', dataMC)
     line3 = ' %30s &  ratio    & ' %('')
     tmp_histo_obs  = myregion.mll     .getHisto(dataMC, eta)
     tmp_histo_pred = myregion.mll_pred.getHisto(dataMC, eta)
@@ -133,8 +161,6 @@ if __name__ == '__main__':
 
     print 'Starting to produce some good ol\' results...'
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples FilenameWithIngredients', version='%prog 1.0')
-    parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    #parser.add_option('-p', action='store_true', dest='plotOnly', help='just make the plots, don\t load anything')
     parser.add_option('-t', action='store_true', dest='onlyTTbar', default=False, help='just do OF closure test')
     parser.add_option('-c', action='store_true', dest='onlyClosure', default=False, help='just do the closure test. don\'t bother with data')
     parser.add_option('-b', '--nbs', action='store', type=int, dest='nbs', default=0, help='do this for different numbers of b\'s')
@@ -144,17 +170,16 @@ if __name__ == '__main__':
 
     (opts, args) = parser.parse_args()
 
-    print opts.onlyTTbar
-
-    ## if len(args) < 2:
-    ##   parser.error('wrong number of arguments')
-    print 'using sampleFile %s'%opts.sampleFile
-    print 'using ingredients file %s'%opts.ingredientFile
+    print 'running with these options \n'
+    for key, value in opts.__dict__.items():
+        print '%-20s : %-20s' %(key, value)
+    print ' \n\n'
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar or opts.loadShapes == False else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751',
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']
+    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
+    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
@@ -229,6 +254,9 @@ if __name__ == '__main__':
 
 
 
+    ## ==================================================
+    ## look for DY shapes in file, if not there make them
+    ## ==================================================
     if not opts.onlyTTbar:
         dy_nomass          = Region.region(''         , [cuts.DYControlRegion], ['mll']       , [range(20,302,2)], True)
         dy_nomass_rightBin = Region.region('_rightBin', [cuts.DYControlRegion], ['mll']       , [finalBinning]   , True)
@@ -241,7 +269,7 @@ if __name__ == '__main__':
 
         for dy_reg in dy_nomasses:
             for eta in ['central', 'forward']:
-                fileHasShapes = (dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)) and dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
+                fileHasShapes = (dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)) and dy_shapes_file.Get('dy_shape_mc_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
                 print 'the file has the shapes:', fileHasShapes
                 if opts.loadShapes or not fileHasShapes:
                     ## ========================================
@@ -271,8 +299,8 @@ if __name__ == '__main__':
 
                 else:
                     print 'taking pre-computed shapes'
-                    dy_shapes['%db_mc_%s%s'%(opts.nbs, eta, dy_reg.name)] = dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs))
-                    dy_shapes['%db_da_%s%s'%(opts.nbs, eta, dy_reg.name)] = dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs))
+                    dy_shapes['%db_mc_%s%s'%(opts.nbs, eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_mc_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
+                    dy_shapes['%db_da_%s%s'%(opts.nbs, eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
 
         dy_shapes_file.Close()
 
@@ -281,13 +309,16 @@ if __name__ == '__main__':
             value.SetLineColor(r.kRed+2)
             if 'rightBin' in key:
                 value.SetLineColor(r.kGreen+2)
+    ## ==================================================
+    ## done with DY shapes. moving on with life          
+    ## ==================================================
 
     tables = []
     for eta in ['central', 'forward']:
         yscale = 75. if eta == 'central' else 40.
-        ## =================
+        ## ===============================
         ## MAKE THE Mll PLOT for MC only
-        ## =================
+        ## ===============================
 
         mcObsHisto  = signalRegion.mll.getHisto('MC', eta)
         mcPredHisto = signalRegion.mll_pred.getHisto('MC'  , eta).Clone('mcPredHisto_'+eta)
@@ -325,7 +356,7 @@ if __name__ == '__main__':
             plot_dataMC.addLatex(0.7, 0.45, 'n_{b} '+('= ' if opts.nbs !=2 else '#geq ')+str(opts.nbs), 62)
             plot_dataMC.saveRatio(1, 0, 0, lumi, daPredHisto, mcPredHisto, 0.5, 1.5)
 
-            tables.append(makeTable(binnedSR, 'MC', eta, opts.nbs))
+            tables.append(makeRatioTable(binnedSR, 'MC', eta, opts.nbs))
 
             ## ============================================================
             ## MAKE THE Mll PLOT for DATA PREDICTION vs MC OBSERVATION
@@ -356,4 +387,6 @@ if __name__ == '__main__':
                 plot_result.saveRatio(1, 0, 0, lumi, daObsHisto, daPredHisto, 0.5, 1.5)
             else:
                 print 'you sneaky bastard. stop this!!!'
+    a_cen = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
+    a_fwd = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
 
