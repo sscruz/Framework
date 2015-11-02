@@ -14,13 +14,8 @@
 #####################################################################
 
 import ROOT as r
-<<<<<<< HEAD
-from   ROOT import gROOT, TCanvas, TFile, TGraphErrors, SetOwnership
-import math, sys, optparse, array, time
-=======
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
 import math, sys, optparse, array, time, copy
->>>>>>> origin/HEAD
 import Rounder as rounder
 
 import include.helper     as helper
@@ -38,6 +33,7 @@ if __name__ == "__main__":
     parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
     parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
     parser.add_option("-t", "--test", action="store_true", dest="test", default=False, help="just do a testrun. takes one variable in one eta for one region")
+    parser.add_option("-d", "--data", action="store_true", dest="data", default=False, help="running only on data")
     (opts, args) = parser.parse_args()
 
     inputFileName = args[0]
@@ -79,7 +75,6 @@ if __name__ == "__main__":
 
     color = helper.color
 
-    #lumi = 1.28
     lumi = 1.3
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_blind'
 
@@ -87,42 +82,47 @@ if __name__ == "__main__":
 
     regions = []
     setLog = []
-    doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb', 'l1pt', 'l2pt', 'ht']
-    binnings    = [range(20,310,10), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
-
+    doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'ht', 'l1pt', 'l2pt', 'mlb']
+    binnings    = [range(20,310,20), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(40,520,20), range(20, 205, 5), range(20, 155, 5), range(0, 310, 10)]
+    onlyData = False
     if opts.test:
-        doVariables = [doVariables[1]]
-        binnings    = [binnings[1]]
-    doVariables =doVariables[-4:]
-    binnings =binnings[-4:]
+        doVariables = [doVariables[0]]
+        binnings    = [binnings[0]]
+    doVariables =doVariables[-1:]
+    binnings =binnings[-1:]
+    if opts.data:
+        onlyData=True 
 
-    Control2JetsAF_blind = Region.region('Control2JetsAF_blind',
-                       [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsAF_blind) 
 
-    ##Control0JetsSF = Region.region('Control0JetsSF',
-    ##                   [cuts.nj0, cuts.SF], doVariables, binnings, True)
-    ##regions.append(Control0JetsSF)
+    #Control2JetsAF_blind = Region.region('Control2JetsAF_blind',
+    #                   [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, onlyData)
+    #regions.append(Control2JetsAF_blind) 
+
+    #testSSee = Region.region('testSSee',
+    #                   [cuts.SSee], doVariables, binnings, onlyData)
+   # regions.append(testSSee)
 
     ##Control0JetsOF = Region.region('Control0JetsOF',
-    ##                   [cuts.nj0, cuts.OF], doVariables, binnings, True)
+    ##                   [cuts.nj0, cuts.OF], doVariables, binnings, onlyData)
     ##regions.append(Control0JetsOF)
     ##
-    ##Control2JetsSF = Region.region('Control2JetsSF',
-    ##                   [cuts.Control2JetsSF()], doVariables, binnings, True)
-    ##regions.append(Control2JetsSF)
-    ##
-    ##Control2JetsOF = Region.region('Control2JetsOF',
-    ##                   [cuts.Control2JetsOF()], doVariables, binnings, True)
-    ##regions.append(Control2JetsOF) 
+    DYSameSignEE = Region.region('DYSameSignEE',
+                       [cuts.DYSameSignEE()], doVariables, binnings, onlyData)
+    regions.append(DYSameSignEE)
+    
+    DYSameSignMM = Region.region('DYSameSignMM',
+                       [cuts.DYSameSignMM()], doVariables, binnings, onlyData)
+    regions.append(DYSameSignMM) 
 
+    DYSameSignOF = Region.region('DYSameSignOF',
+                       [cuts.DYSameSignOF()], doVariables, binnings, onlyData)
+    regions.append(DYSameSignOF) 
 
     etas = ['central' , 'forward']
     if opts.test:
-        regions = regions[:1]
+    #    regions = regions[-1:]
         etas = etas[:1]
         
->>>>>>> origin/HEAD
 
     for reg in regions:
         print color.bold+color.red+'=========================================='
@@ -131,7 +131,6 @@ if __name__ == "__main__":
         #for eta in ['central', 'forward']:
         for eta in etas:
                     
->>>>>>> origin/HEAD
 
             for var in reg.rvars:
 
@@ -167,13 +166,14 @@ if __name__ == "__main__":
                 mc_histo = 0
                 mc_stack = r.THStack()
 
-                for tree in ( (mcTrees+[treeDA]) if reg.doData else mcTrees):
+           #     for tree in ( (mcTrees+[treeDA]) if reg.doData else mcTrees):
+                for tree in [treeDA] if reg.doData else mcTrees:
                     ind = 0
                     treename = tree.name.lower()
                     print '... doing tree %s' %treename
 
-                    my_cuts = cuts.AddList([cuts.GoodLepton()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-
+                    #my_cuts = cuts.AddList([cuts.GoodLepton()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
+                    my_cuts = cuts.AddList([cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
                     block = tree.blocks[0]
             
                     dataMC = ('DATA' if tree == treeDA else 'MC'); isData = dataMC == 'DATA';
@@ -207,11 +207,31 @@ if __name__ == "__main__":
                 setattr(reg, '%s_mc_stack_%s'%(var, eta), mc_stack)
 
                 print 'plotting %s in region %s in %s' %(var, reg.name, eta)
-                plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name), "png,pdf", 0.6, 0.7, 0.8, 0.9)
-                plot_var.addStack(mc_stack  , "hist" , 1, 1)
-                plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E,SAME"   , "Data"  , "PL", r.kBlack , 1, 0)
-                plot_var.saveRatio(1, 1, 1, lumi, getattr(reg, var).getHisto('DATA', eta), mc_histo )
+#                plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name), "png,pdf", 0.6, 0.7, 0.8, 0.9)
+#                plot_var.addStack(mc_stack  , "hist" , 1, 1)
+#                plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E,SAME"   , "Data"  , "PL", r.kBlack , 1, 0)
+#                plot_var.saveRatio(1, 1, 1, lumi, getattr(reg, var).getHisto('DATA', eta), mc_histo )
+#                time.sleep(0.1)
+                if reg.doData:
+                    plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name)+"Data", "png,pdf",0.6, 0.7, 0.8, 0.9)
+                    plot_var.addHisto(getattr(reg, var).getHisto('DATA', eta), "E"   , "Data"  , "PL", r.kBlack, 1, 0)
+                    plot_var.save(1, 1, 1, lumi)
+                else:
+                    plot_var = Canvas.Canvas("test/%s/%s_%s_%s"%(lumi_str, var, eta, reg.name)+"MC", "png,pdf",0.6, 0.7, 0.8, 0.9)
+                    plot_var.addStack(mc_stack, "hist" , 1, 1)
+                    plot_var.save(1, 1, 1, lumi)
                 time.sleep(0.1)
+
+
+#     .mll.printValues()
+# 
+#     dy_onZ .mll.saveInFile(['rmue', 'dycr_dym'], 0.1)
+#
+# 
+#     rmue_table = make_rmue_table(dy_onZ)
+#     for line in rmue_table:
+#             print line
+
 
 
 
