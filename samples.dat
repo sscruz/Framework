@@ -39,7 +39,7 @@ JetHT        r.kBlack   JetHT_Run2015D_v4_runs_246908_258751                  Je
 # BLOCK                COLOR      NAME                  LABEL                     LOCATION OF TREES                                             FRIENDS  XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-DYJets    r.kBlue+1    DYJetsToLL_M5to50         DYJetsToLL_M5to50      /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                     71310000.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M5to50         DYJetsToLL_M5to50     /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                      71310000.0   0
 DYJets    r.kBlue+1    DYJetsToLL_M10to50        DYJetsToLL_M10to50    /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends  18610000.0   0
 DYJets    r.kBlue+1    DYJetsToLL_M50            DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends   6024000.0   0
 TTJets    r.kRed+9     TTLep_pow                 TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/      /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends     87314.8   0
