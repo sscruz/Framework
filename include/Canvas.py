@@ -1,6 +1,6 @@
 from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
 import ROOT as r
-import os
+import os, copy
 
 class Canvas:
    'Common base class for all Samples'
@@ -224,7 +224,7 @@ class Canvas:
           lat.DrawLatex(latex[0], latex[1], latex[2])
   
       
-      ratio = hdata.Clone("ratio")
+      ratio = copy.deepcopy(hdata.Clone("ratio"))
       ratio.Divide(hMC)
 
       ratio.SetTitle("")
@@ -239,7 +239,7 @@ class Canvas:
       ratio.GetXaxis().SetTitleSize(0.14);
       ratio.GetXaxis().SetTitle('');
       ratio.SetMarkerStyle(20);
-      ratio.SetMarkerSize(0.8*ratio.GetMarkerSize());
+      ratio.SetMarkerSize(0.6*ratio.GetMarkerSize());
       ratio.SetMarkerColor(r.kGray+3);
       ratio.SetLineColor(r.kGray+3);
 
