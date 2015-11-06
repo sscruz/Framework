@@ -15,7 +15,7 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
-import math, sys, optparse, copy
+import math, sys, optparse, copy, re
 
 
 import include.helper     as helper
@@ -155,6 +155,23 @@ def makePrediction(of_histo, ing, eta):
         sf_pred.SetBinError  (_bin, tmp_prede)
     return sf_pred
 
+def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname, eta):
+    #nb = re.sub('[^0-9]', '', nbstring)
+    pGraph = r.TGraphErrors(pHisto)
+    pGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
+    pGraph.SetFillStyle(3001)
+
+    maxCont = pHisto.GetBinContent(pHisto.GetMaximumBin())
+    pHisto.GetYaxis().SetRangeUser(0., 1.8*maxCont)
+
+    plot = Canvas.Canvas('results/%s/plot_results_mll_%s_%s%s_nb%d'%(lumi_str, plotname, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.65, 0.85, 0.82)
+    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlue+1, 1,  0)
+    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlue+1, 1, -1)
+    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlack , 1,  1)
+    if not opts.onlyTTbar: plot.addHisto(dy_shapes['%db_mc_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape', 'L', r.kRed+2, 1, 1)
+    plot.addLatex(0.7, 0.53, eta     , 62)
+    plot.addLatex(0.7, 0.45, nbstring, 62)
+    plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
 
 
 if __name__ == '__main__':
@@ -169,6 +186,8 @@ if __name__ == '__main__':
     parser.add_option('-l', '--loadShapes', action='store_true', dest='loadShapes', default=False, help='reload dy shapes. default is off since this takes a while')
     parser.add_option('-m', '--maxRun', action='store', type=int, dest='maxRun', default=999999, help='max run to use for analysis (run is included)')
 
+    ## make the options globa.. also the lumi
+    global opts, lumi, lumi_str, dy_shapes, nbstring
     (opts, args) = parser.parse_args()
 
     print 'running with these options \n'
@@ -216,6 +235,8 @@ if __name__ == '__main__':
         nbcut = 't.nBJetMedium35_Edge %s 1'%( '>=' )
     elif opts.nbs == 2:
         nbcut = 't.nBJetMedium35_Edge %s 2'%( '>=' )
+
+    nbstring = 'n_{b} '+('#geq ' if True else '= ')+str(opts.nbs)
 
     signalRegion = Region.region('signalRegion', 
                                  [cuts.METJetsSignalRegion, nbcut],
@@ -318,82 +339,27 @@ if __name__ == '__main__':
 
     tables = []
     for eta in ['central', 'forward']:
-        yscale = 75. if eta == 'central' else 40.
-        ## ===============================
-        ## MAKE THE Mll PLOT for MC only
-        ## ===============================
 
-        mcObsHisto  = signalRegion.mll.getHisto('MC', eta)
-        mcPredHisto = signalRegion.mll_pred.getHisto('MC'  , eta).Clone('mcPredHisto_'+eta)
+        ## get the mc prediction and observation
+        mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
+        mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
+        #add the DY contribution to the MC prediction
         if not opts.onlyTTbar: 
             mcPredHisto.Add(dy_shapes['%db_mc_%s'%(opts.nbs,eta)+'_rightBin'], 1.)
 
-        mcPredGraph = r.TGraphErrors(mcPredHisto)
-        mcPredGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
-        mcPredGraph.SetFillStyle(3001)
+        ## get the data observed and predicted
+        daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
+        daPredHisto = signalRegion.mll_pred.getHisto('DATA', eta)
 
-        #mcPredHisto.GetYaxis().SetRangeUser(0.,  yscale*lumi)
-        mcPredHisto.GetYaxis().SetRangeUser(0.,  1.6*mcPredHisto.GetMaximum() )
+        ## finally, make the plots.
 
-        plot_closure = Canvas.Canvas('results/%s/plot_results_mll_MCClosure_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
-        plot_closure.addHisto(mcPredHisto, 'hist'     , 'pred. (MC)', 'L', r.kBlue+1 , 1, 0)
-        plot_closure.addGraph(mcPredGraph, '2,same'   , 'pred. (MC)', 'L', r.kBlue+1  , 1, -1)
-        plot_closure.addHisto(mcObsHisto , 'PE,SAME'  , 'obs.  (MC)', 'PL', r.kBlack, 1, 1)
-        if not opts.onlyTTbar: plot_closure.addHisto(dy_shapes['%db_mc_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (MC)', 'L', r.kRed+2, 1, 1)
-        plot_closure.addLatex(0.7, 0.8, eta, 62)
-        plot_closure.addLatex(0.7, 0.45, 'n_{b} '+('#geq ' if opts.nbs != 0 else '= ')+str(opts.nbs), 62)
-        plot_closure.saveRatio(1, 0, 0, lumi, mcObsHisto, mcPredHisto, 0.5, 1.5)
-
-        if not opts.onlyClosure:
-            daPredHisto = signalRegion.mll_pred.getHisto('DATA', eta)
-            daPredHisto.GetYaxis().SetRangeUser(0.,  1.8*daPredHisto.GetMaximum() )
-            if not opts.onlyTTbar: daPredHisto.Add(dy_shapes['%db_da_%s'%(opts.nbs,eta)+'_rightBin'], 1.)
-            ## ============================================================
-            ## MAKE THE Mll PLOT for DATA MC PREDICTION COMPARISON
-            ## ============================================================
-            plot_dataMC = Canvas.Canvas('results/%s/plot_results_mll_dataMCPred_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
-            plot_dataMC.addHisto(mcPredHisto, 'hist'   , 'pred. (MC)'  , 'L', r.kBlue+1 , 1, 0)
-            plot_dataMC.addGraph(mcPredGraph, '2,same' , 'pred. (MC)'  , 'L', r.kBlue+1  , 1, -1)
-            plot_dataMC.addHisto(daPredHisto, 'PE,SAME', 'pred. (DATA)', 'PL', r.kBlack, 1, 1)
-            if not opts.onlyTTbar: plot_dataMC.addHisto(dy_shapes['%db_da_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (DATA)', 'L', r.kRed+2, 1, 1)
-            plot_dataMC.addLatex(0.7, 0.8, eta, 62)
-            plot_dataMC.addLatex(0.7, 0.45, 'n_{b} '+('#geq ' if opts.nbs != 0 else '= ')+str(opts.nbs), 62)
-            plot_dataMC.saveRatio(1, 0, 0, lumi, daPredHisto, mcPredHisto, 0.5, 1.5)
-
-            tables.append(makeRatioTable(binnedSR, 'MC', eta, opts.nbs))
-
-            ## ============================================================
-            ## MAKE THE Mll PLOT for DATA PREDICTION vs MC OBSERVATION
-            ## ============================================================
-            plot_predDataMC = Canvas.Canvas('results/%s/plot_results_mll_predDataObsMC_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.85, 0.7)
-            plot_predDataMC.addHisto(daPredHisto, 'hist'   , 'SR - pred. (DATA)', 'PL', r.kBlack, 1, 1)
-            plot_predDataMC.addGraph(mcPredHisto, 'PE,same', 'SR - obs. (MC)'   , 'L' , r.kBlue+1  , 1, -1)
-            if not opts.onlyTTbar: plot_predDataMC.addHisto(dy_shapes['%db_da_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (DATA)', 'L', r.kRed+2, 1, 1)
-            plot_predDataMC.addLatex(0.7, 0.8, eta, 62)
-            plot_predDataMC.addLatex(0.7, 0.45, 'n_{b} '+('#geq ' if opts.nbs != 0 else '= ')+str(opts.nbs), 62)
-            plot_predDataMC.saveRatio(1, 0, 0, lumi, mcPredHisto, daPredHisto, 0.5, 1.5)
+        makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , 'MCClosure'    , eta) ## closure plot
+        makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', 'dataMCPred'   , eta) ## prediction comparison
+        makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , 'predDataObsMC', eta) ## predData, obsMC
+        makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , 'dataMCobs'    , eta) ## observed data/mc
+        makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , 'data'         , eta) ## money plot
 
 
-            ## these two only when not blinded!!!
-            if not isBlinded:
-                ## =================
-                ## MAKE THE Mll PLOT for DATA only
-                ## =================
-                daObsHisto = signalRegion.mll.getHisto('DATA', eta)
-                daPredHisto.GetXaxis().SetTitle('m_{ll}')
-                daPredGraph = r.TGraphErrors(daPredHisto)
-                daPredGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
-                daPredGraph.SetFillStyle(3001)
-                plot_result = Canvas.Canvas('results/%s/plot_results_mll_data_%s%s_nb%d'%(lumi_str, eta, ('' if not opts.onlyTTbar else '_onlyTT'), opts.nbs), 'png,pdf', 0.6, 0.5, 0.80, 0.7)
-                plot_result.addHisto(daPredHisto, 'hist'   , 'pred. (DATA)', 'L', r.kBlue+1 , 1, 0)
-                plot_result.addGraph(daPredGraph, '2,same' , 'pred. (DATA)', 'L', r.kBlue+1  , 1, -1)
-                plot_result.addHisto(daObsHisto , 'PE,SAME', 'obs.  (DATA)', 'PL', r.kBlack, 1, 1)
-                if not opts.onlyTTbar: plot_result.addHisto(dy_shapes['%db_da_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape  (DATA)', 'L', r.kRed+2, 1, 1)
-                plot_result.addLatex(0.7, 0.8, eta, 62)
-                plot_result.addLatex(0.7, 0.45, 'n_{b} '+('#geq ' if opts.nbs != 0 else '= ')+str(opts.nbs), 62)
-                plot_result.saveRatio(1, 0, 0, lumi, daObsHisto, daPredHisto, 0.5, 1.5)
-            else:
-                print 'you sneaky bastard. stop this!!!'
     a_cen = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
     a_fwd = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
     a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
