@@ -74,7 +74,14 @@ class Sample:
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
    
-     h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
+     if(xmin == xmax) and (ymax == ymin):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
+     elif (xmin == xmax):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),nbiny,ymin,ymax)
+     elif (ymin == ymax):
+        h = TH2F(name, "", nbinx,xmin,xmax,len(nbiny)-1, array('d', nbiny))
+     else: 
+        h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
      h.Sumw2()
      h.GetXaxis().SetTitle(xlabel)
      h.GetYaxis().SetTitle(ylabel)
@@ -138,8 +145,15 @@ class Block:
      return h
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
-   
-     h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
+     if(xmin == xmax) and (ymax == ymin):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
+     elif (xmin == xmax):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),nbiny,ymin,ymax)
+     elif (ymin == ymax):
+        h = TH2F(name, "", nbinx,xmin,xmax,len(nbiny)-1, array('d', nbiny))
+     else: 
+        h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
+
      h.Sumw2()
      h.GetXaxis().SetTitle(xlabel)
      h.GetYaxis().SetTitle(ylabel)
@@ -294,8 +308,15 @@ class Tree:
      return h_of
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
-   
-     h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
+     if(xmin == xmax) and (ymax == ymin):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
+     elif (xmin == xmax):
+        h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),nbiny,ymin,ymax)
+     elif (ymin == ymax):
+        h = TH2F(name, "", nbinx,xmin,xmax,len(nbiny)-1, array('d', nbiny))
+     else: 
+        h = TH2F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax)
+        
      h.Sumw2()
      h.GetXaxis().SetTitle(xlabel)
      h.GetYaxis().SetTitle(ylabel)
