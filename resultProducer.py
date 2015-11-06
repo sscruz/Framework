@@ -112,15 +112,15 @@ def makeRatioTable(myregion, dataMC, eta, nbs): ## for this to make sense the re
             line3+=' \\\\ '
     return header, line0, line1, line2, line3
 
-def scaleZ(histo, onZ_pred, eta, nbs):
+def scaleZ(histo, onZ_pred, eta):
     bin81  = histo.FindBin(81)
     bin101 = histo.FindBin(100)
-    nb_pred = getattr(onZ_pred, '%s_%db'%( ('cen' if eta == 'central' else 'fwd'), nbs))
+    nb_pred = getattr(onZ_pred, '%s_%db'%( ('cen' if eta == 'central' else 'fwd'), opt.nbs))
     ret_hist = copy.deepcopy(histo)
     integral = ret_hist.Integral(bin81, bin101)
     if not integral:
         print 'WARNING: the DY shape histogram has no content around the Z-mass !!!'
-        print 'WARNING: this happens for nb %s' %(str(nbs))
+        print 'WARNING: this happens for nb %s' %(str(opts.nbs))
         print 'WARNING: putting the whole prediction into one bin at the Z-mass'
         ret_hist.SetBinContent(ret_hist.FindBin(91.), nb_pred)
     else:
@@ -168,7 +168,7 @@ def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname, eta):
     plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlue+1, 1,  0)
     plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlue+1, 1, -1)
     plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlack , 1,  1)
-    if not opts.onlyTTbar: plot.addHisto(dy_shapes['%db_mc_%s'%(opts.nbs,eta)], 'HIST,SAME', 'DY shape', 'L', r.kRed+2, 1, 1)
+    if not opts.onlyTTbar: plot.addHisto(dy_shapes['0b_mc_%s'%(eta)], 'HIST,SAME', 'DY shape', 'L', r.kRed+2, 1, 1)
     plot.addLatex(0.7, 0.53, eta     , 62)
     plot.addLatex(0.7, 0.45, nbstring, 62)
     plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
@@ -209,8 +209,7 @@ if __name__ == '__main__':
 
     lumi = 1.3 
     #lumi_str = 'lumi'+str(lumi).replace('.', 'p')+('_inclB' if inclusiveB else '_exclB')
-    #lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_e0bge1bge2b'
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_ge0Inclusive_normal'
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_ge0Inclusive'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lumi)
 
     isBlinded =False
@@ -293,7 +292,7 @@ if __name__ == '__main__':
 
         for dy_reg in dy_nomasses:
             for eta in ['central', 'forward']:
-                fileHasShapes = (dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)) and dy_shapes_file.Get('dy_shape_mc_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
+                fileHasShapes = (dy_shapes_file.Get('dy_shape_da_%s%s_0'%(eta, dy_reg.name)) and dy_shapes_file.Get('dy_shape_mc_%s%s_0'%(eta, dy_reg.name)))
                 print 'the file has the shapes:', fileHasShapes
                 if opts.loadShapes or not fileHasShapes:
                     ## ========================================
@@ -309,22 +308,22 @@ if __name__ == '__main__':
                     setattr(dy_reg, 'mll_SF_mc_'+eta, treeMC.getTH1F(lumi, "mll_SF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
                     setattr(dy_reg, 'mll_OF_mc_'+eta, treeMC.getTH1F(lumi, "mll_OF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
 
-                    setattr(dy_reg, 'dy_shape_da_'+eta, getattr(dy_reg, 'mll_SF_da_'+eta).Clone('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
-                    setattr(dy_reg, 'dy_shape_mc_'+eta, getattr(dy_reg, 'mll_SF_mc_'+eta).Clone('dy_shape_mc_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
+                    setattr(dy_reg, 'dy_shape_da_'+eta, getattr(dy_reg, 'mll_SF_da_'+eta).Clone('dy_shape_da_%s%s_0'%(eta, dy_reg.name)))
+                    setattr(dy_reg, 'dy_shape_mc_'+eta, getattr(dy_reg, 'mll_SF_mc_'+eta).Clone('dy_shape_mc_%s%s_0'%(eta, dy_reg.name)))
                     getattr(dy_reg, 'dy_shape_da_'+eta).Add(getattr(dy_reg, 'mll_OF_da_'+eta), -1.)
                     getattr(dy_reg, 'dy_shape_mc_'+eta).Add(getattr(dy_reg, 'mll_OF_mc_'+eta), -1.)
             
-                    dy_shapes['%db_mc_%s%s'%(opts.nbs, eta, dy_reg.name)] = scaleZ(getattr(dy_reg, 'dy_shape_mc_%s'%eta), onZ, eta, opts.nbs)
-                    dy_shapes['%db_da_%s%s'%(opts.nbs, eta, dy_reg.name)] = scaleZ(getattr(dy_reg, 'dy_shape_da_%s'%eta), onZ, eta, opts.nbs)
+                    dy_shapes['0b_mc_%s%s'%(eta, dy_reg.name)] = scaleZ(getattr(dy_reg, 'dy_shape_mc_%s'%eta), onZ, eta)
+                    dy_shapes['0b_da_%s%s'%(eta, dy_reg.name)] = scaleZ(getattr(dy_reg, 'dy_shape_da_%s'%eta), onZ, eta)
 
                     print 'writing shape to file'
-                    dy_shapes['%db_mc_%s%s'%(opts.nbs, eta, dy_reg.name)].Write()
-                    dy_shapes['%db_da_%s%s'%(opts.nbs, eta, dy_reg.name)].Write()
+                    dy_shapes['0b_mc_%s%s'%(eta, dy_reg.name)].Write()
+                    dy_shapes['0b_da_%s%s'%(eta, dy_reg.name)].Write()
 
                 else:
                     print 'taking pre-computed shapes'
-                    dy_shapes['%db_mc_%s%s'%(opts.nbs, eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_mc_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
-                    dy_shapes['%db_da_%s%s'%(opts.nbs, eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_da_%s%s_%d'%(eta, dy_reg.name, opts.nbs)))
+                    dy_shapes['0b_mc_%s%s'%(eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_mc_%s%s_0'%(eta, dy_reg.name)))
+                    dy_shapes['0b_da_%s%s'%(eta, dy_reg.name)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_da_%s%s_0'%(eta, dy_reg.name)))
 
         dy_shapes_file.Close()
 
@@ -345,11 +344,12 @@ if __name__ == '__main__':
         mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
         #add the DY contribution to the MC prediction
         if not opts.onlyTTbar: 
-            mcPredHisto.Add(dy_shapes['%db_mc_%s'%(opts.nbs,eta)+'_rightBin'], 1.)
+            mcPredHisto.Add(dy_shapes['0b_mc_%s'%(eta)+'_rightBin'], 1.)
 
         ## get the data observed and predicted
         daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
-        daPredHisto = signalRegion.mll_pred.getHisto('DATA', eta)
+        daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
+        daPredHisto.Add(dy_shapes['0b_da_%s'%(eta)+'_rightBin'], 1.)
 
         ## finally, make the plots.
 

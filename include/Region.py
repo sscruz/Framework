@@ -144,6 +144,24 @@ class region():
                 self.mlb_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.mlb_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.mlb_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'dr' :
+                self.dr      = collection(self.bins[self.rvars.index(v)], v)
+                self.dr_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.dr_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.dr_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.dr_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'l1iso' :
+                self.l1iso      = collection(self.bins[self.rvars.index(v)], v)
+                self.l1iso_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1iso_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1iso_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.l1iso_pred = collection(self.bins[self.rvars.index(v)], v)
+            if v == 'l2iso' :
+                self.l2iso      = collection(self.bins[self.rvars.index(v)], v)
+                self.l2iso_dy   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2iso_ra   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2iso_tt   = collection(self.bins[self.rvars.index(v)], v)
+                self.l2iso_pred = collection(self.bins[self.rvars.index(v)], v)
             if v == 'l1pt' :
                 self.l1pt      = collection(self.bins[self.rvars.index(v)], v)
                 self.l1pt_dy   = collection(self.bins[self.rvars.index(v)], v)
