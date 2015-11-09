@@ -47,8 +47,8 @@ class valErrs:
         self.vals = []
         self.name = name
     def totError(self):
-        self.cen_err = math.sqrt(self.cen_sys**2 + self.cen_stat**2)
-        self.fwd_err = math.sqrt(self.fwd_sys**2 + self.fwd_stat**2)
+        self.cen_err = math.sqrt((self.cen_val*self.cen_sys)**2 + self.cen_stat**2)
+        self.fwd_err = math.sqrt((self.fwd_val*self.fwd_sys)**2 + self.fwd_stat**2)
         self.vals.append(self.cen_err)
         self.vals.append(self.fwd_err)
     def setVals(self, line):
@@ -85,6 +85,12 @@ class ingredients:
         self.rsfof_ttcr_lm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR lm' ); self.rs.append(self.rsfof_ttcr_lm )
         self.rsfof_ttcr_onZ = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR onZ'); self.rs.append(self.rsfof_ttcr_onZ)
         self.rsfof_ttcr_hm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR hm' ); self.rs.append(self.rsfof_ttcr_hm )
+        ## rinout                                    
+        self.rinout_dy_lm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR lm'   ); self.rs.append(self.rinout_dy_lm)
+        self.rinout_dy_bz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR oz'   ); self.rs.append(self.rinout_dy_bz)
+        self.rinout_dy_oz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR bz'   ); self.rs.append(self.rinout_dy_oz)
+        self.rinout_dy_az    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR az'   ); self.rs.append(self.rinout_dy_az)
+        self.rinout_dy_hm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR hm'   ); self.rs.append(self.rinout_dy_hm)
         ## RT
         self.rt_region      = valErrs(-1., -1., -1., -1., -1., -1., 'R_T region'     ); self.rs.append(self.rt_region     )
         ## fill the values from the file
@@ -114,6 +120,12 @@ class ingredients:
             if self.check(['rsfof', 'ttcr_lm' , self.dType], line): self.rsfof_ttcr_lm .setVals(line)
             if self.check(['rsfof', 'ttcr_onZ', self.dType], line): self.rsfof_ttcr_onZ.setVals(line)
             if self.check(['rsfof', 'ttcr_hm' , self.dType], line): self.rsfof_ttcr_hm .setVals(line)
+            #rinout
+            if self.check(['rinout', 'dy_lm' , self.dType], line): self.rinout_dy_lm   .setVals(line)
+            if self.check(['rinout', 'dy_bz' , self.dType], line): self.rinout_dy_bz   .setVals(line)
+            if self.check(['rinout', 'dy_oz' , self.dType], line): self.rinout_dy_oz   .setVals(line)
+            if self.check(['rinout', 'dy_az' , self.dType], line): self.rinout_dy_az   .setVals(line)
+            if self.check(['rinout', 'dy_hm' , self.dType], line): self.rinout_dy_hm   .setVals(line)
             #RT
             if self.check(['rt'   , 'region'  , self.dType], line): self.rt_region     .setVals(line)
         f.close()

@@ -126,7 +126,7 @@ if __name__ == "__main__":
         rinout_meas = Region.region('rinout_meas',
                            [cuts.DYControlRegion],
                            ['mll'],
-                           [ [ 20., 70., 81., 101., 120., 300. ] ],
+                           [ [ 20., 70., 81., 101., 120., 500. ] ],
                            True)
          ## ==================================================
 
@@ -246,3 +246,8 @@ if __name__ == "__main__":
     ## PRINT AND SAVE ==
     ## =================
     rinout_meas.mll.saveInFile(['rinout', 'dy_cr' ], 0.25,  45.)
+    rinout_meas.mll.saveInFile(['rinout', 'dy_lm' ], 0.25,  45.)
+    rinout_meas.mll.saveInFile(['rinout', 'dy_bz' ], 0.25,  75.)
+    rinout_meas.mll.saveInFile(['rinout', 'dy_oz' ], 0.25,  91.)
+    rinout_meas.mll.saveInFile(['rinout', 'dy_az' ], 0.25, 105.)
+    rinout_meas.mll.saveInFile(['rinout', 'dy_hm' ], 0.25, 125.)
