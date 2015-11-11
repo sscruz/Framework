@@ -8,10 +8,15 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     checkedList = []
     typeList    = []
     for line in f.readlines():
-        if '#' in line: continue
+        if '#' in line or not len(line.rstrip('\r')): continue
         for _sample in selList:
             if _sample == line.split()[2]:
-                tmp_file.write(line)
+                if not sType == 'SYNCH':
+                    tmp_file.write(line)
+                else:
+                    tmp_splitline = line.split()
+                    tmp_splitline[0] = 'synching'
+                    tmp_file.write('  '.join(tmp_splitline+['\n']))
                 checkedList.append(_sample)
                 typeList   .append(int(line.split()[-1]))
     for _selSample in selList:
@@ -53,12 +58,12 @@ class valErrs:
         self.vals.append(self.fwd_err)
     def setVals(self, line):
         self.cen_val  = float(line.split()[-6])
-        self.cen_sys  = float(line.split()[-5])
-        self.cen_stat = float(line.split()[-4])
+        self.cen_sys  = float(line.split()[-4])
+        self.cen_stat = float(line.split()[-5])
         self.vals.extend([self.cen_val, self.cen_sys, self.cen_stat])
         self.fwd_val  = float(line.split()[-3])
-        self.fwd_sys  = float(line.split()[-2])
-        self.fwd_stat = float(line.split()[-1])
+        self.fwd_sys  = float(line.split()[-1])
+        self.fwd_stat = float(line.split()[-2])
         self.vals.extend([self.fwd_val, self.fwd_sys, self.fwd_stat])
         self.totError()
     def printValues(self):
