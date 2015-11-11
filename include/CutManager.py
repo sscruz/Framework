@@ -5,7 +5,7 @@ class CutManager:
 
    def __init__(self):
 
-      self.twoLeptons = "t.nPairLep_Edge > 0"
+      self.twoLeptons = "t.nPairLep_Edge > 0 &&  hbheFilterIso > 0 && hbheFilterNew25ns > 0 && Flag_eeBadScFilter > 0"
       self.trigMMc = "(HLT_DoubleMu > 0 || HLT_mu27tkmu8 > 0)"
       self.trigEEc = "(HLT_el17el12_dz > 0 || HLT_ele33ele33 > 0)"
       self.trigEMc = "(HLT_mu8el17 > 0 || HLT_mu17el12 > 0 || HLT_mu30ele30 > 0)"
