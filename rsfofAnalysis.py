@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     saveValues = False
    
-    gROOT.ProcessLine('.L tdrstyle.C')
+    gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
