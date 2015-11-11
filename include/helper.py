@@ -8,10 +8,15 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     checkedList = []
     typeList    = []
     for line in f.readlines():
-        if '#' in line: continue
+        if '#' in line or not len(line.rstrip('\r')): continue
         for _sample in selList:
             if _sample == line.split()[2]:
-                tmp_file.write(line)
+                if not sType == 'SYNCH':
+                    tmp_file.write(line)
+                else:
+                    tmp_splitline = line.split()
+                    tmp_splitline[0] = 'synching'
+                    tmp_file.write('  '.join(tmp_splitline+['\n']))
                 checkedList.append(_sample)
                 typeList   .append(int(line.split()[-1]))
     for _selSample in selList:
@@ -47,18 +52,18 @@ class valErrs:
         self.vals = []
         self.name = name
     def totError(self):
-        self.cen_err = math.sqrt(self.cen_sys**2 + self.cen_stat**2)
-        self.fwd_err = math.sqrt(self.fwd_sys**2 + self.fwd_stat**2)
+        self.cen_err = math.sqrt((self.cen_val*self.cen_sys)**2 + self.cen_stat**2)
+        self.fwd_err = math.sqrt((self.fwd_val*self.fwd_sys)**2 + self.fwd_stat**2)
         self.vals.append(self.cen_err)
         self.vals.append(self.fwd_err)
     def setVals(self, line):
         self.cen_val  = float(line.split()[-6])
-        self.cen_sys  = float(line.split()[-5])
-        self.cen_stat = float(line.split()[-4])
+        self.cen_sys  = float(line.split()[-4])
+        self.cen_stat = float(line.split()[-5])
         self.vals.extend([self.cen_val, self.cen_sys, self.cen_stat])
         self.fwd_val  = float(line.split()[-3])
-        self.fwd_sys  = float(line.split()[-2])
-        self.fwd_stat = float(line.split()[-1])
+        self.fwd_sys  = float(line.split()[-1])
+        self.fwd_stat = float(line.split()[-2])
         self.vals.extend([self.fwd_val, self.fwd_sys, self.fwd_stat])
         self.totError()
     def printValues(self):
@@ -85,6 +90,12 @@ class ingredients:
         self.rsfof_ttcr_lm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR lm' ); self.rs.append(self.rsfof_ttcr_lm )
         self.rsfof_ttcr_onZ = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR onZ'); self.rs.append(self.rsfof_ttcr_onZ)
         self.rsfof_ttcr_hm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR hm' ); self.rs.append(self.rsfof_ttcr_hm )
+        ## rinout                                    
+        self.rinout_dy_lm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR lm'   ); self.rs.append(self.rinout_dy_lm)
+        self.rinout_dy_bz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR oz'   ); self.rs.append(self.rinout_dy_bz)
+        self.rinout_dy_oz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR bz'   ); self.rs.append(self.rinout_dy_oz)
+        self.rinout_dy_az    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR az'   ); self.rs.append(self.rinout_dy_az)
+        self.rinout_dy_hm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR hm'   ); self.rs.append(self.rinout_dy_hm)
         ## RT
         self.rt_region      = valErrs(-1., -1., -1., -1., -1., -1., 'R_T region'     ); self.rs.append(self.rt_region     )
         ## fill the values from the file
@@ -114,6 +125,12 @@ class ingredients:
             if self.check(['rsfof', 'ttcr_lm' , self.dType], line): self.rsfof_ttcr_lm .setVals(line)
             if self.check(['rsfof', 'ttcr_onZ', self.dType], line): self.rsfof_ttcr_onZ.setVals(line)
             if self.check(['rsfof', 'ttcr_hm' , self.dType], line): self.rsfof_ttcr_hm .setVals(line)
+            #rinout
+            if self.check(['rinout', 'dy_lm' , self.dType], line): self.rinout_dy_lm   .setVals(line)
+            if self.check(['rinout', 'dy_bz' , self.dType], line): self.rinout_dy_bz   .setVals(line)
+            if self.check(['rinout', 'dy_oz' , self.dType], line): self.rinout_dy_oz   .setVals(line)
+            if self.check(['rinout', 'dy_az' , self.dType], line): self.rinout_dy_az   .setVals(line)
+            if self.check(['rinout', 'dy_hm' , self.dType], line): self.rinout_dy_hm   .setVals(line)
             #RT
             if self.check(['rt'   , 'region'  , self.dType], line): self.rt_region     .setVals(line)
         f.close()
