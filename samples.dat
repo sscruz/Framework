@@ -15,23 +15,23 @@ MuonEG       r.kBlack   MuonEG_Run2015B       MuonEG_Run2015B       /afs/cern.ch
 HTMHT        r.kBlack   HTMHT_Run2015B        HTMHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
 JetHT        r.kBlack   JetHT_Run2015B        JetHT_Run2015B        /afs/cern.ch/work/p/pablom/public/data/DataGolden40pb_v2_Synch/   friends/   1         1
 #-------------------------- 25 ns --------------------------
-DoubleMuon   r.kBlack   DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714  DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714    DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714      MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714  DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+DoubleEG      r.kBlack   DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714    DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+MuonEG        r.kBlack   MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714      MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
 #
-DoubleMuon   r.kBlack   DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751       DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015D_05Oct_v1_runs_246908_258751         DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015D_05Oct_v2_runs_246908_258751           MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-DoubleMuon   r.kBlack   DoubleMuon_Run2015D_v4_runs_246908_258751             DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-DoubleEG     r.kBlack   DoubleEG_Run2015D_v4_runs_246908_258751               DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-MuonEG       r.kBlack   MuonEG_Run2015D_v4_runs_246908_258751                 MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751       DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+DoubleEG      r.kBlack   DoubleEG_Run2015D_05Oct_v1_runs_246908_258751         DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+MuonEG        r.kBlack   MuonEG_Run2015D_05Oct_v2_runs_246908_258751           MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015D_v4_runs_246908_258751             DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+DoubleEG      r.kBlack   DoubleEG_Run2015D_v4_runs_246908_258751               DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+MuonEG        r.kBlack   MuonEG_Run2015D_v4_runs_246908_258751                 MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
 # hadronics
-HTMHT        r.kBlack   HTMHT_Run2015C_25ns_05Oct_v1_runs_246908_258714       HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-JetHT        r.kBlack   JetHT_Run2015C_25ns_05Oct_v1_runs_246908_258714       JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-HTMHT        r.kBlack   HTMHT_Run2015D_05Oct_v1_runs_246908_258751            HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-JetHT        r.kBlack   JetHT_Run2015D_05Oct_v1_runs_246908_258751            JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-HTMHT        r.kBlack   HTMHT_Run2015D_v4_runs_246908_258751                  HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
-JetHT        r.kBlack   JetHT_Run2015D_v4_runs_246908_258751                  JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/new/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015C_25ns_05Oct_v1_runs_246908_258714       HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+JetHT        r.kBlack   JetHT_Run2015C_25ns_05Oct_v1_runs_246908_258714       JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015D_05Oct_v1_runs_246908_258751            HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+JetHT        r.kBlack   JetHT_Run2015D_05Oct_v1_runs_246908_258751            JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+HTMHT        r.kBlack   HTMHT_Run2015D_v4_runs_246908_258751                  HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+JetHT        r.kBlack   JetHT_Run2015D_v4_runs_246908_258751                  JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
 #
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
