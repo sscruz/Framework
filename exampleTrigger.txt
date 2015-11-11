@@ -1,9 +1,0 @@
-TTJets r.kBlue TTJets TT+Jets /afs/cern.ch/work/m/mdunser/public/edgeTrees/samplesWithHTTriggers/ edgeFriends/ 831760 0
-DYJetsToLL_M50 r.kRed DYJetsToLL_M50 DY+Jets /afs/cern.ch/work/m/mdunser/public/edgeTrees/samplesWithHTTriggers/ edgeFriends/ 5482000 0
-## SMS_T2tt_2J_mStop850_mLSP100
-## SMS_T2tt_2J_mStop425_mLSP325
-## DYJetsToLL_M50_HT100to200
-## DYJetsToLL_M50_HT200to400
-## DYJetsToLL_M50_HT400to600
-## DYJetsToLL_M50_HT600toInf
-## DYJetsToLL_M50

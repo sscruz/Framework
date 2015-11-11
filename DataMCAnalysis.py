@@ -40,7 +40,7 @@ if __name__ == "__main__":
     treeMC = Tree(inputFileNameMC, "MC", 0)
     treeData = Tree(inputFileNameData, "Data", 0)
    
-    gROOT.ProcessLine('.L tdrstyle.C')
+    gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
 
