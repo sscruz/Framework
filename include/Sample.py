@@ -280,6 +280,9 @@ class Tree:
      h.Sumw2()
      h.GetXaxis().SetTitle(xlabel)
      h.GetYaxis().SetTitle(ylabel)
+     h_of.Sumw2()
+     h_of.GetXaxis().SetTitle(xlabel)
+     h_of.GetYaxis().SetTitle(ylabel)
      
      for b in self.blocks:
        AuxName = "auxh1_block_" + name + "_" + b.name
