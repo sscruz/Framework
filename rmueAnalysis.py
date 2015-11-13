@@ -53,6 +53,7 @@ def make_rmue(histo_mm, histo_ee):
 
     ratio = histo_mm.Clone("rmue_" + histo_mm.GetName())
     ratio.GetYaxis().SetTitle("r_{#mu e}")
+    ratio.GetXaxis().SetTitle(histo_mm.GetXaxis().GetTitle())
   
     for i in range(0, histo_mm.GetNbinsX()+1):
         Nmm = histo_mm.GetBinContent(i)
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 
     ##lumi = 0.849
     lumi = 1.3
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_PAS'
 
     #print flarp
 
@@ -163,8 +164,8 @@ if __name__ == "__main__":
                     setattr(reg, "%s_%s_%s_%s"    %("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinContent( reg.mll_mm.FindBin(91) ) )
                     setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "ee"), reg.mll_ee.GetBinError  ( reg.mll_ee.FindBin(91) ) )
                     setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinError  ( reg.mll_mm.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s"    %("rmue", dataMC, eta), tmp_rmue_histo.GetBinContent( tmp_rmue_histo.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s_err"%("rmue", dataMC, eta), tmp_rmue_histo.GetBinError  ( tmp_rmue_histo.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s"       %("rmue"      , dataMC, eta      ), tmp_rmue_histo.GetBinContent( tmp_rmue_histo.FindBin(91) ) )
+                    setattr(reg, "%s_%s_%s_err"   %("rmue"      , dataMC, eta      ), tmp_rmue_histo.GetBinError  ( tmp_rmue_histo.FindBin(91) ) )
 
                     reg.mll.setHisto(tmp_rmue_histo, dataMC, eta)
     
