@@ -69,6 +69,7 @@ class collection:
         f.close()
         g = open(filename, 'w')
         g.writelines(newlines)
+        g.close()
 
 class region():
     def __init__(self, name, cuts, rvars, bins, doData):

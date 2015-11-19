@@ -84,7 +84,7 @@ class ingredients:
         ## rsfof                                   
         self.rsfof_direct = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof direct'); self.rs.append(self.rsfof_direct)
         ## RT
-        self.rt_region    = valErrs(-1., -1., -1., -1., -1., -1., 'R_T region'   ); self.rs.append(self.rt_region   )
+        self.rt_region    = valErrs(-1., -1., -1., -1., -1., -1., 'R_T'          ); self.rs.append(self.rt_region   )
         ## rinout                                  
         self.rinout_dy_lm = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR lm'); self.rs.append(self.rinout_dy_lm)
         self.rinout_dy_bz = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR oz'); self.rs.append(self.rinout_dy_bz)
@@ -159,6 +159,21 @@ class ingredients:
         ## here come the final value and its uncertainty
         self.rsfof_final_fwd_val = self.rsfof_final_fwd_num / self.rsfof_final_fwd_den
         self.rsfof_final_fwd_err = 1./math.sqrt(self.rsfof_final_fwd_den)
+
+        f=open(self.infile, 'r')
+        newlines = []
+        for line in list(f):
+            if len(line.split()) > 2 and line.split()[0] == 'rsfof'  and line.split()[1] == 'final' and line.split()[2] == self.dType:
+                newlines.append('rsfof       final           %-4s        %.4f      %.4f      %.4f      %.4f      %.4f      %.4f\n'%(
+                    str(self.dType), self.rsfof_final_cen_val, self.rsfof_final_cen_err, 0.0, 
+                                     self.rsfof_final_fwd_val, self.rsfof_final_fwd_err, 0.0 ))
+            else:
+                newlines.append(line)
+        f.close()
+        g=open(self.infile, 'w')
+        g.writelines(newlines)
+        g.close()
+
 
     def checkValues(self):
         for thing in self.rs:
