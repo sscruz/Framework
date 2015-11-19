@@ -16,38 +16,69 @@
                                                        
 
 import ROOT as r
-from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors
+from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors, TEfficiency
 import math,sys,optparse
-import Rounder as rounder
 import math
+
+
 
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
+import include.Rounder    as rounder
 
 
-def getTriggerEffs(tree, numcut, dencut, var, varname, binning, lumi):
+############################################################
+def getRT(eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
+    RT = math.sqrt(eff_ee*eff_mm)/eff_em
+    uncRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(unc_ee/math.sqrt(eff_ee)) 
+    uncRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(unc_mm/math.sqrt(eff_mm)) 
+    uncRTem = math.sqrt(eff_ee*eff_mm)*((unc_em)/(eff_em*eff_em)) 
+    uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
+    uncsysRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(0.05*eff_ee/math.sqrt(eff_ee)) 
+    uncsysRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(0.05*eff_mm/math.sqrt(eff_mm)) 
+    uncsysRTem = math.sqrt(eff_ee*eff_mm)*((0.05*eff_em)/(eff_em*eff_em)) 
+    uncsysRT = math.sqrt(uncsysRTee * uncsysRTee + uncsysRTmm * uncsysRTmm + uncsysRTem * uncsysRTem)
+
+    return [RT, uncRT, uncsysRT]
 
 
-    passHisto = tree.getTH1F(lumi, 'passHisto', var, binning[0], binning[1], binning[2], numcut, '', varname)
-    allHisto  = tree.getTH1F(lumi, 'allHisto',  var, binning[0], binning[1], binning[2], dencut, '', varname)
-    passYields = tree.getYields(lumi, 't.lepsMll_Edge', 0, 1000, numcut)
-    allYields = tree.getYields(lumi, 't.lepsMll_Edge', 0, 1000, dencut)
-    eff = passYields[0]/allYields[0]
-    unc = math.sqrt((passYields[1]*passYields[1])/(allYields[0]*allYields[0]) + (passYields[0]*passYields[0]*allYields[1]*allYields[1])/(allYields[0]*allYields[0]*allYields[0]*allYields[0]))    
+def RT(eff_ee, eff_mm, eff_em):
+
+    RTratio = eff_ee.Clone("RT_" + eff_ee.GetName())
+
+    RTratio.GetYaxis().SetTitle("RT")
+    RTratio.GetXaxis().SetTitle(eff_mm.GetXaxis().GetTitle())
+
+    for i in range(0, eff_mm.GetNbinsX()+1):
+
+        if(eff_em.GetBinContent(i) != 0 and eff_ee.GetBinContent(i) != 0 and eff_mm.GetBinContent(i) != 0):
+            [rt, uncrt, uncsys] = getRT(eff_ee.GetBinContent(i), eff_ee.GetBinError(i), eff_mm.GetBinContent(i), eff_mm.GetBinError(i), eff_em.GetBinContent(i), eff_em.GetBinError(i)) 
+            RTratio.SetBinContent(i, rt)
+            RTratio.SetBinError(i, math.sqrt(uncrt*uncrt+uncsys*uncsys))
+
+    return RTratio
 
 
-    for i in range(1,passHisto.GetNbinsX()+1):
-        print 'at variable %s events passing/total %.2f  of  %.2f' %(varname, passHisto.GetBinContent(i), allHisto.GetBinContent(i) )
+def getTriggerEffs(num, den):
 
+    trig = den.Clone("trig_" + den.GetName())
+    trig.Reset()
 
-    errs = TGraphAsymmErrors(passHisto, allHisto, 'a')
+    errs = TGraphAsymmErrors(num, den, 'a')
+    x = errs.GetX()
+    y = errs.GetY()
+    eyh = errs.GetEYhigh()
+    eyl = errs.GetEYlow()
+    for i in range(0, num.GetNbinsX()+1):
+        print x[i], y[i]
+        if(x[i] != 0 and y[i] != 0):
+            trig.SetBinContent(i, y[i])
+            trig.SetBinError(i, max(eyh[i], eyl[i]))
 
-    errs.GetHistogram().GetXaxis().SetTitle(varname)
-
-    return [errs, eff, unc]
+    return trig
 
 
 if __name__ == '__main__':
@@ -63,7 +94,8 @@ if __name__ == '__main__':
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['HTMHT_Run2015D_05Oct_v1_runs_246908_258751', 'HTMHT_Run2015D_v4_runs_246908_258751',
-                  'JetHT_Run2015D_05Oct_v1_runs_246908_258751', 'JetHT_Run2015D_v4_runs_246908_258751']
+                  'JetHT_Run2015D_05Oct_v1_runs_246908_258751', 'JetHT_Run2015D_v4_runs_246908_258751',
+                  'HTMHT_Run2015C_25ns_05Oct_v1_runs_246908_258714', 'JetHT_Run2015C_25ns_05Oct_v1_runs_246908_258714']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -71,111 +103,103 @@ if __name__ == '__main__':
 
     lumi = 1.28
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')
-   
-    gROOT.ProcessLine('.L tdrstyle.C')
+  
+    gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-
-    effs = {}
-    uncs = []
-
-    denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT])
-    denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT])
-    denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT])
+ 
+    vetoSignalCR = "(!(" + cuts.METJetsSignalRegion + ")&& !(" + cuts.METJetsControlRegion + "))"
+    denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT, vetoSignalCR])
     numerator_EE = cuts.AddList([denominator_EE, cuts.trigEEc])
     numerator_MM = cuts.AddList([denominator_MM, cuts.trigMMc])
     numerator_EM = cuts.AddList([denominator_EM, cuts.trigEMc])
 
-    denominator_HT = cuts.AddList([cuts.goodLepton, cuts.HT])
-    numerator_HT   = cuts.AddList([denominator_HT, cuts.triggerHT])
-    effs['ht_da'] = getTriggerEffs(treeDA, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
-    effs['ht_mc'] = getTriggerEffs(treeMC, numerator_HT, denominator_HT, 't.htJet35j_Edge', 'H_{T}', [20,  200, 1000], lumi)
 
-    print asdfasd
+    regions = []
+    mll_inc = Region.region('mll_inc',
+                       ['', ''],
+                       ['mll', 'l1pt'],
+                       [[20, 1000],[10,20,30,40,50,60,70]],
+                       True)
+    regions.append(mll_inc)
+
+
+    for reg in regions:
+        print 'i am at region', reg.name
+        for eta in ['central', 'forward']:
+            print '... in %s' %(eta)
+            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+
+                dataMC = 'DATA' if tree == treeDA else 'MC'
+                cuts_num_ee = cuts.AddList([numerator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_ee = cuts.AddList([denominator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_num_mm = cuts.AddList([numerator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_mm = cuts.AddList([denominator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_num_em = cuts.AddList([numerator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_em = cuts.AddList([denominator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
     
-    plot_ht = Canvas.Canvas('trigger/%s/plot_eff_ht'%(lumi_str), 'png', 0.6, 0.6, 0.8, 0.8)
-    effs['ht_mc'][0].GetHistogram().SetMarkerColor(r.kRed+1)
-    #effs['ht_mc'][0].GetHistogram().Draw()
-    effs['ht_mc'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-    effs['ht_mc'][0].Draw('apz')
-    #effs['ht_da'][0].Draw('apz same')
-    plot_ht.save(0, 0, 0, lumi)
+                for theRvar in reg.rvars:
 
-    ##sys.exit(0)
+                    if(theRvar == 'mll'):
+                      var = "t.lepsMll_Edge"
+                      label = "m_{ll} (GeV)"          
+                    if(theRvar == 'l1pt'):
+                      var = "t.Lep1_pt_Edge"
+                      label = "p_{t,leading} (GeV)"          
+                    if(theRvar == 'l2pt'):
+                      var = "t.Lep2_pt_Edge"
+                      label = "p_{t,trailing} (GeV)"          
 
-    for flavor in ['ee', 'mm', 'em']:
-
-        if   flavor is 'ee': 
-            trigger = cuts.trigEEc
-            mllvar  = 'm_{ee} (GeV)'
-            pt1var  = 'p_{T}^{e,lead} (GeV)'
-            pt2var  = 'p_{T}^{e,trail} (GeV)'
-            numcut = numerator_EE
-            dencut = denominator_EE
-            tag    = "EE"
-        elif flavor is 'mm': 
-            trigger = cuts.trigMMc
-            mllvar  = 'm_{#mu#mu} (GeV)'
-            pt1var  = 'p_{T}^{#mu,lead} (GeV)'
-            pt2var  = 'p_{T}^{#mu,trail} (GeV)'
-            numcut = numerator_MM
-            dencut = denominator_MM
-            tag    = "MM"
-        elif flavor is 'em': 
-            trigger = cuts.trigEMc
-            mllvar  = 'm_{e#mu} (GeV)'
-            pt1var  = 'p_{T}^{lep,lead} (GeV)'
-            pt2var  = 'p_{T}^{lep,trail} (GeV)'
-            numcut = numerator_EM
-            dencut = denominator_EM
-            tag    = "EM"
-        else: 
-            print 'something is wrong...'
-
-        effs[flavor+'mll'] = getTriggerEffs(treeDA, numcut, dencut, 't.lepsMll_Edge', mllvar, [20,  0, 200], lumi)
-        effs[flavor+'pt1'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep1_pt_Edge', pt1var, [10, 20, 120], lumi)
-        effs[flavor+'pt2'] = getTriggerEffs(treeDA, numcut, dencut, 't.Lep2_pt_Edge', pt2var, [10, 20, 120], lumi)
-
-        plot_mll = Canvas.Canvas('trigger/%s/plot_eff_%s_mll'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'mll'][0].GetHistogram().Draw()
-        effs[flavor+'mll'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'mll'][0].Draw('apz')
-        plot_mll.save(0, 0, 0, lumi)
-
-        plot_l1pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l1pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'pt1'][0].GetHistogram().Draw()
-        effs[flavor+'pt1'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'pt1'][0].Draw('apz')
-        plot_l1pt.save(0, 0, 0, lumi)
-
-        plot_l2pt = Canvas.Canvas('trigger/%s/plot_eff_%s_l2pt'%(lumi_str, flavor), 'png', 0.6, 0.6, 0.8, 0.8)
-        effs[flavor+'pt2'][0].GetHistogram().Draw()
-        effs[flavor+'pt2'][0].GetYaxis().SetRangeUser(-0.05, 1.05)
-        effs[flavor+'pt2'][0].Draw('apz')
-        plot_l2pt.save(0, 0, 0, lumi)
-
-        #del plot_mll, plot_l1pt, plot_l2pt
-
-
-    a = rounder.Rounder()
  
-    #print "Summary of values"
-    #print "EE efficiency ", a.toStringB(effs[0][0], effs[0][1])
-    #print "MM efficiency ", a.toStringB(effs[1][0], effs[1][1])
-    #print "EM efficiency ", a.toStringB(effs[2][0], effs[2][1])
+                    reg.eff_num_ee = tree.getTH1F(lumi, "eff_num_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_ee, "", label)
+                    reg.eff_den_ee = tree.getTH1F(lumi, "eff_den_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_ee, "", label)
+                    reg.eff_num_mm = tree.getTH1F(lumi, "eff_num_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_mm, "", label)
+                    reg.eff_den_mm = tree.getTH1F(lumi, "eff_den_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_mm, "", label)
+                    reg.eff_num_em = tree.getTH1F(lumi, "eff_num_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_em, "", label)
+                    reg.eff_den_em = tree.getTH1F(lumi, "eff_den_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_em, "", label)
+                    h_eff_ee = getTriggerEffs(reg.eff_num_ee, reg.eff_den_ee)
+                    h_eff_mm = getTriggerEffs(reg.eff_num_mm, reg.eff_den_mm)
+                    h_eff_em = getTriggerEffs(reg.eff_num_em, reg.eff_den_em)
+                    h_RT     = RT(h_eff_ee, h_eff_mm, h_eff_em)
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinError(1))
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinError(1))
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinError(1))
+                  
+                    if(theRvar == 'mll'):
+                      reg.mll.setHisto(h_eff_ee, dataMC, eta)
+                      reg.mll.setHisto(h_eff_mm, dataMC, eta)
+                      reg.mll.setHisto(h_eff_em, dataMC, eta)
+                      reg.mll.setHisto(h_RT, dataMC, eta)
+                    if(theRvar == 'l1pt'):
+                      reg.l1pt.setHisto(h_eff_ee, dataMC, eta)
+                      reg.l1pt.setHisto(h_eff_mm, dataMC, eta)
+                      reg.l1pt.setHisto(h_eff_em, dataMC, eta)
+                      reg.l1pt.setHisto(h_RT, dataMC, eta)
+                    if(theRvar == 'l2pt'):
+                      reg.l2pt.setHisto(h_eff_ee, dataMC, eta)
+                      reg.l2pt.setHisto(h_eff_mm, dataMC, eta)
+                      reg.l2pt.setHisto(h_eff_em, dataMC, eta)
+                      reg.l2pt.setHisto(h_RT, dataMC, eta)
+ 
+                    if(len(reg.bins[reg.rvars.index(theRvar)]) > 2):
+                    	plot_rt = Canvas.Canvas("rt/%s/plot_rt_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+                        plot_rt.addHisto(h_RT, "E", ""       , "PL", r.kRed+1 , 1, 0)
+                        plot_rt.save(1, 0, 0, lumi)
+                    	plot_eff = Canvas.Canvas("rt/%s/plot_eff_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+                        plot_eff.addHisto(h_eff_ee, "E", "DoubleElectron"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_mm, "E,SAME", "DoubleMuon"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_em, "E,SAME", "MuonElectron"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.save(1, 0, 0, lumi)
 
-    #RT = math.sqrt(effs[0][0]*effs[1][0])/effs[2][0]
-    #uncRTee = (math.sqrt(effs[1][0])/effs[2][0])*0.5*(effs[0][1]/math.sqrt(effs[0][0])) 
-    #uncRTmm = (math.sqrt(effs[0][0])/effs[2][0])*0.5*(effs[1][1]/math.sqrt(effs[1][0])) 
-    #uncRTem = math.sqrt(effs[0][0]*effs[1][0])*(math.sqrt(effs[2][1])/(effs[2][0]*effs[2][0])) 
-    #uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
 
 
-
-
-
-
+    mll_inc.mll.saveInFile(['rt', 'region'], 0, 1)
 
 
 
