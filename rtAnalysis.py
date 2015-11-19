@@ -84,25 +84,21 @@ def getTriggerEffs(num, den):
 
 if __name__ == '__main__':
 
-    parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
+    parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
-    (options, args) = parser.parse_args()
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    (opts, args) = parser.parse_args()
 
-    if len(args) != 1:
-      parser.error('wrong number of arguments')
-
-    inputFileName = args[0]
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['HTMHT_Run2015D_05Oct_v1_runs_246908_258751', 'HTMHT_Run2015D_v4_runs_246908_258751',
-                  'JetHT_Run2015D_05Oct_v1_runs_246908_258751', 'JetHT_Run2015D_v4_runs_246908_258751',
-                  'HTMHT_Run2015C_25ns_05Oct_v1_runs_246908_258714', 'JetHT_Run2015C_25ns_05Oct_v1_runs_246908_258714']
-    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
+    daDatasets = ['HTMHT_Run2015C_25ns-05Oct_v1_runs_246908_260627', 'HTMHT_Run2015D-05Oct_v1_runs_246908_260627', 'HTMHT_Run2015D_v4_runs_246908_260627',
+                  'JetHT_Run2015C_25ns-05Oct_v1_runs_246908_260627', 'JetHT_Run2015D-05Oct_v1_runs_246908_260627', 'JetHT_Run2015D_v4_runs_246908_260627']
+    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
     print 'Trees successfully loaded...'
 
-    lumi = 1.28
+    lumi = 2.1
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')
   
     gROOT.ProcessLine('.L include/tdrstyle.C')
