@@ -16,49 +16,69 @@
                                                        
 
 import ROOT as r
-from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors
+from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors, TEfficiency
 import math,sys,optparse
-import Rounder as rounder
 import math
+
+
 
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
+import include.Rounder    as rounder
 
 
-
-
-def getRT(self, eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
+############################################################
+def getRT(eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
     RT = math.sqrt(eff_ee*eff_mm)/eff_em
     uncRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(unc_ee/math.sqrt(eff_ee)) 
     uncRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(unc_mm/math.sqrt(eff_mm)) 
-    uncRTem = math.sqrt(eff_ee*eff_mm)*((unc_em)/(eff_em*eff_em])) 
+    uncRTem = math.sqrt(eff_ee*eff_mm)*((unc_em)/(eff_em*eff_em)) 
     uncRT = math.sqrt(uncRTee * uncRTee + uncRTmm * uncRTmm + uncRTem * uncRTem)
     uncsysRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(0.05*eff_ee/math.sqrt(eff_ee)) 
     uncsysRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(0.05*eff_mm/math.sqrt(eff_mm)) 
-    uncsysRTem = math.sqrt(eff_ee*eff_mm)*((0.05*eff_em)/(eff_em*eff_em])) 
+    uncsysRTem = math.sqrt(eff_ee*eff_mm)*((0.05*eff_em)/(eff_em*eff_em)) 
     uncsysRT = math.sqrt(uncsysRTee * uncsysRTee + uncsysRTmm * uncsysRTmm + uncsysRTem * uncsysRTem)
 
     return [RT, uncRT, uncsysRT]
 
 
-def getTriggerEffs(tree, numcut, dencut, var, varname, binning, lumi):
+def RT(eff_ee, eff_mm, eff_em):
+
+    RTratio = eff_ee.Clone("RT_" + eff_ee.GetName())
+
+    RTratio.GetYaxis().SetTitle("RT")
+    RTratio.GetXaxis().SetTitle(eff_mm.GetXaxis().GetTitle())
+
+    for i in range(0, eff_mm.GetNbinsX()+1):
+
+        if(eff_em.GetBinContent(i) != 0 and eff_ee.GetBinContent(i) != 0 and eff_mm.GetBinContent(i) != 0):
+            [rt, uncrt, uncsys] = getRT(eff_ee.GetBinContent(i), eff_ee.GetBinError(i), eff_mm.GetBinContent(i), eff_mm.GetBinError(i), eff_em.GetBinContent(i), eff_em.GetBinError(i)) 
+            RTratio.SetBinContent(i, rt)
+            RTratio.SetBinError(i, math.sqrt(uncrt*uncrt+uncsys*uncsys))
+
+    return RTratio
 
 
-    passHisto = tree.getTH1F(lumi, 'passHisto', var, binning[0], binning[1], binning[2], numcut, '', varname)
-    allHisto  = tree.getTH1F(lumi, 'allHisto',  var, binning[0], binning[1], binning[2], dencut, '', varname)
-    passYields = tree.getYields(lumi, 't.lepsMll_Edge', 0, 1000, numcut)
-    allYields = tree.getYields(lumi, 't.lepsMll_Edge', 0, 1000, dencut)
-    eff = passYields[0]/allYields[0]
-    unc = math.sqrt((passYields[1]*passYields[1])/(allYields[0]*allYields[0]) + (passYields[0]*passYields[0]*allYields[1]*allYields[1])/(allYields[0]*allYields[0]*allYields[0]*allYields[0]))    
+def getTriggerEffs(num, den):
 
-    errs = TGraphAsymmErrors(passHisto, allHisto, 'a')
+    trig = den.Clone("trig_" + den.GetName())
+    trig.Reset()
 
-    errs.GetHistogram().GetXaxis().SetTitle(varname)
+    errs = TGraphAsymmErrors(num, den, 'a')
+    x = errs.GetX()
+    y = errs.GetY()
+    eyh = errs.GetEYhigh()
+    eyl = errs.GetEYlow()
+    for i in range(0, num.GetNbinsX()+1):
+        print x[i], y[i]
+        if(x[i] != 0 and y[i] != 0):
+            trig.SetBinContent(i, y[i])
+            trig.SetBinError(i, max(eyh[i], eyl[i]))
 
-    return [errs, eff, unc]
+    return trig
 
 
 if __name__ == '__main__':
@@ -74,7 +94,8 @@ if __name__ == '__main__':
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
     daDatasets = ['HTMHT_Run2015D_05Oct_v1_runs_246908_258751', 'HTMHT_Run2015D_v4_runs_246908_258751',
-                  'JetHT_Run2015D_05Oct_v1_runs_246908_258751', 'JetHT_Run2015D_v4_runs_246908_258751']
+                  'JetHT_Run2015D_05Oct_v1_runs_246908_258751', 'JetHT_Run2015D_v4_runs_246908_258751',
+                  'HTMHT_Run2015C_25ns_05Oct_v1_runs_246908_258714', 'JetHT_Run2015C_25ns_05Oct_v1_runs_246908_258714']
     treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -82,70 +103,103 @@ if __name__ == '__main__':
 
     lumi = 1.28
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')
-   
-    gROOT.ProcessLine('.L tdrstyle.C')
+  
+    gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
  
     vetoSignalCR = "(!(" + cuts.METJetsSignalRegion + ")&& !(" + cuts.METJetsControlRegion + "))"
-    denominator_EE_c = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_MM_c = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_EM_c = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.central, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    numerator_EE_c = cuts.AddList([denominator_EE, cuts.trigEEc])
-    numerator_MM_c = cuts.AddList([denominator_MM, cuts.trigMMc])
-    numerator_EM_c = cuts.AddList([denominator_EM, cuts.trigEMc])
-    denominator_EE_f = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_MM_f = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_EM_f = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.forward, cuts.triggerHT, cuts.HT, vetoSignalCR])
-    numerator_EE_f = cuts.AddList([denominator_EE, cuts.trigEEc])
-    numerator_MM_f = cuts.AddList([denominator_MM, cuts.trigMMc])
-    numerator_EM_f = cuts.AddList([denominator_EM, cuts.trigEMc])
+    denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT, vetoSignalCR])
+    denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT, vetoSignalCR])
+    numerator_EE = cuts.AddList([denominator_EE, cuts.trigEEc])
+    numerator_MM = cuts.AddList([denominator_MM, cuts.trigMMc])
+    numerator_EM = cuts.AddList([denominator_EM, cuts.trigEMc])
 
 
-    for dType in ['MC', 'DATA']:
-        [eff_mll_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.lepsMll_Edge', 'm_{ee} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.Lep1_pt_Edge', 'p_{T}^{e,lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_ee_ce, eff_ee_ce, unc_ee_ce] = getTriggerEffs(treeDA, numerator_EE_c, denominator_EE_c, 't.Lep2_pt_Edge', 'p_{T}^{e,trail} (GeV)', [10,  20, 120], lumi)
-        [eff_mll_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.lepsMll_Edge', 'm_{ee} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.Lep1_pt_Edge', 'p_{T}^{e,lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_ee_fo, eff_ee_ce, unc_ee_fo] = getTriggerEffs(treeDA, numerator_EE_f, denominator_EE_f, 't.Lep2_pt_Edge', 'p_{T}^{e,trail} (GeV)', [10,  20, 120], lumi)
+    regions = []
+    mll_inc = Region.region('mll_inc',
+                       ['', ''],
+                       ['mll', 'l1pt'],
+                       [[20, 1000],[10,20,30,40,50,60,70]],
+                       True)
+    regions.append(mll_inc)
+
+
+    for reg in regions:
+        print 'i am at region', reg.name
+        for eta in ['central', 'forward']:
+            print '... in %s' %(eta)
+            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+
+                dataMC = 'DATA' if tree == treeDA else 'MC'
+                cuts_num_ee = cuts.AddList([numerator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_ee = cuts.AddList([denominator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_num_mm = cuts.AddList([numerator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_mm = cuts.AddList([denominator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_num_em = cuts.AddList([numerator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
+                cuts_den_em = cuts.AddList([denominator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
     
-        [eff_mll_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.lepsMll_Edge', 'm_{mm} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.Lep1_pt_Edge', 'p_{T}^{m,lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_mm_ce, eff_mm_ce, unc_mm_ce] = getTriggerEffs(trmmDA, numerator_MM_c, denominator_MM_c, 't.Lep2_pt_Edge', 'p_{T}^{m,trail} (GeV)', [10,  20, 120], lumi)
-        [eff_mll_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.lepsMll_Edge', 'm_{mm} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.Lep1_pt_Edge', 'p_{T}^{m,lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_mm_fo, eff_mm_ce, unc_mm_fo] = getTriggerEffs(trmmDA, numerator_MM_f, denominator_MM_f, 't.Lep2_pt_Edge', 'p_{T}^{m,trail} (GeV)', [10,  20, 120], lumi)
+                for theRvar in reg.rvars:
 
-        [eff_mll_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.lepsMll_Edge', 'm_{em} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.Lep1_pt_Edge', 'p_{T}^{lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_em_ce, eff_em_ce, unc_em_ce] = getTriggerEffs(tremDA, numerator_EM_c, denominator_EM_c, 't.Lep2_pt_Edge', 'p_{T}^{trail} (GeV)', [10,  20, 120], lumi)
-        [eff_mll_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.lepsMll_Edge', 'm_{em} (GeV)', [20,  0, 200], lumi)
-        [eff_pt1_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.Lep1_pt_Edge', 'p_{T}^{lead} (GeV)', [10,  20, 120], lumi)
-        [eff_pt2_em_fo, eff_em_ce, unc_em_fo] = getTriggerEffs(tremDA, numerator_EM_f, denominator_EM_f, 't.Lep2_pt_Edge', 'p_{T}^{trail} (GeV)', [10,  20, 120], lumi)
-    
-        [RT_c, uncRT_c, sysRT_c] = getRT(eff_ee_ce, unc_ee_ce, eff_mm_ce, unc_mm_ce, eff_em_ce, unc_em_ce)
-        [RT_f, uncRT_f, sysRT_f] = getRT(eff_ee_fo, unc_ee_fo, eff_mm_fo, unc_mm_fo, eff_em_fo, unc_em_fo)
+                    if(theRvar == 'mll'):
+                      var = "t.lepsMll_Edge"
+                      label = "m_{ll} (GeV)"          
+                    if(theRvar == 'l1pt'):
+                      var = "t.Lep1_pt_Edge"
+                      label = "p_{t,leading} (GeV)"          
+                    if(theRvar == 'l2pt'):
+                      var = "t.Lep2_pt_Edge"
+                      label = "p_{t,trailing} (GeV)"          
+
+ 
+                    reg.eff_num_ee = tree.getTH1F(lumi, "eff_num_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_ee, "", label)
+                    reg.eff_den_ee = tree.getTH1F(lumi, "eff_den_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_ee, "", label)
+                    reg.eff_num_mm = tree.getTH1F(lumi, "eff_num_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_mm, "", label)
+                    reg.eff_den_mm = tree.getTH1F(lumi, "eff_den_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_mm, "", label)
+                    reg.eff_num_em = tree.getTH1F(lumi, "eff_num_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_em, "", label)
+                    reg.eff_den_em = tree.getTH1F(lumi, "eff_den_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_em, "", label)
+                    h_eff_ee = getTriggerEffs(reg.eff_num_ee, reg.eff_den_ee)
+                    h_eff_mm = getTriggerEffs(reg.eff_num_mm, reg.eff_den_mm)
+                    h_eff_em = getTriggerEffs(reg.eff_num_em, reg.eff_den_em)
+                    h_RT     = RT(h_eff_ee, h_eff_mm, h_eff_em)
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinError(1))
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinError(1))
+                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinContent(1))
+                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinError(1))
+                  
+                    if(theRvar == 'mll'):
+                      reg.mll.setHisto(h_eff_ee, dataMC, eta)
+                      reg.mll.setHisto(h_eff_mm, dataMC, eta)
+                      reg.mll.setHisto(h_eff_em, dataMC, eta)
+                      reg.mll.setHisto(h_RT, dataMC, eta)
+                    if(theRvar == 'l1pt'):
+                      reg.l1pt.setHisto(h_eff_ee, dataMC, eta)
+                      reg.l1pt.setHisto(h_eff_mm, dataMC, eta)
+                      reg.l1pt.setHisto(h_eff_em, dataMC, eta)
+                      reg.l1pt.setHisto(h_RT, dataMC, eta)
+                    if(theRvar == 'l2pt'):
+                      reg.l2pt.setHisto(h_eff_ee, dataMC, eta)
+                      reg.l2pt.setHisto(h_eff_mm, dataMC, eta)
+                      reg.l2pt.setHisto(h_eff_em, dataMC, eta)
+                      reg.l2pt.setHisto(h_RT, dataMC, eta)
+ 
+                    if(len(reg.bins[reg.rvars.index(theRvar)]) > 2):
+                    	plot_rt = Canvas.Canvas("rt/%s/plot_rt_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+                        plot_rt.addHisto(h_RT, "E", ""       , "PL", r.kRed+1 , 1, 0)
+                        plot_rt.save(1, 0, 0, lumi)
+                    	plot_eff = Canvas.Canvas("rt/%s/plot_eff_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+                        plot_eff.addHisto(h_eff_ee, "E", "DoubleElectron"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_mm, "E,SAME", "DoubleMuon"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_em, "E,SAME", "MuonElectron"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.save(1, 0, 0, lumi)
 
 
-        a = rounder.Rounder()
-        print effs 
-        print "------------ Summary of values for", dType, "---------------"
-        print "EE efficiency central", a.toStringB(eff_ee_ce, unc_ee_ce)
-        print "MM efficiency central", a.toStringB(eff_mm_ce, unc_mm_ce)
-        print "EM efficiency central", a.toStringB(eff_em_ce, unc_em_ce)
-        print "EE efficiency forward", a.toStringB(eff_ee_fo, unc_ee_fo)
-        print "MM efficiency forward", a.toStringB(eff_mm_fo, unc_mm_fo)
-        print "EM efficiency forward", a.toStringB(eff_em_fo, unc_em_fo)
-        print "RT central", a.toStringB(RT_c, uncRT_c), "+/-", a.toString(sysRT_c)
-        print "RT central", a.toStringB(RT_f, uncRT_f), "+/-", a.toString(sysRT_f)
 
-        ing = ingredients("ingredients.dat", dType)
-        ing.UpdateRTValues([RT_c, uncRT_c, sysRT_c], [RT_f, uncRT_f, sysRT_f])
-
-
-
+    mll_inc.mll.saveInFile(['rt', 'region'], 0, 1)
 
 
 
