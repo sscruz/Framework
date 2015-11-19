@@ -38,10 +38,13 @@ if __name__ == "__main__":
     print 'Going to load DATA and MC trees...'
     ttDatasets = ['TTLep_pow']
     dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    raDatasets = ['WWTo2L2Nu', 'ZZTo2L2Q', 'TToLeptons_tch_amcatnlo']#'WZTo2L2Q']
-    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
-                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    raDatasets = ['WWTo2L2Nu', 'ZZTo2L2Q', 'TToLeptons_tch_amcatnlo']#,'WZTo2L2Q']
+    ## 1.3 datasets daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+    ## 1.3 datasets               'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+    ## 1.3 datasets               'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
+                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
 
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
@@ -64,15 +67,18 @@ if __name__ == "__main__":
 
     #lumi = 0.849
     #lumi = 1.28
-    lumi = 1.3
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_blind'
+    lumi = 2.1
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_withPUWeight'
 
 
     regions = []
     setLog = []
 
-    doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb', 'l1pt', 'l2pt', 'ht']
-    binnings    = [range(20,75, 5)+range(72,112,2)+range(115,305,5), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
+    ## doVariables = ['mll', 'met', 'nb', 'nj', 'nvtx', 'mlb', 'l1pt', 'l2pt', 'ht']
+    ## #binnings    = [range(20,75, 5)+range(72,112,2)+range(115,305,5), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
+    ## binnings    = [range(20,305, 5), range(0,165, 5), range(0,5,1), range(0,8,1), range(0,35), range(0,310,10), range(20, 205, 5), range(20, 155, 5), range(40, 520, 20)]
+    doVariables = ['met', 'nvtx']
+    binnings    = [range(0,165, 5), range(0,31)]
 
     if opts.test:
         doVariables = [doVariables[0]]
@@ -84,37 +90,41 @@ if __name__ == "__main__":
     #                   [cuts.Control2JetsAF(), cuts.blinded], doVariables, binnings, True)
     #regions.append(Control2JetsAF_blind) 
 
-    Control2JetsEE_blind = Region.region('Control2JetsEE_blind',
-                       [cuts.Control2Jetsee(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsEE_blind) 
+    ## Control2JetsEE_blind = Region.region('Control2JetsEE_blind',
+    ##                    [cuts.Control2Jetsee(), cuts.blinded], doVariables, binnings, True)
+    ## regions.append(Control2JetsEE_blind) 
 
-    Control2JetsMM_blind = Region.region('Control2JetsMM_blind',
-                       [cuts.Control2Jetsmm(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsMM_blind) 
+    ## Control2JetsMM_blind = Region.region('Control2JetsMM_blind',
+    ##                    [cuts.Control2Jetsmm(), cuts.blinded], doVariables, binnings, True)
+    ## regions.append(Control2JetsMM_blind) 
 
-    Control2JetsSF_blind = Region.region('Control2JetsSF_blind',
-                       [cuts.Control2JetsSF(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsSF_blind) 
+    ## Control2JetsSF_blind = Region.region('Control2JetsSF_blind',
+    ##                    [cuts.Control2JetsSF(), cuts.blinded], doVariables, binnings, True)
+    ## regions.append(Control2JetsSF_blind) 
 
-    Control2JetsOF_blind = Region.region('Control2JetsOF_blind',
-                       [cuts.Control2JetsOF(), cuts.blinded], doVariables, binnings, True)
-    regions.append(Control2JetsOF_blind) 
+    ## Control2JetsOF_blind = Region.region('Control2JetsOF_blind',
+    ##                    [cuts.Control2JetsOF(), cuts.blinded], doVariables, binnings, True)
+    ## regions.append(Control2JetsOF_blind) 
 
-    ##Control0JetsSF = Region.region('Control0JetsSF',
-    ##                   [cuts.nj0, cuts.SF], doVariables, binnings, True)
-    ##regions.append(Control0JetsSF)
+    ## Control0JetsSF = Region.region('Control0JetsSF',
+    ##                    [cuts.nj0, cuts.SF], doVariables, binnings, True)
+    ## regions.append(Control0JetsSF)
 
-    ##Control0JetsOF = Region.region('Control0JetsOF',
-    ##                   [cuts.nj0, cuts.OF], doVariables, binnings, True)
-    ##regions.append(Control0JetsOF)
+    ## Control0JetsOF = Region.region('Control0JetsOF',
+    ##                    [cuts.nj0, cuts.OF], doVariables, binnings, True)
+    ## regions.append(Control0JetsOF)
     ##
-    ##Control2JetsSF = Region.region('Control2JetsSF',
-    ##                   [cuts.Control2JetsSF()], doVariables, binnings, True)
-    ##regions.append(Control2JetsSF)
-    ##
-    ##Control2JetsOF = Region.region('Control2JetsOF',
-    ##                   [cuts.Control2JetsOF()], doVariables, binnings, True)
-    ##regions.append(Control2JetsOF) 
+    Control2JetsSF = Region.region('Control2JetsSF',
+                       [cuts.Control2JetsSF()], doVariables, binnings, True)
+    regions.append(Control2JetsSF)
+    
+    ## Control2JetsOF = Region.region('Control2JetsOF',
+    ##                    [cuts.Control2JetsOF()], doVariables, binnings, True)
+    ## regions.append(Control2JetsOF) 
+
+    ## Control2JetsAF = Region.region('Control2JetsAF',
+    ##                    [cuts.Control2JetsAF()], doVariables, binnings, True)
+    ## regions.append(Control2JetsAF) 
 
 
     etas = ['central' , 'forward']

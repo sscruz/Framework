@@ -30,7 +30,7 @@ class Sample:
       self.puWeight = "1.0"
       if(self.isData == 0):
         self.puWeight = "t.PileupW_Edge"
-#        self.puWeight = "1.0"
+        #self.puWeight = "1.0"
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name

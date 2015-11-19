@@ -29,6 +29,7 @@ class CutManager:
       self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.ZmassVeto = "(t.lepsMll_Edge < 81 || t.lepsMll_Edge > 101)"
+      self.DYmassVeto = "(t.lepsMll_Edge < 70 || t.lepsMll_Edge > 120)"
       self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
       self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
       self.highmass = "t.lepsMll_Edge > 120"
@@ -56,6 +57,10 @@ class CutManager:
    def MaxRun(self, run):
       
       return self.brackets("run <= %d"%(run))
+
+   def MinRun(self, run):
+      
+      return self.brackets("run >  %d"%(run))
 
    def Central(self):
       
