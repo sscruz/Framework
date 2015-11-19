@@ -16,7 +16,7 @@
                                                        
 
 import ROOT as r
-from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors, TEfficiency
+from ROOT import gROOT, TCanvas, TFile, TF1, TGraphAsymmErrors
 import math,sys,optparse
 import math
 
@@ -67,13 +67,14 @@ def getTriggerEffs(num, den):
     trig = den.Clone("trig_" + den.GetName())
     trig.Reset()
 
-    errs = TGraphAsymmErrors(num, den, 'a')
+
+
+    errs = TGraphAsymmErrors(num, den, 'v')
     x = errs.GetX()
     y = errs.GetY()
     eyh = errs.GetEYhigh()
     eyl = errs.GetEYlow()
     for i in range(0, num.GetNbinsX()+1):
-        print x[i], y[i]
         if(x[i] != 0 and y[i] != 0):
             trig.SetBinContent(i, y[i])
             trig.SetBinError(i, max(eyh[i], eyl[i]))
@@ -120,11 +121,17 @@ if __name__ == '__main__':
 
     regions = []
     mll_inc = Region.region('mll_inc',
-                       ['', ''],
-                       ['mll', 'l1pt'],
-                       [[20, 1000],[10,20,30,40,50,60,70]],
+                       [''],
+                       ['mll'],
+                       [[20, 2000]],
                        True)
     regions.append(mll_inc)
+    regular = Region.region('regular',
+                       ['', '', ''],
+                       ['mll', 'l1pt','l2pt'],
+                       [[20, 40, 60, 80, 100, 120, 140, 180, 220, 260, 300], [20,40,60,100,140,200,240,280,320], [20,40,60,100,140,200,240,280,320]],
+                       True)
+    regions.append(regular)
 
 
     for reg in regions:
@@ -140,7 +147,15 @@ if __name__ == '__main__':
                 cuts_den_mm = cuts.AddList([denominator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
                 cuts_num_em = cuts.AddList([numerator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
                 cuts_den_em = cuts.AddList([denominator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-    
+                if dataMC == 'MC':
+                    cuts_num_ee = cuts.AddList([cuts_num_ee, "(genWeight>0)"])
+                    cuts_den_ee = cuts.AddList([cuts_den_ee, "(genWeight>0)"])
+                    cuts_num_mm = cuts.AddList([cuts_num_mm, "(genWeight>0)"])
+                    cuts_den_mm = cuts.AddList([cuts_den_mm, "(genWeight>0)"])
+                    cuts_num_em = cuts.AddList([cuts_num_em, "(genWeight>0)"])
+                    cuts_den_em = cuts.AddList([cuts_den_em, "(genWeight>0)"])
+                             
+ 
                 for theRvar in reg.rvars:
 
                     if(theRvar == 'mll'):
@@ -189,12 +204,16 @@ if __name__ == '__main__':
  
                     if(len(reg.bins[reg.rvars.index(theRvar)]) > 2):
                     	plot_rt = Canvas.Canvas("rt/%s/plot_rt_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-                        plot_rt.addHisto(h_RT, "E", ""       , "PL", r.kRed+1 , 1, 0)
+                        h_RT.GetYaxis().SetRangeUser(0.5, 1.5)
+                        plot_rt.addHisto(h_RT, "E", ""       , "", r.kRed+1 , 1, -1)
                         plot_rt.save(1, 0, 0, lumi)
                     	plot_eff = Canvas.Canvas("rt/%s/plot_eff_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+                        h_eff_ee.GetYaxis().SetRangeUser(0.5, 1.1)
+                        h_eff_mm.GetYaxis().SetRangeUser(0.5, 1.1)
+                        h_eff_em.GetYaxis().SetRangeUser(0.5, 1.1)
                         plot_eff.addHisto(h_eff_ee, "E", "DoubleElectron"       , "PL", r.kRed+1 , 1, 0)
-                        plot_eff.addHisto(h_eff_mm, "E,SAME", "DoubleMuon"       , "PL", r.kRed+1 , 1, 0)
-                        plot_eff.addHisto(h_eff_em, "E,SAME", "MuonElectron"       , "PL", r.kRed+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_mm, "E,SAME", "DoubleMuon"       , "PL", r.kGreen+1 , 1, 0)
+                        plot_eff.addHisto(h_eff_em, "E,SAME", "MuonElectron"       , "PL", r.kBlue+1 , 1, 0)
                         plot_eff.save(1, 0, 0, lumi)
 
 
