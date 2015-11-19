@@ -138,10 +138,10 @@ def scaleZ(histo, eta, nbs):
 def makePrediction(of_histo, ing, eta):
     central = (eta == 'central')
     sf_pred = copy.deepcopy(of_histo)
-    scale = ing.rsfof_ttcr_lm.cen_val   if central else ing.rsfof_ttcr_lm.fwd_val
-    s_err = ing.rsfof_ttcr_lm.cen_stat  if central else ing.rsfof_ttcr_lm.fwd_stat
+    scale = ing.rsfof_final_cen_val  if central else ing.rsfof_final_fwd_val
+    s_err = ing.rsfof_final_cen_err  if central else ing.rsfof_final_fwd_err
     print '========================================='
-    print 'using rsfof: %.4f' %(scale)
+    print 'using rsfof: %.4f +- %.4f' %(scale, s_err)
     print '========================================='
     for _bin in range(1,of_histo.GetNbinsX()+1):
         tmp_cont  = of_histo.GetBinContent(_bin)
@@ -278,7 +278,7 @@ if __name__ == '__main__':
     ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
     ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
 
-    print asdf
+    ##print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
     lumi = 1.3
