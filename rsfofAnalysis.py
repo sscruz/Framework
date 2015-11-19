@@ -126,15 +126,14 @@ if __name__ == '__main__':
                                    [[120, 300]],
                                    False)
     regions.append(ttjets_sig_hm)
-    ttjets_inc     = Region.region('ttjets_inc', 
-                                   [cuts.nj2],
-                                   ['mll', 'nj', 'met'],
-                                   [[20, 70, 81, 101, 120, 300], range(2,9), range(0, 210, 10)],
-                                   False)
-    regions.append(ttjets_inc)
 
     if opts.mcStudies:
         regions = []
+        ttjets_inc     = Region.region('ttjets_inc', 
+                                       [cuts.nj2],
+                                       ['mll', 'nj', 'met'],
+                                       [[20, 70, 81, 101, 120, 300], range(2,9), range(0, 210, 10)],
+                                       False)
         regions.append(ttjets_inc)
 
     for reg in regions:

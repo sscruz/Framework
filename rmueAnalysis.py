@@ -256,7 +256,7 @@ if __name__ == "__main__":
         plot_rmueFactor = Canvas.Canvas("rmue/%s/plot_rmue_fullFactor_mll_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
         plot_rmueFactor.addHisto(factor_nomass_mc           , "E,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
         plot_rmueFactor.addHisto(factor_nomass_da           , "E,SAME", "Data"     , "PL", r.kBlack , 1, 1)
-        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_mc , "PZ"    , "MC meas." , "PL", r.kCyan+1, 1, 2)
+        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_mc), "PZ"    , "MC meas." , "PL", r.kCyan+1, 1, 2)
         plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_da), "PZ"    , "DY - data", "PL", r.kBlack , 1, -1)
         plot_rmueFactor.addLine (factor_nomass_da.GetXaxis().GetXmin(), factor_val , factor_nomass_da.GetXaxis().GetXmax(), factor_val, r.kBlue+2)
         plot_rmueFactor.addBand (factor_nomass_da.GetXaxis().GetXmin(), dn         , factor_nomass_da.GetXaxis().GetXmax(), up        , r.kBlue+2, 0.2)
