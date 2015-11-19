@@ -12,40 +12,20 @@ class collection:
         self.fwd_da, self.fwd_da_gr = 0, 0
 
     def getHisto(self, dataMC, eta):
-        if   (dataMC, eta) == ('MC'  , 'central'): 
-            return self.cen_mc
-        elif (dataMC, eta) == ('MC'  , 'forward'): 
-            return self.fwd_mc
-        elif (dataMC, eta) == ('DATA', 'central'): 
-            return self.cen_da
-        elif (dataMC, eta) == ('DATA', 'forward'): 
-            return self.fwd_da
+        s_eta = 'cen' if eta == 'central' else 'fwd'
+        dm = dataMC[:2].lower()
+        return getattr(self, '%s_%s'%(s_eta, dm))
 
     def getGraph(self, dataMC, eta):
-        if   (dataMC, eta) == ('MC'  , 'central'): 
-            return self.cen_mc_gr
-        elif (dataMC, eta) == ('MC'  , 'forward'): 
-            return self.fwd_mc_gr
-        elif (dataMC, eta) == ('DATA', 'central'): 
-            return self.cen_da_gr
-        elif (dataMC, eta) == ('DATA', 'forward'): 
-            return self.fwd_da_gr
+        s_eta = 'cen' if eta == 'central' else 'fwd'
+        dm = dataMC[:2].lower()
+        return getattr(self, '%s_%s_gr'%(s_eta, dm))
 
     def setHisto(self, histo, dataMC, eta):
-        if   (dataMC, eta) == ('MC'  , 'central'): 
-            self.cen_mc = histo
-            self.cen_mc_gr = TGraphErrors(histo)
-        elif (dataMC, eta) == ('MC'  , 'forward'): 
-            self.fwd_mc = histo
-            self.fwd_mc_gr = TGraphErrors(histo)
-        elif (dataMC, eta) == ('DATA', 'central'): 
-            self.cen_da = histo
-            self.cen_da_gr = TGraphErrors(histo)
-        elif (dataMC, eta) == ('DATA', 'forward'): 
-            self.fwd_da = histo
-            self.fwd_da_gr = TGraphErrors(histo)
-        else:
-            print 'you are not calling setHisto correctly'
+        s_eta = 'cen' if eta == 'central' else 'fwd'
+        dm = dataMC[:2].lower()
+        setattr(self, '%s_%s'   %(s_eta, dm), histo)
+        setattr(self, '%s_%s_gr'%(s_eta, dm), TGraphErrors(histo))
 
     def printValues(self):
         for _histo in [self.cen_mc, self.cen_da, self.fwd_mc, self.fwd_da]:
@@ -68,18 +48,20 @@ class collection:
         f = open(filename, 'r')
         lines = f.readlines()
         newlines = []
+        if type(systErr) != list:
+            systErr = [systErr, systErr]
         for line in lines:
             appended = False
             for t in ['MC', 'DATA'] if self.cen_da else ['MC']:
                 if all(s in line for s in pattern+[t]):
-                    newlines.append('%-6s \t %-15s %-6s \t %.4f \t %.4f \t %-6s \t %.4f \t %.4f \t %-6s\n' %(
+                    newlines.append('%-6s      %-15s %-6s      %.4f      %.4f      %.4f      %.4f      %.4f      %.4f\n' %(
                             line.split()[0], line.split()[1], t,
                             self.getHisto(t, 'central').GetBinContent(1 if not findBin else self.getHisto(t, 'central').FindBin(findBin)),
                             self.getHisto(t, 'central').GetBinError  (1 if not findBin else self.getHisto(t, 'central').FindBin(findBin)),
-                            str(systErr),
+                            systErr[0],
                             self.getHisto(t, 'forward').GetBinContent(1 if not findBin else self.getHisto(t, 'forward').FindBin(findBin)),
                             self.getHisto(t, 'forward').GetBinError  (1 if not findBin else self.getHisto(t, 'forward').FindBin(findBin)),
-                            str(systErr) ))
+                            systErr[1] ))
                     appended = True
     
             if not appended:
