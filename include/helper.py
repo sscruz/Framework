@@ -79,29 +79,24 @@ class ingredients:
         self.dType  = dType
         self.rs = []
         ## rmue
-        self.rmue_sr_lm     = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue SR lm'    ); self.rs.append(self.rmue_sr_lm    )
-        self.rmue_sr_onZ    = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue SR onZ'   ); self.rs.append(self.rmue_sr_onZ   )
-        self.rmue_sr_hm     = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue SR hm'    ); self.rs.append(self.rmue_sr_hm    )
-        self.rmue_dycr_dym  = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue dycr dym' ); self.rs.append(self.rmue_dycr_dym )
-        ## rsfof                                     
-        self.rsfof_sr_lm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof SR lm'   ); self.rs.append(self.rsfof_sr_lm   )
-        self.rsfof_sr_onZ   = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof SR onZ'  ); self.rs.append(self.rsfof_sr_onZ  )
-        self.rsfof_sr_hm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof SR hm'   ); self.rs.append(self.rsfof_sr_hm   )
-        self.rsfof_ttcr_lm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR lm' ); self.rs.append(self.rsfof_ttcr_lm )
-        self.rsfof_ttcr_onZ = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR onZ'); self.rs.append(self.rsfof_ttcr_onZ)
-        self.rsfof_ttcr_hm  = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof TTCR hm' ); self.rs.append(self.rsfof_ttcr_hm )
-        ## rinout                                    
-        self.rinout_dy_lm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR lm'   ); self.rs.append(self.rinout_dy_lm)
-        self.rinout_dy_bz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR oz'   ); self.rs.append(self.rinout_dy_bz)
-        self.rinout_dy_oz    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR bz'   ); self.rs.append(self.rinout_dy_oz)
-        self.rinout_dy_az    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR az'   ); self.rs.append(self.rinout_dy_az)
-        self.rinout_dy_hm    = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR hm'   ); self.rs.append(self.rinout_dy_hm)
+        self.rmue_alone   = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue alone'  ); self.rs.append(self.rmue_alone  )
+        self.rmue_factor  = valErrs(-1., -1., -1., -1., -1., -1., 'r_mue factor' ); self.rs.append(self.rmue_factor )
+        ## rsfof                                   
+        self.rsfof_direct = valErrs(-1., -1., -1., -1., -1., -1., 'R_sfof direct'); self.rs.append(self.rsfof_direct)
         ## RT
-        self.rt_region      = valErrs(-1., -1., -1., -1., -1., -1., 'R_T region'     ); self.rs.append(self.rt_region     )
+        self.rt_region    = valErrs(-1., -1., -1., -1., -1., -1., 'R_T region'   ); self.rs.append(self.rt_region   )
+        ## rinout                                  
+        self.rinout_dy_lm = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR lm'); self.rs.append(self.rinout_dy_lm)
+        self.rinout_dy_bz = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR oz'); self.rs.append(self.rinout_dy_bz)
+        self.rinout_dy_oz = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR bz'); self.rs.append(self.rinout_dy_oz)
+        self.rinout_dy_az = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR az'); self.rs.append(self.rinout_dy_az)
+        self.rinout_dy_hm = valErrs(-1., -1., -1., -1., -1., -1., 'R_inout SR hm'); self.rs.append(self.rinout_dy_hm)
         ## fill the values from the file
         self.readValues()
         ## check if none is unset. exit if one is.
         self.checkValues()
+        ## caluclate final rsfof as well
+        self.calculateFullRSFOF()
         print 'loaded all ingredients from %s for %s' %(self.infile, self.dType)
 
     def check(self, test, string):
@@ -114,26 +109,57 @@ class ingredients:
         for line in lines:
             if '#' in line or not len(line.strip()): continue
             #rmue
-            if self.check(['rmue' , 'sr_lm'   , self.dType], line): self.rmue_sr_lm    .setVals(line)
-            if self.check(['rmue' , 'sr_onZ'  , self.dType], line): self.rmue_sr_onZ   .setVals(line)
-            if self.check(['rmue' , 'sr_hm'   , self.dType], line): self.rmue_sr_hm    .setVals(line)
-            if self.check(['rmue' , 'dycr_dym', self.dType], line): self.rmue_dycr_dym .setVals(line)
+            if self.check(['rmue'  , 'alone' , self.dType], line): self.rmue_alone  .setVals(line)
+            if self.check(['rmue'  , 'factor', self.dType], line): self.rmue_factor .setVals(line)
             #rsfof
-            if self.check(['rsfof', 'sr_lm'   , self.dType], line): self.rsfof_sr_lm   .setVals(line)
-            if self.check(['rsfof', 'sr_onZ'  , self.dType], line): self.rsfof_sr_onZ  .setVals(line)
-            if self.check(['rsfof', 'sr_hm'   , self.dType], line): self.rsfof_sr_hm   .setVals(line)
-            if self.check(['rsfof', 'ttcr_lm' , self.dType], line): self.rsfof_ttcr_lm .setVals(line)
-            if self.check(['rsfof', 'ttcr_onZ', self.dType], line): self.rsfof_ttcr_onZ.setVals(line)
-            if self.check(['rsfof', 'ttcr_hm' , self.dType], line): self.rsfof_ttcr_hm .setVals(line)
-            #rinout
-            if self.check(['rinout', 'dy_lm' , self.dType], line): self.rinout_dy_lm   .setVals(line)
-            if self.check(['rinout', 'dy_bz' , self.dType], line): self.rinout_dy_bz   .setVals(line)
-            if self.check(['rinout', 'dy_oz' , self.dType], line): self.rinout_dy_oz   .setVals(line)
-            if self.check(['rinout', 'dy_az' , self.dType], line): self.rinout_dy_az   .setVals(line)
-            if self.check(['rinout', 'dy_hm' , self.dType], line): self.rinout_dy_hm   .setVals(line)
+            if self.check(['rsfof' , 'direct', self.dType], line): self.rsfof_direct.setVals(line)
             #RT
-            if self.check(['rt'   , 'region'  , self.dType], line): self.rt_region     .setVals(line)
+            if self.check(['rt'    , 'region', self.dType], line): self.rt_region   .setVals(line)
+            #rinout
+            if self.check(['rinout', 'dy_lm' , self.dType], line): self.rinout_dy_lm.setVals(line)
+            if self.check(['rinout', 'dy_bz' , self.dType], line): self.rinout_dy_bz.setVals(line)
+            if self.check(['rinout', 'dy_oz' , self.dType], line): self.rinout_dy_oz.setVals(line)
+            if self.check(['rinout', 'dy_az' , self.dType], line): self.rinout_dy_az.setVals(line)
+            if self.check(['rinout', 'dy_hm' , self.dType], line): self.rinout_dy_hm.setVals(line)
         f.close()
+
+    def calculateFullRSFOF(self):
+        ## ========================================
+        ## calculate everything for central first.
+        ## ========================================
+        self.rsfof_fac_cen   = self.rmue_factor.cen_val * self.rt_region.cen_val
+        self.rsfof_fac_cen_e = math.sqrt(self.rmue_factor.cen_err**2 + self.rt_region.cen_err**2)
+        self.rsfof_fac_cen_w = 1./(self.rsfof_fac_cen_e**2)
+
+        self.rsfof_dir_cen    = self.rsfof_direct.cen_val
+        self.rsfof_dir_cen_e  = self.rsfof_direct.cen_err
+        self.rsfof_dir_cen_w  = 1./(self.rsfof_dir_cen_e**2)
+
+        ## calculate the numerator and denominator for the weighted average
+        self.rsfof_final_cen_num = self.rsfof_fac_cen * self.rsfof_fac_cen_w + self.rsfof_dir_cen * self.rsfof_dir_cen_w
+        self.rsfof_final_cen_den = self.rsfof_fac_cen_w + self.rsfof_dir_cen_w
+        ## here come the final value and its uncertainty
+        self.rsfof_final_cen_val = self.rsfof_final_cen_num / self.rsfof_final_cen_den
+        self.rsfof_final_cen_err = 1./math.sqrt(self.rsfof_final_cen_den)
+
+        ## ==========================================================
+        ## repeat everything for forward. will do that nicer later.
+        ## ==========================================================
+        self.rsfof_fac_fwd   = self.rmue_factor.fwd_val * self.rt_region.fwd_val
+        self.rsfof_fac_fwd_e = math.sqrt(self.rmue_factor.fwd_err**2 + self.rt_region.fwd_err**2)
+        self.rsfof_fac_fwd_w = 1./(self.rsfof_fac_fwd_e**2)
+
+        self.rsfof_dir_fwd    = self.rsfof_direct.fwd_val
+        self.rsfof_dir_fwd_e  = self.rsfof_direct.fwd_err
+        self.rsfof_dir_fwd_w  = 1./(self.rsfof_dir_fwd_e**2)
+
+        ## calculate the numerator and denominator for the weighted average
+        self.rsfof_final_fwd_num = self.rsfof_fac_fwd * self.rsfof_fac_fwd_w + self.rsfof_dir_fwd * self.rsfof_dir_fwd_w
+        self.rsfof_final_fwd_den = self.rsfof_fac_fwd_w + self.rsfof_dir_fwd_w
+        ## here come the final value and its uncertainty
+        self.rsfof_final_fwd_val = self.rsfof_final_fwd_num / self.rsfof_final_fwd_den
+        self.rsfof_final_fwd_err = 1./math.sqrt(self.rsfof_final_fwd_den)
+
     def checkValues(self):
         for thing in self.rs:
             if any(i < 0 for i in thing.vals):

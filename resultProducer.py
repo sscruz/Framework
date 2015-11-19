@@ -132,7 +132,7 @@ def scaleZ(histo, eta, nbs):
         ret_hist.SetBinContent(ret_hist.FindBin(91.), nb_pred)
     else:
         scale  = nb_pred / histo.Integral(bin81, bin101)
-        ret_hist.Scale(scale)
+        ret_hist.Scale(lumi/1.3*scale)
     return ret_hist
 
 def makePrediction(of_histo, ing, eta):
@@ -262,7 +262,8 @@ if __name__ == '__main__':
     parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
     parser.add_option('-l', '--loadShapes', action='store_true', dest='loadShapes', default=False, help='reload dy shapes. default is off since this takes a while')
-    parser.add_option('-m', '--maxRun', action='store', type=int, dest='maxRun', default=999999, help='max run to use for analysis (run is included)')
+    parser.add_option('-M', '--maxRun', action='store', type=int, dest='maxRun', default=999999, help='max run to use for analysis (run is included)')
+    parser.add_option('-m', '--minRun', action='store', type=int, dest='minRun', default=-1    , help='min run to use for analysis (run not included)')
 
     ## make the options globa.. also the lumi
     global opts, lumi, lumi_str, dy_shapes, nbstring
@@ -274,11 +275,21 @@ if __name__ == '__main__':
         print '%-20s : %-20s' %(key, value)
     print ' \n\n'
 
+    ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
+    ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
+
+    print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
-                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    lumi = 1.3
+    if lumi == 1.3:
+        daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+                      'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+                      'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    elif lumi == 2.11:
+        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
+                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
+                      'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
@@ -286,9 +297,8 @@ if __name__ == '__main__':
     print 'Trees successfully loaded...'
 
 
-    lumi = 1.3 
     #lumi_str = 'lumi'+str(lumi).replace('.', 'p')+('_inclB' if inclusiveB else '_exclB')
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_testing'
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_preApproval'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lumi)
 
     isBlinded =False
@@ -303,12 +313,10 @@ if __name__ == '__main__':
     cuts = CutManager.CutManager()
 
 
-    ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
-    ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
-
     finalBinning = range(20,310,10) # + range(81,111,10) + range(110,310,10))
     nbcut_0 = 't.nBJetMedium35_Edge == 0'
     nbcut_1 = 't.nBJetMedium35_Edge >= 1'
+    nbcut_2 = 't.nBJetMedium35_Edge >= 2'
 
 
     #dy_shapes = getDYShapes(finalBinning, range(20,302,2), [20., 70., 81., 101., 120., 300.])
@@ -348,13 +356,26 @@ if __name__ == '__main__':
                                  ['mll'],
                                  [ [20., 70., 81., 101., 120., 13000.] ],
                                  True if not opts.onlyClosure else False)
+    signalRegion2b = Region.region('signalRegion2b', 
+                                 [cuts.METJetsSignalRegion, nbcut_1],
+                                 ['mll', 'met'],
+                                 #[range(20,310,10), range(0,210,10)],
+                                 [finalBinning, range(0,210,10)],
+                                 True if not opts.onlyClosure else False)
+    binnedSR2b     = Region.region('SR8TeV2b', 
+                                 [cuts.METJetsSignalRegion, nbcut_2],
+                                 ['mll'],
+                                 [ [20., 70., 81., 101., 120., 13000.] ],
+                                 True if not opts.onlyClosure else False)
 
-    regions.append(signalRegionincb)
+    #regions.append(signalRegionincb)
     #regions.append(signalRegion0b)
     #regions.append(signalRegion1b)
-    #regions.append(binnedSRincb)
-    #regions.append(binnedSR0b)
-    #regions.append(binnedSR1b)
+    #regions.append(signalRegion2b)
+    regions.append(binnedSRincb)
+    regions.append(binnedSR0b)
+    regions.append(binnedSR1b)
+    regions.append(binnedSR2b)
 
     ## ==================================================
     ## look for DY shapes in file, if not there make them
@@ -374,8 +395,8 @@ if __name__ == '__main__':
         for eta in ['central', 'forward']:
             print '... in %s' %(eta)
 
-            cuts_sf = cuts.AddList([cuts.MaxRun(opts.maxRun), cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
-            cuts_of = cuts.AddList([cuts.MaxRun(opts.maxRun), cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
+            cuts_sf = cuts.AddList([cuts.MaxRun(opts.maxRun), cuts.MinRun(opts.minRun), cuts.GoodLeptonSF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
+            cuts_of = cuts.AddList([cuts.MaxRun(opts.maxRun), cuts.MinRun(opts.minRun), cuts.GoodLeptonOF()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts+[cuts.trigger])
 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
                 dataMC = 'DATA' if tree == treeDA else 'MC'
@@ -393,38 +414,37 @@ if __name__ == '__main__':
 
 
 
-    tables = []
-    for signalRegion in [signalRegionincb]:#, signalRegion0b, signalRegion1b]:
-        nb = 2 if '2b' in signalRegion.name else 1 if '1b' in signalRegion.name else 'inc' if 'incb' in signalRegion.name else 0
-        #nbstr = 'n_{b} '+(' #geq ' if not nb in [0,1] else ' = ')+(str(nb) if nb != 'inc' else str(0))
-        if   nb == 'inc': nbstr = 'n_{b} #geq 0'
-        elif nb == 0    : nbstr = 'n_{b} = 0'
-        elif nb == 1    : nbstr = 'n_{b} #geq 1'
-        elif nb == 2    : nbstr = 'n_{b} #geq 2'
-        for eta in ['central']:#'forward']:
+    ## for signalRegion in [signalRegion2b]:#signalRegionincb, signalRegion0b]: #, signalRegion1b]:
+    ##     nb = 2 if '2b' in signalRegion.name else 1 if '1b' in signalRegion.name else 'inc' if 'incb' in signalRegion.name else 0
+    ##     #nbstr = 'n_{b} '+(' #geq ' if not nb in [0,1] else ' = ')+(str(nb) if nb != 'inc' else str(0))
+    ##     if   nb == 'inc': nbstr = 'n_{b} #geq 0'
+    ##     elif nb == 0    : nbstr = 'n_{b} = 0'
+    ##     elif nb == 1    : nbstr = 'n_{b} #geq 1'
+    ##     elif nb == 2    : nbstr = 'n_{b} #geq 2'
+    ##     for eta in ['central','forward']:
 
-            ## get the mc prediction and observation
-            mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
-            mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
-            #add the DY contribution to the MC prediction
-            if not opts.onlyTTbar: 
-                print 'adding dy shape to the mcPredHisto'
-                mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
+    ##         ## get the mc prediction and observation
+    ##         mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
+    ##         mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
+    ##         #add the DY contribution to the MC prediction
+    ##         if not opts.onlyTTbar: 
+    ##             print 'adding dy shape to the mcPredHisto'
+    ##             mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
 
-            ## get the data observed and predicted
-            daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
-            daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
-            if not opts.onlyTTbar:
-                print 'adding dy shape to the daPredHisto'
-                daPredHisto.Add(scaleZ(dy_shapes['da_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
+    ##         ## get the data observed and predicted
+    ##         daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
+    ##         daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
+    ##         if not opts.onlyTTbar:
+    ##             print 'adding dy shape to the daPredHisto'
+    ##             daPredHisto.Add(scaleZ(dy_shapes['da_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
 
-            ## finally, make the plots.
+    ##         ## finally, make the plots.
 
-            makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , 'MCClosure'    , eta, nb, nbstr) ## closure plot
-            makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', 'dataMCPred'   , eta, nb, nbstr) ## prediction comparison
-            makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , 'predDataObsMC', eta, nb, nbstr) ## predData, obsMC
-            makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , 'dataMCobs'    , eta, nb, nbstr) ## observed data/mc
-            makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , 'data'         , eta, nb, nbstr) ## money plot
+    ##         makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , 'MCClosure'    , eta, nb, nbstr) ## closure plot
+    ##         makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', 'dataMCPred'   , eta, nb, nbstr) ## prediction comparison
+    ##         makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , 'predDataObsMC', eta, nb, nbstr) ## predData, obsMC
+    ##         makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , 'dataMCobs'    , eta, nb, nbstr) ## observed data/mc
+    ##         makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , 'data'         , eta, nb, nbstr) ## money plot
 
 
     # a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)

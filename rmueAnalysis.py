@@ -15,7 +15,7 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
-import math, sys, optparse, array
+import math, sys, optparse, array, copy
 
 import include.helper     as helper
 import include.Region     as Region
@@ -68,22 +68,47 @@ def make_rmue(histo_mm, histo_ee):
             ratio.SetBinError(i, val[1])
     return ratio
 
+def convertToFactor(histo, eta, getGraph=False):
+    tmp_histo = copy.deepcopy(histo)
+    #tmp_histo.Sumw2()
+    sys = 0.1 if eta == 'central' else 0.2
+    for i in range(tmp_histo.GetNbinsX()+1):
+        rmue     = tmp_histo.GetBinContent(i)
+        rmue_err = tmp_histo.GetBinError  (i)
+        rmue_err = math.sqrt(rmue_err**2 + (sys*rmue)**2)
+        if rmue:
+            fac = 0.5*(rmue + 1./rmue)
+            err = 0.5*((1. - 1./(rmue**2))*rmue_err)
+        else:
+            fac = 0.
+            err = 0.
+        tmp_histo.SetBinContent(i, fac)
+        tmp_histo.SetBinError  (i, err)
+    if getGraph:
+        return TGraphErrors(tmp_histo)
+    else:
+        return tmp_histo
+
 
 if __name__ == "__main__":
 
 
     parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
     parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-t', action='store_true', dest='onlyTT', default=False, help='just use ttbar MC, not DY')
     (opts, args) = parser.parse_args()
 
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTT else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
     ##daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
     ##              'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
-    daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
-                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    ## datasets for 1p3 daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
+    ## datasets for 1p3               'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
+    ## datasets for 1p3               'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
+    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
+                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -96,9 +121,9 @@ if __name__ == "__main__":
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    ##lumi = 0.849
-    lumi = 1.3
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_PAS'
+    #lumi = 1.3
+    lumi = 2.1
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_forApproval'
 
     #print flarp
 
@@ -106,7 +131,8 @@ if __name__ == "__main__":
     dy_nomass = Region.region('DY_nomass',
                        [cuts.DYControlRegion],
                        ['mll'],
-                       [[20, 45, 70, 81, 101, 120, 210, 300]],
+                       [[20, 45, 70, 81, 101, 120, 210]],
+                       #[range(20,200,10)],
                        True)
     regions.append(dy_nomass)
     dy_onZ    = Region.region('DY_onZ',
@@ -179,14 +205,15 @@ if __name__ == "__main__":
     
     
     
+    factor_region = copy.deepcopy(dy_onZ)
     for eta in ['central', 'forward']:
         ## =================
         ## MAKE THE Mll PLOT
         ## =================
         meas_rmue_mc   = dy_onZ.mll.getHisto('MC'  , eta).GetBinContent(1)
         meas_rmue_da   = dy_onZ.mll.getHisto('DATA', eta).GetBinContent(1)
-        meas_rmue_mc_e = math.sqrt(dy_onZ.mll.getHisto('MC'  , eta).GetBinError(1)**2 + 0.1**2)
-        meas_rmue_da_e = math.sqrt(dy_onZ.mll.getHisto('DATA', eta).GetBinError(1)**2 + 0.1**2)
+        meas_rmue_mc_e = math.sqrt(dy_onZ.mll.getHisto('MC'  , eta).GetBinError(1)**2 + (0.1 if eta == 'central' else 0.2)**2)
+        meas_rmue_da_e = math.sqrt(dy_onZ.mll.getHisto('DATA', eta).GetBinError(1)**2 + (0.1 if eta == 'central' else 0.2)**2)
         upEdge = meas_rmue_da+meas_rmue_da_e
         dnEdge = meas_rmue_da-meas_rmue_da_e
         middle = meas_rmue_da
@@ -203,7 +230,38 @@ if __name__ == "__main__":
         plot_rmue_mll.addBand (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), dnEdge, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), upEdge, r.kGray+1, 0.2)
         plot_rmue_mll.addLine (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), middle, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), middle, r.kGray+1)
         plot_rmue_mll.addLatex(0.2, 0.2, eta)
-        plot_rmue_mll.save(1, 0, 0, lumi)
+        plot_rmue_mll.save(1, 0, 0, lumi, 0.2, 1.8)
+        
+
+        ## convert histograms to rmue + 1./rmue
+        factor_nomass_mc  = convertToFactor(dy_nomass.mll.getHisto('MC'  , eta), eta)
+        factor_nomass_da  = convertToFactor(dy_nomass.mll.getHisto('DATA', eta), eta)
+        factor_sig_lm_gr  = convertToFactor(sig_lm   .mll.getHisto('MC'  , eta), eta, True)
+        factor_sig_onZ_gr = convertToFactor(sig_onZ  .mll.getHisto('MC'  , eta), eta, True)
+        factor_sig_hm_gr  = convertToFactor(sig_hm   .mll.getHisto('MC'  , eta), eta, True)
+        factor_onZ_mc     = convertToFactor(dy_onZ   .mll.getHisto('MC'  , eta), eta)
+        factor_onZ_da     = convertToFactor(dy_onZ   .mll.getHisto('DATA', eta), eta)
+
+        factor_val = factor_onZ_da.GetBinContent(1)
+        factor_err = factor_onZ_da.GetBinError  (1)
+        up = factor_val + factor_err
+        dn = factor_val - factor_err
+        factor_region.mll.setHisto(factor_onZ_mc, 'MC'  , eta)
+        factor_region.mll.setHisto(factor_onZ_da, 'DATA', eta)
+
+        ## ==================
+        ## rmue + 1/rmue plot
+        ## ==================
+        factor_nomass_mc.GetYaxis().SetTitle('(r_{#mu e} + r_{#mu e}^{-1}) / 2')
+        plot_rmueFactor = Canvas.Canvas("rmue/%s/plot_rmue_fullFactor_mll_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
+        plot_rmueFactor.addHisto(factor_nomass_mc           , "E,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
+        plot_rmueFactor.addHisto(factor_nomass_da           , "E,SAME", "Data"     , "PL", r.kBlack , 1, 1)
+        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_mc , "PZ"    , "MC meas." , "PL", r.kCyan+1, 1, 2)
+        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_da), "PZ"    , "DY - data", "PL", r.kBlack , 1, -1)
+        plot_rmueFactor.addLine (factor_nomass_da.GetXaxis().GetXmin(), factor_val , factor_nomass_da.GetXaxis().GetXmax(), factor_val, r.kBlue+2)
+        plot_rmueFactor.addBand (factor_nomass_da.GetXaxis().GetXmin(), dn         , factor_nomass_da.GetXaxis().GetXmax(), up        , r.kBlue+2, 0.2)
+        plot_rmueFactor.addLatex(0.2, 0.2, eta)
+        plot_rmueFactor.save(1, 0, 0, lumi, 0.8, 1.2)
         
         ## =================
         ## MAKE THE MET PLOT
@@ -221,15 +279,8 @@ if __name__ == "__main__":
     ## =================
     ## PRINT AND SAVE ==
     ## =================
-    dy_onZ    .mll.printValues()
-    dy_nomass .mll.printValues()
-    sig_onZ   .mll.printValues()
-    sig_lm    .mll.printValues()
-    
-    dy_onZ .mll.saveInFile(['rmue', 'dycr_dym'], 0.1)
-    sig_lm .mll.saveInFile(['rmue', 'sr_lm'   ], 0.1)
-    sig_onZ.mll.saveInFile(['rmue', 'sr_onZ'  ], 0.1)
-    sig_hm .mll.saveInFile(['rmue', 'sr_hm'   ], 0.1)
+    dy_onZ       .mll.saveInFile(['rmue', 'alone' ], [0.1, 0.2])
+    factor_region.mll.saveInFile(['rmue', 'factor'], 0.0)
 
     rmue_table = make_rmue_table(dy_onZ)
     for line in rmue_table: 

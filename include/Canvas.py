@@ -262,7 +262,7 @@ class Canvas:
       #del self.myCanvas
 
 
-   def save(self, legend, isData, log, lumi):
+   def save(self, legend, isData, log, lumi, ymin=0, ymax=0):
 
       self.myCanvas.cd()
       
@@ -271,6 +271,8 @@ class Canvas:
      
       for i in range(0, len(self.histos)):
           if(self.ToDraw[i] != 0):        
+              if ymin and ymax:
+                  self.histos[i].GetYaxis().SetRangeUser(ymin, ymax)
               self.histos[i].Draw(self.options[i])
 
       for band in self.bands:
