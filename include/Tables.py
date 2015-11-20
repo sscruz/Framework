@@ -93,3 +93,36 @@ def makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ing
             onz_incb, onz_incb_e, onz_0b, onz_0b_e, onz_1b, onz_1b_e, onz_2b, onz_2b_e ))
     return ret
 
+
+def makeRSFOFTable(ingDA, ingMC):
+    ret = []
+    ret.append('\\begin{table}[hbtp]')
+    ret.append('\\begin{center}')
+    ret.append('\\bgroup')
+    ret.append('\\def\\arraystretch{1.2}')
+    #ret.append('\\small')
+
+    ret.append('\\caption{Calulation of all RSFOF numbers}')
+    ret.append('\\label{tab:combinedRSFOF}')
+    ret.append('\\begin{tabular}{l| c c| c c }')
+    ret.append('\\multicolumn{1}{c}{} & \\multicolumn{2}{c}{\\textbf{Central}} & \\multicolumn{2}{c}{\\textbf{Forward}} \\\\ \\cline{2-5}')
+    ret.append('& Data & MC & Data & MC \\\\ \\hline')
+    ret.append('$\\frac{1}{2}$ $( r_{\\mu/e} + r_{\\mu/e}^{-1} )$   &  %.3f $\\pm$ %.3f  &   %.3f$\\pm$ %.3f   &   %.3f$\\pm$ %.3f &    %.3f$\\pm$ %.3f    \\\\'%(ingDA.rmue_factor.cen_val, ingDA.rmue_factor.cen_err, ingMC.rmue_factor.cen_val, ingMC.rmue_factor.cen_err, 
+                                                                                                                                                                               ingDA.rmue_factor.fwd_val, ingDA.rmue_factor.fwd_err, ingMC.rmue_factor.fwd_val, ingMC.rmue_factor.fwd_err))
+    ret.append('$R_{T}$                          &  %.3f $\\pm$ %.3f  &   %.3f$\\pm$ %.3f   &   %.3f$\\pm$ %.3f &    %.3f$\\pm$ %.3f    \\\\ \\hline'%(ingDA.rt_region.cen_val  , ingDA.rt_region.cen_err  , ingMC.rt_region.cen_val  , ingMC.rt_region.cen_err  , 
+                                                                                                                                                       ingDA.rt_region.fwd_val  , ingDA.rt_region.fwd_err  , ingMC.rt_region.fwd_val  , ingMC.rt_region.fwd_err  ))
+    ret.append('& \\multicolumn{4}{c}{\\Rsfof}  \\\\ \\hline')
+    ret.append('from factorization        &  %.3f $\\pm$ %.3f   &  %.3f $\\pm$ %.3f       &  %.3f $\\pm$ %.3f  &   %.3f $\\pm$ %.3f     \\\\'%(ingDA.rsfof_fac_cen, ingDA.rsfof_fac_cen_e, ingMC.rsfof_fac_cen, ingMC.rsfof_fac_cen_e, 
+                                                                                                                                               ingDA.rsfof_fac_fwd, ingDA.rsfof_fac_fwd_e, ingMC.rsfof_fac_fwd, ingMC.rsfof_fac_fwd_e))
+    ret.append('     direct measurement   &  %.3f $\\pm$ %.3f   &  %.3f $\\pm$ %.3f       &  %.3f $\\pm$ %.3f  &   %.3f $\\pm$ %.3f     \\\\ \\hline'%(ingDA.rsfof_dir_cen, ingDA.rsfof_dir_cen_e, ingMC.rsfof_dir_cen, ingMC.rsfof_dir_cen_e, 
+                                                                                                                                               ingDA.rsfof_dir_fwd, ingDA.rsfof_dir_fwd_e, ingMC.rsfof_dir_fwd, ingMC.rsfof_dir_fwd_e))
+    ret.append('weighted average    &  \\textbf{%.3f $\\pm$ %.3f}   &  \\textbf{%.3f $\\pm$ %.3f}       &  \\textbf{%.3f $\\pm$ %.3f}  &   \\textbf{%.3f $\\pm$ %.3f}     \\\\'%(ingDA.rsfof_final_cen_val, ingDA.rsfof_final_cen_err, ingMC.rsfof_final_cen_val, ingMC.rsfof_final_cen_err, 
+                                                                                                                                         ingDA.rsfof_final_fwd_val, ingDA.rsfof_final_fwd_err, ingMC.rsfof_final_fwd_val, ingMC.rsfof_final_fwd_err))
+    ret.append('\\end{tabular}')
+    ret.append('\\egroup')
+    ret.append('\\end{center}')
+    ret.append('\\end{table}')
+    for i in ret: 
+        print i
+    return ret
+

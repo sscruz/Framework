@@ -278,7 +278,9 @@ if __name__ == '__main__':
     ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
     ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
 
-    ## print asdf
+    rsfofTable = Tables.makeRSFOFTable(ingDA, ingMC)
+
+    print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
     lumi = 2.1
