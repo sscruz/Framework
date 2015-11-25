@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
     lumi = 2.1 ; maxrun = 999999
 
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_MCstudies'
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_forApproval'
     print 'Running with an integrated luminosity of', lumi,'fb-1'
 
     saveValues = True
