@@ -1,0 +1,19 @@
+# this is the datacard for bin forward_highMass_incb
+imax 1  number of channels
+jmax 2  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# only one channel here with observation 298.0
+bin            forward_highMass_incb
+observation    298.0
+------------
+bin        forward_highMass_incb     forward_highMass_incb     forward_highMass_incb
+process    sig            FS             DY    
+process    0              1              2
+rate       0.1              298.71       0.74
+------------
+deltaS       lnN              1.15      -           -       
+lumi         lnN              1.12      -           -       
+FS_unc       lnN              -         1.08    -       
+forward_highMass_incb_fs_stat      gmN 276   -         1.00        -       
+DY_unc       lnN              -         -           1.29
