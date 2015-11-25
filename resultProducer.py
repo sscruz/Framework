@@ -132,7 +132,7 @@ def scaleZ(histo, eta, nbs):
         ret_hist.SetBinContent(ret_hist.FindBin(91.), nb_pred)
     else:
         scale  = nb_pred / histo.Integral(bin81, bin101)
-        ret_hist.Scale(lumi/1.3*scale)
+        ret_hist.Scale(lumi/2.1*scale)
     return ret_hist
 
 def makePrediction(of_histo, ing, eta):
@@ -141,7 +141,7 @@ def makePrediction(of_histo, ing, eta):
     scale = ing.rsfof_final_cen_val  if central else ing.rsfof_final_fwd_val
     s_err = ing.rsfof_final_cen_err  if central else ing.rsfof_final_fwd_err
     print '========================================='
-    print 'using rsfof: %.4f +- %.4f' %(scale, s_err)
+    print 'using rsfof for %s in %s: %.4f +- %.4f' %(ing.dType, eta, scale, s_err)
     print '========================================='
     for _bin in range(1,of_histo.GetNbinsX()+1):
         tmp_cont  = of_histo.GetBinContent(_bin)
@@ -280,7 +280,7 @@ if __name__ == '__main__':
 
     rsfofTable = Tables.makeRSFOFTable(ingDA, ingMC)
 
-    print asdf
+    ##print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
     lumi = 2.1
@@ -300,7 +300,7 @@ if __name__ == '__main__':
 
 
     #lumi_str = 'lumi'+str(lumi).replace('.', 'p')+('_inclB' if inclusiveB else '_exclB')
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_preApproval'
+    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_forApproval'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lumi)
 
     isBlinded =False
@@ -416,14 +416,14 @@ if __name__ == '__main__':
 
 
 
-    ## for signalRegion in [signalRegion2b]:#signalRegionincb, signalRegion0b]: #, signalRegion1b]:
+    ## for signalRegion in [signalRegionincb, signalRegion0b, signalRegion1b]:
     ##     nb = 2 if '2b' in signalRegion.name else 1 if '1b' in signalRegion.name else 'inc' if 'incb' in signalRegion.name else 0
     ##     #nbstr = 'n_{b} '+(' #geq ' if not nb in [0,1] else ' = ')+(str(nb) if nb != 'inc' else str(0))
     ##     if   nb == 'inc': nbstr = 'n_{b} #geq 0'
     ##     elif nb == 0    : nbstr = 'n_{b} = 0'
     ##     elif nb == 1    : nbstr = 'n_{b} #geq 1'
     ##     elif nb == 2    : nbstr = 'n_{b} #geq 2'
-    ##     for eta in ['central','forward']:
+    ##     for eta in ['central']:
 
     ##         ## get the mc prediction and observation
     ##         mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
@@ -432,7 +432,6 @@ if __name__ == '__main__':
     ##         if not opts.onlyTTbar: 
     ##             print 'adding dy shape to the mcPredHisto'
     ##             mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
-
     ##         ## get the data observed and predicted
     ##         daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
     ##         daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
@@ -450,7 +449,9 @@ if __name__ == '__main__':
 
 
     # a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
+    # b = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
     # for i in a: print i
+    # for i in b: print i
 
     ## a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
     ## a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
