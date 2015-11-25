@@ -1,0 +1,33 @@
+imax 1
+jmax 3
+kmax *
+-------------
+
+
+
+
+bin  HT1500toInf_j2to3_b0_m400to600
+observation  2.000
+-------------
+
+
+bin 	HT1500toInf_j2to3_b0_m400to600	HT1500toInf_j2to3_b0_m400to600	HT1500toInf_j2to3_b0_m400to600	HT1500toInf_j2to3_b0_m400to600
+process 	 sig 	 zinv 	 llep 	 qcd
+process 	 0 	      1 	  2 	  3
+rate 	     0.00  	  0.761   0.091   0.011
+-------------
+sig_syst                                       lnN   1.100        -                -         -
+zinv_doubleRatioOffset                         lnN     -        1.070              -         -
+zinv_ZGratio_HT1500toInf_j2to3_b0              lnN     -        1.787/0.216        -         -
+zinv_puritySyst_HT1500toInf_j2to3_b0           lnN     -        1.100              -         -
+zinv_purity_HT1500toInf_j2to3_b0               lnN     -        1.000/0.924        -         -
+zinv_CRstat_HT1500toInf_j2to3_b0               gmN    14         -                 0.05435   -         -
+zinv_shape_HT1500toInf_j2to3_b0                lnN     -        1.100              -         -
+zinv_alphaErr_HT1500toInf_j2to3_b0_m400to600   lnN     -        1.093              -         -
+llep_lepeff_HT1500toInf_j2to3_b0               lnN     -         -                 1.150     -
+llep_CRstat_HT1500toInf_j2to3_b0               gmN     1         -                 -         0.09070   -
+llep_MCstat_HT1500toInf_j2to3_b0_m400to600     lnN     -         -                 1.215     -
+llep_shape_HT1500toInf_j2to3_b0                lnN     -         -                 1.100     -
+llep_alpha_HT1500toInf_j2to3_b0                lnN     -         -                 1.050     -
+qcd_CRstat_HT1500toInf_j2to3_b0_m400to600      gmN     3         -                 -         -         0.00363
+qcd_alphaErr_HT1500toInf_j2to3_b0_m400to600    lnN     -         -                 -         3.443

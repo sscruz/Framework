@@ -406,6 +406,10 @@ if __name__ == '__main__':
                 if 'mll' in reg.rvars:
                     reg.mll_sf = tree.getTH1F(lumi, 'mll_sf_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_sf, '', "m_{ll} (GeV)")
                     reg.mll_of = tree.getTH1F(lumi, 'mll_of_'+eta+reg.name+dataMC, 't.lepsMll_Edge', reg.bins[reg.rvars.index('mll')], 1, 1, cuts_of, '', "m_{ll} (GeV)")
+                    if   eta == 'central' and dataMC == 'DATA':
+                        reg.mll_of_central = reg.mll_of
+                    elif eta == 'forward'  and dataMC == 'DATA':
+                        reg.mll_of_forward = reg.mll_of
 
                     isData = (dataMC == 'DATA')
                     reg.mll     .setHisto(reg.mll_sf, dataMC, eta)
