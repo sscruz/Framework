@@ -126,3 +126,58 @@ def makeRSFOFTable(ingDA, ingMC):
         print i
     return ret
 
+def makeDataCards(binnedSRList, dc_name, ingDA, onZ):
+    print 'preparing datacards'
+
+    for sr in binnedSRList:
+        print '   ... for region %s'%sr.name
+        b_string = 'incb' if 'inc' in sr.name else '1b' if '1b' in sr.name else '2b' if '2b' in sr.name
+        ret = []
+        for eta in ['central', 'forward']:
+            print '      ... in %s'%eta
+            _eta = 'cen' if eta == 'central' else 'fwd'
+            obshisto = sr.mll     .getHisto('DATA', eta)
+            predhisto= sr.mll_pred.getHisto('DATA', eta)
+            for i in range(1,obshisto.GetNbinsX()+1):
+                if i == obshisto.GetNbinsX(): continue
+                mr   = 'lm'      if i == 1 else 'bz'     if i == 2 else 'oz'  if i == 3 else 'az'     if i == 4 else 'hm'
+                mass = 'lowMass' if i == 1 else 'belowZ' if i == 2 else 'onZ' if i == 3 else 'aboveZ' if i == 4 else 'highMass' else 'tooHigh'
+                print '         ... for mass region %s'%mass
+                # get rinout and onZ prediction
+                tmp_rinout   = getattr(getattr(ingDA, 'rinout_dy_%s'%mr), '%s_val'%_eta)
+                tmp_rinout_e = getattr(getattr(ingDA, 'rinout_dy_%s'%mr), '%s_err'%_eta) if mr != 'oz' else 0.
+                onz          = tmp_rinout*getattr(onZ, '%s_%s'%(_eta, b_string))
+                onz_e        = math.sqrt((getattr(onZ, '%s_%s'%(_eta, b_string))*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, '%s_%s_e'%(_eta, b_string)))**2 )
+                # get FS background
+                fs           = predhisto.GetBinContent(i)
+                fs_e         = predhisto.GetBinError(i)
+                # get the observed
+                obs          = obshisto.GetBinContent(i)
+                # get opposite flavor yield
+                fs_bkg       = obshisto.GetBinContent(i) ## this is wrong obviously!
+                # make a meaningful bin name
+                bin_name = '%s_%s_%s'%(eta, mass, b_string)
+                dc = '''# this is the datacard for bin {bin_name}
+imax 1  number of channels
+jmax 2  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# only one channel here with observation {obs}
+bin            {bin_name}
+observation    {obs}
+------------
+bin        {bin_name}     {bin_name}     {bin_name}
+process    sig            FS             DY    
+process    0              1              2
+rate       1              {fs_bkg}       {dy_bkg}
+------------
+deltaS       lnN              1.15      -           -       
+lumi         lnN              1.12      -           -       
+FS_unc       lnN              -         {fs_unc}    -       
+FS_stat      gmN {fs_bkg}     -         1.00        -       
+DY_unc       lnN              -         -           {dy_unc}'''.format(bin_name=bin_name, obs=obs, fs_bkg=fs_bkg, fs_unc=fs_e/fs, dy_bkg=onz, dy_unc=onz_e/onz)
+                tmp_file = open('datacards/%s.txt'%(bin_name,'w')
+                tmp_file.write(dc)
+                tmp_file.close()
+
+    print 'done with datacards'
