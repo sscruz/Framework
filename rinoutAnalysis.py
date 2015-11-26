@@ -23,6 +23,7 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Rounder    as Rounder
+import include.Tables     as Tables
 
 def calc_frac(Nin, Nout, Ein, Eout):
 
@@ -223,6 +224,7 @@ if __name__ == "__main__":
         plot_rinout_meas.addLatex(0.2, 0.2, eta)
         plot_rinout_meas.save(1, 0, 0, lumi)
 
+        table = Tables.makeRinoutTable(rinout_meas)
         ## ===========================
         ## make the depency plots here
         ## ===========================

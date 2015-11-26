@@ -183,3 +183,43 @@ DY_unc       lnN              -         -           {dy_unc:.2f}'''.format(bin_n
                 tmp_file.close()
 
     print 'done with datacards'
+
+
+def makeRinoutTable(region):
+    mc_cen = region.mll.getHisto('MC'  , 'central')
+    mc_fwd = region.mll.getHisto('MC'  , 'forward')
+    da_cen = region.mll.getHisto('DATA', 'central')
+    da_fwd = region.mll.getHisto('DATA', 'forward')
+
+    table = '''
+\\begin{{table}}[ht!]
+\\bgroup
+\\def\\arraystretch{{1.2}}
+\\caption{{Measured values for \\rinout for data and MC in the different signal regions of the off-Z analysis.}}
+\\label{{tab:rinoutvalues}}
+\\begin{{center}}
+\\begin{{tabular}}{{ l c c c c c}}
+\\hline \\hline
+      eta region         &       &  \\mll in [20, 70]  &   \\mll in [70, 81]   & \\mll in [81, 120] & \\mll in [120, 300]  \\\\ \\hline
+\\multirow{{2}}{{*}}{{central}} &  MC   &  {mc_lm_cen:.3f} $\\pm$ {mc_lm_cen_e:.3f} &   {mc_bz_cen:.3f} $\\pm$ {mc_bz_cen_e:.3f}  & {mc_az_cen:.3f} $\\pm$ {mc_az_cen_e:.3f} & {mc_hm_cen:.3f} $\\pm$ {mc_hm_cen_e:.3f} \\\\
+                               &  data &  {da_lm_cen:.3f} $\\pm$ {da_lm_cen_e:.3f} &   {da_bz_cen:.3f} $\\pm$ {da_bz_cen_e:.3f}  & {da_az_cen:.3f} $\\pm$ {da_az_cen_e:.3f} & {da_hm_cen:.3f} $\\pm$ {da_hm_cen_e:.3f} \\\\
+\\multirow{{2}}{{*}}{{forward}} &  MC   &  {mc_lm_fwd:.3f} $\\pm$ {mc_lm_fwd_e:.3f} &   {mc_bz_fwd:.3f} $\\pm$ {mc_bz_fwd_e:.3f}  & {mc_az_fwd:.3f} $\\pm$ {mc_az_fwd_e:.3f} & {mc_hm_fwd:.3f} $\\pm$ {mc_hm_fwd_e:.3f} \\\\
+                               &  data &  {da_lm_fwd:.3f} $\\pm$ {da_lm_fwd_e:.3f} &   {da_bz_fwd:.3f} $\\pm$ {da_bz_fwd_e:.3f}  & {da_az_fwd:.3f} $\\pm$ {da_az_fwd_e:.3f} & {da_hm_fwd:.3f} $\\pm$ {da_hm_fwd_e:.3f} \\\\
+\\hline\\hline
+\\end{{tabular}}
+\\end{{center}}
+\\egroup
+\\end{{table}}
+    '''.format(mc_lm_cen=mc_cen.GetBinContent(1), mc_lm_cen_e=mc_cen.GetBinError(1), mc_lm_fwd=mc_fwd.GetBinContent(1), mc_lm_fwd_e=mc_fwd.GetBinError(1),
+               mc_bz_cen=mc_cen.GetBinContent(2), mc_bz_cen_e=mc_cen.GetBinError(2), mc_bz_fwd=mc_fwd.GetBinContent(2), mc_bz_fwd_e=mc_fwd.GetBinError(2),
+               mc_az_cen=mc_cen.GetBinContent(4), mc_az_cen_e=mc_cen.GetBinError(4), mc_az_fwd=mc_fwd.GetBinContent(4), mc_az_fwd_e=mc_fwd.GetBinError(4),
+               mc_hm_cen=mc_cen.GetBinContent(5), mc_hm_cen_e=mc_cen.GetBinError(5), mc_hm_fwd=mc_fwd.GetBinContent(5), mc_hm_fwd_e=mc_fwd.GetBinError(5),
+               da_lm_cen=da_cen.GetBinContent(1), da_lm_cen_e=da_cen.GetBinError(1), da_lm_fwd=da_fwd.GetBinContent(1), da_lm_fwd_e=da_fwd.GetBinError(1),
+               da_bz_cen=da_cen.GetBinContent(2), da_bz_cen_e=da_cen.GetBinError(2), da_bz_fwd=da_fwd.GetBinContent(2), da_bz_fwd_e=da_fwd.GetBinError(2),
+               da_az_cen=da_cen.GetBinContent(4), da_az_cen_e=da_cen.GetBinError(4), da_az_fwd=da_fwd.GetBinContent(4), da_az_fwd_e=da_fwd.GetBinError(4),
+               da_hm_cen=da_cen.GetBinContent(5), da_hm_cen_e=da_cen.GetBinError(5), da_hm_fwd=da_fwd.GetBinContent(5), da_hm_fwd_e=da_fwd.GetBinError(5))
+    print table
+    return table
+
+
+
