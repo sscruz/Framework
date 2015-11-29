@@ -1,12 +1,12 @@
 import ROOT as r
 from array import array
-from ROOT import TTree, TFile, TCut, TH1F, TH2F, THStack, TCanvas
+from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
 
 
 class Sample:
    'Common base class for all Samples'
 
-   def __init__(self, name, location, friendlocation, xsection, isdata):
+   def __init__(self, name, location, friendlocation, xsection, isdata, isScan):
       self.name = name
       self.location = location
       self.xSection = xsection
@@ -16,6 +16,7 @@ class Sample:
       self.ftfile = TFile(ftfileloc)
       self.ttree = self.tfile.Get('tree')
       self.ttree.AddFriend('sf/t',self.ftfile)
+      self.isScan = isScan
       if not self.isData:
         gw = 0.
         for i in self.ttree:
@@ -24,13 +25,15 @@ class Sample:
         self.count = self.tfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
         self.count = self.tfile.Get('Count').GetEntries()
-      self.lumWeight = 1.0
-      if(self.isData == 0):
+      self.lumWeight =  1.0
+      self.puWeight  = "1.0"
+      self.SFWeight  = "1.0"
+      if not self.isData:
         self.lumWeight = self.xSection / self.count
-      self.puWeight = "1.0"
-      if(self.isData == 0):
-        self.puWeight = "t.PileupW_Edge"
-        #self.puWeight = "1.0"
+        self.puWeight  = "t.PileupW_Edge"
+      if self.isScan:
+        self.SFWeight  = "1.0"
+        self.lumWeight =  1.0
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -67,7 +70,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
       
       self.ttree.Project(name, var, cut, options) 
       return h
@@ -87,7 +90,24 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
+     
+     self.ttree.Project(name, var, cut, options) 
+     return h
+
+   def getTH3F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel):
+   
+     if(xmin == xmax) and (ymax == ymin) and (zmax == zmin):
+        h = TH3F(name, "", len(nbinx)-1, array('d', nbinx), len(nbiny)-1, array('d', nbiny), len(nbinz)-1, array('d', nbinz))
+     else: 
+        h = TH3F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax)
+     h.Sumw2()
+     h.GetXaxis().SetTitle(xlabel)
+     h.GetYaxis().SetTitle(ylabel)
+     h.GetZaxis().SetTitle(zlabel)
+     
+     if(self.isData == 0):
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
@@ -167,15 +187,36 @@ class Block:
 
      return h   
 
+   def getTH3F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel):
+     if(xmin == xmax) and (ymax == ymin) and (zmax == zmin):
+        h = TH3F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny),len(nbinz)-1, array('d', nbinz))
+     else: 
+        h = TH3F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax)
+
+     h.Sumw2()
+     h.GetXaxis().SetTitle(xlabel)
+     h.GetYaxis().SetTitle(ylabel)
+     h.GetZaxis().SetTitle(zlabel)
+     
+     for s in self.samples:
+     
+       AuxName = "auxT3_block" + s.name
+       haux = s.getTH3F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel)
+       h.Add(haux)
+       del haux
+
+     return h   
+
        
 
 class Tree:
    'Common base class for a physics meaningful tree'
 
-   def __init__(self, fileName, name, isdata):
+   def __init__(self, fileName, name, isdata, isScan = False):
       self.name  = name
       self.isData = isdata
       self.blocks = []
+      self.isScan = isScan
       self.parseFileName(fileName)
 
    def parseFileName(self, fileName):
@@ -205,7 +246,7 @@ class Tree:
           color = eval(theColor[0:plusposition])
           color = color + int(theColor[plusposition+1:len(theColor)])
 
-        sample = Sample(name, location, flocation, xsection, isdata)
+        sample = Sample(name, location, flocation, xsection, isdata, self.isScan)
         coincidentBlock = [l for l in self.blocks if l.name == block]
 
         if(coincidentBlock == []):
@@ -333,12 +374,23 @@ class Tree:
 
      return h   
 
+   def getTH3F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel):
+     if(xmin == xmax) and (ymax == ymin) and (zmax == zmin):
+        h = TH3F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny), len(nbinz)-1, array('d', nbinz))
+     else: 
+        h = TH3F(name, "", nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax)
+        
+     h.Sumw2()
+     h.GetXaxis().SetTitle(xlabel)
+     h.GetYaxis().SetTitle(ylabel)
+     h.GetZaxis().SetTitle(zlabel)
+     
+     for b in self.blocks:
+     
+       AuxName = "aux_block" + name + "_" + b.name
+       haux = b.getTH3F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel)
+       h.Add(haux)
+       del haux
 
-
-
-
-
-
-
-
+     return h   
 
