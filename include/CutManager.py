@@ -29,7 +29,7 @@ class CutManager:
       self.DYmet = "(met_pt < 50)"
       self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
       self.ZmassVeto = "(t.lepsMll_Edge < 81 || t.lepsMll_Edge > 101)"
-      self.DYmassVeto = "(t.lepsMll_Edge < 70 || t.lepsMll_Edge > 120)"
+      self.DYmassVeto = "(t.lepsMll_Edge < 70 || t.lepsMll_Edge > 110)"
       self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
       self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
       self.highmass = "t.lepsMll_Edge > 120"
