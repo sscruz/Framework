@@ -10,7 +10,7 @@ observation    50.0
 bin        forward_belowZ_incb     forward_belowZ_incb     forward_belowZ_incb
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              45.46       1.26
+rate       0.1              45.46       1.17
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       

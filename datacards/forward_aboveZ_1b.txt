@@ -1,0 +1,19 @@
+# this is the datacard for bin forward_aboveZ_1b
+imax 1  number of channels
+jmax 2  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# only one channel here with observation 35.0
+bin            forward_aboveZ_1b
+observation    35.0
+------------
+bin        forward_aboveZ_1b     forward_aboveZ_1b     forward_aboveZ_1b
+process    sig            FS             DY    
+process    0              1              2
+rate       0.1              54.11       0.23
+------------
+deltaS       lnN              1.15      -           -       
+lumi         lnN              1.12      -           -       
+FS_unc       lnN              -         1.14    -       
+forward_aboveZ_1b_fs_stat      gmN 50   -         1.00        -       
+DY_unc       lnN              -         -           1.33

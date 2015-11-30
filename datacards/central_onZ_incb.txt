@@ -10,7 +10,7 @@ observation    271.0
 bin        central_onZ_incb     central_onZ_incb     central_onZ_incb
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              188.60       62.70
+rate       0.1              188.60       58.80
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       

@@ -10,7 +10,7 @@ observation    507.0
 bin        central_highMass_incb     central_highMass_incb     central_highMass_incb
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              468.39       1.61
+rate       0.1              468.39       1.51
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
