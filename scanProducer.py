@@ -33,7 +33,7 @@ def getSRYield(eta, nb, mll):
         mllid = 3
     elif 'above' in mll:
         mllid = 4
-    elif high    in mll:
+    elif 'high'  in mll:
         mllid = 5
 
     allSRs = []
@@ -67,7 +67,9 @@ if __name__ == "__main__":
                                      False)
 
     finalCuts = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSF(), cuts.trigger]) ## the trigger will be a problem here
+    ngenCuts  = cuts.AddList([cuts.GoodLeptonAF()]) ## the trigger will be a problem here
     ## have to think a way of reweighting the events with trigger and lepton SFs.
+    ## weighting now done with isScan=True flag in samples.py
 
     lumi = 2.1
     ## this should be then sr-ID:m_slepton:m_sbottom for the final scan
@@ -80,16 +82,16 @@ if __name__ == "__main__":
     zvar_title = 'n_{b-jets}'
 
     global scanHisto
-    scanHisto = treeSIG.getTH3F(lumi, 'signalScan', zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, finalCuts, '', 'sr-ID', 'eta', 'nb')
+    scanHisto = treeSIG.getTH3F(lumi, 'signalScan_nPass', zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, finalCuts, '', 'sr-ID', 'eta', 'nb')
     ## we also need the number of generated events here!!
-    ##ngenHisto = treeSIG.getTH3F(lumi, 'signalScan', zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, finalCuts, '', 'sr-ID', 'eta', 'nb')
+    ngenHisto = treeSIG.getTH3F(lumi, 'signalScan_nGen' , zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, ngenCuts , '', 'sr-ID', 'eta', 'nb')
 
     effHisto = scanHisto.Clone('efficiencyMap')
-    #effHisto.Divide(ngenHisto)
+    effHisto.Divide(ngenHisto)
 
     ## so now: var1 is z-axis, var2 is y-axis, and var3 is x-axis
 
-    xy = effHisto.Project3D('xy')
+    xy = effHisto.Project3D('xy') # this means x versus y. so x is on the y-axis
     xz = effHisto.Project3D('xz')
     yx = effHisto.Project3D('yx')
     yz = effHisto.Project3D('yz')
@@ -104,4 +106,16 @@ if __name__ == "__main__":
 
     ## now we need something that takes the default datacard and produces one for each point
 
+    ## histogram with the cross-section
+    xsec_histo = r.TH1F('x-sections in fb for sbottom production','xsec_histo', 380, 100, 2000) 
+    xsec_histo.Sumw2()
+    xsecf = open('datacards/sbottomXsec.txt', 'r')
+    xsecs = eval(xsecf.read())
+
+    xsec_func = r.TF1('xsecFunc', '[0] + [1]*exp([2] +[3]*x + [4]*x*x + [5]*x*x*x)', 100., 2000.)
+    xsec_func.SetParLimits(1, 10e4, 10e9)
+
+    for key,value in xsecs.items():
+        xsec_histo.SetBinContent(xsec_histo.FindBin(key), value[0])
+        xsec_histo.SetBinError  (xsec_histo.FindBin(key), value[0]*0.01*value[1]) ## it's a percent value
 

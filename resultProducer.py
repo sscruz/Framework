@@ -251,6 +251,37 @@ def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname, eta, nbs, nbstr):
     plot.addLatex(0.7, 0.45, nbstr, 62)
     plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
 
+def makePlots(srlist, etas):
+    for signalRegion in srlist:#[signalRegionincb, signalRegion0b, signalRegion1b]:
+        nb = 2 if '2b' in signalRegion.name else 1 if '1b' in signalRegion.name else 'inc' if 'incb' in signalRegion.name else 0
+        #nbstr = 'n_{b} '+(' #geq ' if not nb in [0,1] else ' = ')+(str(nb) if nb != 'inc' else str(0))
+        if   nb == 'inc': nbstr = 'n_{b} #geq 0'
+        elif nb == 0    : nbstr = 'n_{b} = 0'
+        elif nb == 1    : nbstr = 'n_{b} #geq 1'
+        elif nb == 2    : nbstr = 'n_{b} #geq 2'
+        for eta in etas:
+
+            ## get the mc prediction and observation
+            mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
+            mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
+            #add the DY contribution to the MC prediction
+            if not opts.onlyTTbar: 
+                print 'adding dy shape to the mcPredHisto'
+                mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
+            ## get the data observed and predicted
+            daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
+            daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
+            if not opts.onlyTTbar:
+                print 'adding dy shape to the daPredHisto'
+                daPredHisto.Add(scaleZ(dy_shapes['da_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
+
+            ## finally, make the plots.
+
+            makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , 'MCClosure'    , eta, nb, nbstr) ## closure plot
+            makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', 'dataMCPred'   , eta, nb, nbstr) ## prediction comparison
+            makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , 'predDataObsMC', eta, nb, nbstr) ## predData, obsMC
+            makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , 'dataMCobs'    , eta, nb, nbstr) ## observed data/mc
+            makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , 'data'         , eta, nb, nbstr) ## money plot
 
 if __name__ == '__main__':
 
@@ -418,39 +449,15 @@ if __name__ == '__main__':
                     del reg.mll_sf, reg.mll_of
 
 
+    ## make some plots!!
+    ## =====================
+
+    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'central')
+    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'forward')
 
 
-    ## for signalRegion in [signalRegionincb, signalRegion0b, signalRegion1b]:
-    ##     nb = 2 if '2b' in signalRegion.name else 1 if '1b' in signalRegion.name else 'inc' if 'incb' in signalRegion.name else 0
-    ##     #nbstr = 'n_{b} '+(' #geq ' if not nb in [0,1] else ' = ')+(str(nb) if nb != 'inc' else str(0))
-    ##     if   nb == 'inc': nbstr = 'n_{b} #geq 0'
-    ##     elif nb == 0    : nbstr = 'n_{b} = 0'
-    ##     elif nb == 1    : nbstr = 'n_{b} #geq 1'
-    ##     elif nb == 2    : nbstr = 'n_{b} #geq 2'
-    ##     for eta in ['central']:
-
-    ##         ## get the mc prediction and observation
-    ##         mcObsHisto  = signalRegion.mll     .getHisto('MC', eta)
-    ##         mcPredHisto = signalRegion.mll_pred.getHisto('MC', eta).Clone('mcPredHisto_'+eta)
-    ##         #add the DY contribution to the MC prediction
-    ##         if not opts.onlyTTbar: 
-    ##             print 'adding dy shape to the mcPredHisto'
-    ##             mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
-    ##         ## get the data observed and predicted
-    ##         daObsHisto  = signalRegion.mll.getHisto('DATA', eta)
-    ##         daPredHisto = copy.deepcopy( signalRegion.mll_pred.getHisto('DATA', eta) )
-    ##         if not opts.onlyTTbar:
-    ##             print 'adding dy shape to the daPredHisto'
-    ##             daPredHisto.Add(scaleZ(dy_shapes['da_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
-
-    ##         ## finally, make the plots.
-
-    ##         makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , 'MCClosure'    , eta, nb, nbstr) ## closure plot
-    ##         makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', 'dataMCPred'   , eta, nb, nbstr) ## prediction comparison
-    ##         makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , 'predDataObsMC', eta, nb, nbstr) ## predData, obsMC
-    ##         makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , 'dataMCobs'    , eta, nb, nbstr) ## observed data/mc
-    ##         makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , 'data'         , eta, nb, nbstr) ## money plot
-
+    ## make some tables!!
+    ## =====================
 
     # a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
     # b = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)

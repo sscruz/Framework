@@ -131,7 +131,7 @@ def makeDataCards(binnedSRList, dc_name, ingDA, onZ):
 
     for sr in binnedSRList:
         print '   ... for region %s'%(sr.name)
-        b_string = 'incb' if 'inc' in sr.name else '1b' if '1b' in sr.name else '2b' if '2b' in sr.name else 'nimps'
+        b_string = 'incb' if 'inc' in sr.name else '0b' if '0b' in sr.name else '1b' if '1b' in sr.name else '2b' if '2b' in sr.name else 'nimps'
         ret = []
         for eta in ['central', 'forward']:
             print '      ... in %s'%eta
