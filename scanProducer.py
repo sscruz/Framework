@@ -10,6 +10,50 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
 
+##def runLimits():
+
+def fillAndSaveDatacards(nb):
+    for eta in ['central', 'forward']:
+        for mass in ['lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass']:
+            tmp_file = open('datacards/%s_%s_%s.txt'%(eta, mass, nb) ,'r')
+            tmp_dc  = tmp_file.read()
+            tmp_histo = globals()['eff_%s_%s_%s'%(eta, mass, nb)]
+            for i in range(1, tmp_histo.GetXaxis().GetNbins()+1):
+                for j in range(1, tmp_histo.GetYaxis().GetNbins()+1):
+                    xmass = tmp_histo.GetXaxis().GetBinLowEdge(i)
+                    ymass = tmp_histo.GetYaxis().GetBinLowEdge(j)
+                    if tmp_histo.GetBinContent(tmp_histo.GetBin(i,j)) == 0. or ymass > xmass:
+                        continue
+                    mass_string = 'mSbottom_%.0f_mchi2_%.0f'%(xmass, ymass)
+                    helper.ensureDirectory('datacards/T6bbslepton/%s'%(mass_string))
+                    tmp_rate = lumi*xsecs[xmass][0]*tmp_histo.GetBinContent(tmp_histo.GetBin(i,j))
+                    tmp_out = tmp_dc.replace('XXRATEXX', '%.3f'%(tmp_rate))
+                    tmp_new = open('datacards/T6bbslepton/%s/%s'%(mass_string, tmp_file.name.split('/')[-1]), 'w')
+                    tmp_new.write(tmp_out)
+                    tmp_new.close()
+            tmp_file.close()
+
+
+def adaptBinning(target, current):
+    final = copy.deepcopy(target)
+    final.Reset()
+    final = final.Project3D('yx')
+    current_yx = current.Project3D('yx')
+    ret_histo = copy.deepcopy(target)
+    ret_histo.Reset()
+    for i in range(1,final.GetXaxis().GetNbins()+1):
+        for j in range(1, final.GetYaxis().GetNbins()+1):
+            xval = final.GetXaxis().GetBinLowEdge(i)
+            yval = final.GetYaxis().GetBinLowEdge(j)
+            cont = current_yx.GetBinContent(current_yx.FindBin(xval, yval))
+            err  = current_yx.GetBinError  (current_yx.FindBin(xval, yval))
+            final.SetBinContent(final.FindBin(xval, yval), cont)
+            final.SetBinError  (final.FindBin(xval, yval), err )
+            for k in range(1,ret_histo.GetZaxis().GetNbins()+1):
+                ret_histo.SetBinContent(ret_histo.FindBin(xval, yval, ret_histo.GetZaxis().GetBinLowEdge(k)), cont)
+                ret_histo.SetBinError  (ret_histo.FindBin(xval, yval, ret_histo.GetZaxis().GetBinLowEdge(k)), err )
+    return final, ret_histo
+
 def getSRYield(eta, nb, mll):
     if   eta == 'central':
         etaid = 1
@@ -26,21 +70,38 @@ def getSRYield(eta, nb, mll):
         nbid = [2,3,4,5,6,7]
 
     if   'low'   in mll:
-        mllid = 1
+        mllid = [1]
     elif 'below' in mll:
-        mllid = 2
+        mllid = [2]
     elif 'on'    in mll:
-        mllid = 3
+        mllid = [3]
     elif 'above' in mll:
-        mllid = 4
+        mllid = [4]
     elif 'high'  in mll:
-        mllid = 5
+        mllid = [5]
+    elif 'all'   in mll:
+        mllid = [1,2,3,4,5]
 
     allSRs = []
     for i in nbid:
-        allSRs.append(100*etaid + 10*i + mllid)
+        for j in mllid:
+            allSRs.append(100*etaid + 10*i + j)
+
+    #print 'all srs for %s in %s and %s are %s'%(nb, eta, mll, str(allSRs))
     
-    return allSRs
+    ret_histo = scan_eff_norm.Clone('eff_%s_%s_%s'%(eta, nb, mll))
+    ret_histo = ret_histo.Project3D('yx')
+    ret_histo.Reset()
+    for i in range(1, scan_eff_norm.GetNbinsX()+1):
+        for j in range(1, scan_eff_norm.GetNbinsY()+1):
+            tmp_eff  = 0.
+            tmp_err2 = 0.
+            for k in allSRs:
+                tmp_eff  +=  scan_eff_norm.GetBinContent(scan_eff_norm.GetBin(i, j, scan_eff_norm.GetZaxis().FindBin(k)))
+                tmp_err2 += (scan_eff_norm.GetBinError  (scan_eff_norm.GetBin(i, j, scan_eff_norm.GetZaxis().FindBin(k))))**2
+            ret_histo.SetBinContent(ret_histo.GetBin(i,j), tmp_eff)
+            ret_histo.SetBinError  (ret_histo.GetBin(i,j), math.sqrt(tmp_err2))
+    return ret_histo
 
  
 if __name__ == "__main__":
@@ -54,9 +115,9 @@ if __name__ == "__main__":
     for key, value in opts.__dict__.items():
         print '%-20s : %-20s' %(key, value)
     print ' \n\n'
-    print 'Going to load DATA and MC trees...'
+    print 'Going to load the tree(s)...'
 
-    sigDatasets = ['TTLep_pow']
+    sigDatasets = ['SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800']
     treeSIG = Sample.Tree(helper.selectSamples(opts.sampleFile, sigDatasets, 'SIG'), 'SIG'  , 0, isScan = True)
     cuts = CutManager.CutManager()
 
@@ -66,56 +127,68 @@ if __name__ == "__main__":
                                      [ [20., 70., 81., 101., 120., 13000.] ],
                                      False)
 
-    finalCuts = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSF(), cuts.trigger]) ## the trigger will be a problem here
-    ngenCuts  = cuts.AddList([cuts.GoodLeptonAF()]) ## the trigger will be a problem here
     ## have to think a way of reweighting the events with trigger and lepton SFs.
     ## weighting now done with isScan=True flag in samples.py
 
+    global lumi, scan_norm, scan_eff_norm, xsecs
     lumi = 2.1
     ## this should be then sr-ID:m_slepton:m_sbottom for the final scan
-    xvar = 't.srID_Edge'
-    yvar = '(abs(t.Lep1_eta_Edge)<1.4 && abs(t.Lep2_eta_Edge)<1.4)'
-    zvar = 't.nBJetMedium35_Edge'
+    xvar = 'GenSusyMScan1'
+    yvar = 'GenSusyMScan2'
+    zvar = 't.srID_Edge'
 
-    xvar_title = 'SR-ID'
-    yvar_title = 'is central'
-    zvar_title = 'n_{b-jets}'
+    xvar_title = 'm_{sbottom}'
+    yvar_title = 'm_{neu2}'
+    zvar_title = 'SR-ID'
 
-    global scanHisto
-    scanHisto = treeSIG.getTH3F(lumi, 'signalScan_nPass', zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, finalCuts, '', 'sr-ID', 'eta', 'nb')
+    cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()]) ## trigger not available in fastsim
+    cuts_norm = cuts_norm.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0') ## remove the filters, ugly, but it's a bit intricate in the samples
+
+    scan_norm = treeSIG.getTH3F(lumi, 'nPass_norm', zvar+':'+yvar+':'+xvar,  32, 200, 1000, 32, 200, 1000, 200, 100, 300, cuts_norm, '', xvar_title, yvar_title, zvar_title)
+    #do all the systematics
+
     ## we also need the number of generated events here!!
-    ngenHisto = treeSIG.getTH3F(lumi, 'signalScan_nGen' , zvar+':'+yvar+':'+xvar, 160, 100, 260, 2, -0.5, 1.5, 6, 0, 6, ngenCuts , '', 'sr-ID', 'eta', 'nb')
+    scan_ngen = treeSIG.blocks[0].samples[0].smsCount ## careful here!!
 
-    effHisto = scanHisto.Clone('efficiencyMap')
-    effHisto.Divide(ngenHisto)
+    newbinning = adaptBinning(scan_norm, scan_ngen)
+    scan_ngen_copy = newbinning[0]
+    scan_ngen_3d   = newbinning[1] ## this one has ngen in every single bin. for every SR. andit's 3D, so that's cool
 
-    ## so now: var1 is z-axis, var2 is y-axis, and var3 is x-axis
+    scan_eff_norm = scan_norm.Clone('efficiency_norm')
+    scan_eff_norm.Divide(scan_ngen_3d)
 
-    xy = effHisto.Project3D('xy') # this means x versus y. so x is on the y-axis
-    xz = effHisto.Project3D('xz')
-    yx = effHisto.Project3D('yx')
-    yz = effHisto.Project3D('yz')
-    zx = effHisto.Project3D('zx')
-    zy = effHisto.Project3D('zy')
+    xy = scan_eff_norm.Project3D('xy') # this means x versus y. so x is on the y-axis
+    xz = scan_eff_norm.Project3D('xz')
+    yx = scan_eff_norm.Project3D('yx') # that's the inclusive efficiency map
+    yz = scan_eff_norm.Project3D('yz')
+    zx = scan_eff_norm.Project3D('zx')
+    zy = scan_eff_norm.Project3D('zy')
 
-    ## so for scans, the lumiweight is set to unity. i.e. the efficiency histo is really that
 
-    ## we need a translation between SR and central/fwd/etc.
+    ## here we get the 2D efficiencies for all signal regions
 
-    central_lowMass_incb_bins = getSRYield('central', 'inc', 'lowMass')
+    for eta in ['central', 'forward']:
+        for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass']:
+            for nb in ['incb', '0b', '1b', '2b']:
+                globals()['eff_%s_%s_%s'%(eta, mass, nb)] = getSRYield(eta, nb, mass)
 
-    ## now we need something that takes the default datacard and produces one for each point
 
-    ## histogram with the cross-section
+    ## histogram and dictionary with the cross-sections and errors
     xsec_histo = r.TH1F('x-sections in fb for sbottom production','xsec_histo', 380, 100, 2000) 
     xsec_histo.Sumw2()
     xsecf = open('datacards/sbottomXsec.txt', 'r')
     xsecs = eval(xsecf.read())
-
-    xsec_func = r.TF1('xsecFunc', '[0] + [1]*exp([2] +[3]*x + [4]*x*x + [5]*x*x*x)', 100., 2000.)
-    xsec_func.SetParLimits(1, 10e4, 10e9)
+    xsecf.close()
+    for key, value in xsecs.items():
+        xsecs[key][0] = xsecs[key][0]*1000.
+        xsecs[key][1] = xsecs[key][0]*0.01*xsecs[key][1]
 
     for key,value in xsecs.items():
         xsec_histo.SetBinContent(xsec_histo.FindBin(key), value[0])
-        xsec_histo.SetBinError  (xsec_histo.FindBin(key), value[0]*0.01*value[1]) ## it's a percent value
+        xsec_histo.SetBinError  (xsec_histo.FindBin(key), value[1]) ## it's a percent value
+
+
+    # now we take the default datacards and save them for each point into a subdirectory of the scan
+
+    fillAndSaveDatacards('incb')
 

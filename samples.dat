@@ -36,7 +36,7 @@ JetHT         r.kBlack   JetHT_Run2015D_v4_runs_246908_260627                  J
 DYJets    r.kBlue+1    DYJetsToLL_M5to50         DYJetsToLL_M5to50     /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                                 71310000.0   0
 DYJets    r.kBlue+1    DYJetsToLL_M10to50        DYJetsToLL_M10to50    /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcFriends/  18610000.0   0
 DYJets    r.kBlue+1    DYJetsToLL_M50            DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcFriends/   6024000.0   0
-TTJets    r.kRed+9     TTLep_pow                 TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcFriends/     87314.8   0
+TTJets    r.kRed+9     TTLep_pow                 TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_withSRID/     87314.8   0
 rare      r.kRed+2     WWTo2L2Nu                 WWTo2L2Nu             /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends      12178.0   0
 rare      r.kRed+2     WZTo2L2Q                  WZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends       5595.0   0
 rare      r.kRed+2     ZZTo2L2Q                  ZZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends       3220.0   0
@@ -47,6 +47,17 @@ rare      r.kRed+2     VHToNobb_M125             VHToNobb_M125         /afs/cern
 rare      r.kRed+2     TTHToNobb_M125            TTHToNobb_M125        /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                                      215.0   0 
 rare      r.kRed+2     TBar_tWch                 TBar_tWch             /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                                    35600.0   0
 rare      r.kRed+2     T_tWch                    T_tWch                /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                                    35600.0   0        
+#
+#-----------------------------------------------------------
+#----------------- signal      -----------------------------
+#-----------------------------------------------------------
+# BLOCK             COLOR                                   NAME                       LABEL              LOCATION OF TREES                                             FRIENDS    XSEC     ISDATA
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/sbottomScan_v5/      friends/       1.0   0        
+#
+#
+#
 #
 synchfile r.kPink      TTLep_pow_synch           TTLep_pow_synch       /afs/cern.ch/work/m/mdunser/public/synchFiles/       friends/                                                    87314.8   0
 ##

@@ -159,6 +159,9 @@ def makeDataCards(binnedSRList, dc_name, ingDA, onZ):
                 of_yield     = of_histo.GetBinContent(i)
                 # make a meaningful bin name
                 bin_name = '%s_%s_%s'%(eta, mass, b_string)
+                # get the final RSFOF
+                rsfof   = getattr(ingDA, 'rsfof_final_%s_val'%(_eta))
+                rsfof_e = getattr(ingDA, 'rsfof_final_%s_err'%(_eta))
                 dc = '''# this is the datacard for bin {bin_name}
 imax 1  number of channels
 jmax 2  number of backgrounds
@@ -171,13 +174,13 @@ observation    {obs}
 bin        {bin_name}     {bin_name}     {bin_name}
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              {fs_bkg:.2f}       {dy_bkg:.2f}
+rate       XXRATEXX         {fs_bkg:.2f}       {dy_bkg:.2f}
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
 FS_unc       lnN              -         {fs_unc:.2f}    -       
-{bin_name}_fs_stat      gmN {of_yield}   -         1.00        -       
-DY_unc       lnN              -         -           {dy_unc:.2f}'''.format(bin_name=bin_name, obs=obs, fs_bkg=fs, fs_unc=1+fs_e/fs, dy_bkg=onz, dy_unc=1+onz_e/onz, of_yield=int(of_yield))
+{bin_name}_fs_stat      gmN {of_yield}   -         {rsfof:.3f}        -       
+DY_unc       lnN              -         -           {dy_unc:.2f}'''.format(bin_name=bin_name, obs=obs, fs_bkg=fs, fs_unc=1+rsfof_e, dy_bkg=onz, dy_unc=1+onz_e/onz, of_yield=int(of_yield), rsfof=rsfof)
                 tmp_file = open('datacards/%s.txt'%(bin_name),'w')
                 tmp_file.write(dc)
                 tmp_file.close()

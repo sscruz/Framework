@@ -1,6 +1,12 @@
-import math, sys
+import math, sys, os
 import ROOT as r
 from   ROOT import TGraphErrors, gROOT, TCanvas, TFile
+
+def ensureDirectory(_path):
+   #d = os.path.dirname(_path)
+   #print d
+   if not os.path.exists(_path):
+      os.makedirs(_path)
 
 def selectSamples(inputfile, selList, sType = 'DATA'):
     f = open(inputfile, 'r')
