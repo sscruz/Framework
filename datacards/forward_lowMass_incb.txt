@@ -10,10 +10,10 @@ observation    135.0
 bin        forward_lowMass_incb     forward_lowMass_incb     forward_lowMass_incb
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              106.06       1.50
+rate       XXRATEXX         106.06       1.50
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
-FS_unc       lnN              -         1.11    -       
-forward_lowMass_incb_fs_stat      gmN 98   -         1.00        -       
+FS_unc       lnN              -         1.07    -       
+forward_lowMass_incb_fs_stat      gmN 98   -         1.082        -       
 DY_unc       lnN              -         -           1.28

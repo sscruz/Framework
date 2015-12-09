@@ -10,10 +10,10 @@ observation    141.0
 bin        central_highMass_0b     central_highMass_0b     central_highMass_0b
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              109.84       1.13
+rate       XXRATEXX         109.84       1.13
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
-FS_unc       lnN              -         1.10    -       
-central_highMass_0b_fs_stat      gmN 106   -         1.00        -       
+FS_unc       lnN              -         1.05    -       
+central_highMass_0b_fs_stat      gmN 106   -         1.036        -       
 DY_unc       lnN              -         -           1.31

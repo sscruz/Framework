@@ -10,10 +10,10 @@ observation    40.0
 bin        forward_onZ_0b     forward_onZ_0b     forward_onZ_0b
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              27.06       17.10
+rate       XXRATEXX         27.06       17.10
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
-FS_unc       lnN              -         1.20    -       
-forward_onZ_0b_fs_stat      gmN 25   -         1.00        -       
+FS_unc       lnN              -         1.07    -       
+forward_onZ_0b_fs_stat      gmN 25   -         1.082        -       
 DY_unc       lnN              -         -           1.15

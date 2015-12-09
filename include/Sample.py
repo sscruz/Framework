@@ -34,6 +34,7 @@ class Sample:
       if self.isScan:
         self.SFWeight  = "1.0"
         self.lumWeight =  1.0
+        self.smsCount =  self.tfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
