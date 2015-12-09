@@ -10,10 +10,10 @@ observation    92.0
 bin        forward_onZ_incb     forward_onZ_incb     forward_onZ_incb
 process    sig            FS             DY    
 process    0              1              2
-rate       0.1              75.76       24.60
+rate       XXRATEXX         75.76       22.90
 ------------
 deltaS       lnN              1.15      -           -       
 lumi         lnN              1.12      -           -       
-FS_unc       lnN              -         1.13    -       
-forward_onZ_incb_fs_stat      gmN 70   -         1.00        -       
+FS_unc       lnN              -         1.07    -       
+forward_onZ_incb_fs_stat      gmN 70   -         1.082        -       
 DY_unc       lnN              -         -           1.13
