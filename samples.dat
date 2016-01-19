@@ -54,8 +54,10 @@ rare      r.kRed+2     T_tWch                    T_tWch                /afs/cern
 # BLOCK             COLOR                                   NAME                       LABEL              LOCATION OF TREES                                             FRIENDS    XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton/      friends/       1.0   0
-T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton/      friends/       1.0   0
+##T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton/      friends/       1.0   0
+##T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton/      friends/       1.0   0
+T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_miniAODv2/      friends/       1.0   0
+T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_miniAODv2/      friends/       1.0   0
 #
 #
 #

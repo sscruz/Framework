@@ -5,11 +5,11 @@ import os, copy
 class Canvas:
    'Common base class for all Samples'
 
-   def __init__(self, name, format, x1, y1, x2, y2):
+   def __init__(self, name, _format, x1, y1, x2, y2, ww=0, hh=0):
       self.name = name
-      self.format = format
-      self.plotNames = [name + "." + i for i in format.split(',')]
-      self.myCanvas = TCanvas(name, name)
+      self.format = _format
+      self.plotNames = [name + "." + i for i in _format.split(',')]
+      self.myCanvas = TCanvas(name, name) if not ww else TCanvas(name, name, ww, hh)
       self.ToDraw = []
       self.orderForLegend = []
       self.histos = []
@@ -26,6 +26,7 @@ class Canvas:
       self.myLegend.SetTextSize(0.04)
       self.myLegend.SetLineWidth(0)
       self.myLegend.SetBorderSize(0)
+      r.gStyle.SetPadRightMargin(0.05)
 
 
    def banner(self, isData, lumi):
@@ -187,10 +188,10 @@ class Canvas:
 
       self.myCanvas.cd()
 
-      pad1 = TPad("pad1", "pad1", 0, 0.2, 1, 1.0)
+      pad1 = TPad("pad1", "pad1", 0, 0.25, 1, 1.0)
       pad1.SetBottomMargin(0.1)
       pad1.Draw()
-      pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.2)
+      pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.25)
       pad2.SetTopMargin(0.1);
       pad2.SetBottomMargin(0.3);
       pad2.Draw();
@@ -224,32 +225,46 @@ class Canvas:
           lat.DrawLatex(latex[0], latex[1], latex[2])
   
       
-      ratio = copy.deepcopy(hdata.Clone("ratio"))
-      ratio.Divide(hMC)
+      if type(hMC) != list:
+          hMClist = [hMC]
+      else: hMClist = hMC
 
-      ratio.SetTitle("")
-      ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
-      ratio.GetYaxis().SetTitle("Ratio");
-      ratio.GetYaxis().CenterTitle();
-      ratio.GetYaxis().SetLabelSize(0.12);
-      ratio.GetXaxis().SetLabelSize(0.12);
-      ratio.GetYaxis().SetTitleOffset(0.3);
-      ratio.GetYaxis().SetNdivisions(4);
-      ratio.GetYaxis().SetTitleSize(0.14);
-      ratio.GetXaxis().SetTitleSize(0.14);
-      ratio.GetXaxis().SetTitle('');
-      ratio.SetMarkerStyle(20);
-      ratio.SetMarkerSize(0.6*ratio.GetMarkerSize());
-      ratio.SetMarkerColor(r.kGray+3);
-      ratio.SetLineColor(r.kGray+3);
+      ratios = []
 
+      for tmp_hMC in hMClist:
+          print 'making ratio for', tmp_hMC.GetName()
+          ind = hMClist.index(tmp_hMC)
+          tmp_ratio = hdata.Clone(tmp_hMC.GetName()+'_ratio')
+          tmp_ratio.Divide(tmp_hMC)
 
+          tmp_ratio.SetTitle("")
+          tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
+          tmp_ratio.GetYaxis().SetTitle("Ratio");
+          tmp_ratio.GetYaxis().CenterTitle();
+          tmp_ratio.GetYaxis().SetLabelSize(0.12);
+          tmp_ratio.GetXaxis().SetLabelSize(0.12);
+          tmp_ratio.GetYaxis().SetTitleOffset(0.3);
+          tmp_ratio.GetYaxis().SetNdivisions(4);
+          tmp_ratio.GetYaxis().SetTitleSize(0.14);
+          tmp_ratio.GetXaxis().SetTitleSize(0.14);
+          tmp_ratio.GetXaxis().SetTitle('');
+          tmp_ratio.SetMarkerStyle(20+ind);
+          tmp_ratio.SetMarkerSize(0.6*tmp_ratio.GetMarkerSize());
+          tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
+          tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
+
+          ratios.append(tmp_ratio)
+          xmin = tmp_ratio.GetBinLowEdge(1)
+          xmax = tmp_ratio.GetBinLowEdge(tmp_ratio.GetNbinsX()+1)
+
+      #tmp_ratio.Draw("E,SAME");
       pad2.cd();  
-      line = TLine(ratio.GetBinLowEdge(1), 1, ratio.GetBinLowEdge(ratio.GetNbinsX()+1), 1)
-      line.SetLineColor(r.kRed);
-      ratio.Draw();
-      line.Draw();
-      ratio.Draw("E,SAME");
+      for rat in ratios:
+          rat.Draw('pe, same');
+
+      line = TLine(xmin, 1, xmax, 1)
+      line.SetLineColor(r.kGray+2);
+      line.Draw('');
 
       pad1.cd()
       self.banner(isData, lumi)
