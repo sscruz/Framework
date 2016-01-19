@@ -9,6 +9,7 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
+import nllAnalysis
 
 
 def getLikelihood(listofhistos):
