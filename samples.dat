@@ -35,7 +35,7 @@ JetHT         r.kBlack   JetHT_Run2015D_v4_runs_246908_260627                  J
 #
 DYJets    r.kBlue+1    DYJetsToLL_M5to50         DYJetsToLL_M5to50     /afs/cern.ch/work/m/mvesterb/public/MC_samples/      friends/                                                 71310000.0   0
 DYJets    r.kBlue+1    DYJetsToLL_M10to50        DYJetsToLL_M10to50    /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcFriends/  18610000.0   0
-DYJets    r.kBlue+1    DYJetsToLL_M50            DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/mcFriends/   6024000.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M50            DYJetsToLL_M50        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_withSRID/   6024000.0   0
 TTJets    r.kRed+9     TTLep_pow                 TTLep_pow             /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_withSRID/     87314.8   0
 rare      r.kRed+2     WWTo2L2Nu                 WWTo2L2Nu             /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends      12178.0   0
 rare      r.kRed+2     WZTo2L2Q                  WZTo2L2Q              /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/m/mvesterb/public/MC_samples/friends       5595.0   0
