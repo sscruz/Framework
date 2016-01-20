@@ -36,14 +36,14 @@ class pdfClass:
         self.tree.SetBranchStatus('lepsZPt_Edge'    , 1);
         
     def makeVarSet(self):
-        self.l1p = ROOT.RooRealVar('Lep1_pt_Edge'    , 'l1p',   0.,13000., 'GeV'); self.l2p = ROOT.RooRealVar('Lep2_pt_Edge'    , 'l2p',   0.,13000., 'GeV');
+        self.l1p = ROOT.RooRealVar('Lep1_pt_Edge'    , 'l1p',   0., 1000., 'GeV'); self.l2p = ROOT.RooRealVar('Lep2_pt_Edge'    , 'l2p',   0., 1000., 'GeV');
         self.l1e = ROOT.RooRealVar('Lep1_eta_Edge'   , 'l1e', -2.5,   2.5, ''   ); self.l2e = ROOT.RooRealVar('Lep2_eta_Edge'   , 'l2e', -2.5,   2.5, ''   );
         self.l1i = ROOT.RooRealVar('Lep1_pdgId_Edge' , 'l1i',  -15,    15, ''   ); self.l2i = ROOT.RooRealVar('Lep2_pdgId_Edge' , 'l2i',  -15,    15, ''   );
         self.ldr = ROOT.RooRealVar('lepsDR_Edge'     , 'ldr',  0.3,  5.8 , ''   ); self.njs = ROOT.RooRealVar('nJetSel_Edge'    , 'njs',   0 ,   25 , ''   );
-        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   0 ,   25 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0.,13000., 'GeV');
-        self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20.,  300., 'GeV');
-        self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0.,13000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100.,13000., 'GeV');
-        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0.,13000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
+        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0., 1000., 'GeV');
+        self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20., 1000., 'GeV');
+        self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0., 1000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100., 2000., 'GeV');
+        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
         self.wgt = ROOT.RooRealVar('lumwgt'          , 'wgt', self.mcWgt, self.mcWgt, ''); self.wgt.setConstant(1);
 
         self.varSet = ROOT.RooArgSet(self.l1p, self.l2p, self.l1e, self.l2e, self.l1i, self.l2i, self.ldr, self.njs, self.nle)
@@ -164,14 +164,14 @@ if __name__ == '__main__':
         loaded = True
     
     w = ROOT.RooWorkspace('w')
-    getattr(w,'import')(getattr(em_data, 'cuts_of_sr_met150'),ROOT.RooFit.Rename('em_data'),ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'), ROOT.RooFit.RenameVariable('st_Edge','st'), ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt'))
+    getattr(w,'import')(getattr(em_data, 'cuts_of_sr_met150'),ROOT.RooFit.Rename('em_data'), ROOT.RooFit.RenameVariable('st_Edge','st'))#,ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'))#, ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt'))
     if dott: 
         getattr(w,'import')(getattr(tt_mc  , 'cuts_of_sr_met150'),ROOT.RooFit.Rename('tt_mc'  ),ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'), ROOT.RooFit.RenameVariable('st_Edge','st'), ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt') )
 
-    for var in ['mlb', 'met']:#'zpt', 'met', 'mlb', 'st', 'ldr']:
+    for var in ['mlb', 'met', 'zpt', 'ldr']:#'zpt', 'met', 'mlb', 'st', 'ldr']:
         opt = 'a' if var != 'met' else 'am'
         em_data.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(em_data, var+'_rho') )
-        em_data.makeFrame(var)#, 0.3, 5.8)
+        em_data.makeFrame(var)
         #if dott: tt_mc  .addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(tt_mc  , var+'_rho') )
         if dott: tt_mc  .makeFrame(var)
 
@@ -199,28 +199,57 @@ if __name__ == '__main__':
     # fr_data=w.pdf('metpdf').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
     # w.pdf('metpdf').plotOn(em_data.frame_met,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
-    ## FIT TO SUMMLB
-    # w.factory("c_exp[0.,-1.,1.0]")
-    # w.factory("c_inv[-1.,-3.,3.]")
-
-    #name = 'test'; var = 'sum_mlb_Edge';
-    #w.factory("peak[170,120,220]")
-    #w.factory("sigma[40.,1.,100.]")
-    #w.factory("alpha[-1.,-0.1,-2.0]")
-    #w.factory("n[0.5,0.,2.5]")
-    ##mlbexp = ROOT.RooCBShape('mlbcb'+name, 'mlbcb'+name, w.var(var), w.var('peak'), w.var('sigma'), w.var('alpha'), w.var('n') )
-    #w.factory('CBShape::mlbcbtest({var},peak,sigma,alpha,n)'.format(var=var))
-    #fr_data=w.pdf('mlbcbtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
-    #w.pdf('mlbcbtest').plotOn(em_data.frame_mlb,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+    ## ## FIT TO SUMMLB ## works nicely!!
+    ## var = 'sum_mlb_Edge';
+    ## w.factory("peak[170,120,220]")
+    ## w.factory("sigma[40.,1.,100.]")
+    ## w.factory("alpha[-1.,-2.5,0.5]")
+    ## w.factory("n[0.5,0.,2.5]")
+    ## #mlbexp = ROOT.RooCBShape('mlbcb'+name, 'mlbcb'+name, w.var(var), w.var('peak'), w.var('sigma'), w.var('alpha'), w.var('n') )
+    ## w.factory('CBShape::mlbcbtest({var},peak,sigma,alpha,n)'.format(var=var))
+    ## fr_data=w.pdf('mlbcbtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
+    ## w.pdf('mlbcbtest').plotOn(em_data.frame_mlb,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
     ## FIT TO LDR
-    name = 'test'; var = 'ldr';
-    w.factory("peak[170,120,220]")
-    w.factory("sigma[40.,1.,100.]")
-    w.factory("alpha[-1.,-0.1,-2.0]")
-    w.factory("n[0.5,0.,2.5]")
-    w.factory('CBShape::mlbcbtest({var},peak,sigma,alpha,n)'.format(var=var))
-    fr_data=w.pdf('mlbcbtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
-    w.pdf('mlbcbtest').plotOn(em_data.frame_mlb,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+    #var = 'ldr';
+    var = 'lepsDR_Edge';
+    ## w.factory("start[0.3,0.,1.]")
+    ## w.factory("slope[10.,5.,15.]")
+    ## w.factory("end[3.,2.5,4.]")
+    ## w.factory("gausmean[4.,0.,8.]")
+    ## w.factory("gaussig[1.0,0.1,10.]")
+    ## #w.factory('RooEdge::ldrtest({var},start,slope,end)'.format(var=var))
+    ## w.factory('FCONV::ldrtest( {var}, RooEdge::ldredge({var},start,slope,end), Gaussian::ldrgaus({var},gausmean,gaussig) )'.format(var=var))
+    ## fr_data=w.pdf('ldrtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
+    ## w.pdf('ldrtest').plotOn(em_data.frame_ldr,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+    w.factory("peak[2.8,2.0,3.5]")
+    w.factory("sigma[3.,0.,10.]")
+    w.factory("alpha[1.,0.,4.5]")
+    w.factory("n[9.5,-2.,30.0]")
+    w.factory("gausmean1[1.,0.,3.]")
+    w.factory("gaussig1[1.,0.,4.]")
+    w.factory("gausmean2[3.,2.,5.]")
+    w.factory("gaussig2[3.,0.,6.]")
+    #w.factory('CBShape::ldrtest({var},peak,sigma,alpha,n)'.format(var=var))
+    #w.factory('CBShape::ldrtest({var},peak,sigma,alpha,n)'.format(var=var))
+    #w.factory('SUM::ldrtest(NSIG[0,10000]*Gaussian({var},gausmean1,gaussig1),NBKG[0,10000]*Gaussian({var},gausmean2,gaussig2))'.format(var=var))
+    w.factory('SUM::ldrtest(NSIG[0,10000]*Uniform({var}),NBKG[0,10000]*CBShape({var},peak,sigma,alpha,n))'.format(var=var))
+    ## doesn't seem to work w.factory("c[-1.,-2.,3.0]")
+    ## doesn't seem to work w.factory("offset[3.,0,5.]")
+    ## doesn't seem to work w.factory("width[1,0.,10.]")
+    ## doesn't seem to work #w.factory('RooErfExpPdf::ldrtest({var},c,offset,width)'.format(var=var))
+    ## doesn't seem to work w.factory('SUM::ldrtest(NSIG[0,100000]*RooErfExpPdf({var},c,offset,width),RooUniform({var}))'.format(var=var))
+    fr_data=w.pdf('ldrtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
+    w.pdf('ldrtest').plotOn(em_data.frame_ldr,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+
+    ## ## FIT TO Z-PT ## works nicely!!
+    ## var = 'lepsZPt_Edge';
+    ## w.factory("peak[60.,40.,100.]")
+    ## w.factory("sigma[25.,10.,80.]")
+    ## w.factory("alpha[-1.,-2.5,0.]")
+    ## w.factory("n[0.5,0.,1e4]")
+    ## w.factory('CBShape::zptcbtest({var},peak,sigma,alpha,n)'.format(var=var))
+    ## fr_data=w.pdf('zptcbtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
+    ## w.pdf('zptcbtest').plotOn(em_data.frame_zpt,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
 
