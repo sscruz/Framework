@@ -50,8 +50,6 @@ class pdfClass:
         self.varSet.add(self.met); self.varSet.add(self.mlp); self.varSet.add(self.mll); self.varSet.add(self.mlp);
         self.varSet.add(self.mlb); self.varSet.add(self.st); self.varSet.add(self.zpt); self.varSet.add(self.evt);
         self.varSet.add(self.wgt);
-        ## mlb_f = ROOT.RooFormulaVar('mlb','min_mlb1_Edge+min_mlb2_Edge', ROOT.RooArgList(ml1,ml2) )
-        ## mlb   = dataSet.addColumn(mlb_f) ## this is now a RooRealVar
 
     def makeDatasets(self, cutlist):
         for cut, name in cutlist.items():
@@ -64,7 +62,7 @@ class pdfClass:
     def setVarProperties(self, var=0, _min=0, _max=0, rho=0):
         if not var:
             setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max', 750.); setattr(self, 'mlb_rho', 1.4);
-            setattr(self, 'met_min', 150.); setattr(self, 'met_max', 750.); setattr(self, 'met_rho', 1.5);
+            setattr(self, 'met_min', 100.); setattr(self, 'met_max', 750.); setattr(self, 'met_rho', 1.5);
             setattr(self, 'ldr_min',  0.3); setattr(self, 'ldr_max',  5.8); setattr(self, 'ldr_rho', 2.0);
             setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 600.); setattr(self, 'zpt_rho', 1.4);
             setattr(self, 'st_min' , 140.); setattr(self, 'st_max' ,1000.); setattr(self, 'st_rho' , 1.8);
@@ -156,7 +154,8 @@ if __name__ == '__main__':
         if dott: tt_mc   = pdfClass('tt_mc'   , tt_tree, opts.skimVal, 87314.8*2.1/5e6)
         
         cutsAndDs = {#cuts_sr       : 'cuts_of_sr'       ,
-                     cuts_sr_met150: 'cuts_of_sr_met150'}
+                     cuts_sr_met100: 'cuts_of_sr_met100'}
+                     #cuts_sr_met150: 'cuts_of_sr_met150'}
                      #cuts_sr_nj2: 'cuts_of_sr_nj2',
                      #cuts_sr_nj3: 'cuts_of_sr_nj3'}
         em_data.makeDatasets(cutsAndDs)
@@ -164,13 +163,13 @@ if __name__ == '__main__':
         loaded = True
     
     w = ROOT.RooWorkspace('w')
-    getattr(w,'import')(getattr(em_data, 'cuts_of_sr_met150'),ROOT.RooFit.Rename('em_data'), ROOT.RooFit.RenameVariable('st_Edge','st'))#,ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'))#, ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt'))
+    getattr(w,'import')(getattr(em_data, 'cuts_of_sr_met100'),ROOT.RooFit.Rename('em_data'), ROOT.RooFit.RenameVariable('st_Edge','st'))#,ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'))#, ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt'))
     if dott: 
         getattr(w,'import')(getattr(tt_mc  , 'cuts_of_sr_met150'),ROOT.RooFit.Rename('tt_mc'  ),ROOT.RooFit.RenameVariable('lepsDR_Edge','ldr'), ROOT.RooFit.RenameVariable('st_Edge','st'), ROOT.RooFit.RenameVariable('lepsZPt_Edge','zpt') )
 
-    for var in ['mlb', 'met', 'zpt', 'ldr']:#'zpt', 'met', 'mlb', 'st', 'ldr']:
+    for var in ['met']:#'mlb', 'met', 'zpt', 'ldr']:#'zpt', 'met', 'mlb', 'st', 'ldr']:
         opt = 'a' if var != 'met' else 'am'
-        em_data.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(em_data, var+'_rho') )
+        em_data.addNDPDF(var, 'cuts_of_sr_met100', opt, getattr(em_data, var+'_rho') )
         em_data.makeFrame(var)
         #if dott: tt_mc  .addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(tt_mc  , var+'_rho') )
         if dott: tt_mc  .makeFrame(var)
@@ -184,20 +183,25 @@ if __name__ == '__main__':
     ##     self.w.factory('SUM::metpdf('+'metexp'+name+',metinv'+name+')')
 
 
-    # ## FIT TO MET
-    # w.factory("c_exp[0.,-1.,1.0]")
-    # w.factory("c_inv[-1.,-3.,3.]")
-
-    # ## make a lin*exp and a 1/x^n function. sum them up
-    # name = 'test'; var = 'met_pt';
-    # #metexp = ROOT.RooGenericPdf('metexp'+name, 'metexp'+name, '{var}*exp(-1.*(c_exp*{var}))'.format(var=var), ROOT.RooArgList(w.var(var),w.var('c_exp')) )
-    # #metinv = ROOT.RooGenericPdf('metinv'+name, 'metinv'+name, '{var}^(c_inv)'.format(var=var), ROOT.RooArgList(w.var(var),w.var('c_inv')) )
-    # #getattr(w,'import')(metexp)
-    # #getattr(w,'import')(metinv)
-    # #w.factory('SUM::metpdf(NSIG[0,5000]*'+'metexp'+name+',metinv'+name+')')
-    # w.factory('EXPR::metpdf({var}*RooFit.RooExponential({var},c_exp))'.format(var=var))
-    # fr_data=w.pdf('metpdf').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
-    # w.pdf('metpdf').plotOn(em_data.frame_met,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+    ## FIT TO MET
+    w.factory("c_0[-0.028,-0.04,-0.017]")
+    w.factory("c_1[-0.01,-0.03,-0.005]")
+    w.factory("c0[5,0,20]")
+    w.factory("c1[-0.028,-0.04,-0.026]")
+    w.factory("c2[0.]")
+    var = 'met_pt';
+    #metinv = ROOT.RooGenericPdf('metinv'+name, 'metinv'+name, '{var}^(c_inv)'.format(var=var), ROOT.RooArgList(w.var(var),w.var('c_inv')) )
+    #w.factory('SUM::metpdf(NSIG[0,5000]*'+'metexp'+name+',metinv'+name+')')
+    #mettest = ROOT.RooGenericPdf('mettest', 'mettest', 'exp(c_const+c_exp*{var})'.format(var=var), ROOT.RooArgList(w.var(var),w.var('c_const'),w.var('c_exp')) )
+    #mettest = ROOT.RooGenericPdf('mettest','mettest','exp(c1*{var}+c2*{var}*{var})*exp(-c3*{var})'.format(var=var),ROOT.RooArgList(w.var('{var}'.format(var=var)),w.var('c1'),w.var('c2'),w.var('c3')) )
+    #getattr(w,'import')(mettest)
+    w.factory('FCONV::mettest({var},Exponential::exp1({var},c_0),Gaussian::gaus({var},mean[0,0,300],sigma[1,0,40]))'.format(var=var))
+    #w.factory('FCONV::mettest({var},Exponential::exp1({var},c_0),Uniform::uni({var}))'.format(var=var))
+    #w.factory('Exponential::mettest({var},c_0)'.format(var=var))
+    fr_data=w.pdf('mettest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1))#,ROOT.RooFit.Extended(),ROOT.RooFit.Minos(1) )
+    w.pdf('mettest').plotOn(em_data.frame_met,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
+    #fr_data=mettest.fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
+    #mettest.plotOn(em_data.frame_met,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
     ## ## FIT TO SUMMLB ## works nicely!!
     ## var = 'sum_mlb_Edge';
@@ -210,37 +214,20 @@ if __name__ == '__main__':
     ## fr_data=w.pdf('mlbcbtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
     ## w.pdf('mlbcbtest').plotOn(em_data.frame_mlb,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
-    ## FIT TO LDR
-    #var = 'ldr';
-    var = 'lepsDR_Edge';
-    ## w.factory("start[0.3,0.,1.]")
-    ## w.factory("slope[10.,5.,15.]")
-    ## w.factory("end[3.,2.5,4.]")
-    ## w.factory("gausmean[4.,0.,8.]")
-    ## w.factory("gaussig[1.0,0.1,10.]")
-    ## #w.factory('RooEdge::ldrtest({var},start,slope,end)'.format(var=var))
-    ## w.factory('FCONV::ldrtest( {var}, RooEdge::ldredge({var},start,slope,end), Gaussian::ldrgaus({var},gausmean,gaussig) )'.format(var=var))
+    ## ## FIT TO LDR # meh
+    ## #var = 'ldr';
+    ## var = 'lepsDR_Edge';
+    ## w.factory("peak[2.8,2.0,3.5]")
+    ## w.factory("sigma[3.,0.,10.]")
+    ## w.factory("alpha[1.,0.,4.5]")
+    ## w.factory("n[2.5,-5.,5.0]")
+    ## ## w.factory('FCONV::ldrtest( {var}, RooEdge::ldredge({var},start,slope,end), Gaussian::ldrgaus({var},gausmean,gaussig) )'.format(var=var))
+    ## ## w.factory('SUM::ldrtest(NSIG[0,100]*Gaussian({var},gausmean1,gaussig1),NBKG[0,10000]*Gaussian({var},gausmean2,gaussig2))'.format(var=var))
+    ## ## w.factory('RooErfExpPdf::ldrtest({var},c,offset,width)'.format(var=var))
+    ## ## w.factory('SUM::ldrtest(N1[0,100000]*CBShape::ldrcb({var},peak,sigma,alpha,n),N2[0,10000]*Polynomial::ldrpoly({var},{{a0[1,0,10]}}))'.format(var=var))
+    ## w.factory('CBShape::ldrtest({var},peak,sigma,alpha,n)'.format(var=var))
     ## fr_data=w.pdf('ldrtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
     ## w.pdf('ldrtest').plotOn(em_data.frame_ldr,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
-    w.factory("peak[2.8,2.0,3.5]")
-    w.factory("sigma[3.,0.,10.]")
-    w.factory("alpha[1.,0.,4.5]")
-    w.factory("n[9.5,-2.,30.0]")
-    w.factory("gausmean1[1.,0.,3.]")
-    w.factory("gaussig1[1.,0.,4.]")
-    w.factory("gausmean2[3.,2.,5.]")
-    w.factory("gaussig2[3.,0.,6.]")
-    #w.factory('CBShape::ldrtest({var},peak,sigma,alpha,n)'.format(var=var))
-    #w.factory('CBShape::ldrtest({var},peak,sigma,alpha,n)'.format(var=var))
-    #w.factory('SUM::ldrtest(NSIG[0,10000]*Gaussian({var},gausmean1,gaussig1),NBKG[0,10000]*Gaussian({var},gausmean2,gaussig2))'.format(var=var))
-    w.factory('SUM::ldrtest(NSIG[0,10000]*Uniform({var}),NBKG[0,10000]*CBShape({var},peak,sigma,alpha,n))'.format(var=var))
-    ## doesn't seem to work w.factory("c[-1.,-2.,3.0]")
-    ## doesn't seem to work w.factory("offset[3.,0,5.]")
-    ## doesn't seem to work w.factory("width[1,0.,10.]")
-    ## doesn't seem to work #w.factory('RooErfExpPdf::ldrtest({var},c,offset,width)'.format(var=var))
-    ## doesn't seem to work w.factory('SUM::ldrtest(NSIG[0,100000]*RooErfExpPdf({var},c,offset,width),RooUniform({var}))'.format(var=var))
-    fr_data=w.pdf('ldrtest').fitTo(w.data('em_data'),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1) )
-    w.pdf('ldrtest').plotOn(em_data.frame_ldr,ROOT.RooFit.LineColor(2), ROOT.RooFit.LineStyle(1) )
 
     ## ## FIT TO Z-PT ## works nicely!!
     ## var = 'lepsZPt_Edge';
