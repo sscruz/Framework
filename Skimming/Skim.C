@@ -98,10 +98,10 @@ int main(int argc, char *argv[]) {
     Int_t nentries = (Int_t)tree->GetEntries();
     for(Int_t i = 0; i < nentries; i++) {
         tree->GetEntry(i);
-        if(! (abs(Lep1_eta_Edge)<2.4 && abs(Lep2_eta_Edge)<2.4 && Lep1_pt_Edge > 20. && Lep2_pt_Edge > 20. )) continue;
+        if(! (fabs(Lep1_eta_Edge)<2.4 && fabs(Lep2_eta_Edge)<2.4 && Lep1_pt_Edge > 20. && Lep2_pt_Edge > 20. )) continue;
         if(! (nJetSel_Edge > 1)) continue;
         if(! (nPairLep_Edge > 0)) continue;
-        if(! ((lepsDR_Edge > 0.3 && (abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1) && lepsMll_Edge > 20 ))) continue;
+        if(! ((lepsDR_Edge > 0.3 && (fabs(fabs(Lep1_eta_Edge) - 1.5) > 0.1 && fabs(fabs(Lep2_eta_Edge) - 1.5) > 0.1) && lepsMll_Edge > 20 ))) continue;
         SkimTree->Fill();
         SkimFriendTree->Fill();
     }
