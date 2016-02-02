@@ -12,12 +12,12 @@ import include.Tables     as Tables
 import nllAnalysis
 
 
-def getLikelihood(listofhistos):
+def getLikelihood(listofhistos, inverse = False):
     lh = 1.
     for histo in listofhistos:
         r = histo.GetRandom(); 
         lh = lh*histo.GetBinContent(histo.FindBin(r)) 
-    return -1.*math.log(lh)
+    return -1.*math.log(lh if not inverse else 1./lh)
 
 def comparePDFs(st=0):
     pdf_file = r.TFile('pdfs_version6.root')
@@ -73,7 +73,7 @@ def comparePDFs(st=0):
     return plot, copy.deepcopy(pdf_histo)
 
 def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
-    pdf_file = r.TFile('pdfs_version6.root')
+    pdf_file = r.TFile('pdfs_version12.root')
     r.gStyle.SetOptStat(0)
     plots = []; rets = [];
     lhvar = 'zpt'
@@ -114,25 +114,45 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
             pdf_histo.Rebin(20); pdf_histo_mc.Rebin(20)
             xmin = 0.; xmax = 750-15.0; xint = 15.0; nbins = 49
             ymax = 0.32
+        elif varname == 'invzpt':
+            var = 'cum_ana_zpt_data_Edge'
+            pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_pdf_histo_met_ds_cuts_of_sr_met150'))
+            pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_met_ds_cuts_of_sr_met150'  ))
+            pdf_histo.Rebin(20); pdf_histo_mc.Rebin(20)
+            xmin = 0.; xmax = 1.; xint = xmax/50; xmax = xmax - xint; nbins = 49;
+            ymax = 0.25
+        elif varname == 'invall':
+            var = 'TMath::Power(cum_ana_mlb_data_Edge*cum_ana_zpt_data_Edge*cum_ana_ldr_data_Edge*cum_ana_met_data_Edge,0.25)'
+            pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_pdf_histo_mlb_ds_cuts_of_sr_met150'))
+            pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_mlb_ds_cuts_of_sr_met150'  ))
+            pdf_histo.Rebin(20); pdf_histo_mc.Rebin(20)
+            xmin = 0.; xmax = 4.; xint = xmax/50; xmax = xmax - xint; nbins = 49;#-0.08; xint = 0.08; nbins = 49
+            ymax = 0.25
+            print 'numbers', xmin, xmax, xint, nbins
         elif varname == 'nll':
-            var = '-1.*TMath::Log(lh_met_data_Edge*lh_summlb_data_Edge*lh_lepsdr_data_Edge*lh_%s_data_Edge)'%(lhvar)
-            ldr_pdf_histo    = copy.deepcopy(pdf_file.Get('emu_data_pdf_histo_ldr_ds_cuts_of_sr_met150')); ldr_pdf_histo   .Scale(1./ldr_pdf_histo   .Integral())
-            ldr_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_ldr_ds_cuts_of_sr_met150'   )); ldr_pdf_histo_mc.Scale(1./ldr_pdf_histo_mc.Integral())
-            lhv_pdf_histo    = copy.deepcopy(pdf_file.Get('emu_data_pdf_histo_%s_ds_cuts_of_sr_met150'%lhvar)); lhv_pdf_histo   .Scale(1./lhv_pdf_histo   .Integral())
-            lhv_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_%s_ds_cuts_of_sr_met150'   %lhvar)); lhv_pdf_histo_mc.Scale(1./lhv_pdf_histo_mc.Integral())
-            mlb_pdf_histo    = copy.deepcopy(pdf_file.Get('emu_data_pdf_histo_mlb_ds_cuts_of_sr_met150')); mlb_pdf_histo   .Scale(1./mlb_pdf_histo   .Integral())
-            mlb_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_mlb_ds_cuts_of_sr_met150'   )); mlb_pdf_histo_mc.Scale(1./mlb_pdf_histo_mc.Integral())
-            met_pdf_histo    = copy.deepcopy(pdf_file.Get('emu_data_pdf_histo_met_ds_cuts_of_sr_met150')); met_pdf_histo   .Scale(1./met_pdf_histo   .Integral())
-            met_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_pdf_histo_met_ds_cuts_of_sr_met150'   )); met_pdf_histo_mc.Scale(1./met_pdf_histo_mc.Integral())
-            pdf_histo    = r.TH1F('lh_histo_da', 'lh_histo_da', 51, 12., 36.48)
-            pdf_histo_mc = r.TH1F('lh_histo_mc', 'lh_histo_mc', 51, 12., 36.48)
+            pdfOrFit = 'pdf'
+            var = '-1.*TMath::Log(lh_{foo}met_data_Edge*lh_{foo}mlb_data_Edge*lh_{foo}ldr_data_Edge*lh_{foo}zpt_data_Edge)'.format(foo='' if pdfOrFit == 'pdf' else 'ana_')
+            ldr_pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_%s_histo_ldr_ds_cuts_of_sr_met150'%pdfOrFit)); ldr_pdf_histo   .Scale(1./ldr_pdf_histo   .Integral())
+            ldr_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_%s_histo_ldr_ds_cuts_of_sr_met150'  %pdfOrFit)); ldr_pdf_histo_mc.Scale(1./ldr_pdf_histo_mc.Integral())
+            zpt_pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_%s_histo_zpt_ds_cuts_of_sr_met150'%pdfOrFit)); zpt_pdf_histo   .Scale(1./zpt_pdf_histo   .Integral())
+            zpt_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_%s_histo_zpt_ds_cuts_of_sr_met150'  %pdfOrFit)); zpt_pdf_histo_mc.Scale(1./zpt_pdf_histo_mc.Integral())
+            mlb_pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_%s_histo_mlb_ds_cuts_of_sr_met150'%pdfOrFit)); mlb_pdf_histo   .Scale(1./mlb_pdf_histo   .Integral())
+            mlb_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_%s_histo_mlb_ds_cuts_of_sr_met150'  %pdfOrFit)); mlb_pdf_histo_mc.Scale(1./mlb_pdf_histo_mc.Integral())
+            met_pdf_histo    = copy.deepcopy(pdf_file.Get('em_data_%s_histo_met_ds_cuts_of_sr_met150'%pdfOrFit)); met_pdf_histo   .Scale(1./met_pdf_histo   .Integral())
+            met_pdf_histo_mc = copy.deepcopy(pdf_file.Get('tt_mc_%s_histo_met_ds_cuts_of_sr_met150'  %pdfOrFit)); met_pdf_histo_mc.Scale(1./met_pdf_histo_mc.Integral())
+            pdf_histo    = r.TH1F('lh_histo_da', 'lh_histo_da', 50, 15., 39.5)
+            pdf_histo_mc = r.TH1F('lh_histo_mc', 'lh_histo_mc', 50, 15., 39.5)
             for i in range(500000):
-                lh    = getLikelihood([ldr_pdf_histo   , lhv_pdf_histo   , mlb_pdf_histo   , met_pdf_histo   ])
-                lh_mc = getLikelihood([ldr_pdf_histo_mc, lhv_pdf_histo_mc, mlb_pdf_histo_mc, met_pdf_histo_mc])
+                lh    = getLikelihood([ldr_pdf_histo   , zpt_pdf_histo   , mlb_pdf_histo   , met_pdf_histo   ], inverse = False)
+                lh_mc = getLikelihood([ldr_pdf_histo_mc, zpt_pdf_histo_mc, mlb_pdf_histo_mc, met_pdf_histo_mc], inverse = False)
+                #print lh_mc
                 pdf_histo   .Fill(lh)
                 pdf_histo_mc.Fill(lh_mc)
-            xmin = 12.; xmax = 36.; xint = (xmax-xmin)/nbins; nbins = 50
-            ymax = 0.30
+            xmin = 15.; xmax = 40.; nbins = 49; xint = (xmax-xmin)/(nbins+1); xmax = xmax - xint;
+            ymax = 0.25
+            print 'before everything', xmin, xmax, nbins, xint
+            #xmin = -30.; xmax = 36.; xint = (xmax-xmin)/nbins; nbins = 50
+            #ymax = 0.30
 
         for i in range(pdf_histo.GetNbinsX()+1):
             pdf_histo.SetBinError(i, 0.); pdf_histo_mc.SetBinError(i, 0.)
@@ -145,6 +165,7 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
         r.gStyle.SetOptStat(0)
         h_tt_sr_sf  = treeTT.getTH1F(1., '%s_sr_sf_tt' %varname, var, nbins , xmin, xmax , cuts_sr_sf, '', varname)
         h_tt_sr_of  = treeTT.getTH1F(1., '%s_sr_of_tt' %varname, var, nbins , xmin, xmax , cuts_sr_of, '', varname)
+        print 'nbins, mxin, xmax ', nbins, xmin, xmax
         print 'nbins, mxin, xmax histo ', h_tt_sr_sf.GetNbinsX(), h_tt_sr_sf.GetXaxis().GetXmin(), h_tt_sr_sf.GetXaxis().GetXmax()
         print 'nbins, mxin, xmax pdf histo ', pdf_histo.GetNbinsX(), pdf_histo.GetXaxis().GetXmin(), pdf_histo.GetXaxis().GetXmax()
         rets.append(copy.deepcopy(h_tt_sr_sf))
@@ -159,16 +180,17 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
                 if tmp_histo.Integral():
                     tmp_histo.Scale(1./tmp_histo.Integral())
                     sigHistos.append(tmp_histo)
+        print sigHistos[0].GetXaxis().GetXmin(), sigHistos[0].GetXaxis().GetXmax(),sigHistos[0].GetNbinsX()
                 
         h_tt_sr_sf.SetMarkerSize(0.7); h_tt_sr_sf.SetMarkerStyle(20); h_tt_sr_sf.SetMarkerColor(r.kGreen); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
         h_tt_sr_of.SetMarkerSize(0.7); h_tt_sr_of.SetMarkerStyle(20); h_tt_sr_of.SetMarkerColor(r.kBlue ); h_tt_sr_of.Scale(1./h_tt_sr_of.Integral())
 
         h_tt_sr_sf.GetYaxis().SetRangeUser(1e-6, ymax)
 
-        plot = Canvas.Canvas('signalTestsWithMet/pdf_check_%s%s'%(varname, '_'+lhvar if varname == 'nll' else ''), 'png,pdf', 0.7, 0.55, 0.95, 0.89, 600, 600)
+        plot = Canvas.Canvas('inversePDFTests/pdf_check_%s%s'%(varname, '_'+lhvar if varname == 'nll' else ''), 'png,pdf', 0.7, 0.55, 0.95, 0.89, 600, 600)
         li = 0
-        plot.addHisto(pdf_histo   , 'hist'     , 'pdf - data', 'L' , r.kBlack, 1,  li); li+=1
-        plot.addHisto(pdf_histo_mc, 'hist,same', 'pdf - mc'  , 'L' , r.kRed  , 1,  li); li+=1
+        if not 'inv' in varname: plot.addHisto(pdf_histo   , 'hist'     , 'pdf - data', 'L' , r.kBlack, 1,  li); li+=1
+        if not 'inv' in varname: plot.addHisto(pdf_histo_mc, 'hist,same', 'pdf - mc'  , 'L' , r.kRed  , 1,  li); li+=1
         plot.addHisto(h_tt_sr_sf  , 'pe, same' , 'tt - SR SF', 'PL', r.kGreen, 1,  li); li+=1
         plot.addHisto(h_tt_sr_of  , 'pe, same' , 'tt - SR OF', 'PL', r.kBlue , 1,  li); li+=1
         for ind,histo in enumerate(sigHistos):
