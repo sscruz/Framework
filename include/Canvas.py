@@ -248,11 +248,12 @@ class Canvas:
           tmp_ratio.GetYaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
-          tmp_ratio.SetMarkerStyle(20+ind);
-          tmp_ratio.SetMarkerSize(0.6*tmp_ratio.GetMarkerSize());
-          tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
-          tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
-
+          #tmp_ratio.SetMarkerStyle(20+ind);
+          #tmp_ratio.SetMarkerSize(0.6*tmp_ratio.GetMarkerSize());
+          #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
+          #tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
+          tmp_ratio.SetLineColor  (tmp_hMC.GetLineColor());
+          tmp_ratio.SetLineStyle(tmp_hMC.GetLineStyle())
           ratios.append(tmp_ratio)
           xmin = tmp_ratio.GetBinLowEdge(1)
           xmax = tmp_ratio.GetBinLowEdge(tmp_ratio.GetNbinsX()+1)
@@ -260,7 +261,7 @@ class Canvas:
       #tmp_ratio.Draw("E,SAME");
       pad2.cd();  
       for rat in ratios:
-          rat.Draw('pe, same');
+          rat.Draw('l, same');
 
       line = TLine(xmin, 1, xmax, 1)
       line.SetLineColor(r.kGray+2);
