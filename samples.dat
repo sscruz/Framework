@@ -58,6 +58,7 @@ rare      r.kRed+2     T_tWch                    T_tWch                /afs/cern
 ##T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton/      friends/       1.0   0
 T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_miniAODv2/      friends/       1.0   0
 T6bbslepton      r.kBlue+3     SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500      T6bbslepton       /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_miniAODv2/      friends/       1.0   0
+MuEG        r.kBlack   MuEG           MuEG /afs/cern.ch/work/m/mdunser/public/edgeTrees/MuEG_all/  friends/        1         1
 #
 #
 #
