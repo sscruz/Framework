@@ -44,7 +44,7 @@ class pdfClass:
         self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0., 1000., 'GeV');
         self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20., 1000., 'GeV');
         self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0., 1000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100., 2000., 'GeV');
-        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
+        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0.,  400., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
         self.wgt = ROOT.RooRealVar('lumwgt'          , 'wgt', self.mcWgt, self.mcWgt, ''); self.wgt.setConstant(1);
 
         self.varSet = ROOT.RooArgSet(self.l1p, self.l2p, self.l1e, self.l2e, self.l1i, self.l2i, self.ldr, self.njs, self.nle)
@@ -62,10 +62,10 @@ class pdfClass:
 
     def setVarProperties(self, var=0, _min=0, _max=0, rho=0):
         if not var:
-            setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max', 750.); setattr(self, 'mlb_rho', 1.4);
-            setattr(self, 'met_min', 150.); setattr(self, 'met_max',1000.); setattr(self, 'met_rho', 1.5);
+            setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max', 600.); setattr(self, 'mlb_rho', 1.4);
+            setattr(self, 'met_min', 150.); setattr(self, 'met_max', 500.); setattr(self, 'met_rho', 1.5);
             setattr(self, 'ldr_min',  0.3); setattr(self, 'ldr_max',  5.8); setattr(self, 'ldr_rho', 2.0);
-            setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 600.); setattr(self, 'zpt_rho', 1.4);
+            setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 400.); setattr(self, 'zpt_rho', 1.4);
             setattr(self, 'st_min' , 140.); setattr(self, 'st_max' ,1000.); setattr(self, 'st_rho' , 1.8);
             self.propSet = True
         else:
@@ -116,12 +116,15 @@ class pdfClass:
             if not obj.startswith('pdf_histo'): continue
             getattr(self, obj).Write()
 
-def getFrame(var):
+def getFrame(var, xmin=0, xmax=0):
     if   var == 'met': vartree = 'met_pt'
     elif var == 'mlb': vartree = "sum_mlb_Edge";
     elif var == 'ldr': vartree = 'lepsDR_Edge';
     elif var == 'zpt': vartree = 'lepsZPt_Edge';
-    return w.var(vartree).frame()
+    if xmax <= xmin:
+        return w.var(vartree).frame()
+    else:
+        return w.var(vartree).frame(xmin,xmax,100)
 
 def buildModels(w):
     for var in ['met', 'mlb', 'ldr', 'zpt']:
@@ -159,7 +162,7 @@ if __name__ == '__main__':
     print 'Starting r_SFOF analysis...'
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-s', '--skim' , action='store', type=int , dest='skimVal', default=1, help='take only every nth event into the samples.')
-    parser.add_option('-t', '--dott' , action='store', type=int , dest='dott'   , default=0, help='do ttbar MC as well (takes time). default is 0')
+    parser.add_option('-t', '--dott' , action='store_true', dest='dott', help='do ttbar MC as well (takes time). default is 0')
     parser.add_option('-b', '--batch', action='store', type=int , dest='batch'  , default=0, help='set batch mode to not open windows. default false.')
     (opts, args) = parser.parse_args()
 
@@ -202,9 +205,9 @@ if __name__ == '__main__':
     
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
-    for var in ['zpt', 'met', 'mlb', 'ldr']:
+    for var in ['met']:#, 'mlb', 'ldr']:
         opt = 'a' if var != 'met' else 'am'
-        tmp_frame = getFrame(var); model = var+'_analyticalPDF'
+        tmp_frame = getFrame(var, 150, 400); model = var+'_analyticalPDF'
         for i, ds in enumerate(dss):
             color = ROOT.kBlack if i==0 else ROOT.kRed
             linestyle = ROOT.kSolid if i == 0 else ROOT.kDashed
@@ -220,7 +223,8 @@ if __name__ == '__main__':
             ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
 
             w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
-            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(linestyle) )
+            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
+            getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
 
             # damn root takes the objects away if i write them now
             writeobjs.append(copy.deepcopy(tmp_histo))
@@ -229,7 +233,7 @@ if __name__ == '__main__':
         frames.append(tmp_frame);
         tmp_frame.Draw()
 
-    outfile = ROOT.TFile('pdfs/pdfs_version13.root', 'RECREATE')
+    outfile = ROOT.TFile('pdfs/pdfs_version14.root', 'RECREATE')
     outfile.cd()
     for i in writeobjs:
         i.Write()
