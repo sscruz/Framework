@@ -28,6 +28,8 @@ class vParams:
         elif self.name == 'nll':
             self.xmin = 15.; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
             self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_ldr_data_Edge*lh_ana_zpt_data_Edge)'; 
+        elif self.name == 'mt2':
+            self.xmin = 0.0; self.xmax = 300; self.nbins = 50; self.ymax = 0.15; self.title = 'MT_{2} (GeV)'       ; self.vtree = 't.mt2_Edge'    ; 
 
 
 class nllObject:
@@ -324,6 +326,9 @@ if __name__ == "__main__":
         treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
         ttDatasets = ['MuEG']
         treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'DA'), 'DA', 1, isScan = 0)
+        siDatasets = ['SMS_T6bbllslepton_mSbottom-600To900_mLSP-200To800', 
+                      'SMS_T6bbllslepton_mSbottom-400To550_mLSP-200To500' ]
+        self.treeSI = Sample.Tree(helper.selectSamples(opts.sampleFile, siDatasets, 'SI'), 'SI', 0, isScan = 1)
         c_sr_sf    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonSF()])
         c_sr_of    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonOF()])
         var = 'nll'; v = vParams(var)
@@ -341,6 +346,20 @@ if __name__ == "__main__":
         h_tt_sr_sf.Draw('same norm pe')
         h_tt_sr_of.Draw('same norm pe')
         h_da_sr_of.Draw('same norm pe')
+
+        # quick mt2 staudies
+        var = 'mt2'; v = vParams(var)
+        h_tt_mt2  = treeTT.getTH1F(1., 'tt_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf  , '', v.title, ofBin = False); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
+        
+        sigcuts = cuts.AddList([c_sr_sf.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0'), 'GenSusyMScan1 == %.0f && GenSusyMScan2 == %.0f'%(900, 200)])
+        h_si_mt2_900_200  = treeSI.getTH1F(1., 'da_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , sigcuts  , '', v.title, ofBin = False); h_si_sr_of.Scale(1./h_si_sr_of.Integral())
+        sigcuts = cuts.AddList([c_sr_sf.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0'), 'GenSusyMScan1 == %.0f && GenSusyMScan2 == %.0f'%(400, 375)])
+        h_si_mt2_400_375  = treeSI.getTH1F(1., 'da_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , sigcuts  , '', v.title, ofBin = False); h_si_sr_of.Scale(1./h_si_sr_of.Integral())
+
+        h_tt_mt2.SetMarkerColor(r.kBlue)
+        h_si_mt2.SetMarkerColor(r.kGreen)
+        h_si_mt2.SetMarkerColor(r.kRed-2)
+        
 
 
     
