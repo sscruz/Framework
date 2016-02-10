@@ -36,6 +36,17 @@ def make_rmue_table(reg):
         lines.append('                          & N$_{ee}$         & %5d   &                                            \\\\ ' %(da_nee) )
         lines.append(' \\multirow{2}{*}{MC}     & N$_{\\mu\\mu}$   & %.0f \\pm %.0f & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(mc_nmm, mc_nmm_err, mc_rmue, mc_rmue_err, 0.1 ) )
         lines.append('                          & N$_{ee}$         & %.0f \\pm %.0f &                                            \\\\ ' %(mc_nee, mc_nee_err))
+        if eta == 'central':
+            print "hi"
+            da_rmue_err = math.sqrt(da_rmue_err*da_rmue_err + 0.1*0.1*da_rmue*da_rmue) 
+            mc_rmue_err = math.sqrt(mc_rmue_err*mc_rmue_err + 0.1*0.1*mc_rmue*mc_rmue) 
+        else:
+            da_rmue_err = math.sqrt(da_rmue_err*da_rmue_err + 0.2*0.2*da_rmue*da_rmue) 
+            mc_rmue_err = math.sqrt(mc_rmue_err*mc_rmue_err + 0.2*0.2*mc_rmue*mc_rmue) 
+
+        print "1/2 * (rmue + 1/rmue) data ", eta, " ", 0.5 * (da_rmue + 1.0/da_rmue), " +\- ", 0.5 * da_rmue_err * math.sqrt((1 - 1.0/(da_rmue*da_rmue))*(1 - 1.0/(da_rmue*da_rmue))) 
+        print "1/2 * (rmue + 1/rmue) MC   ", eta, " ", 0.5 * (mc_rmue + 1.0/mc_rmue), " +\- ", 0.5 * mc_rmue_err * math.sqrt((1 - 1.0/(mc_rmue*mc_rmue))*(1 - 1.0/(mc_rmue*mc_rmue)))
+
     return lines
 
 
@@ -100,15 +111,10 @@ if __name__ == "__main__":
 
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTT else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    ##daDatasets = ['DoubleMuon_Run2015C', 'DoubleEG_Run2015C', 'MuonEG_Run2015C',
-    ##              'DoubleMuon_Run2015D', 'DoubleEG_Run2015D', 'MuonEG_Run2015D']
-    ## datasets for 1p3 daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
-    ## datasets for 1p3               'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
-    ## datasets for 1p3               'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
-    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTT else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'TTZToLLNuNu', 'WZTo3L1Nu', 'VHToNobb_M125', 'TTHToNobb_M125', 'TBar_tWch', 'T_tWch', 'TBar_tWch'])
+    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
+                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
     #tree = treeMC
@@ -175,7 +181,9 @@ if __name__ == "__main__":
             cuts_ee = cuts.AddList([cuts.GoodLeptonee()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
             cuts_mm = cuts.AddList([cuts.GoodLeptonmm()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
     
-    
+   
+
+ 
             for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
     
                 dataMC = 'DATA' if tree == treeDA else 'MC'

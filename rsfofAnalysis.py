@@ -68,10 +68,12 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
 
     print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow']# + ([] if opts.mcStudies else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+    #mcDatasets = ['TTLep_pow']# + ([] if opts.mcStudies else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
+    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'TTZToLLNuNu', 'WZTo3L1Nu', 'VHToNobb_M125', 'TTHToNobb_M125', 'TBar_tWch', 'T_tWch', 'TBar_tWch']
+
+    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
+                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
+                  'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
     print 'Trees successfully loaded...'
@@ -82,7 +84,7 @@ if __name__ == '__main__':
     lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_forApproval'
     print 'Running with an integrated luminosity of', lumi,'fb-1'
 
-    #saveValues = True
+    saveValues = True
    
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)

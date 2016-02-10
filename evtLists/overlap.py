@@ -11,16 +11,23 @@ f_list = ['synchOnFullDataset_0.txt',
           'synchOnFullDataset_6.txt',
           'synchOnFullDataset_7.txt',
           'synchOnFullDataset_8.txt']
-
-ofile = open('synchFullDataset_onZ_edgeSR_SF.txt', 'wr')
+               
+ofile = open('synch_rt.txt', 'wr')
 a = set()
+b = set()
 for i in f_list:
     f = open(i,'r')
     for ev in list(f):
-        a.add(ev.replace('*',':').rstrip('\r')[10:])
+        if (ev.find("lumi") != -1 or ev.find("***") != -1 or ev.find("==") != -1):
+            continue  
+        reducedString = ':'.join(ev.replace('*',':').split(':')[2:5])+'\n'
+        if not reducedString in a:
+            a.add(reducedString)
+            b.add(ev.replace('*',':')[12:])
     f.close()
 
 print len(a)
-for i in a:
+print len(b)
+for i in b:
     ofile.writelines(i)
 ofile.close()
