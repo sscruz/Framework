@@ -37,7 +37,12 @@ class CutManager:
       self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
       self.HT = "(t.htJet35j_Edge > 200)"
-      self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht300 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0 || HLT_at51>0 || HLT_at52 >0 || HLT_at53 > 0 || HLT_at55 > 0)"
+      self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht350 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0)"
+      self.triggerCalculation = self.AddList([self.triggerHT, self.HT, self.goodLepton, self.donot(self.METJetsSignalRegion), self.donot(self.AddList([self.METJetsControlRegion, self.OR(self.lowmass, self.highmass)]))])
+
+
+   def donot(self, cut):
+     return '(!' + self.brackets(cut) + ')'
 
    def brackets(self, cut):
       return '('+cut+')'
@@ -54,6 +59,11 @@ class CutManager:
 
       return self.brackets(cut1 + " && " + cut2 )
   
+   def OR(self, cut1, cut2):
+
+      return self.brackets(cut1 + " || " + cut2 )
+
+
    def MaxRun(self, run):
       
       return self.brackets("run <= %d"%(run))

@@ -320,9 +320,9 @@ if __name__ == '__main__':
                       'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
                       'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
     elif lumi > 2.:
-        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                      'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
+                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
+                      'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
@@ -401,10 +401,10 @@ if __name__ == '__main__':
                                  [ [20., 70., 81., 101., 120., 13000.] ],
                                  True if not opts.onlyClosure else False)
 
-    #regions.append(signalRegionincb)
-    #regions.append(signalRegion0b)
-    #regions.append(signalRegion1b)
-    #regions.append(signalRegion2b)
+    regions.append(signalRegionincb)
+    regions.append(signalRegion0b)
+    regions.append(signalRegion1b)
+    regions.append(signalRegion2b)
     regions.append(binnedSRincb)
     regions.append(binnedSR0b)
     regions.append(binnedSR1b)
@@ -414,6 +414,7 @@ if __name__ == '__main__':
     ## look for DY shapes in file, if not there make them
     ## ==================================================
     dy_shapes = getDYShapes(finalBinning, range(20,302,2), [20., 70., 81., 101., 120., 300.])
+    print dy_shapes
     ## ==================================================
     ## done with DY shapes. moving on with life          
     ## ==================================================
@@ -459,20 +460,20 @@ if __name__ == '__main__':
     ## make some tables!!
     ## =====================
 
-    # a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
-    # b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
+    a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
+    #b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
     # for i in a: print i
-    # for i in b: print i
+    for i in a: print i
 
     ## make datacards
     # Tables.makeDataCards([binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b], '', ingDA, onZ)
 
-    ## a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
-    ## a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
-    ## a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
-    ## a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
-    ## print 'CENTRAL TABLE'
-    ## for i in a_cen_da: print i
-    ## print 'FORWARD TABLE'
-    ## for i in a_fwd_da: print i
+    a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
+    a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
+    a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
+    a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
+    print 'CENTRAL TABLE'
+    for i in a_cen_da: print i
+    print 'FORWARD TABLE'
+    for i in a_fwd_da: print i
 
