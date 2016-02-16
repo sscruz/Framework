@@ -453,8 +453,8 @@ if __name__ == '__main__':
     ## make some plots!!
     ## =====================
 
-    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'central')
-    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'forward')
+    makePlots([signalRegionincb, signalRegion0b, signalRegion1b], ['central'])
+    makePlots([signalRegionincb, signalRegion0b, signalRegion1b], ['forward'])
 
 
     ## make some tables!!
@@ -463,17 +463,17 @@ if __name__ == '__main__':
     a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
     #b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
     # for i in a: print i
-    for i in a: print i
+    #for i in a: print i
 
     ## make datacards
     # Tables.makeDataCards([binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b], '', ingDA, onZ)
 
-    a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
-    a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
-    a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
-    a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
-    print 'CENTRAL TABLE'
-    for i in a_cen_da: print i
-    print 'FORWARD TABLE'
-    for i in a_fwd_da: print i
+    #a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
+    #a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
+    #a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
+    #a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
+    #print 'CENTRAL TABLE'
+    #for i in a_cen_da: print i
+    #print 'FORWARD TABLE'
+    #for i in a_fwd_da: print i
 
