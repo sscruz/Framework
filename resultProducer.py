@@ -51,10 +51,10 @@ class onZResult:
         self.cen_0b_e = math.sqrt(self.cen_0btag_2jet_err**2 + self.cen_0btag_3jet_err**2)
         self.fwd_0b_e = math.sqrt(self.fwd_0btag_2jet_err**2 + self.fwd_0btag_3jet_err**2)
 
-        self.cen_1b   = self.cen_1btag_2jet + self.cen_1btag_3jet
-        self.fwd_1b   = self.fwd_1btag_2jet + self.fwd_1btag_3jet
-        self.cen_1b_e = math.sqrt(self.cen_1btag_2jet_err**2 + self.cen_1btag_3jet_err**2)
-        self.fwd_1b_e = math.sqrt(self.fwd_1btag_2jet_err**2 + self.fwd_1btag_3jet_err**2)
+        self.cen_1b   = self.cen_1btag_2jet + self.cen_1btag_3jet + self.cen_2btag_2jet + self.cen_2btag_3jet
+        self.fwd_1b   = self.fwd_1btag_2jet + self.fwd_1btag_3jet + self.fwd_2btag_2jet + self.fwd_2btag_3jet
+        self.cen_1b_e = math.sqrt(self.cen_1btag_2jet_err**2 + self.cen_1btag_3jet_err**2 + self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
+        self.fwd_1b_e = math.sqrt(self.fwd_1btag_2jet_err**2 + self.fwd_1btag_3jet_err**2 + self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
 
         self.cen_2b   = self.cen_2btag_2jet + self.cen_2btag_3jet
         self.fwd_2b   = self.fwd_2btag_2jet + self.fwd_2btag_3jet
