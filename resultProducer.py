@@ -224,29 +224,43 @@ def getDYShapes(binsPlot, binsFine, binsSR):
     return returndict
 
 def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname, eta, nbs, nbstr):
+
+    colors = helper.createMyColors()
+
     #nb = re.sub('[^0-9]', '', nbstring)
     pGraph = r.TGraphErrors(pHisto)
-    pGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
+    pGraph.SetFillColorAlpha(r.kBlue+3, 0.2)
     pGraph.SetFillStyle(3001)
+    pGraph.SetFillColor(helper.myColors["MyBlue"])
+    pGraph.SetMarkerStyle(20)
+    pHisto.SetMarkerStyle(20)
+    pHisto.SetLineColor(r.kBlack)
+    oHisto.SetLineColor(r.kBlue+3)
+    oHisto.SetLineWidth(2)
 
     maxCont = pHisto.GetBinContent(pHisto.GetMaximumBin())
     pHisto.GetYaxis().SetRangeUser(0., 1.7*maxCont)
 
     plot = Canvas.Canvas('results/%s/plot_results_mll_%s_%s%s_nb%s'%(lumi_str, plotname, eta, ('' if not opts.onlyTTbar else '_onlyTT'), str(nbs)), 'png,pdf', 0.6, 0.65, 0.85, 0.82)
-    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlue+1, 1,  0)
-    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlue+1, 1, -1)
-    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlack , 1,  1)
+    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlack, 1,  0)
+    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlack, 1, -1)
+    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlue+3 , 1,  1)
+
+
     if not opts.onlyTTbar: 
         dy_histo = scaleZ(dy_shapes['da_%s_binsPlot'%(eta)], eta, nbs)
+        dy_histo.SetLineColor(r.kGreen+3)
+	dy_histo.SetFillColor(r.kGreen+3)
+	dy_histo.SetFillStyle(3002)
         dy_graph = r.TGraphErrors(dy_histo)
         print 'adding dy histo to the canvas'
         dy_histo.SetLineStyle(2)
         dy_histo.SetLineColor(r.kGreen+2)
-        plot.addHisto(dy_histo, 'HIST,SAME', 'Drell-Yan ', 'L', r.kGreen+2, 1,  2)
+        plot.addHisto(dy_histo, 'HIST,SAME', 'Drell-Yan ', 'L', r.kGreen+3, 1,  2)
         print 'adding dy graph to the canvas'
-        dy_graph.SetFillColorAlpha(r.kGreen+2, 0.2)
+        dy_graph.SetFillColorAlpha(r.kGreen+3, 0.2)
         dy_graph.SetFillStyle(3001)
-        plot.addGraph(dy_graph, '2,same   ', 'Drell-Yan ', 'L', r.kGreen+2, 1, -1)
+        plot.addGraph(dy_graph, '2,same   ', 'Drell-Yan ', 'L', r.kGreen+3, 1, -1)
     plot.addLatex(0.7, 0.53, eta  , 62)
     plot.addLatex(0.7, 0.45, nbstr, 62)
     plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
