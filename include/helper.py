@@ -188,3 +188,62 @@ class ingredients:
                 print thing.printValues()
                 #sys.exit('exiting...')
 
+
+
+##################################################################################
+### These functions were created by Aachen in order to define the proper style ###
+##################################################################################
+def createMyColors():
+    iIndex = 2000
+
+    containerMyColors = []
+    for color in defineMyColors.keys():
+       	tempColor = r.TColor(iIndex,
+       	float(defineMyColors[color][0]) / 255, float(defineMyColors[color][1]) / 255, float(defineMyColors[color][2]) / 255)
+       	containerMyColors.append(tempColor)
+
+       	myColors.update({ color: iIndex })
+       	iIndex += 1
+
+    return containerMyColors
+
+
+defineMyColors = {
+        'Black' : (0, 0, 0),
+        'White' : (255, 255, 255),
+        'Red' : (255, 0, 0),
+        'DarkRed' : (128, 0, 0),
+        'Green' : (0, 255, 0),
+        'Blue' : (0, 0, 255),
+        'Yellow' : (255, 255, 0),
+        'Orange' : (255, 128, 0),
+        'DarkOrange' : (255, 64, 0),
+        'Magenta' : (255, 0, 255),
+        'KDEBlue' : (64, 137, 210),
+        'Grey' : (128, 128, 128),
+        'DarkGreen' : (0, 128, 0),
+        'DarkSlateBlue' : (72, 61, 139),
+        'Brown' : (70, 35, 10),
+
+        'MyBlue' : (36, 72, 206),
+        'MyDarkBlue' : (18, 36, 103),
+        'MyGreen' : (70, 164, 60),
+        'AnnBlueTitle' : (29, 47, 126),
+        'AnnBlue' : (55, 100, 255),
+#        'W11AnnBlue' : (0, 68, 204),
+#        'W11AnnBlue' : (63, 122, 240),
+    }
+
+
+myColors = {
+            'W11ttbar':  855,
+            'W11singlet':  854,
+            'W11ZLightJets':  401,
+            'W11ZbJets':  400,
+            'W11WJets':  842,
+            'W11Diboson':  920,
+            'W11AnnBlue': 856,
+            'W11Rare':  630,
+            }
+
+
