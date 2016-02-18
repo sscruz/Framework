@@ -83,3 +83,15 @@ fwd_1btag_2jet  0.4 0.2
 fwd_1btag_3jet  4.5 1.1
 fwd_2btag_2jet  0.1 0.1
 fwd_2btag_3jet  1.0 0.4
+DYcen_incbtag 45.3 0
+DYcen_0btag 32.7 0
+DYcen_1btag  12.6 0
+DYfwd_incbtag 18.3 0
+DYfwd_0btag 13.2 0
+DYfwd_1btag  5.1 00
+OTHERcen_incbtag 16.7 0
+OTHERcen_0btag 13.7 0
+OTHERcen_1btag  3 0
+OTHERfwd_incbtag 5.8 0
+OTHERfwd_0btag 4.9 0
+OTHERfwd_1btag  0.9 0

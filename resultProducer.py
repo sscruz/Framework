@@ -14,7 +14,7 @@
 #####################################################################
 
 import ROOT as r
-from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
+from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle
 import math, sys, optparse, copy, re, array
 
 
@@ -41,6 +41,37 @@ class onZResult:
         f.close()
 
     def makeFinalResult(self):
+        self.DYcen_incb   = self.DYcen_incbtag
+        self.DYfwd_incb   = self.DYfwd_incbtag
+        self.DYcen_incb_e = self.DYcen_incbtag_err
+        self.DYfwd_incb_e = self.DYfwd_incbtag_err
+
+        self.DYcen_0b   = self.DYcen_0btag
+        self.DYfwd_0b   = self.DYfwd_0btag
+        self.DYcen_0b_e = self.DYcen_0btag_err
+        self.DYfwd_0b_e = self.DYfwd_0btag_err
+
+	self.DYcen_1b   = self.DYcen_1btag
+        self.DYfwd_1b   = self.DYfwd_1btag
+        self.DYcen_1b_e = self.DYcen_1btag_err
+        self.DYfwd_1b_e = self.DYfwd_1btag_err
+
+
+	self.OTHERcen_incb   = self.OTHERcen_incbtag
+        self.OTHERfwd_incb   = self.OTHERfwd_incbtag
+        self.OTHERcen_incb_e = self.OTHERcen_incbtag_err
+        self.OTHERfwd_incb_e = self.OTHERfwd_incbtag_err
+
+        self.OTHERcen_0b   = self.OTHERcen_0btag
+        self.OTHERfwd_0b   = self.OTHERfwd_0btag
+        self.OTHERcen_0b_e = self.OTHERcen_0btag_err
+        self.OTHERfwd_0b_e = self.OTHERfwd_0btag_err
+
+	self.OTHERcen_1b   = self.OTHERcen_1btag
+        self.OTHERfwd_1b   = self.OTHERfwd_1btag
+        self.OTHERcen_1b_e = self.OTHERcen_1btag_err
+        self.OTHERfwd_1b_e = self.OTHERfwd_1btag_err
+
         self.cen_incb   = self.cen_incbtag_2jet + self.cen_incbtag_3jet
         self.fwd_incb   = self.fwd_incbtag_2jet + self.fwd_incbtag_3jet
         self.cen_incb_e = math.sqrt(self.cen_incbtag_2jet_err**2 + self.cen_incbtag_3jet_err**2)
@@ -60,6 +91,9 @@ class onZResult:
         self.fwd_2b   = self.fwd_2btag_2jet + self.fwd_2btag_3jet
         self.cen_2b_e = math.sqrt(self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
         self.fwd_2b_e = math.sqrt(self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
+
+
+       
 
 
 def makeResultsTable(binnedSR, dyShapes, dataMC, eta, nbs):
@@ -328,7 +362,7 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    lumi = 2.2
+    lumi = 2.3
     if lumi == 1.3:
         daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
                       'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
