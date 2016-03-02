@@ -37,7 +37,7 @@ Float_t HLT_pfht200, HLT_pfht250, HLT_pfht300, HLT_pfht400, HLT_pfht475, HLT_pfh
 
 Int_t nBJetLoose35_Edge, nBJetMedium35_Edge; 
 
-Float_t met_pt, met_phi, lepsJZB_Edge, lepsJZB_raw_Edge, lepsJZB_recoil_Edge, Lep1_phi_Edge, Lep2_phi_Edge, Lep1_eta_Edge, Lep2_eta_Edge, Lep1_pt_Edge, Lep2_pt_Edge, lepsDR_Edge, lepsMll_Edge;
+Float_t met_pt, met_phi, lepsZPt_Edge, lepsJZB_Edge, lepsJZB_raw_Edge, lepsJZB_recoil_Edge, Lep1_phi_Edge, Lep2_phi_Edge, Lep1_eta_Edge, Lep2_eta_Edge, Lep1_pt_Edge, Lep2_pt_Edge, lepsDR_Edge, lepsMll_Edge;
     
 Int_t nTrueInt, nVert;
 
@@ -163,6 +163,7 @@ void setSourceBranches() {
     tree->SetBranchAddress("met_phi",&met_phi);
     tree->SetBranchAddress("nBJetLoose35_Edge",&nBJetLoose35_Edge);
     tree->SetBranchAddress("nBJetMedium35_Edge",&nBJetMedium35_Edge);
+    tree->SetBranchAddress("lepsZPt_Edge",&lepsZPt_Edge);
     tree->SetBranchAddress("lepsJZB_Edge",&lepsJZB_Edge);
     tree->SetBranchAddress("lepsJZB_raw_Edge",&lepsJZB_raw_Edge);
     tree->SetBranchAddress("lepsJZB_recoil_Edge",&lepsJZB_recoil_Edge);
@@ -223,6 +224,7 @@ void setOutputBranches() {
     SkimTree->Branch("met_phi",&met_phi);
     SkimFriendTree->Branch("nBJetLoose35_Edge",&nBJetLoose35_Edge);
     SkimFriendTree->Branch("nBJetMedium35_Edge",&nBJetMedium35_Edge);
+    SkimFriendTree->Branch("lepsZPt_Edge",&lepsZPt_Edge);
     SkimFriendTree->Branch("lepsJZB_Edge",&lepsJZB_Edge);
     SkimFriendTree->Branch("lepsJZB_raw_Edge",&lepsJZB_raw_Edge);
     SkimFriendTree->Branch("lepsJZB_recoil_Edge",&lepsJZB_recoil_Edge);
