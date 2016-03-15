@@ -20,27 +20,27 @@ class vParams:
         if   self.name == 'met':
             self.xmin = 150; self.xmax =1000; self.nbins = 50; self.ymax = 0.35; self.title = 'ME_{T} (GeV)'       ; self.vtree = 'met_pt'        ; 
         elif self.name == 'ldr':
-            self.xmin = 0.3; self.xmax = 5.8; self.nbins = 50; self.ymax = 0.20; self.title = '#Delta R_{ll}'      ; self.vtree = 't.lepsDR_Edge' ; 
+            self.xmin = 0.3; self.xmax = 5.8; self.nbins = 50; self.ymax = 0.08; self.title = '#Delta R_{ll}'      ; self.vtree = 't.lepsDR_Edge' ; 
         elif self.name == 'zpt':
             self.xmin = 0.0; self.xmax = 1000; self.nbins = 50; self.ymax = 0.24; self.title = 'p_{T}^{ll} (GeV)'   ; self.vtree = 't.lepsZPt_Edge'; 
         elif self.name == 'mlb':
-            self.xmin = 0.0; self.xmax = 3000; self.nbins = 50; self.ymax = 0.20; self.title = '#Sigma m_{lb} (Gev)'; self.vtree = 't.sum_mlb_Edge'; 
+            self.xmin = 0.0; self.xmax = 3000; self.nbins = 50; self.ymax = 0.30; self.title = '#Sigma m_{lb} (Gev)'; self.vtree = 't.sum_mlb_Edge'; 
         elif self.name == 'a3d':
-            self.xmin = 0.0; self.xmax = 3.15; self.nbins = 50; self.ymax = 0.20; self.title = '#Delta 3D'; self.vtree = 't.d3D_Edge'; 
+            self.xmin = 0.0; self.xmax = 3.15; self.nbins = 50; self.ymax = 0.14; self.title = '#Delta 3D'; self.vtree = 't.d3D_Edge'; 
         elif self.name == 'nll':
-            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.20; self.title = 'NLL'                ; 
-            self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_ldr_data_Edge*lh_ana_zpt_data_Edge)'; 
+            self.xmin = 10; self.xmax =  30; self.nbins = 50; self.ymax = 0.20; self.title = 'NLL'                ; 
+            self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_a3d_data_Edge*lh_ana_zpt_data_Edge)'; 
         elif self.name == 'nll_nomet':
-            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
+            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL-no MET' ; 
             self.vtree = '-1.*TMath::Log(lh_ana_mlb_data_Edge*lh_ana_ldr_data_Edge*lh_ana_zpt_data_Edge)'; 
         elif self.name == 'nll_nomlb':
-            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
+            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL-no #Sigma m_{lb}' ; 
             self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_ldr_data_Edge*lh_ana_zpt_data_Edge)'; 
         elif self.name == 'nll_noldr':
-            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
+            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL-no #Delta 3D' ; 
             self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_zpt_data_Edge)'; 
         elif self.name == 'nll_nozpt':
-            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
+            self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL-no p_{T}^{ll}'   ; 
             self.vtree = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_ldr_data_Edge)';
         elif self.name == 'nll_a3d':
             self.xmin = 15; self.xmax =  35; self.nbins = 50; self.ymax = 0.15; self.title = 'NLL'                ; 
@@ -90,7 +90,7 @@ class nllObject:
         self.hasNLLPDFs = False; self.treesLoaded = False; self.treeHistsLoaded = False
         self.loadTrees()
         self.mpoints = []
-        self.xmasses = [900, 750, 500, 400]
+        self.xmasses = [900, 800, 500, 400]
         self.ymasses = [200, 250, 400, 375]
         self.setMassPoints()
 
@@ -103,7 +103,7 @@ class nllObject:
         
     def loadTrees(self):
         ttDatasets = ['TTLep_pow']
-        siDatasets = ['SMS_T6bbllslepton_mSbottom600To775_mLSP150To725',
+        siDatasets = [#'SMS_T6bbllslepton_mSbottom600To775_mLSP150To725',
                       'SMS_T6bbllslepton_mSbottom400To575_mLSP150To550',
                       'SMS_T6bbllslepton_mSbottom800To950_mLSP150To900']
                      
@@ -142,8 +142,8 @@ class nllObject:
                 c_sr_of    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonOF()]+massCut)
                 v = vParams(var)
                 xmax = v.xmax-(v.xmax-v.xmin)/v.nbins if var not in ['nll', 'ldr'] else v.xmax
-                h_tt_sr_sf  = self.treeTT.getTH1F(1., 'tt_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= False); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
-                h_tt_sr_of  = self.treeTT.getTH1F(1., 'tt_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin= False); h_tt_sr_of.Scale(1./h_tt_sr_of.Integral())
+                h_tt_sr_sf  = self.treeTT.getTH1F(1., 'tt_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= True); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
+                h_tt_sr_of  = self.treeTT.getTH1F(1., 'tt_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin= True); h_tt_sr_of.Scale(1./h_tt_sr_of.Integral())
                 h_tt_sr_sf.SetMarkerColor(r.kAzure-4); h_tt_sr_of.SetMarkerColor(r.kAzure+4); h_tt_sr_sf.SetMarkerSize(0.5); h_tt_sr_of.SetMarkerSize(0.5);
                 print 'reading ttbar'
                 if massCut == []:
@@ -164,7 +164,7 @@ class nllObject:
                     
             ## the data
                 print 'reading data'
-                h_da_sr_of  = self.treeDA.getTH1F(1., 'da_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin= False); h_da_sr_of.Scale(1./h_da_sr_of.Integral())
+                h_da_sr_of  = self.treeDA.getTH1F(1., 'da_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin= True); h_da_sr_of.Scale(1./h_da_sr_of.Integral())
                 h_da_sr_of.SetMarkerColor(r.kBlack); h_da_sr_of.SetMarkerSize(0.5); h_da_sr_of.SetMarkerStyle(34)
                 if massCut == []:
                     self.da_pdfs.append(h_da_sr_of); self.da_cums.append(h_da_sr_of.GetCumulative())
@@ -179,7 +179,7 @@ class nllObject:
             ## the DY
                 print 'reading dy'
                 if self.doDY:
-                    h_dy_sr_sf  = self.treeDY.getTH1F(1., 'dy_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= False); h_dy_sr_sf.Scale(1./h_dy_sr_sf.Integral())
+                    h_dy_sr_sf  = self.treeDY.getTH1F(1., 'dy_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= True); h_dy_sr_sf.Scale(1./h_dy_sr_sf.Integral())
                     h_dy_sr_sf.SetMarkerColor(r.kGreen-4); h_dy_sr_sf.SetMarkerSize(0.5)
                     if massCut == []:
                         self.dy_pdfs.append(h_dy_sr_sf); self.dy_cums.append(h_dy_sr_sf.GetCumulative())
@@ -197,7 +197,7 @@ class nllObject:
                         c_sr_sf    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonNoTriggerSF()] + massCut)
                         c_sr_of    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonNoTriggerOF()] + massCut)
                         c_sr_sf_si = cuts.AddList([c_sr_sf.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0'), 'GenSusyMScan1 == %.0f && GenSusyMScan2 == %.0f'%(mp[0], mp[1])])
-                        h_si_sr_sf = self.treeSI.getTH1F(1., 'si_%s_sr_sf_m%dv%d' %(var,mp[0],mp[1]), v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf_si, '', v.title, ofBin = False); h_si_sr_sf.Scale(1./h_si_sr_sf.Integral())
+                        h_si_sr_sf = self.treeSI.getTH1F(1., 'si_%s_sr_sf_m%dv%d' %(var,mp[0],mp[1]), v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf_si, '', v.title, ofBin = True); h_si_sr_sf.Scale(1./h_si_sr_sf.Integral())
                         h_si_sr_sf.SetMarkerColor(3+i); h_si_sr_sf.SetMarkerStyle(20+i); h_si_sr_sf.SetMarkerSize(0.5);
                         if massCut == []:
                             self.si_pdfs.append(h_si_sr_sf); self.si_cums.append(h_si_sr_sf.GetCumulative())
@@ -213,17 +213,12 @@ class nllObject:
 
     def getHisto(self, typ, var, data, normalize = True):
         h_name = ('em_data' if data else 'tt_mc' )+'_%s_histo_%s_ds_cuts_of_sr_met150'%('pdf' if typ == 'ker' else typ,var)
-        print 'getting histo', h_name
         if typ == 'ker':
             histo = copy.deepcopy(self.kerfile.Get(h_name));
             print histo.GetNbinsX()
         else:
             v = self.w.var(vParams(var).vtree if var == 'met' else vParams(var).vtree.split('.')[1])
             histo = copy.deepcopy(self.w.pdf('%s_analyticalPDF_%s'%(var,'DA' if data else 'MC')).createHistogram(h_name, v, r.RooFit.Binning(1000) ))
-            c = TCanvas()
-            histo.Rebin(20)
-            histo.Draw()
-            c.SaveAs(h_name + '.pdf')
             #histo = copy.deepcopy(w.pdf('%s_analyticalPDF_%s'%(var,'DA' if data else 'MC')).createHistogram(h_name, v, r.RooFit.Binning(50) ))
 #        histo.Scale(1./histo.Integral())
         for i in range(1,histo.GetNbinsX()+1): 
@@ -266,7 +261,6 @@ class nllObject:
                 name_ = v.name
 
             name = v.name
-            print 'setting attributes', 'pdf_'+v.name+'_%s_da'%t, 'pdf_'+v.name+'_%s_mc'%t
             pdf_hist_da = self.getHisto(t, name_, 1); setattr(self, 'pdf_'+v.name+'_%s_da'%t, pdf_hist_da)
             pdf_hist_mc = self.getHisto(t, name_, 0); setattr(self, 'pdf_'+v.name+'_%s_mc'%t, pdf_hist_mc)
             cum_hist_da = pdf_hist_da.GetCumulative(); setattr(self, 'cum_'+v.name+'_%s_da'%t, cum_hist_da)
@@ -291,6 +285,8 @@ class nllObject:
             pdf_nll_mc = self.fillLikelihood(t, 0, n, 'pdf_nll_%s_mc'%t); setattr(self, 'pdf_nll_%s_mc'%t, pdf_nll_mc)
             pdf_nll_da.SetLineColor(r.kBlack); pdf_nll_da.SetLineStyle(1 if t == 'fit' else 2);
             pdf_nll_mc.SetLineColor(r.kRed  ); pdf_nll_mc.SetLineStyle(1 if t == 'fit' else 2);
+            if pdf_nll_da.GetNbinsX() > 100: pdf_nll_da.Rebin(20); pdf_nll_da.Scale(1/cum_nll_da.Integral())
+            if pdf_nll_mc.GetNbinsX() > 100: pdf_nll_mc.Rebin(20); pdf_nll_mc.Scale(1/cum_nll_mc.Integral())
             cum_nll_da = pdf_nll_da.GetCumulative(); setattr(self, 'cum_nll_%s_da'%t, cum_nll_da)
             cum_nll_mc = pdf_nll_mc.GetCumulative(); setattr(self, 'cum_nll_%s_mc'%t, cum_nll_mc)
             self.all_pdfs.append(pdf_nll_da); self.all_pdfs.append(pdf_nll_mc);
@@ -306,12 +302,13 @@ class nllObject:
     def fillLikelihood(self, typ, data, entries, name):
         print 'filling likelihoods'
         v = vParams('nll')
-        histo    = r.TH1F(name, name,   50, v.xmin, v.xmax)
+        histo  = self.treeTT.getTH1F(1., name, v.vtree, v.nbins, v.xmin, v.xmax , '0'   , '', v.title, ofBin= True)
+        histo.Reset()
         datasets = []
         observs  = []
         pdfs     = []
         varnames = []
-        for var in self.ivars:
+        for var in ['a3d', 'met', 'mlb', 'zpt']:
             pdf = self.w.pdf('%s_analyticalPDF_%s'%(var,'DA' if data else 'MC'))
             v   = self.w.var(vParams(var).vtree if var == 'met' else vParams(var).vtree.split('.')[1])
             pdf.plotOn( v.frame() )
@@ -463,11 +460,12 @@ class nllObject:
         if not self.hasNLLPDFs: self.makeNLLPDF() # call this only once!!!!
         if plotMC and not self.treeHistsLoaded: self.loadTreeHists()
         print 'Len of all_pdfs',len(self.all_pdfs)
-        for var in self.ivars+['nll','a3d']:
+#        for var in self.ivars+['nll','a3d']:
+        for var in ['nll']:
             v = vParams(var)
             print 'I am at variable', v.name
-            plot     = Canvas.Canvas('kernelAnalyliticWithData/pdfs_%s%s'%(v.name,'_withMC' if plotMC else '')       , 'png,pdf', 0.65, 0.40, 0.85, 0.72)
-            plotCum  = Canvas.Canvas('kernelAnalyliticWithData/cumulatives_%s%s'%(v.name,'_withMC' if plotMC else ''), 'png,pdf', 0.65, 0.40, 0.85, 0.72)
+            plot     = Canvas.Canvas('kernelAnalyliticWithData%s/pdfs_%s%s'%('_withSig' if self.doSig else '',v.name,'_withMC' if plotMC else '')       , 'png,pdf', 0.65, 0.40, 0.85, 0.72)
+            plotCum  = Canvas.Canvas('kernelAnalyliticWithData%s/cumulatives_%s%s'%('_withSig' if self.doSig else '',v.name,'_withMC' if plotMC else ''), 'png,pdf', 0.65, 0.40, 0.85, 0.72)
 
             ind=0; histos=[]
 
@@ -480,15 +478,17 @@ class nllObject:
                 else:
                     pdf = _pdf
                 cum = pdf.GetCumulative()
-                print 'number of bins of the cumulative distribution', cum.GetNbinsX()
+                #print 'number of bins of the cumulative distribution', cum.GetNbinsX()
                 if not '_'+v.name+'_' in pdf.GetName(): continue
                 pdf.GetXaxis().SetTitle(v.title); cum.GetXaxis().SetTitle(v.title)
                 pdf.GetYaxis().SetRangeUser(0., v.ymax)
                 cum.GetYaxis().SetRangeUser(0., 1.05  )
+                if var == 'nll':
+                    print pdf.GetXaxis().GetXmax(), pdf.GetYaxis().GetXmin(), pdf.GetNbinsX()
                 plot   .addHisto(pdf, 'hist same l', self.getLabel(pdf), 'L', pdf.GetLineColor(), 1, ind)
                 plotCum.addHisto(cum, 'hist same l', self.getLabel(cum), 'L', cum.GetLineColor(), 1, ind)
-                print '%s cum from pdf histo range: min %.1f max %.1f nbins %.1f'%(v.name, cum.GetXaxis().GetXmin(), cum.GetXaxis().GetXmax(), cum.GetNbinsX())
-                print '%s pdf from pdf histo range: min %.1f max %.1f nbins %.1f'%(v.name, pdf.GetXaxis().GetXmin(), pdf.GetXaxis().GetXmax(), pdf.GetNbinsX())
+                #print '%s cum from pdf histo range: min %.1f max %.1f nbins %.1f'%(v.name, cum.GetXaxis().GetXmin(), cum.GetXaxis().GetXmax(), cum.GetNbinsX())
+                #print '%s pdf from pdf histo range: min %.1f max %.1f nbins %.1f'%(v.name, pdf.GetXaxis().GetXmin(), pdf.GetXaxis().GetXmax(), pdf.GetNbinsX())
                 ind+=1
 #            pdf_ratios = [getattr(self, 'pdf_'+v.name+'_fit_mc'), getattr(self, 'pdf_'+v.name+'_ker_da'), getattr(self, 'pdf_'+v.name+'_ker_mc')]
 #            cum_ratios = [getattr(self, 'cum_'+v.name+'_fit_mc'), getattr(self, 'cum_'+v.name+'_ker_da'), getattr(self, 'cum_'+v.name+'_ker_mc')]
@@ -498,8 +498,10 @@ class nllObject:
                 for i,pdf in enumerate(self.tt_pdfs+( [] if not self.doSig else self.si_pdfs) +([] if not self.doDY else self.dy_pdfs)):
                     cum = pdf.GetCumulative(); cum.SetLineColor(pdf.GetMarkerColor()); cum.SetMarkerColor(pdf.GetMarkerColor())
                     if not '_'+v.name+'_' in pdf.GetName(): continue
-                    print 'number of bins of the cumulative distribution from tree', cum.GetNbinsX()
-                    print '%s cum from tree histo range: min %.1f max %.1f nbins %.1f'%(v.name, cum.GetXaxis().GetXmin(), cum.GetXaxis().GetXmax(), cum.GetNbinsX())
+                    #print 'number of bins of the cumulative distribution from tree', cum.GetNbinsX()
+                    #print '%s cum from tree histo range: min %.1f max %.1f nbins %.1f'%(v.name, cum.GetXaxis().GetXmin(), cum.GetXaxis().GetXmax(), cum.GetNbinsX())
+                    if var == 'nll':
+                        print pdf.GetXaxis().GetXmax(), pdf.GetYaxis().GetXmin(), pdf.GetNbinsX()
                     plot   .addHisto(pdf, 'pe same', self.getLabel(pdf), 'PL', pdf.GetMarkerColor(), 1, ind)
                     plotCum.addHisto(cum, 'pe same', self.getLabel(cum), 'PL', cum.GetMarkerColor(), 1, ind)
                     ind+=1
@@ -509,14 +511,28 @@ class nllObject:
                 for i,pdf in enumerate(self.da_pdfs):
                     cum = pdf.GetCumulative(); cum.SetLineColor(pdf.GetMarkerColor()); cum.SetMarkerColor(pdf.GetMarkerColor())
                     if not '_'+v.name+'_' in pdf.GetName(): continue
-                    print 'plotting', pdf.GetName()
+                    #print 'plotting', pdf.GetName()
+                    if var == 'nll':
+                        print pdf.GetXaxis().GetXmax(), pdf.GetYaxis().GetXmin(), pdf.GetNbinsX()
+
                     plot   .addHisto(pdf, 'pe same', 'Data', 'P', pdf.GetMarkerColor(), 1, ind)
                     plotCum.addHisto(cum, 'pe same', 'Data', 'P', cum.GetMarkerColor(), 1, ind)
                     if 'da_' in pdf.GetName():
                         pdf_ratios.append(pdf); cum_ratios.append(cum)
                     ind+=1
+            for h in cum_ratios:
+                h.Scale( 1 / h.GetBinContent( h.GetNbinsX() ))
+            getattr(self, 'cum_'+v.name+'_fit_da').Scale(1 / getattr(self, 'cum_'+v.name+'_fit_da').GetBinContent( getattr(self, 'cum_'+v.name+'_fit_da').GetNbinsX()))
+                     
             plot   .saveRatio(1, 0, 0 , 1., getattr(self, 'pdf_'+v.name+'_fit_da'), pdf_ratios, 0.5, 1.5)
             plotCum.saveRatio(1, 0, 0 , 1., getattr(self, 'cum_'+v.name+'_fit_da'), cum_ratios, 0.5, 1.5)
+            
+            f = TFile(var+'.root','recreate')
+            getattr(self, 'cum_'+v.name+'_fit_da').Write()
+            for h in cum_ratios:
+                h.Write()
+            f.Close()
+            
 
     def getROC(self):
         color = [r.kRed,r.kBlue,r.kGreen,r.kMagenta, r.kBlack]
@@ -525,20 +541,21 @@ class nllObject:
         for i,mp in enumerate(self.mpoints):
             c_sr_sf_si = cuts.AddList([c_sr_sf.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0'), 'GenSusyMScan1 == %.0f && GenSusyMScan2 == %.0f'%(mp[0], mp[1])])
             ind = 0
-            plot     = Canvas.Canvas('rocCurves/roc_%d_%d'%(mp[0],mp[1]), 'png,pdf', 0.25, 0.40, 0.45, 0.72)
+            plot     = Canvas.Canvas('rocCurves/roc_%d_%d'%(mp[0],mp[1]), 'png,pdf', 0.2, 0.25, 0.4, 0.48)
             yline90 = 0.
             xline90 = 0.
-            for var in ['nll', 'nll_noldr', 'nll_a3d']:
+#            for var in ['nll', 'nll_noldr', 'nll_a3d']:
+            for var in ['nll_a3d', 'nll_noldr', 'nll_nozpt','nll_nomlb','nll_nomet']:
                 v = vParams(var)
                 print 'I am at variable', 
-                h_tt_sr_sf  = self.treeTT.getTH1F(1., 'tt_%s' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= False); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
+                h_tt_sr_sf  = self.treeTT.getTH1F(1., 'tt_%s' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin= True); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
                 h_tt_cum    = h_tt_sr_sf.GetCumulative()                     
-                h_si_sr_sf  = self.treeSI.getTH1F(1., 'si_%s_sr_sf_m%dv%d' %(var,mp[0],mp[1]), v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf_si, '', v.title, ofBin = False); h_si_sr_sf.Scale(1./h_si_sr_sf.Integral())
+                h_si_sr_sf  = self.treeSI.getTH1F(1., 'si_%s_sr_sf_m%dv%d' %(var,mp[0],mp[1]), v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf_si, '', v.title, ofBin = True); h_si_sr_sf.Scale(1./h_si_sr_sf.Integral())
                 h_si_cum    = h_si_sr_sf.GetCumulative()
                 gr          = TGraph(v.nbins)
                 for bin in range(v.nbins):
                     gr.SetPoint(bin, h_tt_cum.GetBinContent(bin+1),1-h_si_cum.GetBinContent(bin+1))
-                    if var == 'nll':
+                    if var == 'nll_a3d':
                         if math.pow((xline90-0.9),2) > math.pow(h_tt_cum.GetBinContent(bin+1)-0.9,2):
                             yline90 = 1-h_si_cum.GetBinContent(bin+1)
                             xline90 = h_tt_cum.GetBinContent(bin+1)
@@ -546,14 +563,15 @@ class nllObject:
                 gr.GetXaxis().SetTitle('t#bar{t} rejection')
                 gr.GetYaxis().SetTitle('Signal efficiency')
                 if ind == 0:
-                    plot.addGraph(gr,"al",var,"l", color[ind],1,ind)
+                    plot.addGraph(gr,"al",v.title,"l", color[ind],1,ind)
                 else:
-                    plot.addGraph(gr,"lsame",var,"l", color[ind],1,ind)
+                    plot.addGraph(gr,"lsame",v.title,"l", color[ind],1,ind)
                 ind = ind+1
-            plot.addLine(0.9,0.,0.9,1.,r.kRed,2)
-            plot.addLine(0.,yline90,1.,yline90,r.kRed,2)
-            plot.addLatex(0.2,0.25,'m_{#tilde{b}} = %d, m_{LSP} = %d'%(mp[0],mp[1]))
+            plot.addLine(0.9,0.,0.9,yline90,r.kRed,2)
+            plot.addLine(0.,yline90,xline90,yline90,r.kRed,2)
+            plot.addLatex(0.2,0.2,'m_{#tilde{b}} = %d GeV, m_{LSP} = %d GeV'%(mp[0],mp[1]))
             plot.save(1,False,0,2.1)
+
     def compareOFSF(self):
         c_sr_sf    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonNoTriggerSF()])
         c_sr_of    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonNoTriggerOF()])
@@ -642,8 +660,8 @@ if __name__ == "__main__":
         c_sr_sf    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonSF()])
         c_sr_of    = cuts.AddList([cuts.METJetsSignalRegionMET150 , cuts.GoodLeptonOF()])
         var = 'ldr'; v = vParams(var)
-        h_tt_sr_sf  = treeTT.getTH1F(1., 'tt_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin = False); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
-        h_tt_sr_of  = treeTT.getTH1F(1., 'tt_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin = False); h_tt_sr_of.Scale(1./h_tt_sr_of.Integral())
+        h_tt_sr_sf  = treeTT.getTH1F(1., 'tt_%s_sr_sf' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_sf   , '', v.title, ofBin = True); h_tt_sr_sf.Scale(1./h_tt_sr_sf.Integral())
+        h_tt_sr_of  = treeTT.getTH1F(1., 'tt_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , c_sr_of   , '', v.title, ofBin = True); h_tt_sr_of.Scale(1./h_tt_sr_of.Integral())
         h_da_sr_of  = treeDA.getTH1F(1., 'da_%s_sr_of' %var, v.vtree, v.nbins, v.xmin, v.xmax , '('+c_sr_of +' met_pt < 150)'  , '', v.title, ofBin = False); h_da_sr_of.Scale(1./h_da_sr_of.Integral())
 
         pdfnll.SetLineColor(r.kRed)
