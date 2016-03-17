@@ -251,3 +251,4 @@ if __name__ == "__main__":
 
     ## save the scan object in a pickle file to save time the second time around.
     pickle.dump(scan, open('datacards/{name}/{name}.pkl'.format(name=scan.name),'w') )
+    print 'marc is stupid'
