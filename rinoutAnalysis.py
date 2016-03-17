@@ -57,13 +57,14 @@ def make_rinout(histo_in_SF, histo_in_OF, histo_out_SF, histo_out_OF):
     return ratio
 
 
-def make_rinout_histo(histo_SF, histo_OF):
+def make_rinout_histo(histo_SF, histo_OF, scale):
 
     finalHisto = copy.deepcopy(histo_SF)
     print ' i have %.3f events in the SF sample' %(histo_SF.Integral())
     print ' i have %.3f events in the OF sample' %(histo_OF.Integral())
-    finalHisto.Add(histo_OF, -1.0)
-    print ' after subtraction i have %.3f events in the SF sample' %(finalHisto.Integral())
+    finalHisto.Add(histo_OF, -scale)
+    if dataMC == 'MC':
+        print ' after subtraction i have %.3f events in the SF sample' %(finalHisto.Integral())
 
     ratio = finalHisto.Clone("rinout_" + finalHisto.GetName())
 
@@ -83,6 +84,7 @@ if __name__ == "__main__":
 
     parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
     parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 
 
@@ -96,13 +98,17 @@ if __name__ == "__main__":
         ## daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
         ##               'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
         ##               'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
-        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                      'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
+                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
+                      'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
         treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
         treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
         #tree = treeMC
         print 'Trees successfully loaded...'
+
+        ingMC = helper.ingredients(opts.ingredientFile, 'MC'  )
+        ingDA = helper.ingredients(opts.ingredientFile, 'DATA')
+
 
         gROOT.ProcessLine('.L include/tdrstyle.C')
         gROOT.SetBatch(1)
@@ -173,7 +179,12 @@ if __name__ == "__main__":
                         meas_cuts_OF = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + rinout_meas.cuts)
                         rinout_meas.mll_SF   = tree.getTH1F(lumi, "mll_SF" +eta+rinout_meas.name+dataMC , "t.lepsMll_Edge", rinout_meas.bins[rinout_meas.rvars.index('mll')], 1, 1, meas_cuts_SF , "", "m_{ll} (GeV)")
                         rinout_meas.mll_OF   = tree.getTH1F(lumi, "mll_OF" +eta+rinout_meas.name+dataMC , "t.lepsMll_Edge", rinout_meas.bins[rinout_meas.rvars.index('mll')], 1, 1, meas_cuts_OF , "", "m_{ll} (GeV)")
-                        rinout_meas.mll.setHisto(make_rinout_histo(rinout_meas.mll_SF, rinout_meas.mll_OF), dataMC, eta)
+                        scale = ingDA.rsfof_final_cen_val  if doetas == 'central' else ingDA.rsfof_final_fwd_val
+                        s_err = ingDA.rsfof_final_cen_err  if doetas == 'central' else ingDA.rsfof_final_fwd_err
+                        if dataMC == 'MC':
+                            scale = ingMC.rsfof_final_cen_val  if doetas == 'central' else ingMC.rsfof_final_fwd_val
+                            s_err = ingMC.rsfof_final_cen_err  if doetas == 'central' else ingMC.rsfof_final_fwd_err
+                        rinout_meas.mll.setHisto(make_rinout_histo(rinout_meas.mll_SF, rinout_meas.mll_OF, scale), dataMC, eta)
 
 
         

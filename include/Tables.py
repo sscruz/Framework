@@ -1,7 +1,22 @@
+import ROOT as r
+from ROOT import TCanvas, TH1F, TPad, THStack, TGraphErrors, TLatex, TLine
 import math
+import include.helper     as helper
+from include.helper import createMyColors
+from include.helper import myColors
+
+
 
 def makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ):
     ret = []
+    binsForPlotObserved_central = []
+    binsForPlotTotal_central = []
+    binsForPlotDY_central = []
+    binsForPlotOTHER_central = []
+    binsForPlotObserved_forward = []
+    binsForPlotTotal_forward = []
+    binsForPlotDY_forward = []
+    binsForPlotOTHER_forward = []
     for eta in ['central', 'forward']:
         _eta = 'cen' if eta == 'central' else 'fwd'
         obshistoincb     = binnedSRincb.mll     .getHisto('DATA', eta)
@@ -12,6 +27,7 @@ def makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ):
         predhisto1b      = binnedSR1b.mll_pred  .getHisto('DATA', eta)
         #tmp_histo_dy0b   = dyShapes['%db_%s_%s_binned'%(0, 'mc', eta)]
         #tmp_histo_dy1b   = dyShapes['%db_%s_%s_binned'%(1, 'mc', eta)]
+        
         for i in range(1,obshisto0b.GetNbinsX()+1):
             if i == obshisto0b.GetNbinsX(): continue
             mr = 'lm' if i == 1 else 'bz' if i == 2 else 'oz' if i == 3 else 'az' if i == 4 else 'hm'
@@ -23,6 +39,21 @@ def makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ):
             onz_incb_e = math.sqrt( (getattr(onZ, '%s_incb'%_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, '%s_incb_e'%_eta))**2 )
             onz_0b_e   = math.sqrt( (getattr(onZ, '%s_0b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, '%s_0b_e'  %_eta))**2 )
             onz_1b_e   = math.sqrt( (getattr(onZ, '%s_1b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, '%s_1b_e'  %_eta))**2 )
+
+            DYonz_incb   = tmp_rinout*getattr(onZ, 'DY%s_incb'%_eta)
+            DYonz_0b     = tmp_rinout*getattr(onZ, 'DY%s_0b'  %_eta)
+            DYonz_1b     = tmp_rinout*getattr(onZ, 'DY%s_1b'  %_eta)
+            DYonz_incb_e = math.sqrt( (getattr(onZ, 'DY%s_incb'%_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'DY%s_incb_e'%_eta))**2 )
+            DYonz_0b_e   = math.sqrt( (getattr(onZ, 'DY%s_0b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'DY%s_0b_e'  %_eta))**2 )
+            DYonz_1b_e   = math.sqrt( (getattr(onZ, 'DY%s_1b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'DY%s_1b_e'  %_eta))**2 )
+
+            OTHERonz_incb   = tmp_rinout*getattr(onZ, 'OTHER%s_incb'%_eta)
+            OTHERonz_0b     = tmp_rinout*getattr(onZ, 'OTHER%s_0b'  %_eta)
+            OTHERonz_1b     = tmp_rinout*getattr(onZ, 'OTHER%s_1b'  %_eta)
+            OTHERonz_incb_e = math.sqrt( (getattr(onZ, 'OTHER%s_incb'%_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'OTHER%s_incb_e'%_eta))**2 )
+            OTHERonz_0b_e   = math.sqrt( (getattr(onZ, 'OTHER%s_0b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'OTHER%s_0b_e'  %_eta))**2 )
+            OTHERonz_1b_e   = math.sqrt( (getattr(onZ, 'OTHER%s_1b'  %_eta)*tmp_rinout_e)**2 + (tmp_rinout*getattr(onZ, 'OTHER%s_1b_e'  %_eta))**2 )
+
             fs_incb = predhistoincb.GetBinContent(i); fs_incb_e = predhistoincb.GetBinError(i)
             fs_0b   = predhisto0b.GetBinContent(i)  ; fs_0b_e   = predhisto0b.GetBinError(i)
             fs_1b   = predhisto1b.GetBinContent(i)  ; fs_1b_e   = predhisto1b.GetBinError(i)
@@ -33,6 +64,57 @@ def makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ):
             tot_0b_e   = math.sqrt(fs_0b_e  **2 + onz_0b_e  **2)
             tot_1b_e   = math.sqrt(fs_1b_e  **2 + onz_1b_e  **2)
             #print i, tmp_rinout, onz_0b, onz_0b_e
+            if eta == "central":
+                binsForPlotObserved_central.append(obshistoincb.GetBinContent(i))
+                binsForPlotObserved_central.append(0)
+                binsForPlotObserved_central.append(obshisto0b.GetBinContent(i))
+                binsForPlotObserved_central.append(0)
+                binsForPlotObserved_central.append(obshisto1b.GetBinContent(i))
+                binsForPlotObserved_central.append(0)
+                binsForPlotTotal_central.append(tot_incb)
+                binsForPlotTotal_central.append(tot_incb_e)
+                binsForPlotTotal_central.append(tot_0b)
+                binsForPlotTotal_central.append(tot_0b_e)
+                binsForPlotTotal_central.append(tot_1b)
+                binsForPlotTotal_central.append(tot_1b_e)
+                binsForPlotDY_central.append(DYonz_incb)
+                binsForPlotDY_central.append(DYonz_incb_e)
+                binsForPlotDY_central.append(DYonz_0b)
+                binsForPlotDY_central.append(DYonz_0b_e)
+                binsForPlotDY_central.append(DYonz_1b)
+                binsForPlotDY_central.append(DYonz_1b_e)
+                binsForPlotOTHER_central.append(OTHERonz_incb)
+                binsForPlotOTHER_central.append(OTHERonz_incb_e)
+                binsForPlotOTHER_central.append(OTHERonz_0b)
+                binsForPlotOTHER_central.append(OTHERonz_0b_e)
+                binsForPlotOTHER_central.append(OTHERonz_1b)
+                binsForPlotOTHER_central.append(OTHERonz_1b_e)
+            else:
+                binsForPlotObserved_forward.append(obshistoincb.GetBinContent(i))
+                binsForPlotObserved_forward.append(0)
+                binsForPlotObserved_forward.append(obshisto0b.GetBinContent(i))
+                binsForPlotObserved_forward.append(0)
+                binsForPlotObserved_forward.append(obshisto1b.GetBinContent(i))
+                binsForPlotObserved_forward.append(0)
+                binsForPlotTotal_forward.append(tot_incb)
+                binsForPlotTotal_forward.append(tot_incb_e)
+                binsForPlotTotal_forward.append(tot_0b)
+                binsForPlotTotal_forward.append(tot_0b_e)
+                binsForPlotTotal_forward.append(tot_1b)
+                binsForPlotTotal_forward.append(tot_1b_e)
+                binsForPlotDY_forward.append(DYonz_incb)
+                binsForPlotDY_forward.append(DYonz_incb_e)
+                binsForPlotDY_forward.append(DYonz_0b)
+                binsForPlotDY_forward.append(DYonz_0b_e)
+                binsForPlotDY_forward.append(DYonz_1b)
+                binsForPlotDY_forward.append(DYonz_1b_e)
+                binsForPlotOTHER_forward.append(OTHERonz_incb)
+                binsForPlotOTHER_forward.append(OTHERonz_incb_e)
+                binsForPlotOTHER_forward.append(OTHERonz_0b)
+                binsForPlotOTHER_forward.append(OTHERonz_0b_e)
+                binsForPlotOTHER_forward.append(OTHERonz_1b)
+                binsForPlotOTHER_forward.append(OTHERonz_1b_e)
+            print "hello" 
 
             ret.append('&  %6.1f $\\pm$ %6.1f  &  \\multirow{2}{*}{\\textbf{ %3d }} &  %6.1f $\\pm$ %6.1f  &  \\multirow{2}{*}{\\textbf{ %3d }} &   %6.1f $\\pm$ %6.1f  &  \\multirow{2}{*}{\\textbf{ %d }} \\\\ \r'%(
             tot_incb, tot_incb_e, obshistoincb.GetBinContent(i),
@@ -40,6 +122,10 @@ def makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ):
             tot_1b  , tot_1b_e  , obshisto1b  .GetBinContent(i)))
             ret.append('& (%6.1f $\\pm$ %6.1f) &                                    & (%6.1f $\\pm$ %6.1f) &                                    &  (%6.1f $\\pm$ %6.1f) &                                   \\\\ \\cline{2-8} \r'%(
             onz_incb, onz_incb_e, onz_0b, onz_0b_e, onz_1b, onz_1b_e ))
+    tfile = open("resultsEdge.txt", "w")
+    for i in range (0, len(binsForPlotObserved_central)):
+        tfile.write(str(binsForPlotObserved_central[i]) + " " + str(binsForPlotObserved_forward[i]) + " " + str(binsForPlotTotal_central[i]) + " " + str(binsForPlotTotal_forward[i]) + " " + str(binsForPlotDY_central[i]) + " " + str(binsForPlotDY_forward[i]) + " " + str(binsForPlotOTHER_central[i]) + " " + str(binsForPlotOTHER_forward[i]) + '\n')    
+    tfile.close()
     return ret
 
 def makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ, dataMC='DATA'):

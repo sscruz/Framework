@@ -1,6 +1,7 @@
 #include "TStyle.h"
 #include "TColor.h"
 
+
 void setTDRStyle(bool fatline=true) {
   int standardlinewidth=1;
   if(fatline) standardlinewidth=2;
@@ -36,9 +37,9 @@ void setTDRStyle(bool fatline=true) {
   // For the histo:
   // tdrStyle->SetHistFillColor(1);
   // tdrStyle->SetHistFillStyle(0);
-  tdrStyle->SetHistLineColor(1);
-  tdrStyle->SetHistLineStyle(0);
-  tdrStyle->SetHistLineWidth(standardlinewidth);
+  //tdrStyle->SetHistLineColor(1);
+  // tdrStyle->SetHistLineStyle(0);
+  //tdrStyle->SetHistLineWidth(standardlinewidth);
   // tdrStyle->SetLegoInnerR(Float_t rad = 0.5);
   // tdrStyle->SetNumberContours(Int_t number = 20);
 

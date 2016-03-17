@@ -29,6 +29,7 @@ import include.Sample     as Sample
 
 if __name__ == '__main__':
 
+    print "caca"
     parser = optparse.OptionParser(usage='usage: %prog [options] FilenameWithSamples', version='%prog 1.0')
     ##parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
     (options, args) = parser.parse_args()
@@ -44,9 +45,10 @@ if __name__ == '__main__':
     ## 1p3 fb-1 synchDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
     ## 1p3 fb-1                  'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
     ## 1p3 fb-1                  'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
-    synchDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                     'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                     'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+    #mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    synchDatasets = ['HTMHT_Run2015C_25ns-05Oct_v1_runs_246908_260628', 'HTMHT_Run2015D-05Oct_v1_runs_246908_260628', 'HTMHT_Run2015D_v4_runs_246908_260628', 'JetHT_Run2015C_25ns-05Oct_v1_runs_246908_260628', 'JetHT_Run2015D-05Oct_v1_runs_246908_260628', 'JetHT_Run2015D_v4_runs_246908_260628']
+
+    #synchDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,                     'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,                      'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
     treeSynch = Sample.Tree(helper.selectSamples(inputFileName, synchDatasets, 'SYNCH'), 'SYNCH'  , 1)
 
     print 'Trees successfully loaded...'
@@ -61,14 +63,15 @@ if __name__ == '__main__':
         actualTree = treeSynch.blocks[0].samples[ind].ttree
 
         ## define the variables you want to have scanned
-        scanString  = "run:lumi:evt:met_pt:Jet_pt[0]:Jet_pt[1]:Jet_pt[2]:nJetSel_Edge:nBJetMedium35_Edge"
+        scanString  = "run:lumi:evt"
         #scanString += "Lep1_pt_Edge:Lep1_eta_Edge:Lep1_phi_Edge:Lep1_pdgId_Edge:Lep1_miniRelIso_Edge:Lep1_mvaIdSpring15_Edge:t.Lep1_minTauDR_Edge:"
         #scanString += "Lep2_pt_Edge:Lep2_eta_Edge:Lep2_phi_Edge:Lep2_pdgId_Edge:Lep2_miniRelIso_Edge:Lep2_mvaIdSpring15_Edge:t.Lep2_minTauDR_Edge:"
         #scanString += "lepsMll_Edge:met_pt:met_rawPt:nJetSel_Edge:nBJetMedium35_Edge:rhoCN:(Lep1_pdgId_Edge*Lep2_pdgId_Edge)"
 
         ## define the cut you want to have applied
-        cutString = cuts.goodLepton
-        cutString = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSF(), cuts.Zmass ])
+        #cutString = cuts.AddList([cuts.DYControlRegion, cuts.DYmass, cuts.GoodLeptonee(), cuts.Central()])
+        cutString = cuts.AddList([cuts.triggerCalculation, cuts.ee, cuts.Central()]) 
+
         #print cutString
 
         actualTree.SetScanField(-1)
@@ -79,4 +82,4 @@ if __name__ == '__main__':
         os.dup2( save, sys.stdout.fileno() )
         newout.close()
 
-    
+   

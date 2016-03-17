@@ -14,7 +14,7 @@
 #####################################################################
 
 import ROOT as r
-from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
+from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle
 import math, sys, optparse, copy, re, array
 
 
@@ -41,6 +41,37 @@ class onZResult:
         f.close()
 
     def makeFinalResult(self):
+        self.DYcen_incb   = self.DYcen_incbtag
+        self.DYfwd_incb   = self.DYfwd_incbtag
+        self.DYcen_incb_e = self.DYcen_incbtag_err
+        self.DYfwd_incb_e = self.DYfwd_incbtag_err
+
+        self.DYcen_0b   = self.DYcen_0btag
+        self.DYfwd_0b   = self.DYfwd_0btag
+        self.DYcen_0b_e = self.DYcen_0btag_err
+        self.DYfwd_0b_e = self.DYfwd_0btag_err
+
+	self.DYcen_1b   = self.DYcen_1btag
+        self.DYfwd_1b   = self.DYfwd_1btag
+        self.DYcen_1b_e = self.DYcen_1btag_err
+        self.DYfwd_1b_e = self.DYfwd_1btag_err
+
+
+	self.OTHERcen_incb   = self.OTHERcen_incbtag
+        self.OTHERfwd_incb   = self.OTHERfwd_incbtag
+        self.OTHERcen_incb_e = self.OTHERcen_incbtag_err
+        self.OTHERfwd_incb_e = self.OTHERfwd_incbtag_err
+
+        self.OTHERcen_0b   = self.OTHERcen_0btag
+        self.OTHERfwd_0b   = self.OTHERfwd_0btag
+        self.OTHERcen_0b_e = self.OTHERcen_0btag_err
+        self.OTHERfwd_0b_e = self.OTHERfwd_0btag_err
+
+	self.OTHERcen_1b   = self.OTHERcen_1btag
+        self.OTHERfwd_1b   = self.OTHERfwd_1btag
+        self.OTHERcen_1b_e = self.OTHERcen_1btag_err
+        self.OTHERfwd_1b_e = self.OTHERfwd_1btag_err
+
         self.cen_incb   = self.cen_incbtag_2jet + self.cen_incbtag_3jet
         self.fwd_incb   = self.fwd_incbtag_2jet + self.fwd_incbtag_3jet
         self.cen_incb_e = math.sqrt(self.cen_incbtag_2jet_err**2 + self.cen_incbtag_3jet_err**2)
@@ -51,15 +82,18 @@ class onZResult:
         self.cen_0b_e = math.sqrt(self.cen_0btag_2jet_err**2 + self.cen_0btag_3jet_err**2)
         self.fwd_0b_e = math.sqrt(self.fwd_0btag_2jet_err**2 + self.fwd_0btag_3jet_err**2)
 
-        self.cen_1b   = self.cen_1btag_2jet + self.cen_1btag_3jet
-        self.fwd_1b   = self.fwd_1btag_2jet + self.fwd_1btag_3jet
-        self.cen_1b_e = math.sqrt(self.cen_1btag_2jet_err**2 + self.cen_1btag_3jet_err**2)
-        self.fwd_1b_e = math.sqrt(self.fwd_1btag_2jet_err**2 + self.fwd_1btag_3jet_err**2)
+        self.cen_1b   = self.cen_1btag_2jet + self.cen_1btag_3jet + self.cen_2btag_2jet + self.cen_2btag_3jet
+        self.fwd_1b   = self.fwd_1btag_2jet + self.fwd_1btag_3jet + self.fwd_2btag_2jet + self.fwd_2btag_3jet
+        self.cen_1b_e = math.sqrt(self.cen_1btag_2jet_err**2 + self.cen_1btag_3jet_err**2 + self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
+        self.fwd_1b_e = math.sqrt(self.fwd_1btag_2jet_err**2 + self.fwd_1btag_3jet_err**2 + self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
 
         self.cen_2b   = self.cen_2btag_2jet + self.cen_2btag_3jet
         self.fwd_2b   = self.fwd_2btag_2jet + self.fwd_2btag_3jet
         self.cen_2b_e = math.sqrt(self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
         self.fwd_2b_e = math.sqrt(self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
+
+
+       
 
 
 def makeResultsTable(binnedSR, dyShapes, dataMC, eta, nbs):
@@ -224,29 +258,43 @@ def getDYShapes(binsPlot, binsFine, binsSR):
     return returndict
 
 def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname, eta, nbs, nbstr):
+
+    colors = helper.createMyColors()
+
     #nb = re.sub('[^0-9]', '', nbstring)
     pGraph = r.TGraphErrors(pHisto)
-    pGraph.SetFillColorAlpha(r.kBlue+1, 0.2)
+    pGraph.SetFillColorAlpha(r.kBlue+3, 0.2)
     pGraph.SetFillStyle(3001)
+    pGraph.SetFillColor(helper.myColors["MyBlue"])
+    pGraph.SetMarkerStyle(20)
+    pHisto.SetMarkerStyle(20)
+    pHisto.SetLineColor(r.kBlack)
+    oHisto.SetLineColor(r.kBlue+3)
+    oHisto.SetLineWidth(2)
 
     maxCont = pHisto.GetBinContent(pHisto.GetMaximumBin())
     pHisto.GetYaxis().SetRangeUser(0., 1.7*maxCont)
 
     plot = Canvas.Canvas('results/%s/plot_results_mll_%s_%s%s_nb%s'%(lumi_str, plotname, eta, ('' if not opts.onlyTTbar else '_onlyTT'), str(nbs)), 'png,pdf', 0.6, 0.65, 0.85, 0.82)
-    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlue+1, 1,  0)
-    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlue+1, 1, -1)
-    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlack , 1,  1)
+    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlack, 1,  0)
+    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlack, 1, -1)
+    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlue+3 , 1,  1)
+
+
     if not opts.onlyTTbar: 
         dy_histo = scaleZ(dy_shapes['da_%s_binsPlot'%(eta)], eta, nbs)
+        dy_histo.SetLineColor(r.kGreen+3)
+	dy_histo.SetFillColor(r.kGreen+3)
+	dy_histo.SetFillStyle(3002)
         dy_graph = r.TGraphErrors(dy_histo)
         print 'adding dy histo to the canvas'
         dy_histo.SetLineStyle(2)
         dy_histo.SetLineColor(r.kGreen+2)
-        plot.addHisto(dy_histo, 'HIST,SAME', 'Drell-Yan ', 'L', r.kGreen+2, 1,  2)
+        plot.addHisto(dy_histo, 'HIST,SAME', 'Drell-Yan ', 'L', r.kGreen+3, 1,  2)
         print 'adding dy graph to the canvas'
-        dy_graph.SetFillColorAlpha(r.kGreen+2, 0.2)
+        dy_graph.SetFillColorAlpha(r.kGreen+3, 0.2)
         dy_graph.SetFillStyle(3001)
-        plot.addGraph(dy_graph, '2,same   ', 'Drell-Yan ', 'L', r.kGreen+2, 1, -1)
+        plot.addGraph(dy_graph, '2,same   ', 'Drell-Yan ', 'L', r.kGreen+3, 1, -1)
     plot.addLatex(0.7, 0.53, eta  , 62)
     plot.addLatex(0.7, 0.45, nbstr, 62)
     plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
@@ -314,15 +362,15 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTTbar else [ 'DYJetsToLL_M10to50', 'DYJetsToLL_M50'])
-    lumi = 2.2
+    lumi = 2.3
     if lumi == 1.3:
         daDatasets = ['DoubleMuon_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'DoubleEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' , 'MuonEG_Run2015C_25ns_05Oct_v1_runs_246908_258714' ,
                       'DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751'      , 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751'      , 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751'      ,
                       'DoubleMuon_Run2015D_v4_runs_246908_258751'            , 'DoubleEG_Run2015D_v4_runs_246908_258751'            , 'MuonEG_Run2015D_v4_runs_246908_258751'            ]
     elif lumi > 2.:
-        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260627' ,
-                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260627'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260627'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260627'      ,
-                      'DoubleMuon_Run2015D_v4_runs_246908_260627'            , 'DoubleEG_Run2015D_v4_runs_246908_260627'            , 'MuonEG_Run2015D_v4_runs_246908_260627'            ]
+        daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
+                      'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
+                      'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
@@ -401,10 +449,10 @@ if __name__ == '__main__':
                                  [ [20., 70., 81., 101., 120., 13000.] ],
                                  True if not opts.onlyClosure else False)
 
-    #regions.append(signalRegionincb)
-    #regions.append(signalRegion0b)
-    #regions.append(signalRegion1b)
-    #regions.append(signalRegion2b)
+    regions.append(signalRegionincb)
+    regions.append(signalRegion0b)
+    regions.append(signalRegion1b)
+    regions.append(signalRegion2b)
     regions.append(binnedSRincb)
     regions.append(binnedSR0b)
     regions.append(binnedSR1b)
@@ -414,6 +462,7 @@ if __name__ == '__main__':
     ## look for DY shapes in file, if not there make them
     ## ==================================================
     dy_shapes = getDYShapes(finalBinning, range(20,302,2), [20., 70., 81., 101., 120., 300.])
+    print dy_shapes
     ## ==================================================
     ## done with DY shapes. moving on with life          
     ## ==================================================
@@ -452,27 +501,27 @@ if __name__ == '__main__':
     ## make some plots!!
     ## =====================
 
-    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'central')
-    #makePlots([signalRegionincb, signalRegion0b, signalRegion1b], 'forward')
+    makePlots([signalRegionincb, signalRegion0b, signalRegion1b], ['central'])
+    makePlots([signalRegionincb, signalRegion0b, signalRegion1b], ['forward'])
 
 
     ## make some tables!!
     ## =====================
 
-    # a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
-    # b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
+    a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
+    #b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
     # for i in a: print i
-    # for i in b: print i
+    #for i in a: print i
 
     ## make datacards
     # Tables.makeDataCards([binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b], '', ingDA, onZ)
 
-    ## a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
-    ## a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
-    ## a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
-    ## a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
-    ## print 'CENTRAL TABLE'
-    ## for i in a_cen_da: print i
-    ## print 'FORWARD TABLE'
-    ## for i in a_fwd_da: print i
+    #a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
+    #a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
+    #a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
+    #a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
+    #print 'CENTRAL TABLE'
+    #for i in a_cen_da: print i
+    #print 'FORWARD TABLE'
+    #for i in a_fwd_da: print i
 
