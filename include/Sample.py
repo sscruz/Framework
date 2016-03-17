@@ -32,8 +32,9 @@ class Sample:
         self.lumWeight = self.xSection / self.count
         self.puWeight  = "t.PileupW_Edge"
       if self.isScan:
-        self.SFWeight  = "1.0"
+        self.SFWeight  = '0.85'
         self.lumWeight =  1.0
+        self.puWeight  = "t.PileupW_Edge"
         self.smsCount =  self.tfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
