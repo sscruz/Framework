@@ -100,6 +100,7 @@ def comparePDFs(st=0):
     return plot, copy.deepcopy(pdf_histo)
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
     pdf_file = r.TFile('pdfs_version12.root')
     r.gStyle.SetOptStat(0)
@@ -115,6 +116,8 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
             xmin = pdf_histo.GetXaxis().GetXmin(); xmax = pdf_histo.GetXaxis().GetXmax(); xint = (xmax-xmin)/nbins; nbins = 49
             ymax = 0.10
 =======
+=======
+>>>>>>> origin/dev-nll-sergio
 def getPDFHisto(varname, isMC, isSR, doRebin):
     pdf_file = r.TFile('pdfs/pdfs_version6.root')
     if isMC: 
@@ -124,7 +127,10 @@ def getPDFHisto(varname, isMC, isSR, doRebin):
     if isSR:
         if varname == 'lepdr':
             histoname = '%s_pdf_histo_ldr_ds_cuts_of_sr_met150'%(prefix)
+<<<<<<< HEAD
 >>>>>>> dev-nll-sergio
+=======
+>>>>>>> origin/dev-nll-sergio
         elif varname == 'sum_mlb':
             histoname = '%s_pdf_histo_mlb_ds_cuts_of_sr_met150'%(prefix)
         elif varname == 'st':
@@ -132,6 +138,7 @@ def getPDFHisto(varname, isMC, isSR, doRebin):
         elif varname == 'zpt':
             histoname = '%s_pdf_histo_zpt_ds_cuts_of_sr_met150'%(prefix)
         elif varname == 'met':
+<<<<<<< HEAD
 <<<<<<< HEAD
             var = 'met_pt'
             pdf_histo    = copy.deepcopy(pdf_file.Get('emu_data_pdf_histo_met_ds_cuts_of_sr_met150'))
@@ -236,6 +243,65 @@ def pdfHistos(varname, lhvar):
                 nbins = 49
                 ymax = 0.32
         elif varname == 'nll':
+=======
+            histoname = '%s_pdf_histo_met_ds_cuts_of_sr_met150'%(prefix)
+    else:
+        if varname == 'lepdr':
+            histoname = 'pdf_lepsdr'
+        elif varname == 'sum_mlb':
+            histoname = 'pdf_summlb'
+        elif varname == 'l1metdphi':
+            histoname = 'pdf_mldphi'
+        
+            
+    pdf_histo = getHisto(pdf_file, histoname, True)
+    if doRebin:
+        pdf_histo    .Rebin(20)
+    return pdf_histo
+
+def pdfHistos(varname, lhvar):
+
+        nbins = 50
+        if not varname == 'nll':
+            pdf_histo    = getPDFHisto(varname, False,  True, True)
+            pdf_histo_mc = getPDFHisto(varname, True ,  True, True)
+
+            if   varname == 'lepdr':
+                var = 'lepsDR_Edge'
+                xmin = pdf_histo.GetXaxis().GetXmin()
+                xmax = pdf_histo.GetXaxis().GetXmax()
+                xint = (xmax-xmin)/nbins; nbins = 49
+                ymax = 0.10
+            elif varname == 'sum_mlb':
+                var = 'sum_mlb_Edge'
+                xmin = 0.
+                xmax = 750-15.0
+                xint = 15.0
+                nbins = 49
+                ymax = 0.14
+            elif varname == 'st':
+                var = 'st_Edge'
+                xmin = 100.
+                xmax = 1000-18.0
+                xint = 18.0
+                nbins = 49
+                ymax = 0.14
+            elif varname == 'zpt':
+                var = 'lepsZPt_Edge'
+                xmin = 0.
+                xmax = 600.-12.0
+                xint = 12.0
+                nbins = 49
+                ymax = 0.25
+            elif varname == 'met':
+                var = 'met_pt'
+                xmin = 0.
+                xmax = 750-15.0
+                xint = 15.0
+                nbins = 49
+                ymax = 0.32
+        elif varname == 'nll':
+>>>>>>> origin/dev-nll-sergio
             var = '-1.*TMath::Log(lh_met_data_Edge*lh_mlb_data_Edge*lh_ldr_data_Edge*lh_%s_data_Edge)'%(lhvar)
             ldr_pdf_histo    = getPDFHisto('lepdr', False, True, False)
             ldr_pdf_histo_mc = getPDFHisto('lepdr', True , True, False)
@@ -254,7 +320,10 @@ def pdfHistos(varname, lhvar):
             xmin  = pdf_histo.GetXaxis().GetXmin()
             xmax  = pdf_histo.GetXaxis().GetXmax()
             nbins = pdf_histo.GetNbinsX()
+<<<<<<< HEAD
 >>>>>>> dev-nll-sergio
+=======
+>>>>>>> origin/dev-nll-sergio
 
         for i in range(pdf_histo.GetNbinsX()+1):
             pdf_histo.SetBinError(i, 0.); pdf_histo_mc.SetBinError(i, 0.)
@@ -290,6 +359,7 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
 
         r.gStyle.SetOptStat(0)
 <<<<<<< HEAD
+<<<<<<< HEAD
         h_tt_sr_sf  = treeTT.getTH1F(1., '%s_sr_sf_tt' %varname, var, nbins , xmin, xmax , cuts_sr_sf, '', varname)
         h_tt_sr_of  = treeTT.getTH1F(1., '%s_sr_of_tt' %varname, var, nbins , xmin, xmax , cuts_sr_of, '', varname)
         print 'nbins, mxin, xmax ', nbins, xmin, xmax
@@ -300,6 +370,11 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
         h_tt_sr_of  = treeTT.getTH1F(1., '%s_sr_of_tt' %varname, var, nbins -1, xmin, xmax , cuts_sr_of, '', varname)
 
 >>>>>>> dev-nll-sergio
+=======
+        h_tt_sr_sf  = treeTT.getTH1F(1., '%s_sr_sf_tt' %varname, var, nbins -1, xmin, xmax , cuts_sr_sf, '', varname)
+        h_tt_sr_of  = treeTT.getTH1F(1., '%s_sr_of_tt' %varname, var, nbins -1, xmin, xmax , cuts_sr_of, '', varname)
+
+>>>>>>> origin/dev-nll-sergio
         rets.append(copy.deepcopy(h_tt_sr_sf))
         rets.append(copy.deepcopy(h_tt_sr_of))
 
@@ -314,11 +389,16 @@ def makePDFChecks(treeTT, cuts, treeSIG = 0, sigMasses = 0):
                     tmp_histo.Scale(1./tmp_histo.Integral())
                     sigHistos.append(tmp_histo)
 <<<<<<< HEAD
+<<<<<<< HEAD
         print sigHistos[0].GetXaxis().GetXmin(), sigHistos[0].GetXaxis().GetXmax(),sigHistos[0].GetNbinsX()
 =======
                     for c in [19., 19.5, 20., 20.5, 24., 24.5, 25., 25.5, 26.]:
                         print 'cut %.1f: 1.-sig.eff %.2f bkg.eff %.2f' %(c, 1.-tmp_histo.Integral(1, tmp_histo.FindBin(c)), pdf_histo.Integral(1, pdf_histo.FindBin(c)))
 >>>>>>> dev-nll-sergio
+=======
+                    for c in [19., 19.5, 20., 20.5, 24., 24.5, 25., 25.5, 26.]:
+                        print 'cut %.1f: 1.-sig.eff %.2f bkg.eff %.2f' %(c, 1.-tmp_histo.Integral(1, tmp_histo.FindBin(c)), pdf_histo.Integral(1, pdf_histo.FindBin(c)))
+>>>>>>> origin/dev-nll-sergio
                 
         h_tt_sr_sf.SetMarkerSize(0.7);
         h_tt_sr_sf.SetMarkerStyle(20);
