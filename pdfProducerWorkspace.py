@@ -3,6 +3,10 @@ import ROOT, math, optparse, copy
 import include.CutManager as CutManager
 import include.Sample     as Sample
 
+import itertools
+
+
+
 def cleanCut(cut):
     cut = cut.replace(cuts.twoLeptons, 't.nPairLep_Edge')
     cut = cut.replace('t.', '')
@@ -41,10 +45,10 @@ class pdfClass:
         self.l1e = ROOT.RooRealVar('Lep1_eta_Edge'   , 'l1e', -2.5,   2.5, ''   ); self.l2e = ROOT.RooRealVar('Lep2_eta_Edge'   , 'l2e', -2.5,   2.5, ''   );
         self.l1i = ROOT.RooRealVar('Lep1_pdgId_Edge' , 'l1i',  -15,    15, ''   ); self.l2i = ROOT.RooRealVar('Lep2_pdgId_Edge' , 'l2i',  -15,    15, ''   );
         self.ldr = ROOT.RooRealVar('lepsDR_Edge'     , 'ldr',  0.3,  5.8 , ''   ); self.njs = ROOT.RooRealVar('nJetSel_Edge'    , 'njs',   0 ,   25 , ''   );
-        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0.,13000., 'GeV');
+        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0., 1000., 'GeV');
         self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20., 1000., 'GeV');
-        self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0.,13000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100.,13000., 'GeV');
-        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0.,13000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
+        self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0., 3000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100., 5000., 'GeV');
+        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
         self.a3d = ROOT.RooRealVar('d3D_Edge'        , 'a3d', 0.2 , 3.14 , ''   );
         self.wgt = ROOT.RooRealVar('lumwgt'          , 'wgt', self.mcWgt, self.mcWgt, ''); self.wgt.setConstant(1);
 
@@ -63,12 +67,12 @@ class pdfClass:
 
     def setVarProperties(self, var=0, _min=0, _max=0, rho=0):
         if not var:
-            setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max',13000.); setattr(self, 'mlb_rho', 1.4);
-            setattr(self, 'met_min', 150.); setattr(self, 'met_max',13000.); setattr(self, 'met_rho', 1.5);
+            setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max', 3000.); setattr(self, 'mlb_rho', 1.4);
+            setattr(self, 'met_min', 150.); setattr(self, 'met_max', 1000.); setattr(self, 'met_rho', 1.5);
             setattr(self, 'ldr_min',  0.3); setattr(self, 'ldr_max',   5.8); setattr(self, 'ldr_rho', 2.0);
-            setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max',13000.); setattr(self, 'zpt_rho', 1.4);
+            setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 1000.); setattr(self, 'zpt_rho', 1.4);
             setattr(self, 'a3d_min',  0.2); setattr(self, 'a3d_max',  3.14); setattr(self, 'a3d_rho', 1.4);
-            setattr(self, 'st_min' , 140.); setattr(self, 'st_max' ,13000.); setattr(self, 'st_rho' , 1.8);
+            setattr(self, 'st_min' , 140.); setattr(self, 'st_max' , 5000.); setattr(self, 'st_rho' , 1.8);
             self.propSet = True
         else:
             setattr(self, var+'_min', _min); setattr(self, var+'_max', _max); setattr(self, var+'_rho', rho);
@@ -130,42 +134,44 @@ def getFrame(var, xmin=0, xmax=0):
         return w.var(vartree).frame(xmin,xmax,100)
 
 def buildModels(w):
-    for var in ['a3d', 'met', 'mlb', 'ldr', 'zpt']:
+    for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt'],['_DA', '_MC']):
         if var == 'met':
             vartree = 'met_pt'
-            w.factory('c_0[-0.028,-1,0.]')
-            w.factory('c_1[-0.01,-0.05,-0.005]')
+            w.factory('met_c0{t}[-0.028,-1,0.]'.format(t=t))
+            w.factory('met_c1{t}[-0.01,-0.05,-0.005]'.format(t=t))
             w.var(vartree).setMin(150.); w.var(vartree).setMax(1000.);
-            w.factory('SUM::{var}_analyticalPDF(met_n1[0,1e4]*Exponential::exp1({vartree},c_0),met_n2[0,1e4]*Exponential::exp2({vartree},c_1))'.format(var=var, vartree=vartree))
+            w.factory('SUM::{var}_analyticalPDF{t}(met_n1{t}[0,1e4]*Exponential::exp1{t}({vartree},met_c0{t}),met_n2{t}[0,1e4]*Exponential::exp2{t}({vartree},met_c1{t}))'.format(var=var, vartree=vartree, t=t))
         elif var == 'mlb':
             vartree = "sum_mlb_Edge";
-            w.factory("mlb_peak[170,120,220]")
-            w.factory("mlb_sigma[40.,1.,100.]")
-            w.factory("mlb_alpha[-1.,-2.5,0.5]")
-            w.factory("mlb_n[0.5,0.,2.5]")
-            w.factory("CBShape::{var}_analyticalPDF({vartree},mlb_peak,mlb_sigma,mlb_alpha,mlb_n)".format(var=var, vartree=vartree))
+            w.factory("mlb_peak{t}[170,120,220]".format(t=t))
+            w.factory("mlb_sigma{t}[40.,1.,100.]".format(t=t))
+            w.factory("mlb_alpha{t}[-1.,-2.5,-0.5]".format(t=t))
+            w.factory("mlb_n{t}[1.5,0.,2.5]".format(t=t))
+            w.var(vartree).setMin(0.); w.var(vartree).setMax(3000.);
+            w.factory("CBShape::{var}_analyticalPDF{t}({vartree},mlb_peak{t},mlb_sigma{t},mlb_alpha{t},mlb_n{t})".format(var=var, vartree=vartree,t=t))
         elif var == 'ldr':
             vartree = 'lepsDR_Edge';
-            w.factory("ldr_peak[3.0,2.0,3.5]")
-            w.factory("ldr_sigma[3.,0.,10.]")
-            w.factory("ldr_alpha[1.,0.,4.5]")
-            w.factory("ldr_n[2.5,1.,15.0]")
+            w.factory("ldr_peak{t}[3.0,2.0,3.5]".format(t=t))
+            w.factory("ldr_sigma{t}[3.,0.,10.]".format(t=t))
+            w.factory("ldr_alpha{t}[1.,0.,4.5]".format(t=t))
+            w.factory("ldr_n{t}[2.5,1.,15.0]".format(t=t))
             #w.factory('CBShape::{var}_analyticalPDF({vartree},ldr_peak,ldr_sigma,ldr_alpha,ldr_n)'.format(var=var, vartree=vartree))
-            w.factory('SUM::{var}_analyticalPDF(ldr_n1[0,1]*CBShape::{var}_cb({vartree},ldr_peak,ldr_sigma,ldr_alpha,ldr_n),ldr_n2[0,1]*Gaussian::{var}_gaus({vartree},ldr_gm[0,-3,3],ldr_gs[0.5,0.,0.8]))'.format(var=var, vartree=vartree))
+            w.factory('SUM::{var}_analyticalPDF{t}(ldr_n1{t}[0,1]*CBShape::{var}_cb{t}({vartree},ldr_peak{t},ldr_sigma{t},ldr_alpha{t},ldr_n{t}),ldr_n2{t}[0,1]*Gaussian::{var}_gaus{t}({vartree},ldr_gm{t}[0,-3,3],ldr_gs{t}[0.5,0.,0.8]))'.format(var=var, vartree=vartree, t=t))
         elif var == 'zpt':
             vartree = 'lepsZPt_Edge';
-            w.factory("zpt_peak[60.,30.,100.]")
-            w.factory("zpt_sigma[25., 5.,80.]")
-            w.factory("zpt_alpha[-1.,-2.5,0.]")
-            w.factory("zpt_n[0.5,-5.0,100.0]")
-            w.factory('CBShape::{var}_analyticalPDF({vartree},zpt_peak,zpt_sigma,zpt_alpha,zpt_n)'.format(var=var, vartree=vartree))
+            w.factory("zpt_peak{t}[60.,30.,100.]".format(t=t))
+            w.factory("zpt_sigma{t}[25., 5.,80.]".format(t=t))
+            w.factory("zpt_alpha{t}[-1.,-2.5,0.]".format(t=t))
+            w.factory("zpt_n{t}[5.0,5.0,100.0]".format(t=t))
+            #w.factory('CBShape::{var}_analyticalPDF({vartree},zpt_peak,zpt_sigma,zpt_alpha,zpt_n)'.format(var=var, vartree=vartree))
+            w.factory('SUM::{var}_analyticalPDF{t}(zpt{t}[0,1]*CBShape::{var}_cb{t}({vartree},zpt_peak{t},zpt_sigma{t},zpt_alpha{t},zpt_n{t}))'.format(var=var, vartree=vartree, t=t))
         elif var == 'a3d':
             vartree = 'd3D_Edge'
             ## w.factory("a3d_offset[1.5,1.4,1.6]")
             ## w.factory("a3d_a0[0.,-10.,10.]")
             ## w.factory("a3d_a1[0.,-10.,10.]")
             ## w.factory("a3d_a2[-1.,-5.,0.]")
-            w.factory('EXPR::{var}_analyticalPDF("a3d_a2*({vartree}-a3d_offset)*({vartree}-a3d_offset) + a3d_a1*({vartree}-a3d_offset) + a3d_a0",{{{vartree},a3d_offset[1.5,1.2,1.8],a3d_a0[3.,2.5,5.],a3d_a1[0.,-10,10],a3d_a2[-1.,-3.,-1.]}})'.format(var=var, vartree=vartree))
+            w.factory('EXPR::{var}_analyticalPDF{t}("a3d_a2{t}*({vartree}-a3d_offset{t})*({vartree}-a3d_offset{t}) + a3d_a1{t}*({vartree}-a3d_offset{t}) + a3d_a0{t}",{{{vartree},a3d_offset{t}[1.5,1.2,1.8],a3d_a0{t}[3.,2.5,5.],a3d_a1{t}[0.,-10,10],a3d_a2{t}[-1.,-3.,-1.]}})'.format(var=var, vartree=vartree,t=t))
             ## double gaussian
             ## w.factory("a3d_mean[1.5,1.2,1.7]")
             ## w.factory("a3d_sigma[1.,0.,3.]")
@@ -234,44 +240,57 @@ if __name__ == '__main__':
     
     buildModels(w)
 
-    doNDKeys = True
+    doNDKeys = False
     
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
     for var in ['a3d', 'met', 'mlb', 'ldr', 'zpt']:
         opt = 'a' if var != 'met' else 'am'
-        tmp_frame = getFrame(var); model = var+'_analyticalPDF'
-        for i, ds in enumerate(dss):
+        tmp_frame = getFrame(var); 
+        for i, ds in enumerate(reversed(dss)):
+            model = var+'_analyticalPDF'
+            if ds.name == 'tt_mc'  : model += '_MC'
+            if ds.name == 'em_data': model += '_DA'
+            print '====================================================================='
+            print '====================================================================='
+            print '====== AT DATASET %s ================================================'%(ds.name)
+            print '====================================================================='
+            print '====================================================================='
             color = ROOT.kBlack if i==0 else ROOT.kRed
             linestyle = ROOT.kSolid if i == 0 else ROOT.kDashed
             if doNDKeys: ds.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(ds, var+'_rho') )
 
             tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1),ROOT.RooFit.Strategy(2))
-            frs.append(tmp_fr)
+            #tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Save(1))
+            frs.append(copy.deepcopy(tmp_fr))
 
-            tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
-            #tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('_ds_cuts_of_sr_met150')+len('_ds_cuts_of_sr_met150')] )
-            tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('__')] )
-            tmp_histo.SetLineColor(color); tmp_histo.SetLineStyle(linestyle)
-            ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
+            ## tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
+            ## #tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('_ds_cuts_of_sr_met150')+len('_ds_cuts_of_sr_met150')] )
+            ## tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('__')] )
+            ## tmp_histo.SetLineColor(color); tmp_histo.SetLineStyle(linestyle)
+            ## ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
 
-            w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
-            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
-            if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
+            ## w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
+            ## w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
+            ## if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
 
-            # damn root takes the objects away if i write them now
-            writeobjs.append(copy.deepcopy(tmp_histo))
+            ## # damn root takes the objects away if i write them now
+            ## writeobjs.append(copy.deepcopy(tmp_histo))
             writeobjs.append(copy.deepcopy(w.pdf(model)))
             if doNDKeys: writeobjs.append(copy.deepcopy(getattr(ds, 'pdf_histo_%s_ds_%s'%(var, 'cuts_of_sr_met150') ) ))
+            #a = raw_input()
 
         frames.append(tmp_frame);
         tmp_frame.Draw()
 
-    outfile = ROOT.TFile('pdfs/pdfs_version20_fitResultsAndFunctions.root', 'RECREATE')
+    w.writeToFile("pdfs/pdfs_version22_savingTheWorkspace.root")
+
+    outfile = ROOT.TFile('pdfs/pdfs_version21_extendedFit.root', 'RECREATE')
     outfile.cd()
     for i in writeobjs:
         i.Write()
     for i in frs:
         i.Write()
     outfile.Close()
+
 
