@@ -1,0 +1,18 @@
+# this is the datacard for bin central_lowMass_incb
+imax 1  number of channels
+jmax 3  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# only one channel here with observation 437.0
+bin            central_lowMass_incb
+observation    12
+------------
+bin        central_lowMass_incb     central_lowMass_incb   central_lowMass_incb central_lowMass_incb
+process    sig            FS             DY    other
+process    0              1              2     3
+rate       1.0          6.3          3.7      2.1
+------------
+FS_unc                        lnN       -         1.06      -       -
+central_lowMass_incb_fs_stat  gmN  6    -         1.036     -       -
+DY_unc                        lnN       -         -         1.19    -
+otherunc                      lnN       -         -          -      1.43
