@@ -13,9 +13,10 @@ class binning:
         self.n  = abs(ma-mi)/w
 
 class Scan(object):
-    def __init__(self, name):
+    def __init__(self, name, suffix, paper):
         self.cuts_norm = '1'
         self.name  = name
+        self.suffix =  suffix
         self.zminUL  = 1e-3; self.zmaxUL = 1e3
         self.xbins = binning(100,100,1000); self.ybins = binning(100,100,1000)
         self.xtitle = 'mother'; self.ytitle = 'daughter'; self.ztitle = 'SR-ID'
@@ -24,7 +25,7 @@ class Scan(object):
         self.zmaxEff = 0.5
         self.tree = 0
         self.paper = 'SUS66666'
-        self.loadData()
+        self.loadData(paper)
         self.loadXsecs()
 
     def __getstate__(self): 
@@ -32,19 +33,24 @@ class Scan(object):
     def __setstate__(self, d): 
         self.__dict__.update(d)
 
-    def loadData(self):
+    def loadData(self,paper):
         if self.name == 'T6bbslepton':
-            self.paper = 'SUS15011'
+            self.paper = paper
             self.datasets = ['SMS_T6bbllslepton_mSbottom400To575_mLSP150To550',
                              'SMS_T6bbllslepton_mSbottom600To775_mLSP150To725',
                              'SMS_T6bbllslepton_mSbottom800To950_mLSP150To900']
             self.xbins = binning(400,900,25)
             self.ybins = binning(200,900,25)
-            self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()]) ## trigger not available in fastsim
+            if self.suffix == '':
+                ## trigger not available in fastsim
+                self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()]) 
+            else:
+                ## trigger not available in fastsim
+                self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegionMET150, cuts.nllCut ,cuts.GoodLeptonSFNoTrigger()]) 
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0') ## remove the filters, ugly.
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
-            self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/sbottomXsec.txt')
+            self.xsecFile = ('datacards/sbottomXsec.txt')
             self.regions = []
             for eta in ['central','forward']:#,'inclusive']:
                 for mass in ['lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass']:#,'allMass']:
@@ -89,7 +95,7 @@ class Scan(object):
 
     def makeExclusion(self):
         print 'making the exclusions!!'
-        limitfile = r.TFile('datacards/{name}/{name}_allLimits.root'.format(name=self.name),'READ')
+        limitfile = r.TFile('datacards_{suffix}/{name}/{name}_allLimits.root'.format(suffix=self.suffix,name=self.name),'READ')
         limittree = limitfile.Get('limit')
         ## observed limit
         self.ex_obs = copy.deepcopy(self.yx)
@@ -202,7 +208,7 @@ class Scan(object):
         print '... done making the UL histo'
                 
     def saveULGraphsInFile(self):
-        print 'saving the UL histo and graphs in a file'
+        print 'saving the UL histo and graphs in file', 'makeExclusionPlot/config/%s/%s_results.root'%(self.paper,self.name)
         f = r.TFile('makeExclusionPlot/config/%s/%s_results.root'%(self.paper,self.name),'RECREATE')
         f.cd()
         self.ul_histo.Write()
