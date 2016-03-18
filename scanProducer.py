@@ -21,7 +21,7 @@ def runCmd(cmd):
 
 
 def produceLimits(whichb, njobs):
-    basedir = os.path.abspath('.')+'/datacards/{name}/'.format(name=scan.name)
+    basedir = os.path.abspath('.')+'/datacards_{suffix}/{name}/'.format(suffix=scan.suffix, name=scan.name)
     subdirs = [i for i in os.listdir(basedir) if os.path.isdir(basedir+i)]
     pool = Pool(njobs)
     tasks = []
@@ -46,7 +46,7 @@ def produceLimits(whichb, njobs):
 def fillAndSaveDatacards(nbs):
     for region in scan.regions:
         eta = region[0]; mass = region[1]; nb = region[2]
-        tmp_file = open('datacards/%s_%s_%s.txt'%(eta, mass, nb) ,'r')
+        tmp_file = open('/afs/cern.ch/work/m/mdunser/public/pdfsForLikelihood/met150/met150_%s_%s_%s.txt'%(eta, mass, nb) ,'r')
         tmp_dc  = tmp_file.read()
         tmp_histo = getattr(scan, 'eff_%s_%s_%s'%(eta, mass, nb))
         for i in range(1, tmp_histo.GetXaxis().GetNbins()+1):
@@ -56,12 +56,58 @@ def fillAndSaveDatacards(nbs):
                 if tmp_histo.GetBinContent(tmp_histo.GetBin(i,j)) == 0. or ymass > xmass:
                     continue
                 mass_string = 'mSbottom_%.0f_mchi2_%.0f'%(xmass, ymass)
-                helper.ensureDirectory('datacards/{name}'.format(name=scan.name))
-                helper.ensureDirectory('datacards/{name}/{mass}'.format(name=scan.name,mass=mass_string))
+                helper.ensureDirectory('datacards_{suffix}/{name}'.format(suffix=scan.suffix,name=scan.name))
+                helper.ensureDirectory('datacards_{suffix}/{name}/{mass}'.format(suffix=scan.suffix, name=scan.name,mass=mass_string))
                 tmp_rate = lumi*scan.xsecs[xmass][0]*tmp_histo.GetBinContent(tmp_histo.GetBin(i,j)) ## LUMI WEIGHTING HAPPENS HERE!!!!
                 tmp_out = tmp_dc.replace('XXRATEXX', '%.3f'%(tmp_rate))
-                tmp_new = open('datacards/{name}/{mass}/{mass}_{fn}'.format(name=scan.name,mass=mass_string,fn=tmp_file.name.split('/')[-1]), 'w')
-                tmp_new.write(tmp_out)
+                tmp_out2 =  ''
+                tmp_out3 =  ''
+                obs = 0 #sergio
+                for line in tmp_out.split('\n'):            #sergio
+                    if 'rate' in line:
+                        newline = ''
+                        ind     = 0
+                        for word in line.split():
+                            if ind == 2:
+                                newWord = '%.2f'%(float(word)*0.1)
+                                obs = obs + float(word)*0.1
+                            elif ind == 3:
+                                newWord = '%.2f'%(float(word)*0.41)
+                                obs = obs + float(word)*0.1
+                            else:
+                                newWord = word
+                            ind = ind + 1
+                            newline = newline + newWord + '      ' 
+                    elif 'gmN' in line:
+                        ind = 0
+                        newline = ''
+                        for word in line.split():
+                            if ind == 2: newWord = '%d'%(int(float(word)*0.1))
+                            else:        newWord = word
+                            newline = newline + newWord + '      '
+                            ind = ind+1
+                                
+                    else:
+                        newline = line
+                    tmp_out2 = tmp_out2 + newline + '\n'
+                for line in tmp_out2.split('\n'):            #sergio
+                    if 'observation' in line:
+                        newline = ''
+                        ind     = 0
+                        for word in line.split():
+                            if ind == 1: 
+                                newWord = '%d'%int(obs)
+                            else:
+                                newWord = word
+                            newline = newline + newWord + '      '
+                            ind = ind+1
+                    else:
+                        newline = line
+                    tmp_out3 = tmp_out3 + newline +'\n'
+
+                tmp_new = open('datacards_{suffix}/{name}/{mass}/{mass}_{fn}'.format(suffix=scan.suffix,name=scan.name,mass=mass_string,fn=tmp_file.name.split('/')[-1]), 'w')
+                # sergio tmp_new.write(tmp_out)
+                tmp_new.write(tmp_out3)
                 tmp_new.close()
         tmp_file.close()
 
@@ -143,6 +189,7 @@ if __name__ == "__main__":
     parser.add_option('-r', '--reloadScan' , action='store_true', dest='reloadScan', help='reload scan. default %default')
     parser.add_option('-l', '--reloadLimits' , action='store_true', dest='reloadLimits', help='reload limits. default %default')
     parser.add_option('-n', '--scanName'     , action='store', type=str, dest='scanName', default='T6bbslepton', help='scan name. e.g. T6bbslepton (this is the default)')
+    parser.add_option('-f', '--suffix'     , action='store', type=str, dest='suffix', default='', help='Suffix for the datacard directory name')
     (opts, args) = parser.parse_args()
 
     print 'running with these options'
@@ -173,13 +220,14 @@ if __name__ == "__main__":
     ## == try loading stuff from the pickled file ===
     ## ==============================================
     
-    pickfile = 'datacards/{name}/{name}.pkl'.format(name=opts.scanName)
+    pickfile = 'datacards_{suffix}/{name}/{name}.pkl'.format(suffix=opts.suffix,name=opts.scanName)
     if os.path.isfile(pickfile) and not opts.reloadScan:
         print 'getting the scan object from the pickled file'
         scan = pickle.load(open(pickfile,'r'))
     else:
+        print 'redoing the scan'
         ## everything that takes long should be done here!
-        scan = Scans.Scan(opts.scanName)
+        scan = Scans.Scan(opts.scanName, opts.suffix,'nll')
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         scan.norm = scan.tree.getTH3F(1., 'nPass_norm', zvar+':'+yvar+':'+xvar,  scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2., scan.xbins._max+scan.xbins.w/2.,  ## lumi set later for scans!!
                                                                                  scan.ybins.n+1, scan.ybins._min-scan.ybins.w/2., scan.ybins._max+scan.ybins.w/2., 
@@ -250,5 +298,5 @@ if __name__ == "__main__":
     scan.makePrettyPlots()
 
     ## save the scan object in a pickle file to save time the second time around.
-    pickle.dump(scan, open('datacards/{name}/{name}.pkl'.format(name=scan.name),'w') )
+    pickle.dump(scan, open('datacards_{suffix}/{name}/{name}.pkl'.format(suffix=scan.suffix, name=scan.name),'w') )
     print 'marc is stupid'
