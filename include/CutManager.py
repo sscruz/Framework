@@ -26,6 +26,7 @@ class CutManager:
       self.METJetsSignalRegion3J = "(((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2)) && t.nJetSel_Edge >  2)"
       self.METJetsSignalRegionMET100 = "(met_pt > 100 && t.nJetSel_Edge > 1)"
       self.METJetsSignalRegionMET150 = "(met_pt > 150 && t.nJetSel_Edge > 1)"
+      self.nllCut = '-1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_a3d_data_Edge*lh_ana_zpt_data_Edge) > 19.9'
       self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
       self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
       self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
