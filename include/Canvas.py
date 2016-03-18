@@ -126,8 +126,24 @@ class Canvas:
       lat = [x1, y1, text, font, size]
       self.latexs.append(lat)
 
+   def makeOFHisto(self, histo):
+      nbinsx = histo.GetNbinsX()
+      xmin = histo.GetXaxis().GetXmin(); xmax = histo.GetXaxis().GetXmax();
+      newhisto = r.TH1F(histo.GetName() +'_withOFBin', histo.GetTitle()+'_withOFBin', nbinsx+1, xmin, xmax+(xmax-xmin)/nbinsx)
+      newhisto.Sumw2()
+      newhisto.SetMarkerColor(histo.GetMarkerColor())
+      newhisto.SetMarkerStyle(histo.GetMarkerStyle())
+      newhisto.SetMarkerSize (histo.GetMarkerSize ())
+      newhisto.SetLineColor(histo.GetLineColor())
+      newhisto.SetLineStyle(histo.GetLineStyle())
+      newhisto.SetMaximum(histo.GetMaximum())
+      for i in range(1,nbinsx+2):
+         newhisto.SetBinContent(i,histo.GetBinContent(i))
+         newhisto.SetBinError  (i,histo.GetBinError  (i))
+      return newhisto
+        
  
-   def addHisto(self, h, option, label, labelOption, color, ToDraw, orderForLegend):
+   def addHisto(self, h, option, label, labelOption, color, ToDraw, orderForLegend, doOF = False):
 
       if(color != ""):
           h.SetLineColor(color)
@@ -135,7 +151,7 @@ class Canvas:
       if(label == ""):
           label = h.GetTitle()
 
-      self.histos.append(h)
+      self.histos.append(h if not doOF else self.makeOFHisto(h))
       self.options.append(option)
       self.labels.append(label)
       self.labelsOption.append(labelOption)
