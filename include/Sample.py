@@ -11,31 +11,32 @@ class Sample:
       self.location = location
       self.xSection = xsection
       self.isData = isdata
-      self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
+      #self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
       ftfileloc = (friendlocation+'/evVarFriend_'+self.name+'.root' if '/afs' in friendlocation else self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
       self.ftfile = TFile(ftfileloc)
-      self.ttree = self.tfile.Get('tree')
-      self.ttree.AddFriend('sf/t',self.ftfile)
+      #self.ttree = self.tfile.Get('tree')
+      #self.ttree.AddFriend('sf/t',self.ftfile)
+      self.ttree = self.ftfile.Get('sf/t')
       self.isScan = isScan
       if not self.isData:
         gw = 0.
         for i in self.ttree:
-            gw = abs(i.genWeight)
+            gw = abs(i.genWeight_Edge)
             if gw: break
-        self.count = self.tfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
+        self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
-        self.count = self.tfile.Get('Count').GetEntries()
+        self.count = self.ftfile.Get('Count').GetBinContent(1)
       self.lumWeight =  1.0
-      self.puWeight  = "1.0"
-      self.SFWeight  = "1.0"
+      self.puWeight  = '1.0'
+      self.SFWeight  = '1.0'
       if not self.isData:
         self.lumWeight = self.xSection / self.count
-        self.puWeight  = "t.PileupW_Edge"
+        self.puWeight  = "PileupW_Edge"
       if self.isScan:
         self.SFWeight  = '0.85'
         self.lumWeight =  1.0
-        self.puWeight  = "t.PileupW_Edge"
-        self.smsCount =  self.tfile.Get('CountSMS')
+        self.puWeight  = "PileupW_Edge"
+        self.smsCount =  self.ftfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -72,7 +73,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
       
       self.ttree.Project(name, var, cut, options) 
       return h
@@ -92,7 +93,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
@@ -109,7 +110,7 @@ class Sample:
      h.GetZaxis().SetTitle(zlabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight/abs(genWeight) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h

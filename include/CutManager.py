@@ -5,43 +5,43 @@ class CutManager:
 
    def __init__(self):
 
-      self.twoLeptons = "t.nPairLep_Edge > 0 && hbheFilterIso > 0 && hbheFilterNew25ns > 0 && Flag_eeBadScFilter > 0 "
-      self.trigMMc = "(HLT_DoubleMu > 0 || HLT_mu27tkmu8 > 0)"
-      self.trigEEc = "(HLT_el17el12_dz > 0 || HLT_ele33ele33 > 0)"
-      self.trigEMc = "(HLT_mu8el17 > 0 || HLT_mu17el12 > 0 || HLT_mu30ele30 > 0)"
-      self.leptonPt = "t.Lep1_pt_Edge > 20. && t.Lep2_pt_Edge > 20."
-      self.leptonDR = "t.lepsDR_Edge > 0.3"       
+      self.twoLeptons = "nPairLep_Edge > 0 && hbheFilterIso_Edge > 0 && hbheFilterNew25ns_Edge > 0 && Flag_eeBadScFilter_Edge > 0 "
+      self.trigMMc = "(HLT_DoubleMu_Edge > 0 || HLT_mu27tkmu8_Edge > 0)"
+      self.trigEEc = "(HLT_el17el12_dz_Edge > 0 || HLT_ele33ele33_Edge > 0)"
+      self.trigEMc = "(HLT_mu8el17_Edge > 0 || HLT_mu17el12_Edge > 0 || HLT_mu30ele30_Edge > 0)"
+      self.leptonPt = "Lep1_pt_Edge > 20. && Lep2_pt_Edge > 20."
+      self.leptonDR = "lepsDR_Edge > 0.3"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
-      self.leptonsMll = "t.lepsMll_Edge > 20"
+      self.leptonsMll = "lepsMll_Edge > 20"
       self.goodLepton = self.twoLeptons + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll
       self.ee = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121)"
       self.mm = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)"
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
-      self.nj2 = "(t.nJetSel_Edge >= 2)"
-      self.nj0 = "(t.nJetSel_Edge >= 0)"
-      self.METJetsSignalRegion = "((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2))"
-      self.METJetsSignalRegion2J = "(((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2)) && t.nJetSel_Edge == 2)"
-      self.METJetsSignalRegion3J = "(((met_pt > 150 && t.nJetSel_Edge > 1) || (met_pt > 100 && t.nJetSel_Edge > 2)) && t.nJetSel_Edge >  2)"
-      self.METJetsSignalRegionMET100 = "(met_pt > 100 && t.nJetSel_Edge > 1)"
-      self.METJetsSignalRegionMET150 = "(met_pt > 150 && t.nJetSel_Edge > 1)"
-      self.METJetsControlRegion = "(met_pt > 100 && met_pt < 150 && t.nJetSel_Edge == 2)"
-      self.RSFOFControlAlternative = "(met_pt > 50 && met_pt < 150 && t.nJetSel_Edge == 2 && t.nBJetLoose35_Edge >=1 )"
-      self.DYControlRegion = "(met_pt < 50 && t.nJetSel_Edge >= 2)"
+      self.nj2 = "(nJetSel_Edge >= 2)"
+      self.nj0 = "(nJetSel_Edge >= 0)"
+      self.METJetsSignalRegion = "((met_Edge > 150 && nJetSel_Edge > 1) || (met_Edge > 100 && nJetSel_Edge > 2))"
+      self.METJetsSignalRegion2J = "(((met_Edge > 150 && nJetSel_Edge > 1) || (met_Edge > 100 && nJetSel_Edge > 2)) && nJetSel_Edge == 2)"
+      self.METJetsSignalRegion3J = "(((met_Edge > 150 && nJetSel_Edge > 1) || (met_Edge > 100 && nJetSel_Edge > 2)) && nJetSel_Edge >  2)"
+      self.METJetsSignalRegionMET100 = "(met_Edge > 100 && nJetSel_Edge > 1)"
+      self.METJetsSignalRegionMET150 = "(met_Edge > 150 && nJetSel_Edge > 1)"
+      self.METJetsControlRegion = "(met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2)"
+      self.RSFOFControlAlternative = "(met_Edge > 50 && met_Edge < 150 && nJetSel_Edge == 2 && nBJetLoose35_Edge >=1 )"
+      self.DYControlRegion = "(met_Edge < 50 && nJetSel_Edge >= 2)"
       self.blinded = "!"+self.METJetsSignalRegion
-      self.DYmet = "(met_pt < 50)"
-      self.DYmass = "t.lepsMll_Edge > 60 && t.lepsMll_Edge < 120"
-      self.ZmassVeto = "(t.lepsMll_Edge < 81 || t.lepsMll_Edge > 101)"
-      self.DYmassVeto = "(t.lepsMll_Edge < 70 || t.lepsMll_Edge > 110)"
-      self.lowmass = "t.lepsMll_Edge > 20 && t.lepsMll_Edge < 70"
-      self.Zmass = "t.lepsMll_Edge > 81 && t.lepsMll_Edge < 101"
-      self.highmass = "t.lepsMll_Edge > 120"
-      self.central = "(abs(t.Lep1_eta_Edge)<1.4 && abs(t.Lep2_eta_Edge)<1.4)"
-      self.forward = "(abs(t.Lep1_eta_Edge)>1.4 || abs(t.Lep2_eta_Edge)>1.4)"
+      self.DYmet = "(met_Edge < 50)"
+      self.DYmass = "lepsMll_Edge > 60 && lepsMll_Edge < 120"
+      self.ZmassVeto = "(lepsMll_Edge < 81 || lepsMll_Edge > 101)"
+      self.DYmassVeto = "(lepsMll_Edge < 70 || lepsMll_Edge > 110)"
+      self.lowmass = "lepsMll_Edge > 20 && lepsMll_Edge < 70"
+      self.Zmass = "lepsMll_Edge > 81 && lepsMll_Edge < 101"
+      self.highmass = "lepsMll_Edge > 120"
+      self.central = "(abs(Lep1_eta_Edge)<1.4 && abs(Lep2_eta_Edge)<1.4)"
+      self.forward = "(abs(Lep1_eta_Edge)>1.4 || abs(Lep2_eta_Edge)>1.4)"
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
-      self.HT = "(t.htJet35j_Edge > 200)"
-      self.triggerHT = "(HLT_pfht200 > 0 || HLT_pfht250 > 0 || HLT_pfht300 > 0 || HLT_pfht350 > 0 || HLT_pfht400>0 || HLT_pfht475>0 || HLT_pfht600>0 || HLT_pfht800>0)"
+      self.HT = "(htJet35j_Edge > 200)"
+      self.triggerHT = "(HLT_pfht200_Edge > 0 || HLT_pfht250_Edge > 0 || HLT_pfht300_Edge > 0 || HLT_pfht350_Edge > 0 || HLT_pfht400_Edge>0 || HLT_pfht475_Edge>0 || HLT_pfht600_Edge>0 || HLT_pfht800_Edge>0)"
       self.triggerCalculation = self.AddList([self.triggerHT, self.HT, self.goodLepton, self.donot(self.METJetsSignalRegion), self.donot(self.AddList([self.METJetsControlRegion, self.OR(self.lowmass, self.highmass)]))])
 
 
@@ -123,6 +123,10 @@ class CutManager:
    def GoodLeptonAF(self):
 
       return self.brackets(self.goodLepton + " && " + self.AF + " && " + self.trigger)
+
+   def GoodLeptonAFNoTrigger(self):
+
+      return self.brackets(self.goodLepton + " && " + self.AF)
 
    def GoodLeptonSFNoTrigger(self):
 
