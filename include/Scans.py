@@ -15,6 +15,7 @@ class binning:
 class Scan(object):
     def __init__(self, name):
         self.cuts_norm = '1'
+        self.makeMCDatacards = False
         self.name  = name
         self.zminUL  = 1e-3; self.zmaxUL = 1e3
         self.xbins = binning(100,100,1000); self.ybins = binning(100,100,1000)
@@ -24,6 +25,9 @@ class Scan(object):
         self.zmaxEff = 0.5
         self.tree = 0
         self.paper = 'SUS66666'
+        self.has3DGen = True
+        self.xvar = 'GenSusyMScan1_Edge'
+        self.yvar = 'GenSusyMScan2_Edge'
         self.loadData()
         self.loadXsecs()
 
@@ -40,8 +44,10 @@ class Scan(object):
                              'SMS_T6bbllslepton_mSbottom800To950_mLSP150To900']
             self.xbins = binning(400,900,25)
             self.ybins = binning(200,900,25)
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
             self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()]) ## trigger not available in fastsim
-            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0') ## remove the filters, ugly.
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
             self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/sbottomXsec.txt')
@@ -52,17 +58,21 @@ class Scan(object):
                         self.regions.append([eta,mass,nb])
             #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
             self.xtitle = 'm_{sbottom}'; self.ytitle = 'm_{neu2}'
-        if self.name == 'TChaChaSleps':
-            self.paper = 'SUS16666'
-            self.datasets = ['TChaCha_slep_mCha600_mLSP50',
-                             'TChaCha_slep_mCha350_mLSP200']
-            self.xbins = binning(350,600,50)
-            self.ybins = binning( 50,200,50)
-            self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()]) ## trigger not available in fastsim
-            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 't.nPairLep_Edge > 0') ## remove the filters, ugly.
+
+        if self.name == 'T6bbsleptonMET150':
+            self.paper = 'SUS15011MET150'
+            self.datasets = ['SMS_T6bbllslepton_mSbottom400To575_mLSP150To550',
+                             'SMS_T6bbllslepton_mSbottom600To775_mLSP150To725',
+                             'SMS_T6bbllslepton_mSbottom800To950_mLSP150To900']
+            self.xbins = binning(400,900,25)
+            self.ybins = binning(200,900,25)
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
+            self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger(), 'met_Edge > 150']) ## trigger not available in fastsim
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
-            self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/chaChaXsec_wino.txt')
+            self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/sbottomXsec.txt')
             self.regions = []
             for eta in ['central','forward']:#,'inclusive']:
                 for mass in ['lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass']:#,'allMass']:
@@ -70,6 +80,54 @@ class Scan(object):
                         self.regions.append([eta,mass,nb])
             #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
             self.xtitle = 'm_{sbottom}'; self.ytitle = 'm_{neu2}'
+
+        if self.name == 'TChiChiSleps':
+            self.paper = 'SUS16777'
+            self.datasets = ['TChiChi_slep_mCha600_mLSP50',
+                             'TChiChi_slep_mCha350_mLSP200']
+            self.xbins = binning(350,650,50)
+            self.ybins = binning(  0,250,50)
+            self.xvar = 'GenSusyMChargino1_Edge'
+            self.yvar = 'GenSusyMNeutralino_Edge'
+            self.cuts_norm = cuts.AddList(['met_Edge > 150', 'nJetSel_Edge < 2', cuts.GoodLeptonAFNoTrigger()]) ## trigger not available in fastsim
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/chaChaXsec_wino.txt')
+            self.regions = []
+            for eta in ['central','forward']:#,'inclusive']:
+                for mass in ['lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass']:#,'allMass']:
+                    for nb in ['0b']:
+                        self.regions.append([eta,mass,nb])
+            #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
+            self.xtitle = 'm_{sbottom}'; self.ytitle = 'm_{neu2}'
+            self.has3DGen = False
+
+        if self.name == 'TChiNeuWZ':
+            self.makeMCDatacards = True
+            self.paper = 'SUS16888'
+            self.datasets = ['TChiNeu_WZ_mCha350_mLSP100',
+                             'TChiNeu_WZ_mCha200_mLSP100',
+                             'TChiNeu_WZ_mCha350_mLSP20' ]
+            self.xbins = binning(150,400,50)
+            self.ybins = binning(  0,140,20)
+            self.xvar = 'GenSusyMNeutralino2_Edge'
+            self.yvar = 'GenSusyMNeutralino_Edge'
+            self.cuts_norm = cuts.AddList([cuts.METJetsSignalRegion, cuts.GoodLeptonSFNoTrigger()])#, 'met_Edge > 200 && maxMjj_Edge > 50 && maxMjj_Edge < 150 && -1.*TMath::Log(lh_ana_met_data_Edge*lh_ana_mlb_data_Edge*lh_ana_a3d_data_Edge*lh_ana_zpt_data_Edge) > 19.0']) ## trigger not available in fastsim
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('/afs/cern.ch/user/m/mdunser/edgeSW/Framework/datacards/chaNeuXsec_wino.txt')
+            self.regions = []
+            #for eta in ['central','forward']:#,'inclusive']:
+            for eta in ['inclusive']:
+                for mass in ['onZ']:#,'allMass']:
+                    for nb in ['0b']:
+                        self.regions.append([eta,mass,nb])
+            #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
+            self.xtitle = 'm_{Chargino=Neutralino2}'; self.ytitle = 'm_{LSP}'
+            self.has3DGen = False
+            self.br = 0.1 ## Z goes only to leptons
 
     def loadXsecs(self):
         if not self.xsecFile:
@@ -89,7 +147,7 @@ class Scan(object):
 
     def makeExclusion(self):
         print 'making the exclusions!!'
-        limitfile = r.TFile('datacards/{name}/{name}_allLimits.root'.format(name=self.name),'READ')
+        limitfile = r.TFile('datacards/datacards_{name}/{name}/{name}_allLimits.root'.format(name=self.name),'READ')
         limittree = limitfile.Get('limit')
         ## observed limit
         self.ex_obs = copy.deepcopy(self.yx)
@@ -130,12 +188,12 @@ class Scan(object):
             elif 0.83 < point.quantileExpected < 0.85:
                 self.ex_exp_m1s.Fill(massx, massy, point.limit)
         zmax = self.ex_obs.GetMaximum()
-        self.ex_obs    .GetZaxis().SetRangeUser(0.,zmax)
-        self.ex_obs_p1s.GetZaxis().SetRangeUser(0.,zmax)
-        self.ex_obs_m1s.GetZaxis().SetRangeUser(0.,zmax)
-        self.ex_exp    .GetZaxis().SetRangeUser(0.,zmax)
-        self.ex_exp_p1s.GetZaxis().SetRangeUser(0.,zmax)
-        self.ex_exp_m1s.GetZaxis().SetRangeUser(0.,zmax)
+        self.ex_obs    .GetZaxis().SetRangeUser(0.,10.)
+        self.ex_obs_p1s.GetZaxis().SetRangeUser(0.,10.)
+        self.ex_obs_m1s.GetZaxis().SetRangeUser(0.,10.)
+        self.ex_exp    .GetZaxis().SetRangeUser(0.,10.)
+        self.ex_exp_p1s.GetZaxis().SetRangeUser(0.,10.)
+        self.ex_exp_m1s.GetZaxis().SetRangeUser(0.,10.)
     
     def getSmoothedGraph(self,h_orig):
         tmp_name       = (h_orig.GetName()+'_smoothed').replace('Graph2D_from_','')
@@ -232,4 +290,16 @@ class Scan(object):
         self.makeULPlot()
         self.saveULGraphsInFile()
         print '... done making pretty plots'
+
+    def make3DGen(self):
+        self.ngen = r.TH3F('3dngen', '3dngen', self.xbins.n, self.xbins._min, self.xbins._max, 
+                                               self.ybins.n, self.ybins._min, self.ybins._max,
+                                               1, 0 , 1)
+        #self.ngen = self.norm.Clone('smsCountHisto') ##scan.tree.blocks[0].samples[0].smsCount ## take the first slice's ngen histo
+        #self.ngen.Reset()
+        for ind,i in enumerate(self.tree.blocks[0].samples):
+            massx = int( ''.join(j for j in i.name.split('_')[-2] if j.isdigit() ) )
+            massy = int( ''.join(j for j in i.name.split('_')[-1] if j.isdigit() ) )
+            print 'at ', i, 'getting masses', massx, massy
+            self.ngen.Fill(massx,massy, 0.5, i.count) ## add all others
 
