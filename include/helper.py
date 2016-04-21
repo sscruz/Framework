@@ -27,6 +27,7 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
                 typeList   .append(int(line.split()[-1]))
     for _selSample in selList:
         if _selSample not in checkedList:
+            print _selSample
             print 'ERROR: some samples weren\'t selected, check all sample names!'
             sys.exit('exiting...')
     if not len(set(typeList)) == 1:

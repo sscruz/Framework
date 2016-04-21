@@ -72,12 +72,13 @@ class collection:
         g.close()
 
 class region():
-    def __init__(self, name, cuts, rvars, bins, doData):
+    def __init__(self, name, cuts, rvars, bins, doData, doJZB = False):
         self.name      = name
         self.cuts      = cuts
         self.rvars     = rvars
         self.bins      = bins
         self.doData    = doData
+        self.doJZB     = doJZB
         if len(rvars) is not len(bins):
             print 'length of variables and bins has to be equal'
             sys.exit('exiting!')
@@ -91,6 +92,7 @@ class region():
                 self.mll_ra   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_tt   = collection(self.bins[self.rvars.index(v)], v)
                 self.mll_pred = collection(self.bins[self.rvars.index(v)], v)
+                self.mll_jzb  = collection(self.bins[self.rvars.index(v)], v)
             if v == 'met':
                 self.met      = collection(self.bins[self.rvars.index(v)], v)
                 self.met_dy   = collection(self.bins[self.rvars.index(v)], v)

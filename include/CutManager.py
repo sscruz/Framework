@@ -54,9 +54,10 @@ class CutManager:
    def AddList(self, cutlist):
       returncut = ''
       for cut in cutlist:
-          returncut += cut
-          if not cutlist.index(cut) == len(cutlist)-1:
-            returncut += ' && '
+         returncut += cut
+         if not cutlist.index(cut) == len(cutlist)-1:
+            if not cutlist[cutlist.index(cut)+1] == '':
+               returncut += ' && '
       return self.brackets(returncut)
   
    def Add(self, cut1, cut2):
@@ -328,3 +329,10 @@ class CutManager:
 
 	return self.brackets(self.nj2 + " && " + self.DYmet + " && " + self.GoodLeptonmm())
       
+   def JZBJetsSignalRegion(self, center): 
+      
+        return 'nJetSel_Edge > 2 && (lepsJZB_Edge -%f) > 200.'%center
+
+   def JZBJetsControlRegion(self, center): 
+      
+        return 'nJetSel_Edge > 2 && (lepsJZB_Edge -%f) < -200.'%center

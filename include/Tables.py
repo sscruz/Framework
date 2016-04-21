@@ -246,8 +246,8 @@ def makeDataCards(binnedSRList, dc_name, ingDA, onZ):
                 # make a meaningful bin name
                 bin_name = '%s_%s_%s'%(eta, mass, b_string)
                 # get the final RSFOF
-                rsfof   = getattr(ingDA, 'rsfof_final_%s_val'%(_eta))
-                rsfof_e = getattr(ingDA, 'rsfof_final_%s_err'%(_eta))
+                rsfof   = getattr(self.ingDA, 'rsfof_final_%s_val'%(_eta))
+                rsfof_e = getattr(self.ingDA, 'rsfof_final_%s_err'%(_eta))
                 dc = '''# this is the datacard for bin {bin_name}
 imax 1  number of channels
 jmax 2  number of backgrounds
@@ -312,3 +312,65 @@ def makeRinoutTable(region):
 
 
 
+def makeJZBDataCards(binnedSRList, dc_name, ingDA):
+    print 'preparing datacards'
+
+    for sr in binnedSRList:
+        print '   ... for region %s'%(sr.name)
+        b_string = 'incb' if 'inc' in sr.name else '0b' if '0b' in sr.name else '1b' if '1b' in sr.name else '2b' if '2b' in sr.name else 'nimps'
+        ret = []
+        for eta in ['central', 'forward']:
+            print '      ... in %s'%eta
+            _eta = 'cen' if eta == 'central' else 'fwd'
+            obshisto = sr.mll     .getHisto('DATA', eta)
+            predhisto= sr.mll_pred.getHisto('DATA', eta)
+            predjzb  = sr.mll_jzb .getHisto('DATA', eta)
+
+            for i in range(1,obshisto.GetNbinsX()+1):
+                if i == obshisto.GetNbinsX(): continue
+                mr   = 'lm'      if i == 1 else 'bz'     if i == 2 else 'oz'  if i == 3 else 'az'     if i == 4 else 'hm'
+                mass = 'lowMass' if i == 1 else 'belowZ' if i == 2 else 'onZ' if i == 3 else 'aboveZ' if i == 4 else 'highMass' if i == 5 else 'tooHigh'
+                print '         ... for mass region %s'%mass
+                # get rinout and onZ prediction
+                tmp_rinout   = getattr(getattr(ingDA, 'rinout_dy_%s'%mr), '%s_val'%_eta)
+                tmp_rinout_e = getattr(getattr(ingDA, 'rinout_dy_%s'%mr), '%s_err'%_eta) if mr != 'oz' else 0.
+                onz          = tmp_rinout*predjzb.GetBinContent(i)
+                onz_e        = math.sqrt((predjzb.GetBinContent(i)*tmp_rinout_e)**2 + (tmp_rinout*predjzb.GetBinError(i))**2)
+                # get FS background
+                fs           = predhisto.GetBinContent(i)
+                fs_e         = predhisto.GetBinError(i)
+                # get the observed
+                obs          = obshisto.GetBinContent(i)
+                # get opposite flavor yield
+                #fs_bkg       = predhisto.GetBinContent(i) ## this is wrong obviously!
+                of_histo = sr.mll_of_central if eta == 'central' else sr.mll_of_forward
+                of_yield     = of_histo.GetBinContent(i)
+                # make a meaningful bin name
+                bin_name = '%s_%s_%s'%(eta, mass, b_string)
+                # get the final RSFOF
+                rsfof   = getattr(ingDA, 'rsfof_final_%s_val'%(_eta))
+                rsfof_e = getattr(ingDA, 'rsfof_final_%s_err'%(_eta))
+                dc = '''# this is the datacard for bin {bin_name}
+imax 1  number of channels
+jmax 2  number of backgrounds
+kmax *  number of nuisance parameters (sources of systematical uncertainties)
+------------
+# only one channel here with observation {obs}
+bin            {bin_name}
+observation    {obs}
+------------
+bin        {bin_name}     {bin_name}     {bin_name}
+process    sig            FS             DY    
+process    0              1              2
+rate       XXRATEXX         {fs_bkg:.2f}       {dy_bkg:.2f}
+------------
+deltaS       lnN              1.15      -           -       
+lumi         lnN              1.12      -           -       
+FS_unc       lnN              -         {fs_unc:.2f}    -       
+{bin_name}_fs_stat      gmN {of_yield}   -         {rsfof:.3f}        -       
+DY_unc       lnN              -         -           {dy_unc:.2f}'''.format(bin_name=bin_name, obs=obs, fs_bkg=fs, fs_unc=1+rsfof_e, dy_bkg=onz, dy_unc=1+onz_e/onz, of_yield=int(of_yield), rsfof=rsfof)
+                tmp_file = open('datacards/JZB%s.txt'%(bin_name),'w')
+                tmp_file.write(dc)
+                tmp_file.close()
+
+    print 'done with datacards'

@@ -28,6 +28,7 @@ class Scan(object):
         self.has3DGen = True
         self.xvar = 'GenSusyMScan1_Edge'
         self.yvar = 'GenSusyMScan2_Edge'
+        self.Idvar = 'srID_Edge'
         self.loadData()
         self.loadXsecs()
 
@@ -58,6 +59,31 @@ class Scan(object):
                         self.regions.append([eta,mass,nb])
             #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
             self.xtitle = 'm_{sbottom}'; self.ytitle = 'm_{neu2}'
+
+        if self.name == 'T5ZZ_JZB':
+            self.paper = 'SUS15011'
+            self.datasets = ['SMS_T5ZZ_mGluino1000To1250_mLSP100To1000', 'SMS_T5ZZ_mGluino1200To1350_mLSP100To1200',  
+                             'SMS_T5ZZ_mGluino1400To1550_mLSP100To1400', 'SMS_T5ZZ_mGluino600To700_mLSP100To500',    
+                             'SMS_T5ZZ_mGluino800To950_mLSP100To800']
+            self.xbins = binning(600,1550,25)
+            self.ybins = binning(100,1400,25)
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
+            self.cuts_norm = cuts.AddList([cuts.GoodLeptonSFNoTrigger(),cuts.JZBJetsSignalRegion(5.)]) ## trigger not available in fastsim
+            self.Idvar = 'srIDJZB_Edge'
+            print 'JZB centering is hardcoded !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('datacards/gluinoXsec.txt')
+            self.regions = []
+            for eta in ['central','forward']:#,'inclusive']:
+                for mass in [ 'onZ']:#,'allMass']:
+                    for nb in ['incb', '0b', '1b']:
+                        self.regions.append([eta,mass,nb])
+            #self.regions.append([eta,mass,nb] for eta in ['central','forward'] for mass in ['allMass', 'lowMass', 'belowZ', 'onZ', 'aboveZ', 'highMass'] for nb in ['incb', '0b', '1b', '2b'] )
+            self.xtitle = 'm_{#tilde{g}}'; self.ytitle = 'm_{LSP}'
+
 
         if self.name == 'T6bbsleptonMET150':
             self.paper = 'SUS15011MET150'
@@ -140,6 +166,7 @@ class Scan(object):
         self.xsec_histo = r.TH1F('x-sections in fb for %s'%self.name,'xsec_histo', len(keys), min(keys), max(keys) )
         self.xsec_histo.Sumw2()
         for key, value in self.xsecs.items():
+            print key
             self.xsecs[key][0] = self.xsecs[key][0]*1000.
             self.xsecs[key][1] = self.xsecs[key][0]*0.01*self.xsecs[key][1]
             self.xsec_histo.SetBinContent(self.xsec_histo.FindBin(key), value[0])
@@ -173,10 +200,14 @@ class Scan(object):
         self.ex_exp_m1s = copy.deepcopy(self.yx)
         self.ex_exp_m1s.SetTitle("nominal exclusion plot expected - 1 sigma exp"); self.ex_exp_m1s.SetName('ex_exp_m1s')
         self.ex_exp_m1s.Reset()
-    
         for point in limittree:
             mass      = str(int(point.mh))
-            massx     = int(mass[:3]); massy = int(mass[3:])
+            massx = int(mass[:map(lambda x: x == '0',mass)[3:].index(False)+3])
+            massy = int(mass[map(lambda x: x == '0',mass)[3:].index(False)+3:])
+            print massx, massy
+            #int(mass[:3]); 
+            #massy = int(mass[3:])
+            print mass, massx, massy
             if point.quantileExpected == -1:
                 self.ex_obs    .Fill(massx, massy, point.limit)
                 self.ex_obs_p1s.Fill(massx, massy, point.limit*(self.xsecs[massx][0]+self.xsecs[massx][1])/self.xsecs[massx][0])

@@ -8,25 +8,25 @@
 # BLOCK        COLOR                         NAME                                  LABEL                                     LOCATION OF TREES                               FRIENDS         XSEC     ISDATA
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-------------------------- 25 ns --------------------------
-DoubleMuon    r.kBlack   DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628  DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-DoubleEG      r.kBlack   DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628    DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-MuonEG        r.kBlack   MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628      MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628  DoubleMuon_Run2015C   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+DoubleEG      r.kBlack   DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628    DoubleEG_Run2015C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+MuonEG        r.kBlack   MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628      MuonEG_Run2015C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
 #
-DoubleMuon    r.kBlack   DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628       DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-DoubleEG      r.kBlack   DoubleEG_Run2015D-05Oct_v1_runs_246908_260628         DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-MuonEG        r.kBlack   MuonEG_Run2015D-05Oct_v2_runs_246908_260628           MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628       DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+DoubleEG      r.kBlack   DoubleEG_Run2015D-05Oct_v1_runs_246908_260628         DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+MuonEG        r.kBlack   MuonEG_Run2015D-05Oct_v2_runs_246908_260628           MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
 #
-DoubleMuon    r.kBlack   DoubleMuon_Run2015D_v4_runs_246908_260628             DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-DoubleEG      r.kBlack   DoubleEG_Run2015D_v4_runs_246908_260628               DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-MuonEG        r.kBlack   MuonEG_Run2015D_v4_runs_246908_260628                 MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
+DoubleMuon    r.kBlack   DoubleMuon_Run2015D_v4_runs_246908_260628             DoubleMuon_Run2015D   /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+DoubleEG      r.kBlack   DoubleEG_Run2015D_v4_runs_246908_260628               DoubleEG_Run2015D     /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+MuonEG        r.kBlack   MuonEG_Run2015D_v4_runs_246908_260628                 MuonEG_Run2015D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
 # hadronics
-HTMHT         r.kBlack   HTMHT_Run2015C_25ns-05Oct_v1_runs_246908_260628       HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-JetHT         r.kBlack   JetHT_Run2015C_25ns-05Oct_v1_runs_246908_260628       JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
+HTMHT         r.kBlack   HTMHT_Run2015C_25ns-05Oct_v1_runs_246908_260628       HTMHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+JetHT         r.kBlack   JetHT_Run2015C_25ns-05Oct_v1_runs_246908_260628       JetHT_Run2015C        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
 #
-HTMHT         r.kBlack   HTMHT_Run2015D-05Oct_v1_runs_246908_260628            HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-JetHT         r.kBlack   JetHT_Run2015D-05Oct_v1_runs_246908_260628            JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-HTMHT         r.kBlack   HTMHT_Run2015D_v4_runs_246908_260628                  HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
-JetHT         r.kBlack   JetHT_Run2015D_v4_runs_246908_260628                  JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1  1
+HTMHT         r.kBlack   HTMHT_Run2015D-05Oct_v1_runs_246908_260628            HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+JetHT         r.kBlack   JetHT_Run2015D-05Oct_v1_runs_246908_260628            JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+HTMHT         r.kBlack   HTMHT_Run2015D_v4_runs_246908_260628                  HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
+JetHT         r.kBlack   JetHT_Run2015D_v4_runs_246908_260628                  JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/dataForMoriond/   /afs/cern.ch/work/p/pablom/public/friendDataNewReal/  1  1
 #
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
@@ -46,8 +46,8 @@ DYJets    r.kBlue+1    DYJetsToLL_M50_HT200to400_v7  DYJetsToLL_M50_HT200to400  
 DYJets    r.kBlue+1    DYJetsToLL_M50_HT400to600_v7  DYJetsToLL_M50_HT400to600        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/friendsMCNewReal/      6983.9   0
 DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf_v7  DYJetsToLL_M50_HT600toInf        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/friendsMCNewReal/      2703.5   0
 rare      r.kRed+2     WWTo2L2Nu                     WWTo2L2Nu                        /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/     12178.0   0
-rare      r.kRed+2     WZTo2L2Q                      WZTo2L2Q                         /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/s/sesanche/public/nTuples/mar09/      5595.0   0
-rare      r.kRed+2     ZZTo2L2Q                      ZZTo2L2Q                         /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/friendsMCNewReal/      3220.0   0
+rare      r.kRed+2     WZTo2L2Q                      WZTo2L2Q                         /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/      5595.0   0
+rare      r.kRed+2     ZZTo2L2Q                      ZZTo2L2Q                         /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/      3220.0   0
 rare      r.kRed+2     TToLeptons_tch_amcatnlo       singleTop-t                      /afs/cern.ch/work/p/pablom/public/MC/                /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/     70314.5   0
 rare      r.kRed+2     TTZToLLNuNu                   TTZToLLNuNu                      /afs/cern.ch/work/m/mvesterb/public/MC_samples/      /afs/cern.ch/work/p/pablom/public/friendsMCNewReal/       252.9   0
 rare      r.kRed+2     WZTo3L1Nu                     WZTo3L1Nu                        /afs/cern.ch/work/m/mvesterb/public/MC_samples/      /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/     4429.65   0
@@ -68,11 +68,11 @@ rare      r.kRed+2     T_tWch                        T_tWch                     
 T6bbslepton   r.kBlue+3   SMS_T6bbllslepton_mSbottom400To575_mLSP150To550   T6bbslepton   /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_newGoodScan_Mar04/   /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/  1.0   0
 T6bbslepton   r.kBlue+3   SMS_T6bbllslepton_mSbottom600To775_mLSP150To725   T6bbslepton   /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_newGoodScan_Mar04/   /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/  1.0   0
 T6bbslepton   r.kBlue+3   SMS_T6bbllslepton_mSbottom800To950_mLSP150To900   T6bbslepton   /afs/cern.ch/work/m/mdunser/public/edgeTrees/T6bbslepton_newGoodScan_Mar04/   /afs/cern.ch/work/p/pablom/public/newFriendsVersionApril2016/  1.0   0
-T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1000To1250_mLSP100To1000   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/friends/  1.0   0
-T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1200To1350_mLSP100To1200   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/friends/  1.0   0
-T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1400To1550_mLSP100To1400   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/friends/  1.0   0
-T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino600To700_mLSP100To500   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/friends/  1.0   0
-T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino800To950_mLSP100To800   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/friends/  1.0   0
+T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1000To1250_mLSP100To1000   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/newFriends/  1.0   0
+T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1200To1350_mLSP100To1200   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/newFriends/  1.0   0
+T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino1400To1550_mLSP100To1400   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/newFriends/  1.0   0
+T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino600To700_mLSP100To500   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/newFriends/  1.0   0
+T5ZZ   r.kBlue+3   SMS_T5ZZ_mGluino800To950_mLSP100To800   T5ZZ   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/   /afs/cern.ch/work/s/sesanche/public/nTuples/T5ZZ/newFriends/  1.0   0
 ## chargino chargino production
 TChiChiSleps   r.kBlue+3   TChiChi_slep_mCha600_mLSP50    TChiChiSleps   /afs/cern.ch/work/m/mdunser/public/edgeTrees/EWinoSamples/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1.0   0
 TChiChiSleps   r.kBlue+3   TChiChi_slep_mCha350_mLSP200   TChiChiSleps   /afs/cern.ch/work/m/mdunser/public/edgeTrees/EWinoSamples/   /afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForEWino3/  1.0   0
@@ -110,3 +110,14 @@ synchfile r.kPink      TTLep_pow_synch           TTLep_pow_synch       /afs/cern
 ## JetHT        r.kBlack   JetHT_Run2015D_05Oct_v1_runs_246908_258751            JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
 ## HTMHT        r.kBlack   HTMHT_Run2015D_v4_runs_246908_258751                  HTMHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
 ## JetHT        r.kBlack   JetHT_Run2015D_v4_runs_246908_258751                  JetHT_Run2015D        /afs/cern.ch/work/m/mdunser/public/edgeTrees/data_Oct21/   friends/newNov10/   1         1
+#-----------------------------------------------------------
+#----------------- monte carlo 76 -----------------------------
+#-----------------------------------------------------------
+# BLOCK     COLOR         NAME                       LABEL                       LOCATION OF TREES                             FRIENDS                                                 XSEC     ISDATA
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT100to200_76     DYJetsToLL_M50_HT100to200_76        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/   181302.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT200to400_76     DYJetsToLL_M50_HT200to400_76        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/     50417.7   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT400to600_76     DYJetsToLL_M50_HT400to600_76        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/      6983.9   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf_76     DYJetsToLL_M50_HT600toInf_76        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/      2703.5   0
+DYJets    r.kBlue+1    DY2JetsToLL_M50_LO     DY2JetsToLL_M50_LO        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/      331400   0
+DYJets    r.kBlue+1    DY3JetsToLL_M50_LO     DY3JetsToLL_M50_LO        /afs/cern.ch/work/s/sesanche/public/nTuples/76/                friends/      96360   0

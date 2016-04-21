@@ -25,7 +25,8 @@ class Sample:
             if gw: break
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
-        self.count = self.ftfile.Get('Count').GetBinContent(1)
+        #self.count = self.ftfile.Get('Count').GetBinContent(1)
+         print 'is data'
       self.lumWeight =  1.0
       self.puWeight  = '1.0'
       self.SFWeight  = '1.0'

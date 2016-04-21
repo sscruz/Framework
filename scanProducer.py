@@ -227,8 +227,10 @@ def fillAndSaveDatacards(nbs):
         eta = region[0]; mass = region[1]; nb = region[2]
         if not scan.makeMCDatacards:
             tmp_file = open('datacards/datacards_%s/%s_%s_%s.txt'%(scan.name,eta, mass, nb) ,'r')
+            #tmp_file = open('JZBdatacards/jzbDatacard_100_%s_%s_%s'%(eta,  nb,mass) ,'r')
         else:
             tmp_file = open('datacards/datacards_%s/mc_%s_%s_%s.txt'%(scan.name,eta, mass, nb) ,'r')
+            #tmp_file = open('JZBdatacards/jzbDatacard_100_%s_%s_%s'%(eta,  nb,mass) ,'r')
         tmp_dc  = tmp_file.read()
         tmp_histo = getattr(scan, 'eff_%s_%s_%s'%(eta, mass, nb))
         for i in range(1, tmp_histo.GetXaxis().GetNbins()+1):
@@ -341,7 +343,7 @@ if __name__ == "__main__":
     ##ttDatasets = ['TTLep_pow']
     ##treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT'  , 0, isScan = False)
     cuts = CutManager.CutManager()
-    lumi = 10.0
+    lumi = 2.3
 
     ## have to think a way of reweighting the events with trigger and lepton SFs.
     ## weighting now done with isScan=True flag in samples.py
@@ -362,7 +364,7 @@ if __name__ == "__main__":
         ## everything that takes long should be done here!
         scan = Scans.Scan(opts.scanName)
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
-        scan.norm = scan.tree.getTH3F(1., 'nPass_norm', 'srID_Edge:'+scan.yvar+':'+scan.xvar, scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2., scan.xbins._max+scan.xbins.w/2.,  ## lumi set later for scans!!
+        scan.norm = scan.tree.getTH3F(1., 'nPass_norm', scan.Idvar+':'+scan.yvar+':'+scan.xvar, scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2., scan.xbins._max+scan.xbins.w/2.,  ## lumi set later for scans!!
                                                                                                 scan.ybins.n+1, scan.ybins._min-scan.ybins.w/2., scan.ybins._max+scan.ybins.w/2., 
                                                                                                 200, 100, 300, scan.cuts_norm, '', scan.xtitle, scan.ytitle, scan.ztitle)
         
@@ -371,7 +373,7 @@ if __name__ == "__main__":
         if scan.makeMCDatacards:
             print 'preparing datacards from MC'
             a = makeMCDatacards()
-        print asfsdfs
+#        print asfsdfs
 
         print '=================================================='
         print '=================================================='

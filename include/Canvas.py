@@ -17,6 +17,7 @@ class Canvas:
       self.arrows= []
       self.latexs= []
       self.bands = []
+      self.ratiobands = []
       self.options = []
       self.labels = []      
       self.labelsOption = []
@@ -107,6 +108,15 @@ class Canvas:
       #grshade.SetFillStyle(3001)
       grshade.SetFillColorAlpha(color, opacity)
       self.bands.append(grshade)
+   def addBandRatio(self, x1, y1, x2, y2, color, opacity):
+      grshade = TGraph(4)
+      grshade.SetPoint(0,x1,y1)
+      grshade.SetPoint(1,x2,y1)
+      grshade.SetPoint(2,x2,y2)
+      grshade.SetPoint(3,x1,y2)
+      #grshade.SetFillStyle(3001)
+      grshade.SetFillColorAlpha(color, opacity)
+      self.ratiobands.append(grshade)
 
    def addLine(self, x1, y1, x2, y2, color, thickness = 0.):
       line = TLine(x1,y1,x2,y2)
@@ -174,15 +184,15 @@ class Canvas:
       self.orderForLegend.append(orderForLegend)
 
 
-   def addStack(self, h, option, ToDraw, orderForLegend):
+   def addStack(self, h, option, ToDraw, orderForLegend, labels = []):
 
       legendCounter = orderForLegend
       if(orderForLegend < len(self.orderForLegend)):
           legendCounter = len(self.orderForLegend)
 
       self.addHisto(h, option, "", "", "", ToDraw, -1)  
-      for h_c in h.GetHists():
-          self.addHisto(h_c, "H", h_c.GetTitle(), "F", "", 0, legendCounter)
+      for ind, h_c in enumerate(h.GetHists()):
+          self.addHisto(h_c, "H", h_c.GetTitle() if len(labels) == 0 else labels[ind], "F", "", 0, legendCounter)
           legendCounter = legendCounter + 1
        
 
@@ -218,6 +228,7 @@ class Canvas:
 
       for i in range(0, len(self.histos)):
           if(self.ToDraw[i] != 0):
+              self.histos[i].GetXaxis().SetRange(self.histos[i].GetNbinsX())
               self.histos[i].Draw(self.options[i])
 
       if(legend):
@@ -255,7 +266,7 @@ class Canvas:
           ## print 'at histogram', hdata.GetName()
           ## print 'ranges', hdata.GetXaxis().GetXmin(), hdata.GetXaxis().GetXmax(), hdata.GetNbinsX()
           ## print 'dividing by ', tmp_hMC.GetName()
-          ## print 'ranges', tmp_hMC.GetXaxis().GetXmin(), tmp_hMC.GetXaxis().GetXmax(), tmp_hMC.GetNbinsX()
+          print 'ranges', tmp_hMC.GetXaxis().GetXmin(), tmp_hMC.GetXaxis().GetXmax(), tmp_hMC.GetNbinsX()
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
@@ -288,6 +299,8 @@ class Canvas:
       line = TLine(xmin, 1, xmax, 1)
       line.SetLineColor(r.kGray+2);
       line.Draw('');
+      for band in self.ratiobands:
+          band.Draw('f')
 
       pad1.cd()
       self.banner(isData, lumi)
