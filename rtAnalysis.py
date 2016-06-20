@@ -84,137 +84,72 @@ def getTriggerEffs(num, den):
 
 if __name__ == '__main__':
 
+
+
+##Main body of the analysis
+if __name__ == '__main__':
+
+
+
+    print bcolors.HEADER
+    print '#######################################################################'
+    print '                  Starting RT analysis...                          '
+    print '#######################################################################' + bcolors.ENDC
+
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-m', '--mode', action='store', dest='mode', default='rsfof', help='Operation mode')
     parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 
-    print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    daDatasets = ['HTMHT_Run2015C_25ns-05Oct_v1_runs_246908_260628', 'HTMHT_Run2015D-05Oct_v1_runs_246908_260628', 'HTMHT_Run2015D_v4_runs_246908_260628',
-                  'JetHT_Run2015C_25ns-05Oct_v1_runs_246908_260628', 'JetHT_Run2015D-05Oct_v1_runs_246908_260628', 'JetHT_Run2015D_v4_runs_246908_260628']
+    print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
+
+    mcDatasets = ['TTLep_pow']
+    daDatasets = ['DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730', 'DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730', 'MuonEG_Run2016B_PromptReco_v2_runs_273150_273730']
+
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
-    #tree = treeMC
-    print 'Trees successfully loaded...'
 
-    lumi = 2.1
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')
-  
+    print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
+
+    lumi = 2.1 ; maxrun = 999999
+    lumi_str = '2.1invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
-    r.setTDRStyle() 
+    r.setTDRStyle()
+
     cuts = CutManager.CutManager()
- 
-    vetoSignalCR = "(!(" + cuts.METJetsSignalRegion + ")&& !(" + cuts.METJetsControlRegion + "))"
-    denominator_EE = cuts.AddList([cuts.GoodLeptonNoTriggeree(), cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_MM = cuts.AddList([cuts.GoodLeptonNoTriggermm(), cuts.triggerHT, cuts.HT, vetoSignalCR])
-    denominator_EM = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.triggerHT, cuts.HT, vetoSignalCR])
-    numerator_EE = cuts.AddList([denominator_EE, cuts.trigEEc])
-    numerator_MM = cuts.AddList([denominator_MM, cuts.trigMMc])
-    numerator_EM = cuts.AddList([denominator_EM, cuts.trigEMc])
 
 
-    regions = []
-    mll_inc = Region.region('mll_inc',
-                       [''],
-                       ['mll'],
-                       [[20, 2000]],
-                       True)
-    regions.append(mll_inc)
-    regular = Region.region('regular',
-                       ['', '', ''],
-                       ['mll', 'l1pt','l2pt'],
-                       [[20, 40, 60, 80, 100, 120, 140, 180, 220, 260, 300], [20,40,60,100,140,200,240,280,320], [20,40,60,100,140,200,240,280,320]],
-                       True)
-    regions.append(regular)
 
+    DATAdenominatorMllee =   treeMC.getTH1F(lumi, "DATAdenominatoree", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    DATAnumeratorMllee =     treeMC.getTH1F(lumi, "DATAnumeratoree", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.ee]), '', labelx)
+    DATAdenominatorMllmm =   treeMC.getTH1F(lumi, "DATAdenominatormm", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
+    DATAnumeratorMllmm =     treeMC.getTH1F(lumi, "DATAnumeratormm", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.mm]), '', labelx)
+    DATAdenominatorMllSF =   treeMC.getTH1F(lumi, "DATAdenominatorSF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
+    DATAnumeratorMllSF =     treeMC.getTH1F(lumi, "DATAnumeratorSF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.SF]), '', labelx)
+    DATAdenominatorMllOF =   treeMC.getTH1F(lumi, "DATAdenominatorOF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelx)
+    DATAnumeratorMllOF =     treeMC.getTH1F(lumi, "DATAnumeratorOF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.OF]), '', labelx)
 
-    for reg in regions:
-        print 'i am at region', reg.name
-        for eta in ['central', 'forward']:
-            print '... in %s' %(eta)
-            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
+    DATAdenominatorMlleevalue =   treeMC.getTH1F(lumi, "DATAdenominatoreevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    DATAnumeratorMlleevalue =     treeMC.getTH1F(lumi, "DATAnumeratoreevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.ee]), '', labelx)
+    DATAdenominatorMllmmvalue =   treeMC.getTH1F(lumi, "DATAdenominatormmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
+    DATAnumeratorMllmmvalue =     treeMC.getTH1F(lumi, "DATAnumeratormmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.mm]), '', labelx)
+    DATAdenominatorMllSFvalue =   treeMC.getTH1F(lumi, "DATAdenominatorSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
+    DATAnumeratorMllSFvalue =     treeMC.getTH1F(lumi, "DATAnumeratorSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.SF]), '', labelx)
+    DATAdenominatorMllOFvalue =   treeMC.getTH1F(lumi, "DATAdenominatorOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelx)
+    DATAnumeratorMllOFvalue =     treeMC.getTH1F(lumi, "DATAnumeratorOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.OF]), '', labelx)
 
-                dataMC = 'DATA' if tree == treeDA else 'MC'
-                cuts_num_ee = cuts.AddList([numerator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                cuts_den_ee = cuts.AddList([denominator_EE] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                cuts_num_mm = cuts.AddList([numerator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                cuts_den_mm = cuts.AddList([denominator_MM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                cuts_num_em = cuts.AddList([numerator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                cuts_den_em = cuts.AddList([denominator_EM] + [cuts.Central() if eta == 'central' else cuts.Forward()])
-                if dataMC == 'MC':
-                    cuts_num_ee = cuts.AddList([cuts_num_ee, "(genWeight>0)"])
-                    cuts_den_ee = cuts.AddList([cuts_den_ee, "(genWeight>0)"])
-                    cuts_num_mm = cuts.AddList([cuts_num_mm, "(genWeight>0)"])
-                    cuts_den_mm = cuts.AddList([cuts_den_mm, "(genWeight>0)"])
-                    cuts_num_em = cuts.AddList([cuts_num_em, "(genWeight>0)"])
-                    cuts_den_em = cuts.AddList([cuts_den_em, "(genWeight>0)"])
-                             
- 
-                for theRvar in reg.rvars:
-
-                    if(theRvar == 'mll'):
-                      var = "t.lepsMll_Edge"
-                      label = "m_{ll} (GeV)"          
-                    if(theRvar == 'l1pt'):
-                      var = "t.Lep1_pt_Edge"
-                      label = "p_{t,leading} (GeV)"          
-                    if(theRvar == 'l2pt'):
-                      var = "t.Lep2_pt_Edge"
-                      label = "p_{t,trailing} (GeV)"          
+    DATAdenominatorptee =   treeMC.getTH1F(lumi, "DATAdenominatoree", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    DATAnumeratorptee =     treeMC.getTH1F(lumi, "DATAnumeratoree", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.ee]), '', labelx)
+    DATAdenominatorptmm =   treeMC.getTH1F(lumi, "DATAdenominatormm", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
+    DATAnumeratorptmm =     treeMC.getTH1F(lumi, "DATAnumeratormm", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.mm]), '', labelx)
+    DATAdenominatorptSF =   treeMC.getTH1F(lumi, "DATAdenominatorSF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
+    DATAnumeratorptSF =     treeMC.getTH1F(lumi, "DATAnumeratorSF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.SF]), '', labelx)
+    DATAdenominatorOF =   treeMC.getTH1F(lumi, "DATAdenominatorOF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelx)
+    DATAnumeratorMllOF =     treeMC.getTH1F(lumi, "DATAnumeratorOF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.trigger, cuts.OF]), '', labelx)
 
  
-                    reg.eff_num_ee = tree.getTH1F(lumi, "eff_num_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_ee, "", label)
-                    reg.eff_den_ee = tree.getTH1F(lumi, "eff_den_ee"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_ee, "", label)
-                    reg.eff_num_mm = tree.getTH1F(lumi, "eff_num_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_mm, "", label)
-                    reg.eff_den_mm = tree.getTH1F(lumi, "eff_den_mm"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_mm, "", label)
-                    reg.eff_num_em = tree.getTH1F(lumi, "eff_num_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_num_em, "", label)
-                    reg.eff_den_em = tree.getTH1F(lumi, "eff_den_em"+eta+reg.name+dataMC+theRvar, var, reg.bins[reg.rvars.index(theRvar)], 1, 1, cuts_den_em, "", label)
-                    h_eff_ee = getTriggerEffs(reg.eff_num_ee, reg.eff_den_ee)
-                    h_eff_mm = getTriggerEffs(reg.eff_num_mm, reg.eff_den_mm)
-                    h_eff_em = getTriggerEffs(reg.eff_num_em, reg.eff_den_em)
-                    h_RT     = RT(h_eff_ee, h_eff_mm, h_eff_em)
-                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinContent(1))
-                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "ee"), h_eff_ee.GetBinError(1))
-                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinContent(1))
-                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "mm"), h_eff_mm.GetBinError(1))
-                    setattr(reg, "%s_%s_%s_%s_%s"        %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinContent(1))
-                    setattr(reg, "%s_%s_%s_%s_%s_err"    %("eff", dataMC, eta, theRvar, "em"), h_eff_em.GetBinError(1))
-                  
-                    if(theRvar == 'mll'):
-                      reg.mll.setHisto(h_eff_ee, dataMC, eta)
-                      reg.mll.setHisto(h_eff_mm, dataMC, eta)
-                      reg.mll.setHisto(h_eff_em, dataMC, eta)
-                      reg.mll.setHisto(h_RT, dataMC, eta)
-                    if(theRvar == 'l1pt'):
-                      reg.l1pt.setHisto(h_eff_ee, dataMC, eta)
-                      reg.l1pt.setHisto(h_eff_mm, dataMC, eta)
-                      reg.l1pt.setHisto(h_eff_em, dataMC, eta)
-                      reg.l1pt.setHisto(h_RT, dataMC, eta)
-                    if(theRvar == 'l2pt'):
-                      reg.l2pt.setHisto(h_eff_ee, dataMC, eta)
-                      reg.l2pt.setHisto(h_eff_mm, dataMC, eta)
-                      reg.l2pt.setHisto(h_eff_em, dataMC, eta)
-                      reg.l2pt.setHisto(h_RT, dataMC, eta)
- 
-                    if(len(reg.bins[reg.rvars.index(theRvar)]) > 2):
-                    	plot_rt = Canvas.Canvas("rt/%s/plot_rt_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-                        h_RT.GetYaxis().SetRangeUser(0.5, 1.5)
-                        plot_rt.addHisto(h_RT, "E", ""       , "", r.kRed+1 , 1, -1)
-                        plot_rt.save(1, 0, 0, lumi)
-                    	plot_eff = Canvas.Canvas("rt/%s/plot_eff_%s_%s_%s"%(lumi_str, theRvar, eta, dataMC), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-                        h_eff_ee.GetYaxis().SetRangeUser(0.5, 1.1)
-                        h_eff_mm.GetYaxis().SetRangeUser(0.5, 1.1)
-                        h_eff_em.GetYaxis().SetRangeUser(0.5, 1.1)
-                        plot_eff.addHisto(h_eff_ee, "E", "DoubleElectron"       , "PL", r.kRed+1 , 1, 0)
-                        plot_eff.addHisto(h_eff_mm, "E,SAME", "DoubleMuon"       , "PL", r.kGreen+1 , 1, 0)
-                        plot_eff.addHisto(h_eff_em, "E,SAME", "MuonElectron"       , "PL", r.kBlue+1 , 1, 0)
-                        plot_eff.save(1, 0, 0, lumi)
 
-
-
-    mll_inc.mll.saveInFile(['rt', 'region'], 0, 1)
 
 
 

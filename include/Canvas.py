@@ -269,7 +269,9 @@ class Canvas:
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
-          tmp_ratio.SetMarkerSize (tmp_hMC.GetMarkerSize());
+          #tmp_ratio.SetMarkerSize (tmp_hMC.GetMarkerSize());
+          tmp_ratio.SetMarkerSize(0)
+          tmp_ratio.SetFillColor(r.kBlue-5)
           tmp_ratio.SetMarkerColor(tmp_hMC.GetMarkerColor());
           #tmp_ratio.SetMarkerSize(0.6*tmp_ratio.GetMarkerSize());
           #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
@@ -283,7 +285,7 @@ class Canvas:
       #tmp_ratio.Draw("E,SAME");
       pad2.cd();  
       for rat in ratios:
-          rat.Draw('l, same');
+          rat.Draw('E2,same');
 
       line = TLine(xmin, 1, xmax, 1)
       line.SetLineColor(r.kGray+2);
@@ -296,10 +298,12 @@ class Canvas:
           self.ensurePath(path)
           self.myCanvas.SaveAs(path)
 
+      pad1.IsA().Destructor(pad1) 
+      pad2.IsA().Destructor(pad2) 
+      self.myLegend.IsA().Destructor(self.myLegend)
+      self.myCanvas.IsA().Destructor(self.myCanvas)
 
-      #del self.myCanvas
-
-
+ 
    def save(self, legend, isData, log, lumi, ymin=0, ymax=0):
 
       self.myCanvas.cd()
@@ -348,7 +352,10 @@ class Canvas:
           self.ensurePath(path)
           self.myCanvas.SaveAs(path)
 
-      #del self.myCanvas
+      self.myLegend.IsA().Destructor(self.myLegend)
+      self.myCanvas.IsA().Destructor(self.myCanvas)
+
+ #del self.myCanvas
 
 
 

@@ -14,9 +14,9 @@
 #####################################################################
 
 import ROOT as r
-from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
+from   ROOT import gROOT, TCanvas, TFile, TGraphErrors, SetOwnership
 import math, sys, optparse, array
-import Rounder as rounder
+import gc, inspect
 
 import include.helper     as helper
 import include.Region     as Region
@@ -25,154 +25,132 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def dumpObjects():
+    gc.collect()
+    oo = gc.get_objects()
+    for o in oo:
+        if getattr(o, "__class__", None):
+            name = o.__class__.__name__
+            if name not in exclude:
+                filename = inspect.getabsfile(o.__class__)            
+                print "Object of class:", name, "...",
+                print "defined in file:", filename                
+
+def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx):
+
+    theCutDATA = cuts.AddList([theCut, cuts.trigger])
+    MC = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx)
+    MCS = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx)
+    DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCutDATA, '', labelx)
+
+    maxValmc = MC.GetBinContent(MC.GetMaximumBin())
+    maxValdata = DATA.GetBinContent(DATA.GetMaximumBin())
+    maxVal = max(maxValmc, maxValdata)
+    if logx == 0:
+        MC.GetYaxis().SetRangeUser(0, 1.3*maxVal)
+        MCS.GetYaxis().SetRangeUser(0, 1.3*maxVal)
+        DATA.GetYaxis().SetRangeUser(0, 1.3*maxVal)
+    else:
+        MC.GetYaxis().SetRangeUser(0.1, 2.0*maxVal)
+        MCS.GetYaxis().SetRangeUser(0.1, 2.0*maxVal)
+        DATA.GetYaxis().SetRangeUser(0.1, 2.0*maxVal)
+   
+    print name
+    SetOwnership(MC, 0 )   # 0 = release (not keep), 1 = keep
+    SetOwnership(MCS, 0 )   # 0 = release (not keep), 1 = keep
+    SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = keep
+    plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf', 0.7, 0.7, 0.95, 0.9)
+    plot.addStack(MCS, "HIST", 1, 1)
+    plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+    plot.saveRatio(1, 1, logx, lumi, DATA, MC)
+    
+    del plot
+    return
+
+
+
 if __name__ == "__main__":
 
+    print bcolors.HEADER
+    print '#######################################################################'
+    print '                  Starting r_SFOF analysis...                          '
+    print '#######################################################################' + bcolors.ENDC
 
+    parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
+    (opts, args) = parser.parse_args()
 
-    parser = optparse.OptionParser(usage="usage: %prog [options] FilenameWithSamples", version="%prog 1.0")
-    parser.add_option("-m", "--mode", action="store", dest="mode", default="rmue", help="Operation mode")
-    (options, args) = parser.parse_args()
+    print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    inputFileName = args[0]
+    mcDatasets = ['TTJets_DiLepton', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WW', 'WZ', 'ZZ']
+    daDatasets = ['DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730', 'DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730', 'MuonEG_Run2016B_PromptReco_v2_runs_273150_273730']
 
-    print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q']
-    daDatasets = ['DoubleMuon_Run2015D_05Oct_v1_runs_246908_258751', 'DoubleEG_Run2015D_05Oct_v1_runs_246908_258751', 'MuonEG_Run2015D_05Oct_v2_runs_246908_258751', 'DoubleMuon_Run2015D_v4_runs_246908_258751', 'DoubleEG_Run2015D_v4_runs_246908_258751', 'MuonEG_Run2015D_v4_runs_246908_258751']  
-    treeMC = Sample.Tree(helper.selectSamples(inputFileName, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(helper.selectSamples(inputFileName, daDatasets, 'DA'), 'DATA', 1)
-    #tree = treeMC
-    print 'Trees successfully loaded...'
+    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
-    inputFileNameMC = args[0]
-    inputFileNameData = args[1]
-  
-    treeMC = Tree(inputFileNameMC, "MC", 0)
-    treeData = Tree(inputFileNameData, "Data", 0)
-   
+    print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
+
+    lumi = 0.589 ; maxrun = 999999
+    lumi_str = '0.6invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
 
-    ####Cuts needed by rmue
     cuts = CutManager.CutManager()
+    labelmll = 'm_{ll} [GeV]'
+    labelmet = 'MET [GeV]'
+    labelnjet = "N. Jets"
 
-    lumi = 0.225
-
-    #inclusive region
-    mll_SF_central_data = treeDA.getTH1F(lumi, "mll_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mll_SF_central_mc = treeMC.getStack(lumi, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mll_SF_central_mc_h = treeMC.getTH1F(lumi, "mll_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    
-    mll_OF_central_data = treeDA.getTH1F(lumi, "mll_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mll_OF_central_mc = treeMC.getStack(lumi, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mll_OF_central_mc_h = treeMC.getTH1F(lumi, "mll_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
- 
-    plot_SF_central = Canvas("plot_SF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_SF_central.addStack(mll_SF_central_mc, "HIST", 1, 1)
-    plot_SF_central.addHisto(mll_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plot_SF_central.saveRatio(1, 1, 1, lumi, mll_SF_central_data, mll_SF_central_mc_h)
-    
-    plot_OF_central = Canvas("plot_OF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_OF_central.addStack(mll_OF_central_mc, "HIST", 1, 1)
-    plot_OF_central.addHisto(mll_OF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plot_OF_central.saveRatio(1, 1, 1, lumi, mll_OF_central_data, mll_OF_central_mc_h)
-   
-
-    mll_SF_forward_data = treeDA.getTH1F(lumi, "mll_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mll_SF_forward_mc = treeMC.getStack(lumi, "mll_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mll_SF_forward_mc_h = treeMC.getTH1F(lumi, "mll_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    
-    mll_OF_forward_data = treeDA.getTH1F(lumi, "mll_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mll_OF_forward_mc = treeMC.getStack(lumi, "mll_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mll_OF_forward_mc_h = treeMC.getTH1F(lumi, "mll_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.GoodLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
- 
-    plot_SF_forward = Canvas("plot_SF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_SF_forward.addStack(mll_SF_forward_mc, "HIST", 1, 1)
-    plot_SF_forward.addHisto(mll_SF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plot_SF_forward.saveRatio(1, 1, 1, lumi, mll_SF_forward_data, mll_SF_forward_mc_h)
-    
-    plot_OF_forward = Canvas("plot_OF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plot_OF_forward.addStack(mll_OF_forward_mc, "HIST", 1, 1)
-    plot_OF_forward.addHisto(mll_OF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plot_OF_forward.saveRatio(1, 1, 1, lumi, mll_OF_forward_data, mll_OF_forward_mc_h)
-
-    #DY region
-
-    mllDY_SF_central_data = treeDA.getTH1F(lumi, "mllDY_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllDY_SF_central_mc = treeMC.getStack(lumi, "mllDY_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllDY_SF_central_mc_h = treeMC.getTH1F(lumi, "mllDY_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    
-    mllDY_OF_central_data = treeDA.getTH1F(lumi, "mllDY_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllDY_OF_central_mc = treeMC.getStack(lumi, "mllDY_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllDY_OF_central_mc_h = treeMC.getTH1F(lumi, "mllDY_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
- 
-    plotDY_SF_central = Canvas("plotDY_SF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plotDY_SF_central.addStack(mllDY_SF_central_mc, "HIST", 1, 1)
-    plotDY_SF_central.addHisto(mllDY_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotDY_SF_central.saveRatio(1, 1, 1, lumi, mllDY_SF_central_data, mllDY_SF_central_mc_h)
-    
-    plotDY_OF_central = Canvas("plotDY_OF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plotDY_OF_central.addStack(mllDY_OF_central_mc, "HIST", 1, 1)
-    plotDY_OF_central.addHisto(mllDY_OF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotDY_OF_central.saveRatio(1, 1, 1, lumi, mllDY_OF_central_data, mllDY_OF_central_mc_h)
-   
-
-    mllDY_SF_forward_data = treeDA.getTH1F(lumi, "mllDY_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllDY_SF_forward_mc = treeMC.getStack(lumi, "mllDY_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllDY_SF_forward_mc_h = treeMC.getTH1F(lumi, "mllDY_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    
-    mllDY_OF_forward_data = treeDA.getTH1F(lumi, "mllDY_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllDY_OF_forward_mc = treeMC.getStack(lumi, "mllDY_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllDY_OF_forward_mc_h = treeMC.getTH1F(lumi, "mllDY_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.DYControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
- 
-    plotDY_SF_forward = Canvas("plotDY_SF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plotDY_SF_forward.addStack(mllDY_SF_forward_mc, "HIST", 1, 1)
-    plotDY_SF_forward.addHisto(mllDY_SF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotDY_SF_forward.saveRatio(1, 1, 1, lumi, mllDY_SF_forward_data, mllDY_SF_forward_mc_h)
-    
-    plotDY_OF_forward = Canvas("plotDY_OF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plotDY_OF_forward.addStack(mllDY_OF_forward_mc, "HIST", 1, 1)
-    plotDY_OF_forward.addHisto(mllDY_OF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotDY_OF_forward.saveRatio(1, 1, 1, lumi, mllDY_OF_forward_data, mllDY_OF_forward_mc_h)
-  
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_inclusive_SF", 40, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj1]), cuts, labelmll, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_inclusive_OF", 40, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj1]), cuts, labelmll, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_inclusive_ee", 40, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.nj1]), cuts, labelmll, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_inclusive_mm", 40, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.nj1]), cuts, labelmll, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_inclusive_SF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj1]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_inclusive_OF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj1]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_inclusive_ee", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.nj1]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_inclusive_mm", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.nj1]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.DYControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.DYControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_DYJets_SF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_DYJets_OF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_DYJets_ee", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.DYControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_DYJets_mm", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.DYControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_ttbarcontrol_SF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.RSFOFDirectControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_ttbarcontrol_OF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.RSFOFDirectControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_ttbarcontrol_ee", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.RSFOFDirectControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_ttbarcontrol_mm", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.RSFOFDirectControlRegionNoMET]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_signal_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.JetMETBaseline]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_signal_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.JetMETBaseline]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_signal_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.JetMETBaseline]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_signal_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.JetMETBaseline]), cuts, labelmll, 0)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_signal_SF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_signal_OF", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj2]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_signal_ee", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.nj2]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_signal_mm", 25, 0, 200, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.nj2]), cuts, labelmet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_SF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.SF]), cuts, labelnjet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_OF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.OF]), cuts, labelnjet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_ee", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.ee]), cuts, labelnjet, 1)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_mm", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.mm]), cuts, labelnjet, 1)
 
  
-    #ttbar Control region
- 
-    mllCR_SF_central_data = treeDA.getTH1F(lumi, "mllCR_SF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllCR_SF_central_mc = treeMC.getStack(lumi, "mllCR_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllCR_SF_central_mc_h = treeMC.getTH1F(lumi, "mllCR_SF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    
-    mllCR_OF_central_data = treeDA.getTH1F(lumi, "mllCR_OF_central_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllCR_OF_central_mc = treeMC.getStack(lumi, "mllCR_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
-    mllCR_OF_central_mc_h = treeMC.getTH1F(lumi, "mllCR_OF_central_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Central()]), "", "m_{ll} [GeV]")
- 
-    plotCR_SF_central = Canvas("plotCR_SF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plotCR_SF_central.addStack(mllCR_SF_central_mc, "HIST", 1, 1)
-    plotCR_SF_central.addHisto(mllCR_SF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotCR_SF_central.saveRatio(1, 1, 1, lumi, mllCR_SF_central_data, mllCR_SF_central_mc_h)
-    
-    plotCR_OF_central = Canvas("plotCR_OF_central", "png", 0.6, 0.6, 0.8, 0.8)
-    plotCR_OF_central.addStack(mllCR_OF_central_mc, "HIST", 1, 1)
-    plotCR_OF_central.addHisto(mllCR_OF_central_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotCR_OF_central.saveRatio(1, 1, 1, lumi, mllCR_OF_central_data, mllCR_OF_central_mc_h)
-   
 
-    mllCR_SF_forward_data = treeDA.getTH1F(lumi, "mllCR_SF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllCR_SF_forward_mc = treeMC.getStack(lumi, "mllCR_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllCR_SF_forward_mc_h = treeMC.getTH1F(lumi, "mllCR_SF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonSF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    
-    mllCR_OF_forward_data = treeDA.getTH1F(lumi, "mllCR_OF_forward_MC", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllCR_OF_forward_mc = treeMC.getStack(lumi, "mllCR_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
-    mllCR_OF_forward_mc_h = treeMC.getTH1F(lumi, "mllCR_OF_forward_data", "t.lepsMll_Edge", 40, 20, 300, cuts.AddList([cuts.ControlNoMassLeptonOF(), cuts.Forward()]), "", "m_{ll} [GeV]")
- 
-    plotCR_SF_forward = Canvas("plotCR_SF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plotCR_SF_forward.addStack(mllCR_SF_forward_mc, "HIST", 1, 1)
-    plotCR_SF_forward.addHisto(mllCR_SF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotCR_SF_forward.saveRatio(1, 1, 1, lumi, mllCR_SF_forward_data, mllCR_SF_forward_mc_h)
-    
-    plotCR_OF_forward = Canvas("plotCR_OF_forward", "png", 0.6, 0.6, 0.8, 0.8)
-    plotCR_OF_forward.addStack(mllCR_OF_forward_mc, "HIST", 1, 1)
-    plotCR_OF_forward.addHisto(mllCR_OF_forward_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
-    plotCR_OF_forward.saveRatio(1, 1, 1, lumi, mllCR_OF_forward_data, mllCR_OF_forward_mc_h)
       

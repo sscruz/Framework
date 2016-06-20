@@ -6,16 +6,13 @@ from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
 class Sample:
    'Common base class for all Samples'
 
-   def __init__(self, name, location, friendlocation, xsection, isdata, isScan):
+   def __init__(self, name, friendlocation, xsection, isdata, isScan):
       self.name = name
-      self.location = location
+      self.location = friendlocation
       self.xSection = xsection
       self.isData = isdata
-      #self.tfile = TFile(self.location+self.name+'/treeProducerSusyEdge/tree.root')
-      ftfileloc = (friendlocation+'/evVarFriend_'+self.name+'.root' if '/afs' in friendlocation else self.location+'/'+friendlocation+'/evVarFriend_'+self.name+'.root')
+      ftfileloc = friendlocation+'/evVarFriend_'+self.name+'.root' 
       self.ftfile = TFile(ftfileloc)
-      #self.ttree = self.tfile.Get('tree')
-      #self.ttree.AddFriend('sf/t',self.ftfile)
       self.ttree = self.ftfile.Get('sf/t')
       self.isScan = isScan
       if not self.isData:
@@ -236,10 +233,9 @@ class Tree:
         theColor    = splitedLine[1]
         name        = splitedLine[2]
         label       = splitedLine[3]
-        location    = splitedLine[4]
-        flocation   = splitedLine[5]
-        xsection    = float(splitedLine[6])
-        isdata      = int(splitedLine[7])
+        flocation   = splitedLine[4]
+        xsection    = float(splitedLine[5])
+        isdata      = int(splitedLine[6])
 
         color = 0
         plusposition = theColor.find("+")
@@ -249,7 +245,7 @@ class Tree:
           color = eval(theColor[0:plusposition])
           color = color + int(theColor[plusposition+1:len(theColor)])
 
-        sample = Sample(name, location, flocation, xsection, isdata, self.isScan)
+        sample = Sample(name, flocation, xsection, isdata, self.isScan)
         coincidentBlock = [l for l in self.blocks if l.name == block]
 
         if(coincidentBlock == []):
@@ -297,7 +293,9 @@ class Tree:
 
    def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel):
    
+
      hs = THStack(name, "")
+
      for b in self.blocks:
      
        AuxName = "auxStack_block_" + name + "_" + b.name
@@ -307,16 +305,20 @@ class Tree:
        del haux
 
 
-     can_aux = TCanvas("can_aux")
+     can_aux = TCanvas("can_%s_%s"%(name, b.name))
      can_aux.cd()
      hs.Draw()
+
      del can_aux
 
-     hs.GetXaxis().SetTitle(xlabel)
-     b = int((xmax-xmin)/nbin)
-     ylabel = "Events / " + str(b) + " GeV"
+     if xmax != xmin:
+       hs.GetXaxis().SetTitle(xlabel)
+       b = int((xmax-xmin)/nbin)
+       ylabel = "Events / " + str(b) + " GeV"
+     else:     
+       ylabel = "# events"
+   
      hs.GetYaxis().SetTitle(ylabel)
-
      return hs   
 
 
@@ -330,7 +332,7 @@ class Tree:
        h_of = TH1F(name, "", _nbins+1, _newarr)
        ylabel = "# events"
      else:
-       h = TH1F(name, "", nbin, xmin, xmax)
+       h = TH1F(name+'_noOF', "", nbin, xmin, xmax)
        bw = int((xmax-xmin)/nbin)
        ylabel = "Events / " + str(bw) + " GeV"
        h_of = TH1F(name, '', nbin+1, xmin, xmax+bw)

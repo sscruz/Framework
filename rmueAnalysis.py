@@ -15,7 +15,7 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
-import math, sys, optparse, array, copy
+import math, sys, optparse, array, copy, subprocess
 
 import include.helper     as helper
 import include.Region     as Region
@@ -24,39 +24,44 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Rounder    as Rounder
 
+class bcolors: 
+    HEADER = '\033[95m' 
+    OKBLUE = '\033[94m' 
+    OKGREEN = '\033[92m' 
+    WARNING = '\033[93m' 
+    FAIL = '\033[91m' 
+    ENDC = '\033[0m' 
+    BOLD = '\033[1m' 
+    UNDERLINE = '\033[4m' 
 
-def make_rmue_table(reg):
-    lines = []
-    for eta in ['central', 'forward']:
-        da_nee, da_nmm, da_rmue, da_rmue_err = getattr(reg, 'rmue_yield_DATA_'+eta+'_ee'), getattr(reg, 'rmue_yield_DATA_'+eta+'_mm'), getattr(reg, 'rmue_DATA_'+eta), getattr(reg, 'rmue_DATA_'+eta+'_err') 
-        mc_nee, mc_nmm, mc_rmue, mc_rmue_err = getattr(reg, 'rmue_yield_MC_'+eta+'_ee')  , getattr(reg, 'rmue_yield_MC_'+eta+'_mm')  , getattr(reg, 'rmue_MC_'+eta)  , getattr(reg, 'rmue_MC_'+eta+'_err') 
-        mc_nee_err, mc_nmm_err = getattr(reg, 'rmue_yield_MC_'+eta+'_ee_err')  , getattr(reg, 'rmue_yield_MC_'+eta+'_mm_err')
-        lines.append(' \\multicolumn{4}{c}{ \\textbf{%s}} \\\\' %(eta))
-        lines.append(' \\multirow{2}{*}{Data}   & N$_{\\mu\\mu}$   & %5d   & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(da_nmm, da_rmue, da_rmue_err, 0.1) )
-        lines.append('                          & N$_{ee}$         & %5d   &                                            \\\\ ' %(da_nee) )
-        lines.append(' \\multirow{2}{*}{MC}     & N$_{\\mu\\mu}$   & %.0f \\pm %.0f & \multirow{2}{*}{%.3f \\pm %.3f \\pm %.3f}  \\\\ ' %(mc_nmm, mc_nmm_err, mc_rmue, mc_rmue_err, 0.1 ) )
-        lines.append('                          & N$_{ee}$         & %.0f \\pm %.0f &                                            \\\\ ' %(mc_nee, mc_nee_err))
-        if eta == 'central':
-            print "hi"
-            da_rmue_err = math.sqrt(da_rmue_err*da_rmue_err + 0.1*0.1*da_rmue*da_rmue) 
-            mc_rmue_err = math.sqrt(mc_rmue_err*mc_rmue_err + 0.1*0.1*mc_rmue*mc_rmue) 
+
+
+def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueUncSystMC, measuredValueData, measuredValueUncData, measuredValueUncSystData, tag):
+
+    foutput = open(theFile + "_aux", 'w')
+    for line in open(theFile).readlines():
+        if line.find("rmue") != -1 and line.find(tag) != -1:
+            if line.find("DATA") != -1:
+                foutput.write('rmue        alone           DATA        %.4f      %0.4f       %.4f\n'%(measuredValueData, measuredValueUncData, measuredValueUncSystData))
+            else:
+                foutput.write('rmue        alone           MC          %.4f      %0.4f       %.4f\n'%(measuredValueMC, measuredValueUncMC, measuredValueUncSystMC))
         else:
-            da_rmue_err = math.sqrt(da_rmue_err*da_rmue_err + 0.2*0.2*da_rmue*da_rmue) 
-            mc_rmue_err = math.sqrt(mc_rmue_err*mc_rmue_err + 0.2*0.2*mc_rmue*mc_rmue) 
+            foutput.write(line)
 
-        print "1/2 * (rmue + 1/rmue) data ", eta, " ", 0.5 * (da_rmue + 1.0/da_rmue), " +\- ", 0.5 * da_rmue_err * math.sqrt((1 - 1.0/(da_rmue*da_rmue))*(1 - 1.0/(da_rmue*da_rmue))) 
-        print "1/2 * (rmue + 1/rmue) MC   ", eta, " ", 0.5 * (mc_rmue + 1.0/mc_rmue), " +\- ", 0.5 * mc_rmue_err * math.sqrt((1 - 1.0/(mc_rmue*mc_rmue))*(1 - 1.0/(mc_rmue*mc_rmue)))
+    foutput.close()
+    subprocess.call(['mv ' + theFile + "_aux " + theFile], shell=True)
 
-    return lines
 
 
 def calc_rmue(Nmm, Nee, Emm, Eee):
 
     val = [0, 0]
-    if(Nee != 0):
+    print Nmm, Nee
+    if(Nmm >= 0 and Nee > 0):
         val[0] = math.sqrt(Nmm/Nee)
         val[1] = math.sqrt(0.25 * Emm * Emm / (Nmm * Nee) + 0.25 * Eee * Eee * Nmm / (Nee * Nee * Nee))
-
+    else:
+        print bcolors.HEADER + "[rmueAnalysis] " + bcolors.FAIL + " The yields in Nee and Nmm are <=0 " + bcolors.ENDC
     return val
 
 
@@ -79,14 +84,14 @@ def make_rmue(histo_mm, histo_ee):
             ratio.SetBinError(i, val[1])
     return ratio
 
-def convertToFactor(histo, eta, getGraph=False):
+
+
+def convertToFactor(histo, getGraph=False):
     tmp_histo = copy.deepcopy(histo)
     #tmp_histo.Sumw2()
-    sys = 0.1 if eta == 'central' else 0.2
     for i in range(tmp_histo.GetNbinsX()+1):
         rmue     = tmp_histo.GetBinContent(i)
         rmue_err = tmp_histo.GetBinError  (i)
-        rmue_err = math.sqrt(rmue_err**2 + (sys*rmue)**2)
         if rmue:
             fac = 0.5*(rmue + 1./rmue)
             err = 0.5*((1. - 1./(rmue**2))*rmue_err)
@@ -101,196 +106,132 @@ def convertToFactor(histo, eta, getGraph=False):
         return tmp_histo
 
 
+def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
+
+    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
+    MCDYControlMllee =         treeMC.getTH1F(lumi, "MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    MCDYControlMllmm =         treeMC.getTH1F(lumi, "MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    DATADYControlMllee =       treeDA.getTH1F(lumi, "DATADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    DATADYControlMllmm =       treeDA.getTH1F(lumi, "DATADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    MCDYControlMlleevalue =    treeMC.getTH1F(lumi, "MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
+    MCDYControlMllmmvalue =    treeMC.getTH1F(lumi, "MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
+    DATADYControlMlleevalue =  treeDA.getTH1F(lumi, "DATADYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
+    DATADYControlMllmmvalue =  treeDA.getTH1F(lumi, "DATADYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
+    MCDYControlMETee =         treeMC.getTH1F(lumi, "MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    MCDYControlMETmm =         treeMC.getTH1F(lumi, "MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    DATADYControlMETee =       treeDA.getTH1F(lumi, "DATADYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    DATADYControlMETmm =       treeDA.getTH1F(lumi, "DATADYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    MCDYControlJetee =         treeMC.getTH1F(lumi, "MCDYControlJetee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    MCDYControlJetmm =         treeMC.getTH1F(lumi, "MCDYControlJetmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+    DATADYControlJetee =       treeDA.getTH1F(lumi, "DATADYControlJetee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    DATADYControlJetmm =       treeDA.getTH1F(lumi, "DATADYControlJetmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+ 
+    MCDYControlMll =           make_rmue(MCDYControlMllmm, MCDYControlMllee)
+    DATADYControlMll =         make_rmue(DATADYControlMllmm, DATADYControlMllee)
+    MCDYControlMllvalue =      make_rmue(MCDYControlMllmmvalue, MCDYControlMlleevalue)
+    DATADYControlMllvalue =    make_rmue(DATADYControlMllmmvalue, DATADYControlMlleevalue)
+    MCDYControlMET =           make_rmue(MCDYControlMETmm, MCDYControlMETee)
+    DATADYControlMET =         make_rmue(DATADYControlMETmm, DATADYControlMETee)
+    MCDYControlJet =           make_rmue(MCDYControlMETmm, MCDYControlMETee)
+    DATADYControlJet =         make_rmue(DATADYControlJetmm, DATADYControlJetee)
+   
+    factorMCDYControlMll =          convertToFactor(MCDYControlMll)
+    factorDATADYControlMll =        convertToFactor(DATADYControlMll)
+    factorMCDYControlMllvalue =     convertToFactor(MCDYControlMllvalue)
+    factorDATADYControlMllvalue =   convertToFactor(DATADYControlMllvalue)
+    factorMCDYControlMET =          convertToFactor(MCDYControlMET)
+    factorDATADYControlMET =        convertToFactor(DATADYControlMET)
+    factorMCDYControlJet =          convertToFactor(MCDYControlJet)
+    factorDATADYControlJet =        convertToFactor(DATADYControlJet)
+    
+    systematicForrmue = 0.1 
+    MCrmuemeasured =               MCDYControlMllvalue.GetBinContent(1)
+    MCrmuemeasuredUnc =            MCDYControlMllvalue.GetBinError(1)
+    MCrmuemeasuredUncSyst =        MCrmuemeasured * systematicForrmue
+    DATArmuemeasured =             DATADYControlMllvalue.GetBinContent(1)
+    DATArmuemeasuredUnc =          DATADYControlMllvalue.GetBinError(1)
+    DATArmuemeasuredUncSyst =      DATArmuemeasured * systematicForrmue
+    DATArmuemeasuredUncTot  =      math.sqrt(DATArmuemeasuredUnc**2 + DATArmuemeasuredUncSyst**2)
+    factorMCrmuemeasured =             factorMCDYControlMllvalue.GetBinContent(1)
+    factorMCrmuemeasuredUnc =          factorMCDYControlMllvalue.GetBinError(1)
+    factorMCrmuemeasuredUncSyst =      (1.0-1.0/MCrmuemeasured**2) * MCrmuemeasuredUncSyst if MCrmuemeasured != 0 else 1000.00
+    factorMCrmuemeasuredUncTot  =      math.sqrt(MCrmuemeasuredUnc**2 + MCrmuemeasuredUncSyst**2)
+    factorDATArmuemeasured =             factorDATADYControlMllvalue.GetBinContent(1)
+    factorDATArmuemeasuredUnc =          factorDATADYControlMllvalue.GetBinError(1)
+    factorDATArmuemeasuredUncSyst =      (1.0-1.0/DATArmuemeasured**2) * DATArmuemeasuredUncSyst if DATArmuemeasured != 0 else 1000.00
+    factorDATArmuemeasuredUncTot  =      math.sqrt(DATArmuemeasuredUnc**2 + DATArmuemeasuredUncSyst**2)
+
+    if save==True:
+        saveInFile(ingredientsFile, MCrmuemeasured, MCrmuemeasuredUnc, MCrmuemeasuredUncSyst, DATArmuemeasured, DATArmuemeasuredUnc, DATArmuemeasuredUncSyst, 'alone')
+        saveInFile(ingredientsFile, factorMCrmuemeasured, factorMCrmuemeasuredUnc, factorMCrmuemeasuredUncSyst, factorDATArmuemeasured, factorDATArmuemeasuredUnc, factorDATArmuemeasuredUncSyst, 'factor')
+
+
+    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing plots...' + bcolors.ENDC
+    plot_rmue_mll = Canvas.Canvas('rmue/%s_%s/plot_rmue_mll'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+    plot_rmue_mll.addHisto(MCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rmue_mll.addHisto(DATADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_rmue_mll.addBand(MCDYControlMll.GetXaxis().GetXmin(), DATArmuemeasured-DATArmuemeasuredUncTot, MCDYControlMll.GetXaxis().GetXmax(), DATArmuemeasured+DATArmuemeasuredUncTot, r.kGreen, 0.2)
+    plot_rmue_mll.addLine(MCDYControlMll.GetXaxis().GetXmin(), DATArmuemeasured, MCDYControlMll.GetXaxis().GetXmax(), DATArmuemeasured,r.kGreen)
+    plot_rmue_mll.save(1, 1, 0, lumi, 0.2, 1.8)
+    
+    plot_rmue_met = Canvas.Canvas('rmue/%s_%s/plot_rmue_met'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+    plot_rmue_met.addHisto(MCDYControlMET, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rmue_met.addHisto(DATADYControlMET, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_rmue_met.addBand(MCDYControlMET.GetXaxis().GetXmin(), DATArmuemeasured-DATArmuemeasuredUncTot, MCDYControlMET.GetXaxis().GetXmax(), DATArmuemeasured+DATArmuemeasuredUncTot, r.kGreen, 0.2)
+    plot_rmue_met.addLine(MCDYControlMET.GetXaxis().GetXmin(), DATArmuemeasured, MCDYControlMET.GetXaxis().GetXmax(), DATArmuemeasured,r.kGreen)
+    plot_rmue_met.save(1, 1, 0, lumi, 0.2, 1.8)
+  
+    plot_rmue_jet = Canvas.Canvas('rmue/%s_%s/plot_rmue_jet'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+    plot_rmue_jet.addHisto(MCDYControlJet, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rmue_jet.addHisto(DATADYControlJet, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_rmue_jet.addBand(MCDYControlJet.GetXaxis().GetXmin(), DATArmuemeasured-DATArmuemeasuredUncTot, MCDYControlJet.GetXaxis().GetXmax(), DATArmuemeasured+DATArmuemeasuredUncTot, r.kGreen, 0.2)
+    plot_rmue_jet.addLine(MCDYControlJet.GetXaxis().GetXmin(), DATArmuemeasured, MCDYControlJet.GetXaxis().GetXmax(), DATArmuemeasured,r.kGreen)
+    plot_rmue_jet.save(1, 1, 0, lumi, 0.2, 1.8)
+    
+    plot_factor_mll = Canvas.Canvas('rmue/%s_%s/plot_factor_mll'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+    plot_factor_mll.addHisto(factorMCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+    plot_factor_mll.addHisto(factorDATADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_factor_mll.addBand(factorMCDYControlMll.GetXaxis().GetXmin(), factorDATArmuemeasured-factorDATArmuemeasuredUncTot, factorMCDYControlMll.GetXaxis().GetXmax(), factorDATArmuemeasured+factorDATArmuemeasuredUncTot, r.kGreen, 0.2)
+    plot_factor_mll.addLine(factorMCDYControlMll.GetXaxis().GetXmin(), factorDATArmuemeasured, factorMCDYControlMll.GetXaxis().GetXmax(), factorDATArmuemeasured,r.kGreen)
+    plot_factor_mll.save(1, 1, 0, lumi, 0.2, 1.8)
+    
+ 
+ 
 if __name__ == "__main__":
 
+    print bcolors.HEADER
+    print '#######################################################################'
+    print '                  Starting r_mue analysis...                          '
+    print '#######################################################################' + bcolors.ENDC
 
-    parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
+    parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
     parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
-    parser.add_option('-t', action='store_true', dest='onlyTT', default=False, help='just use ttbar MC, not DY')
+    parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 
+    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    print 'Going to load DATA and MC trees...'
-    mcDatasets = ['TTLep_pow'] + ([] if opts.onlyTT else ['DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'ZZTo2L2Q', 'TTZToLLNuNu', 'WZTo3L1Nu', 'VHToNobb_M125', 'TTHToNobb_M125', 'TBar_tWch', 'T_tWch', 'TBar_tWch'])
-    daDatasets = ['DoubleMuon_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'DoubleEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' , 'MuonEG_Run2015C_25ns-05Oct_v1_runs_246908_260628' ,
-                  'DoubleMuon_Run2015D-05Oct_v1_runs_246908_260628'      , 'DoubleEG_Run2015D-05Oct_v1_runs_246908_260628'      , 'MuonEG_Run2015D-05Oct_v2_runs_246908_260628'      ,
-                  'DoubleMuon_Run2015D_v4_runs_246908_260628'            , 'DoubleEG_Run2015D_v4_runs_246908_260628'            , 'MuonEG_Run2015D_v4_runs_246908_260628'            ]
+    mcDatasets = ['TTLep_pow']
+    daDatasets = ['DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730', 'DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730', 'MuonEG_Run2016B_PromptReco_v2_runs_273150_273730']
+
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
-    #tree = treeMC
-    print 'Trees successfully loaded...'
 
+    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
+
+    lumi = 2.1 ; maxrun = 999999
+    lumi_str = '2.1invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
+    cuts = CutManager.CutManager()
+
+    labelx = "m_{ll} [GeV]"
+    labelmet = "MET [GeV]"
+    labelnjet = "N. Jets"
 
     ####Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    #lumi = 1.3
-    lumi = 2.1
-    lumi_str = 'lumi'+str(lumi).replace('.', 'p')+'_forApproval'
-
-    #print flarp
-
-    regions = []
-    dy_nomass = Region.region('DY_nomass',
-                       [cuts.DYControlRegion],
-                       ['mll'],
-                       [[20, 45, 70, 81, 101, 120, 210]],
-                       #[range(20,200,10)],
-                       True)
-    regions.append(dy_nomass)
-    dy_onZ    = Region.region('DY_onZ',
-                       [cuts.DYControlRegion, cuts.DYmass],
-                       ['mll'],
-                       [[60, 120]],
-                       True)
-    regions.append(dy_onZ)
-    dy_nomet  = Region.region('DY_nomet',
-                       [cuts.nj2, cuts.DYmass],
-                       ['met'],
-                       [range(0,110,10)],
-                       True)
-    regions.append(dy_nomet)
-    sig_lm    = Region.region('Signal_lowmass',
-                       [cuts.METJetsSignalRegion, cuts.lowmass],
-                       ['mll'],
-                       [[20,  70]],
-                       False)
-    regions.append(sig_lm)
-    sig_onZ   = Region.region('Signal_onZ',
-                       [cuts.METJetsSignalRegion, cuts.Zmass],
-                       ['mll'],
-                       [[81, 101]],
-                       False)
-    regions.append(sig_onZ)
-    sig_hm    = Region.region('Signal_highmass',
-                       [cuts.METJetsSignalRegion, cuts.highmass],
-                       ['mll'],
-                       [[120, 300]],
-                       False)
-    regions.append(sig_hm)
-    
-    
-    for reg in regions:
-        print 'i am at region', reg.name
-        for eta in ['central', 'forward']:
-            print '... in %s' %(eta)
-
-            cuts_ee = cuts.AddList([cuts.GoodLeptonee()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-            cuts_mm = cuts.AddList([cuts.GoodLeptonmm()]+[cuts.Central() if eta == 'central' else cuts.Forward()]+reg.cuts)
-    
-   
-
- 
-            for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
-    
-                dataMC = 'DATA' if tree == treeDA else 'MC'
-
-                if 'mll' in reg.rvars:
-                    reg.mll_ee = tree.getTH1F(lumi, "mll_ee_"+eta+reg.name+dataMC, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_ee, "", "m_{ll} (GeV)")
-                    reg.mll_mm = tree.getTH1F(lumi, "mll_mm_"+eta+reg.name+dataMC, "t.lepsMll_Edge", reg.bins[reg.rvars.index('mll')], 1, 1, cuts_mm, "", "m_{ll} (GeV)")
-    
-
-                    tmp_rmue_histo = make_rmue(reg.mll_mm, reg.mll_ee)
-                    setattr(reg, "%s_%s_%s_%s"    %("rmue_yield", dataMC, eta, "ee"), reg.mll_ee.GetBinContent( reg.mll_ee.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s_%s"    %("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinContent( reg.mll_mm.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "ee"), reg.mll_ee.GetBinError  ( reg.mll_ee.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s_%s_err"%("rmue_yield", dataMC, eta, "mm"), reg.mll_mm.GetBinError  ( reg.mll_mm.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s"       %("rmue"      , dataMC, eta      ), tmp_rmue_histo.GetBinContent( tmp_rmue_histo.FindBin(91) ) )
-                    setattr(reg, "%s_%s_%s_err"   %("rmue"      , dataMC, eta      ), tmp_rmue_histo.GetBinError  ( tmp_rmue_histo.FindBin(91) ) )
-
-                    reg.mll.setHisto(tmp_rmue_histo, dataMC, eta)
-    
-                if 'met' in reg.rvars:
-                    reg.met_ee = tree.getTH1F(lumi, "met_ee_"+eta+reg.name+dataMC, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_ee, "", "ME_{T} (GeV)")
-                    reg.met_mm = tree.getTH1F(lumi, "met_mm_"+eta+reg.name+dataMC, "met_pt", reg.bins[reg.rvars.index('met')], 1, 1, cuts_mm, "", "ME_{T} (GeV)")
-    
-                    reg.met.setHisto(make_rmue(reg.met_mm, reg.met_ee), dataMC, eta)
-
-
-    
-    
-    
-    factor_region = copy.deepcopy(dy_onZ)
-    for eta in ['central', 'forward']:
-        ## =================
-        ## MAKE THE Mll PLOT
-        ## =================
-        meas_rmue_mc   = dy_onZ.mll.getHisto('MC'  , eta).GetBinContent(1)
-        meas_rmue_da   = dy_onZ.mll.getHisto('DATA', eta).GetBinContent(1)
-        meas_rmue_mc_e = math.sqrt(dy_onZ.mll.getHisto('MC'  , eta).GetBinError(1)**2 + (0.1 if eta == 'central' else 0.2)**2)
-        meas_rmue_da_e = math.sqrt(dy_onZ.mll.getHisto('DATA', eta).GetBinError(1)**2 + (0.1 if eta == 'central' else 0.2)**2)
-        upEdge = meas_rmue_da+meas_rmue_da_e
-        dnEdge = meas_rmue_da-meas_rmue_da_e
-        middle = meas_rmue_da
-        
-        dy_nomass.mll.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 2.)
-        plot_rmue_mll = Canvas.Canvas("rmue/%s/plot_rmue_mll_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-        plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
-        plot_rmue_mll.addHisto(dy_nomass.mll.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 5)
-        plot_rmue_mll.addGraph(sig_lm   .mll.getGraph('MC'  ,eta), "PZ", "SR low - MC"  , "PL", r.kBlue-7, 1, 1)
-        plot_rmue_mll.addGraph(sig_onZ  .mll.getGraph('MC'  ,eta), "PZ", "SR onZ - MC"  , "PL", r.kBlue-8, 1, 2)
-        plot_rmue_mll.addGraph(sig_hm   .mll.getGraph('MC'  ,eta), "PZ", "SR high - MC" , "PL", r.kBlue-9, 1, 3)
-        plot_rmue_mll.addGraph(dy_onZ   .mll.getGraph('MC'  ,eta), "PZ", "DY onZ - MC"  , "PL", r.kCyan+1, 1, 4)
-        plot_rmue_mll.addLine (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(),     1., dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(),     1., r.kGreen)
-        plot_rmue_mll.addBand (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), dnEdge, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), upEdge, r.kGray+1, 0.2)
-        plot_rmue_mll.addLine (dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmin(), middle, dy_nomass.mll.getHisto('MC', eta).GetXaxis().GetXmax(), middle, r.kGray+1)
-        plot_rmue_mll.addLatex(0.2, 0.2, eta)
-        plot_rmue_mll.save(1, 0, 0, lumi, 0.2, 1.8)
-        
-
-        ## convert histograms to rmue + 1./rmue
-        factor_nomass_mc  = convertToFactor(dy_nomass.mll.getHisto('MC'  , eta), eta)
-        factor_nomass_da  = convertToFactor(dy_nomass.mll.getHisto('DATA', eta), eta)
-        factor_sig_lm_gr  = convertToFactor(sig_lm   .mll.getHisto('MC'  , eta), eta, True)
-        factor_sig_onZ_gr = convertToFactor(sig_onZ  .mll.getHisto('MC'  , eta), eta, True)
-        factor_sig_hm_gr  = convertToFactor(sig_hm   .mll.getHisto('MC'  , eta), eta, True)
-        factor_onZ_mc     = convertToFactor(dy_onZ   .mll.getHisto('MC'  , eta), eta)
-        factor_onZ_da     = convertToFactor(dy_onZ   .mll.getHisto('DATA', eta), eta)
-
-        factor_val = factor_onZ_da.GetBinContent(1)
-        factor_err = factor_onZ_da.GetBinError  (1)
-        up = factor_val + factor_err
-        dn = factor_val - factor_err
-        factor_region.mll.setHisto(factor_onZ_mc, 'MC'  , eta)
-        factor_region.mll.setHisto(factor_onZ_da, 'DATA', eta)
-
-        ## ==================
-        ## rmue + 1/rmue plot
-        ## ==================
-        factor_nomass_mc.GetYaxis().SetTitle('(r_{#mu e} + r_{#mu e}^{-1}) / 2')
-        plot_rmueFactor = Canvas.Canvas("rmue/%s/plot_rmue_fullFactor_mll_%s"%(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-        plot_rmueFactor.addHisto(factor_nomass_mc           , "E,SAME", "MC"       , "PL", r.kRed+1 , 1, 0)
-        plot_rmueFactor.addHisto(factor_nomass_da           , "E,SAME", "Data"     , "PL", r.kBlack , 1, 1)
-        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_mc), "PZ"    , "MC meas." , "PL", r.kCyan+1, 1, 2)
-        plot_rmueFactor.addGraph(TGraphErrors(factor_onZ_da), "PZ"    , "DY - data", "PL", r.kBlack , 1, -1)
-        plot_rmueFactor.addLine (factor_nomass_da.GetXaxis().GetXmin(), factor_val , factor_nomass_da.GetXaxis().GetXmax(), factor_val, r.kBlue+2)
-        plot_rmueFactor.addBand (factor_nomass_da.GetXaxis().GetXmin(), dn         , factor_nomass_da.GetXaxis().GetXmax(), up        , r.kBlue+2, 0.2)
-        plot_rmueFactor.addLatex(0.2, 0.2, eta)
-        plot_rmueFactor.save(1, 0, 0, lumi, 0.8, 1.2)
-        
-        ## =================
-        ## MAKE THE MET PLOT
-        ## =================
-        dy_nomet.met.getHisto('MC'  , eta).GetYaxis().SetRangeUser(0., 2.)
-        plot_rmue_met = Canvas.Canvas("rmue/%s/plot_rmue_met_%s" %(lumi_str, eta), "png,pdf", 0.6, 0.15, 0.8, 0.35)
-        plot_rmue_met.addHisto(dy_nomet.met.getHisto('MC'  , eta), "E,SAME", "DY"       , "PL", r.kRed+1 , 1, 0)
-        plot_rmue_met.addHisto(dy_nomet.met.getHisto('DATA', eta), "E,SAME", "DY - data", "PL", r.kBlack , 1, 1)
-        plot_rmue_met.addLine (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(),     1., dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(),     1., r.kGreen)
-        plot_rmue_met.addBand (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(), dnEdge, dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(), upEdge, r.kGray+1, 0.2)
-        plot_rmue_met.addLine (dy_nomet.met.getHisto('MC'  , eta).GetXaxis().GetXmin(), middle, dy_nomet.met.getHisto('MC', eta).GetXaxis().GetXmax(), middle, r.kGray+1)
-        plot_rmue_met.addLatex(0.2, 0.2, eta)
-        plot_rmue_met.save(1, 0, 0, lumi)
-        
-    ## =================
-    ## PRINT AND SAVE ==
-    ## =================
-    dy_onZ       .mll.saveInFile(['rmue', 'alone' ], [0.1, 0.2])
-    factor_region.mll.saveInFile(['rmue', 'factor'], 0.0)
-
-    rmue_table = make_rmue_table(dy_onZ)
-    for line in rmue_table: 
-        print line
+    makeAnalysis(treeDA, treeMC, cuts, '', 'nocut', True, opts.ingredientsFile)
 
