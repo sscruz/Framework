@@ -6,13 +6,10 @@ class CutManager:
    def __init__(self):
 
       self.twoLeptons = "nPairLep_Edge > 0 && hbheFilterIso_Edge > 0 && hbheFilterNew25ns_Edge > 0 && Flag_eeBadScFilter_Edge > 0 "
-      ##self.trigMMc = "(HLT_DoubleMu_Edge > 0 || HLT_mu27tkmu8_Edge > 0)"
-      ##self.trigEEc = "(HLT_el17el12_dz_Edge > 0 || HLT_ele33ele33_Edge > 0)"
-      ##self.trigEMc = "(HLT_mu8el17_Edge > 0 || HLT_mu17el12_Edge > 0 || HLT_mu30ele30_Edge > 0)"
-      self.trigMMc = "(HLT_DoubleMu_Edge)"
-      self.trigEEc = "(HLT_DoubleEl_Edge)"
-      self.trigEMc = "(HLT_MuEG_Edge)"
-      self.leptonPt = "Lep1_pt_Edge > 20. && Lep2_pt_Edge > 20."
+      self.trigMMc = "(HLT_mu17mu8_dz  > 0 || HLT_mu30tkmu11_noniso > 0)"
+      self.trigEEc = "(HLT_el17el12_dz > 0 || HLT_el23el12_dz > 0 || HLT_mu30el30_noniso > 0)"
+      self.trigEMc = "(HLT_mu8el17 > 0 || HLT_mu8el23 > 0)"
+      self.leptonPt = "Lep1_pt_Edge > 25. && Lep2_pt_Edge > 20."
       self.leptonDR = "lepsDR_Edge > 0.1"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
       self.leptonsMll = "lepsMll_Edge > 20"
@@ -53,7 +50,7 @@ class CutManager:
       self.DYControlRegionNoJet = "(met_Edge < 50 && lepsMll_Edge > 81 && lepsMll_Edge < 101)"
       ##### Needed by RT calculation################ 
       self.HT = "(htJet35j_Edge > 200)"
-      self.triggerHT = "(HLT_pfht200_Edge > 0 || HLT_pfht250_Edge > 0 || HLT_pfht300_Edge > 0 || HLT_pfht350_Edge > 0 || HLT_pfht400_Edge>0 || HLT_pfht475_Edge>0 || HLT_pfht600_Edge>0 || HLT_pfht800_Edge>0)"
+      self.triggerHT = "(HLT_htall > 0 || HLT_htmet > 0 || HLT_atall > 0)"
       self.numerator = self.AddList([self.goodLepton, self.donot(self.JetMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT])
 
 

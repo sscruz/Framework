@@ -211,16 +211,17 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    mcDatasets = ['TTLep_pow']
-    daDatasets = ['DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730', 'DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730', 'MuonEG_Run2016B_PromptReco_v2_runs_273150_273730']
+    mcDatasets = ['TTJets_DiLepton', 'TTJets_DiLepton_ext', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
+    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2', 'DoubleEG_Run2016B-PromptReco-v2', 'MuonEG_Run2016B-PromptReco-v2']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 2.1 ; maxrun = 999999
-    lumi_str = '2.1invfb'
+    #lumi = 0.864 ; maxrun = 274240
+    lumi = 2.66  ; maxrun = 999999
+    lumi_str = str(lumi).replace('.','p')+'invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
