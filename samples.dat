@@ -5,29 +5,43 @@
 #
 #-----------------------------------------------------------
 #----------------- data samples ----------------------------
-# BLOCK        COLOR                         NAME                                  LABEL                                               LOCATION OF FRIENDS                                 XSEC     ISDATA
-#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# BLOCK        COLOR                         NAME                 LABEL                                     LOCATION OF FRIENDS                                                     XSEC     ISDATA
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-------------------------- 25 ns --------------------------
-DoubleMuon    r.kBlack      DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730    DoubleMuon_Run2016B                               /afs/cern.ch/work//p/pablom/public/Trees_800_11-06-2016/      1          1         
-DoubleEG      r.kBlack      DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730      DoubleEG_Run2016B                                 /afs/cern.ch/work//p/pablom/public/Trees_800_11-06-2016/      1          1
-MuonEG        r.kBlack      MuonEG_Run2016B_PromptReco_v2_runs_273150_273730        MuonEG_Run2016B                                   /afs/cern.ch/work//p/pablom/public/Trees_800_11-06-2016/      1          1
+DoubleMuon    r.kBlack      DoubleMuon_Run2016B-PromptReco-v2    DoubleMuon_Run2016B     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1         
+DoubleEG      r.kBlack      DoubleEG_Run2016B-PromptReco-v2      DoubleEG_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
+MuonEG        r.kBlack      MuonEG_Run2016B-PromptReco-v2        MuonEG_Run2016B         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
+JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
+HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
 #
 #
 #
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
 #-----------------------------------------------------------
-# BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                 XSEC           ISDATA
+# BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-TTJets     r.kRed+9     TTJets_DiLepton               TT+Jets                       /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    87314.8          0
+TTJets    r.kRed+9     TTJets_DiLepton                TT+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       87314.8   0
+TTJets    r.kRed+9     TTJets_DiLepton_ext            TT+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       87314.8   0
+DYJets    r.kBlue+1    DYJetsToLL_M10to50             DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/    18610000.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M50                 DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/     6024000.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT100to200_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/      181302.0   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT200to400_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       50417.7   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT400to600_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        6983.9   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf      DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        2703.5   0
+DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        2703.5   0
+rare      r.kRed+2     WZ                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       47130.0   0
+rare      r.kRed+2     ZZ                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/      165230.0   0
+rare      r.kRed+2     WZTo2L2Q                       Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        5595.0   0
+rare      r.kRed+2     TTZToLLNuNu                    TTZ         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/         252.9   0
+rare      r.kRed+2     TTWToLNu                       TTW         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/         204.3   0
+WW        r.kGreen+2   WWTo2L2Nu                      WW2l        /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       12178.0   0
+WZ        r.kGreen-2   WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        4429.65  0
+singleT   r.kOrange+2  TBar_tWch                      singleT     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       35600.0   0
+singleT   r.kOrange+2  T_tWch                         singleT     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       35600.0   0   
+##
+#rare     r.kRed+2     WW                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/      115042.2   0
+##     TTWToLNu -> done
+#rare       r.kRed+2     WZTo1L3Nu                     WZTo1L3Nu  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/   -               0
 #TTJets     r.kRed+9     TTLep_pow                     TTLep_pow                   /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    87314.8          0
-DYJets     r.kBlue+1    DYJetsToLL_M10to50            DY+Jets                        /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     18610000.0       0
-DYJets     r.kBlue+1    DYJetsToLL_M50                DY+Jets                       /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     6024000.0        0
-rare       r.kRed+2     WW                            Other                         /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     115042.2         0
-rare       r.kRed+2     WZ                            Other                          /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     47130.0          0
-rare       r.kRed+2     ZZ                            Other                          /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     165230           0
-#rare       r.kRed+2     WWTo2L2Nu                     WWTo2L2Nu                   /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    12178.0          0
-#rare       r.kRed+2     WZTo3LNu                      WZTo3LNu                    /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    4429.65          0
-#rare       r.kRed+2     WZTo1L3Nu                     WZTo1L3Nu                   /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                     -               0
-#rare       r.kRed+2     WZTo2L2Q                      WZTo2L2Q                    /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    5595.0           0
 #rare       r.kRed+2     ZZTo2L2Q                      ZZTo2L2Q                    /afs/cern.ch/work/p/pablom/public/Trees_800_11-06-2016/                    3220.0           0
