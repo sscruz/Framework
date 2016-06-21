@@ -28,6 +28,7 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     for _selSample in selList:
         if _selSample not in checkedList:
             print 'ERROR: some samples weren\'t selected, check all sample names!'
+            print 'check this sample:', _selSample
             sys.exit('exiting...')
     if not len(set(typeList)) == 1:
             print 'ERROR: you\'re mixing DATA and MC!'
