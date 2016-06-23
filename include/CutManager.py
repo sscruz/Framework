@@ -20,7 +20,7 @@ class CutManager:
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
       self.nj2 = "(nJetSel_Edge >= 2)"
-      self.nj1 = "(nJetSel_Edge >= 0)"
+      self.nj1 = "(nJetSel_Edge >= 1)"
       self.nj0 = "(nJetSel_Edge >= 0)"
       self.nbj2 = "(nbJetSel_Edge >= 2)"
       self.nbj1 = "(nbJetSel_Edge >= 1)"
@@ -31,9 +31,11 @@ class CutManager:
       self.JetMETBaseline = "(met_Edge > 150 && nJetSel_Edge >= 2)"
       self.lowmass = "lepsMll_Edge > 20 && lepsMll_Edge < 81"
       self.Zmass = "lepsMll_Edge > 81 && lepsMll_Edge < 101"
+      self.Zveto = "!(lepsMll_Edge > 81 && lepsMll_Edge < 101)"
       self.highmass = "lepsMll_Edge > 101"
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
       self.SignalRegionBaseLine = self.AddList([self.goodLepton, self.trigger, self.JetMETBaseline]) 
+      self.SignalRegionBaseLineNoTrigger = self.AddList([self.goodLepton, self.JetMETBaseline]) 
       
       ##### Needed by RSFOF direct calculation ########
       self.RSFOFDirectControlRegion = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
@@ -87,5 +89,5 @@ class CutManager:
    def MinRun(self, run):
       
       return self.brackets("run >  %d"%(run))
- 
+
       
