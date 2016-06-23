@@ -95,16 +95,18 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    mcDatasets = ['TTJets_DiLepton', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WW', 'WZ', 'ZZ']
-    daDatasets = ['DoubleMuon_Run2016B_PromptReco_v2_runs_273150_273730', 'DoubleEG_Run2016B_PromptReco_v2_runs_273150_273730', 'MuonEG_Run2016B_PromptReco_v2_runs_273150_273730']
+    mcDatasets = ['TTJets_DiLepton_total', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'WZTo3LNu', 'TTZToLLNuNu', 'TTWToLNu']
+    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2', 'DoubleEG_Run2016B-PromptReco-v2', 'MuonEG_Run2016B-PromptReco-v2']
+
+
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 0.589 ; maxrun = 999999
-    lumi_str = '0.6invfb'
+    lumi = 2.6 ; maxrun = 999999
+    lumi_str = '2.6invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()

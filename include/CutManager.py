@@ -7,8 +7,8 @@ class CutManager:
 
       self.twoLeptons = "nPairLep_Edge > 0 && hbheFilterIso_Edge > 0 && hbheFilterNew25ns_Edge > 0 && Flag_eeBadScFilter_Edge > 0 "
       self.trigMMc = "(HLT_mu17mu8_dz_Edge  > 0 || HLT_mu30tkmu11_noniso_Edge > 0)"
-      self.trigEEc = "(HLT_el17el12_dz_Edge > 0 || HLT_el23el12_dz_Edge > 0 || HLT_mu30el30_noniso_Edge > 0)"
-      self.trigEMc = "(HLT_mu8el17_Edge > 0 || HLT_mu8el23_Edge > 0)"
+      self.trigEEc = "(HLT_el17el12_dz_Edge > 0 || HLT_el23el12_dz_Edge > 0 || HLT_doubleele33_noniso_Edge > 0)"
+      self.trigEMc = "(HLT_mu8el17_Edge > 0 || HLT_mu8el23_Edge > 0 || HLT_mu30el30_noniso_Edge > 0)"
       self.leptonPt = "Lep1_pt_Edge > 25. && Lep2_pt_Edge > 20."
       self.leptonDR = "lepsDR_Edge > 0.1"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
@@ -23,7 +23,7 @@ class CutManager:
       self.nj1 = "(nJetSel_Edge >= 0)"
       self.nj0 = "(nJetSel_Edge >= 0)"
       self.nbj2 = "(nbJetSel_Edge >= 2)"
-      self.nbj1 = "(nbJetSel_Edge >= 0)"
+      self.nbj1 = "(nbJetSel_Edge >= 1)"
       self.nbj0 = "(nbJetSel_Edge >= 0)"
       self.MET100 = "(met_Edge > 100)"
       self.MET150 = "(met_Edge > 150)"
@@ -36,13 +36,12 @@ class CutManager:
       self.SignalRegionBaseLine = self.AddList([self.goodLepton, self.trigger, self.JetMETBaseline]) 
       
       ##### Needed by RSFOF direct calculation ########
-      self.RSFOFDirectControlRegion = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 81) || lepsMll_Edge > 101))"
-      self.RSFOFDirectControlRegionRestrictive = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
-      self.RSFOFDirectSignalRegionRestrictive = "((met_Edge > 150 && nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
-      self.RSFOFDirectSignalRegionRestrictiveNoMET = "((nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
-      self.RSFOFDirectSignalRegionRestrictiveNoJet = "((nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
-      self.RSFOFDirectControlRegionNoMll = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && (lepsMll_Edge))"
-      self.RSFOFDirectControlRegionNoMET = "((nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 81) || lepsMll_Edge > 101))"
+      self.RSFOFDirectControlRegion = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectControlRegionNoMll = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && (lepsMll_Edge>20))"
+      self.RSFOFDirectControlRegionNoMET = "((nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectSignalRegion = "((met_Edge > 150 && nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectSignalRegionNoMET = "((nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectSignalRegionNoJet = "((nJetSel_Edge >= 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
       ##### Needed by rmue calculation################ 
       self.DYControlRegion = "(met_Edge < 50 && nJetSel_Edge >= 2 && lepsMll_Edge > 81 && lepsMll_Edge < 101)"
       self.DYControlRegionNoMll = "(met_Edge < 50 && nJetSel_Edge >= 2)"
