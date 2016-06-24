@@ -30,7 +30,7 @@ class Sample:
         self.lumWeight = self.xSection / self.count
         self.puWeight  = "PileupW_Edge"
       if self.isScan:
-        self.SFWeight  = '0.85'
+        self.SFWeight  = '1.0'
         self.lumWeight =  1.0
         self.puWeight  = "PileupW_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
@@ -44,18 +44,28 @@ class Sample:
       print "#################################"
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel):
- 
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin=True):
+     
       if(xmin == xmax):
-        h = TH1F(name, "", len(nbin)-1, array('d', nbin))
+        _nbins = len(nbin)-1
+        _arr = array('d', nbin)
+        h = TH1F(name+'_noOF', "", _nbins, _arr)
+        _newarr = _arr + array('d', [ 2*_arr[-1]-_arr[-2] ])
+        h_of = TH1F(name, "", _nbins+1, _newarr)
         ylabel = "# events"
       else:
-        h = TH1F(name, "", nbin, xmin, xmax)
+        h = TH1F(name+'_noOF', "", nbin, xmin, xmax)
         bw = int((xmax-xmin)/nbin)
         ylabel = "Events / " + str(bw) + " GeV"
+        h_of = TH1F(name, '', nbin+1, xmin, xmax+bw)
+
       h.Sumw2()
       h.GetXaxis().SetTitle(xlabel)
       h.GetYaxis().SetTitle(ylabel)
+
+      h_of.Sumw2()
+      h_of.GetXaxis().SetTitle(xlabel)
+      h_of.GetYaxis().SetTitle(ylabel)
 
       addCut = ""
       if self.isData:
@@ -72,8 +82,13 @@ class Sample:
       if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
       
-      self.ttree.Project(name, var, cut, options) 
-      return h
+      self.ttree.Project(h.GetName(), var, cut, options) 
+
+      for _bin in range(1, h.GetNbinsX()+2):
+          h_of.SetBinContent(_bin, h.GetBinContent(_bin))
+          h_of.SetBinError  (_bin, h.GetBinError  (_bin))
+      
+      return (h_of if ofBin else h)
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
    
@@ -138,25 +153,16 @@ class Block:
    def addSample(self, s):
       self.samples.append(s)
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True):
 
-     if(xmin == xmax):
-       h = TH1F(name, "", len(nbin)-1, array('d', nbin))
-       ylabel = "# events"
-     else:
-       h = TH1F(name, "", nbin, xmin, xmax)
-       bw = int((xmax-xmin)/nbin)
-       ylabel = "Events / " + str(bw) + " GeV"
-     h.Sumw2()
-     h.GetXaxis().SetTitle(xlabel)
-     h.GetYaxis().SetTitle(ylabel)
-
-     for s in self.samples:
+     for _is,s in enumerate(self.samples):
        AuxName = "auxT1_sample" + s.name
-       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
-       h.Add(haux)
+       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin)
+       if not _is:
+          h = haux.Clone(name+'_blockHisto')
+       else:
+          h.Add(haux)
        del haux
-
 
      h.SetLineColor(self.color)
      h.SetMarkerColor(self.color)
@@ -323,38 +329,17 @@ class Tree:
 
 
    def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True):
-   
-     if(xmin == xmax):
-       _nbins = len(nbin)-1
-       _arr = array('d', nbin)
-       h = TH1F(name+'_noOF', "", _nbins, _arr)
-       _newarr = _arr + array('d', [ 2*_arr[-1]-_arr[-2] ])
-       h_of = TH1F(name, "", _nbins+1, _newarr)
-       ylabel = "# events"
-     else:
-       h = TH1F(name+'_noOF', "", nbin, xmin, xmax)
-       bw = int((xmax-xmin)/nbin)
-       ylabel = "Events / " + str(bw) + " GeV"
-       h_of = TH1F(name, '', nbin+1, xmin, xmax+bw)
-
-     h.Sumw2()
-     h.GetXaxis().SetTitle(xlabel)
-     h.GetYaxis().SetTitle(ylabel)
-     h_of.Sumw2()
-     h_of.GetXaxis().SetTitle(xlabel)
-     h_of.GetYaxis().SetTitle(ylabel)
      
-     for b in self.blocks:
+     for ib,b in enumerate(self.blocks):
        AuxName = "auxh1_block_" + name + "_" + b.name
-       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel)
-       h.Add(haux)
+       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin)
+       if not ib:
+          h = haux.Clone(name+'_treeHisto')
+       else:
+          h.Add(haux)
        del haux
 
-     for _bin in range(1, h_of.GetNbinsX()+1):
-         h_of.SetBinContent(_bin, h.GetBinContent(_bin))
-         h_of.SetBinError  (_bin, h.GetBinError  (_bin))
-
-     return (h_of if ofBin else h)
+     return h
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
      if(xmin == xmax) and (ymax == ymin):
