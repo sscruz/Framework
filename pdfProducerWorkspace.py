@@ -30,37 +30,40 @@ class pdfClass:
 
 
     def setTreeBranches(self):
-        self.tree.SetBranchStatus('*'               , 0); self.tree.SetBranchStatus('evt'             , 1);
+        self.tree.SetBranchStatus('*'               , 0); ## old self.tree.SetBranchStatus('evt'             , 1);
         self.tree.SetBranchStatus('Lep1_pt_Edge'    , 1); self.tree.SetBranchStatus('Lep2_pt_Edge'    , 1);
         self.tree.SetBranchStatus('Lep1_eta_Edge'   , 1); self.tree.SetBranchStatus('Lep2_eta_Edge'   , 1);
         self.tree.SetBranchStatus('Lep1_pdgId_Edge' , 1); self.tree.SetBranchStatus('Lep2_pdgId_Edge' , 1);
         self.tree.SetBranchStatus('lepsDR_Edge'     , 1); self.tree.SetBranchStatus('lepsMll_Edge'    , 1);
         self.tree.SetBranchStatus('nJetSel_Edge'    , 1); self.tree.SetBranchStatus('nPairLep_Edge'   , 1);
-        self.tree.SetBranchStatus('met_pt'          , 1); self.tree.SetBranchStatus('min_mlb1_Edge'   , 1); 
+        self.tree.SetBranchStatus('met_Edge'        , 1); self.tree.SetBranchStatus('min_mlb1_Edge'   , 1); 
         self.tree.SetBranchStatus('sum_mlb_Edge'    , 1); self.tree.SetBranchStatus('st_Edge'         , 1);
         self.tree.SetBranchStatus('lepsZPt_Edge'    , 1); self.tree.SetBranchStatus('d3D_Edge'        , 1);
+        self.tree.SetBranchStatus('lepsDPhi_Edge'   , 1);
         
     def makeVarSet(self):
         self.l1p = ROOT.RooRealVar('Lep1_pt_Edge'    , 'l1p',   0., 1000., 'GeV'); self.l2p = ROOT.RooRealVar('Lep2_pt_Edge'    , 'l2p',   0., 1000., 'GeV');
         self.l1e = ROOT.RooRealVar('Lep1_eta_Edge'   , 'l1e', -2.5,   2.5, ''   ); self.l2e = ROOT.RooRealVar('Lep2_eta_Edge'   , 'l2e', -2.5,   2.5, ''   );
         self.l1i = ROOT.RooRealVar('Lep1_pdgId_Edge' , 'l1i',  -15,    15, ''   ); self.l2i = ROOT.RooRealVar('Lep2_pdgId_Edge' , 'l2i',  -15,    15, ''   );
-        self.ldr = ROOT.RooRealVar('lepsDR_Edge'     , 'ldr',  0.3,  5.8 , ''   ); self.njs = ROOT.RooRealVar('nJetSel_Edge'    , 'njs',   0 ,   25 , ''   );
-        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_pt'          , 'met',   0., 1000., 'GeV');
+        self.ldr = ROOT.RooRealVar('lepsDR_Edge'     , 'ldr',  0.1,  5.8 , ''   ); self.njs = ROOT.RooRealVar('nJetSel_Edge'    , 'njs',   0 ,   25 , ''   );
+        self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_Edge'        , 'met',   0., 1000., 'GeV');
         self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20., 1000., 'GeV');
         self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0., 3000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100., 5000., 'GeV');
-        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
+        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); ## old self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
         self.a3d = ROOT.RooRealVar('d3D_Edge'        , 'a3d', 0.2 , 3.14 , ''   );
+        self.ldp = ROOT.RooRealVar('lepsDPhi_Edge'   , 'ldp', 0.  , 3.14 , ''   );
+        self.nlt = ROOT.RooRealVar('nLepTight_Edge'  , 'nlt',  0 , 4 , ''   );
         self.wgt = ROOT.RooRealVar('lumwgt'          , 'wgt', self.mcWgt, self.mcWgt, ''); self.wgt.setConstant(1);
 
         self.varSet = ROOT.RooArgSet(self.l1p, self.l2p, self.l1e, self.l2e, self.l1i, self.l2i, self.ldr, self.njs, self.nle)
         self.varSet.add(self.met); self.varSet.add(self.mlp); self.varSet.add(self.mll); self.varSet.add(self.mlp);
-        self.varSet.add(self.mlb); self.varSet.add(self.st); self.varSet.add(self.zpt); self.varSet.add(self.evt);
-        self.varSet.add(self.wgt); self.varSet.add(self.a3d);
+        self.varSet.add(self.mlb); self.varSet.add(self.st); self.varSet.add(self.zpt); ## old self.varSet.add(self.evt);
+        self.varSet.add(self.wgt); self.varSet.add(self.a3d); self.varSet.add(self.nlt); self.varSet.add(self.ldp)
 
     def makeDatasets(self, cutlist):
         for cut, name in cutlist.items():
             print 'loading a dataset into the class for cut %s'%(name)
-            cut = cut + ' && evt%{aa} == 0'.format(aa=self.skim)
+            ## old cut = cut + ' && evt%{aa} == 0'.format(aa=self.skim)
             tmp_ds = ROOT.RooDataSet('ds_'+name, 'ds_'+name, self.tree, self.varSet, cut, 'lumwgt')
             setattr(self, name, tmp_ds)
             self.datasets.append(tmp_ds)
@@ -73,6 +76,7 @@ class pdfClass:
             setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 1000.); setattr(self, 'zpt_rho', 1.4);
             setattr(self, 'a3d_min',  0.2); setattr(self, 'a3d_max',  3.14); setattr(self, 'a3d_rho', 1.4);
             setattr(self, 'st_min' , 140.); setattr(self, 'st_max' , 5000.); setattr(self, 'st_rho' , 1.8);
+            setattr(self, 'ldp_min',   0.); setattr(self, 'ldp_max',  3.14); setattr(self, 'ldp_rho', 1.8);
             self.propSet = True
         else:
             setattr(self, var+'_min', _min); setattr(self, var+'_max', _max); setattr(self, var+'_rho', rho);
@@ -123,20 +127,23 @@ class pdfClass:
             getattr(self, obj).Write()
 
 def getFrame(var, xmin=0, xmax=0):
-    if   var == 'met': vartree = 'met_pt'
+    ## old if   var == 'met': vartree = 'met_pt'
+    if   var == 'met': vartree = 'met_Edge'
     elif var == 'mlb': vartree = "sum_mlb_Edge";
     elif var == 'ldr': vartree = 'lepsDR_Edge';
     elif var == 'zpt': vartree = 'lepsZPt_Edge';
     elif var == 'a3d': vartree = 'd3D_Edge';
+    elif var == 'ldp': vartree = 'lepsDPhi_Edge';
     if xmax <= xmin:
         return w.var(vartree).frame()
     else:
         return w.var(vartree).frame(xmin,xmax,100)
 
 def buildModels(w):
-    for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt'],['_DA', '_MC']):
+    for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt', 'ldp'],['_DA', '_MC']):
         if var == 'met':
-            vartree = 'met_pt'
+            ## old vartree = 'met_pt'
+            vartree = 'met_Edge'
             w.factory('met_c0{t}[-0.028,-1,0.]'.format(t=t))
             w.factory('met_c1{t}[-0.01,-0.05,-0.005]'.format(t=t))
             w.var(vartree).setMin(150.); w.var(vartree).setMax(1000.);
@@ -190,6 +197,11 @@ def buildModels(w):
             ## w.factory("a3d_n1[1.,0.,10.]")
             ## w.factory("a3d_n2[1.,0.,10.]")
             ## w.factory("DoubleCB::{var}_analyticalPDF({vartree},a3d_mean,a3d_sigma,a3d_alpha1,a3d_n1,a3d_alpha2,a3d_n2)".format(var=var, vartree=vartree))
+        elif var == 'ldp':
+            vartree = 'lepsDPhi_Edge'
+            w.factory('EXPR::{var}_analyticalPDF{t}("ldp_a2{t}*({vartree})*({vartree}) + ldp_a0{t}",{{{vartree},ldp_a0{t}[0.5,0,2],ldp_a2{t}[0.8,0.,2.]}})'.format(var=var, vartree=vartree,t=t))
+            ## w.factory("ldp_lambda{t}[-3.,3.,-1.]".format(t=t))
+            ## w.factory('SUM::{var}_analyticalPDF{t}(ldp{t}[0,1]*RooExponential::{var}_cb{t}({vartree},ldp_lambda{t}))'.format(var=var, vartree=vartree, t=t))
 
 if __name__ == '__main__':
 
@@ -208,26 +220,19 @@ if __name__ == '__main__':
         print '%-20s : %-20s' %(key, value)
 
     cuts = CutManager.CutManager()
-    cuts_sr        = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.METJetsSignalRegion      ]); cuts_sr        = cleanCut(cuts_sr)
-    cuts_sr_met100 = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.METJetsSignalRegionMET100]); cuts_sr_met100 = cleanCut(cuts_sr_met100)
-    cuts_sr_met150 = cuts.AddList([cuts.GoodLeptonNoTriggerOF(), cuts.METJetsSignalRegionMET150]); cuts_sr_met150 = cleanCut(cuts_sr_met150)
+    cuts_sr_met150 = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.OF]); cuts_sr_met150 = cleanCut(cuts_sr_met150)
     
-    tt_tfile = ROOT.TFile('/afs/cern.ch/work/p/pablom/public/MC/TTLep_pow/treeProducerSusyEdge/tree.root')
-    #tt_ffile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/friendsForPablosTrees_withSRID/evVarFriend_TTLep_pow.root')
-    tt_ffile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/nTuples/mar02/evVarFriend_TTLep_pow.root')
-    tt_tree = tt_tfile.Get('tree')
-    tt_tree.AddFriend('sf/t', tt_ffile)
-    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/MuEG_all/MuEG/treeProducerSusyEdge/tree.root')
-    #em_ffile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/MuEG_all/friends/evVarFriend_MuEG.root')
-    em_ffile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/nTuples/mar02/evVarFriend_MuEG.root')
-    em_tree = em_tfile.Get('tree')
-    em_tree.AddFriend('sf/t', em_ffile)
+    ## 2016 data and MC
+    tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
+    tt_tree = tt_tfile.Get('sf/t')
+    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
+    em_tree = em_tfile.Get('sf/t')
     
     dss = []
     em_data = pdfClass('em_data', em_tree)
     dss.append(em_data)
     if opts.dott: 
-        tt_mc   = pdfClass('tt_mc'   , tt_tree, opts.skimVal, 87314.8*2.1/5e6)
+        tt_mc   = pdfClass('tt_mc'   , tt_tree, opts.skimVal, 13.5*87314.8*2.6/(1.98059e+08))#1.10523e+08)) ## not sure why this normalization does not work
         dss.append(tt_mc)
     
     cutsAndDs = {#cuts_sr       : 'cuts_of_sr'       ,
@@ -244,9 +249,11 @@ if __name__ == '__main__':
     
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
-    for var in ['a3d', 'met', 'mlb', 'ldr', 'zpt']:
+    for var in ['ldp', 'met', 'mlb', 'zpt']:
         opt = 'a' if var != 'met' else 'am'
-        tmp_frame = getFrame(var); 
+        fmin = (150 if var == 'met' else 0 if var == 'zpt' else 0 if var == 'mlb' else 0)
+        fmax = (500 if var == 'met' else 600 if var == 'zpt' else 1000 if var == 'mlb' else 0)
+        tmp_frame = getFrame(var, fmin, fmax); 
         for i, ds in enumerate(reversed(dss)):
             model = var+'_analyticalPDF'
             if ds.name == 'tt_mc'  : model += '_MC'
@@ -264,28 +271,30 @@ if __name__ == '__main__':
             #tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Save(1))
             frs.append(copy.deepcopy(tmp_fr))
 
-            ## tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
-            ## #tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('_ds_cuts_of_sr_met150')+len('_ds_cuts_of_sr_met150')] )
-            ## tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('__')] )
-            ## tmp_histo.SetLineColor(color); tmp_histo.SetLineStyle(linestyle)
-            ## ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
+            tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
+            #tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('_ds_cuts_of_sr_met150')+len('_ds_cuts_of_sr_met150')] )
+            tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('__')] )
+            tmp_histo.SetLineColor(color); tmp_histo.SetLineStyle(linestyle)
+            ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
 
-            ## w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
-            ## w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
-            ## if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
+            w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
+            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
+            if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
 
             ## # damn root takes the objects away if i write them now
-            ## writeobjs.append(copy.deepcopy(tmp_histo))
+            writeobjs.append(copy.deepcopy(tmp_histo))
             writeobjs.append(copy.deepcopy(w.pdf(model)))
             if doNDKeys: writeobjs.append(copy.deepcopy(getattr(ds, 'pdf_histo_%s_ds_%s'%(var, 'cuts_of_sr_met150') ) ))
             #a = raw_input()
 
         frames.append(tmp_frame);
+        c = ROOT.TCanvas()
         tmp_frame.Draw()
+        c.SaveAs('frame_%s.pdf'%(var))
 
-    w.writeToFile("pdfs/pdfs_version22_savingTheWorkspace.root")
+    w.writeToFile("pdfs/pdfs_version2_80X_2016Data_savingTheWorkspace.root")
 
-    outfile = ROOT.TFile('pdfs/pdfs_version21_extendedFit.root', 'RECREATE')
+    outfile = ROOT.TFile('pdfs/pdfs_version2_80X_2016Data.root', 'RECREATE')
     outfile.cd()
     for i in writeobjs:
         i.Write()
