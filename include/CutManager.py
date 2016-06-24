@@ -6,7 +6,7 @@ class CutManager:
    def __init__(self):
 
       self.twoLeptons = "nPairLep_Edge > 0 && hbheFilterIso_Edge > 0 && hbheFilterNew25ns_Edge > 0 && Flag_eeBadScFilter_Edge > 0 "
-      self.trigMMc = "(HLT_mu17mu8_dz_Edge  > 0 || HLT_mu30tkmu11_noniso_Edge > 0)"
+      self.trigMMc = "(HLT_mu17mu8_dz_Edge  > 0 || HLT_mu30tkmu11_noniso_Edge > 0 || HLT_mu17mu8_Edge > 0 )"
       self.trigEEc = "(HLT_el17el12_dz_Edge > 0 || HLT_el23el12_dz_Edge > 0 || HLT_doubleele33_noniso_Edge > 0)"
       self.trigEMc = "(HLT_mu8el17_Edge > 0 || HLT_mu8el23_Edge > 0 || HLT_mu30el30_noniso_Edge > 0)"
       self.leptonPt = "Lep1_pt_Edge > 25. && Lep2_pt_Edge > 20."
@@ -36,6 +36,10 @@ class CutManager:
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
       self.SignalRegionBaseLine = self.AddList([self.goodLepton, self.trigger, self.JetMETBaseline]) 
       self.SignalRegionBaseLineNoTrigger = self.AddList([self.goodLepton, self.JetMETBaseline]) 
+      self.region3l = '(nLepTight_Edge == 3 && met_Edge > 60 && nBJetMedium25_Edge == 0)'
+      self.region4l = '(nLepTight_Edge == 4)'
+
+      self.ewinoSR = '('+self.goodLepton +'&&'+ self.SF +'&&'+ self.nj2 +'&&'+ self.Zmass +'&& nBJetMedium25_Edge == 0 && abs(j1MetDPhi_Edge) > 1. && mt2_Edge > 80. && nLepLoose_Edge == 2 )'
       
       ##### Needed by RSFOF direct calculation ########
       self.RSFOFDirectControlRegion = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
