@@ -15,7 +15,7 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors, SetOwnership
-import math, sys, optparse, array
+import math, sys, optparse, array, copy
 import gc, inspect
 
 import include.helper     as helper
@@ -47,6 +47,8 @@ def dumpObjects():
                 filename = inspect.getabsfile(o.__class__)            
                 print "Object of class:", name, "...",
                 print "defined in file:", filename                
+
+    
 
 def makeSummaryTable3l4l(plot_3l, plot_4l):
     wz3l, wz3l_e, zz4l, zz4l_e = 0., 0., 0., 0.,
@@ -109,7 +111,7 @@ sig./(data-bkg.) & {rat3l:.2f}   $\\pm$  {rat3l_e:.2f}       & {rat4l:.2f}   $\\
                             obs3l=int(obs3l),obs4l=int(obs4l),
                             obsSub3l=obsSub3l, obsSub3l_e=obsSub3l_e, obsSub4l=obsSub4l, obsSub4l_e=obsSub4l_e,
                             rat3l=rat3l, rat3l_e=rat3l_e, rat4l=rat4l, rat4l_e=rat4l_e)
-    compTableFile = open('plots/DataMC/tables/controlRegion3l4l_comparison.tex','w')
+    compTableFile = open('plots/DataMC/4.0invfb/tables/controlRegion3l4l_comparison.tex','w')
     compTableFile.write(table3l4lComparisonString)
     compTableFile.close()
 
@@ -136,7 +138,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
     SetOwnership(MC, 0 )   # 0 = release (not keep), 1 = keep
     SetOwnership(MCS, 0 )   # 0 = release (not keep), 1 = keep
     SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = keep
-    plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.7, 0.7, 0.95, 0.9)
+    plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.7, 0.85, 0.9)
     plot.addStack(MCS, "HIST", 1, 1)
     plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
     plot.saveRatio(1, 1, logx, lumi, DATA, MC)
@@ -147,6 +149,146 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
         del plot
         return
 
+def rebinEWino(histo):
+    a= [0,50,100,150,225,300,325]
+    _arr = array.array('d', a)
+    h_ret = r.TH1F(histo.GetName(),histo.GetTitle(), 6, _arr)
+    for ii,ib in enumerate(a):
+        if ib == a[-1]: continue
+        tmp_err = r.Double()
+        if not ib == 300:
+            tmp_cont = histo.IntegralAndError(histo.FindBin(ib), histo.FindBin(a[ii+1]-1.), tmp_err )
+        else:
+            tmp_cont = histo.IntegralAndError(histo.FindBin(ib), histo.GetNbinsX()+1, tmp_err )
+        h_ret.SetBinContent(ii+1, tmp_cont)
+        h_ret.SetBinError  (ii+1, tmp_err )
+    return copy.deepcopy(h_ret)
+
+def makeSummaryEWino(plot_EWino):
+    f_ttbar = r.TFile('plots/ttbarMET/lumi800invpb/closure_highStats_withDataCorrected.root','READ')
+    f_vince = r.TFile('plots/ttbarMET/lumi800invpb/data_SR_EWK_hists.root','READ')
+    c_ttbar = f_ttbar.Get('c1_n2')
+    h_ttPredMC = c_ttbar.FindObject("estimated ttbar")
+    h_ttPredDA = c_ttbar.FindObject("data est. corrected")
+    h_vince = copy.deepcopy(f_vince.Get('h_templ_met'))
+    h_vince.Rebin(25)
+    
+    h_vincePred = h_ttPredMC.Clone('vincePredictionFinal')
+    h_vincePred.Reset()
+    for ib in range(1,h_vincePred.GetNbinsX()+2):
+        h_vincePred.SetBinContent(ib, h_vince.GetBinContent(ib))
+        h_vincePred.SetBinError  (ib, h_vince.GetBinError  (ib))
+        if ib == h_vincePred.FindBin(301.):
+            tmp_err = r.Double()
+            tmp_cont = h_vince.IntegralAndError(ib, h_vince.GetNbinsX()+1, tmp_err)
+            h_vincePred.SetBinContent(ib, tmp_cont)
+            h_vincePred.SetBinError  (ib, tmp_err )
+            break
+
+    for i,h_ew in enumerate(plot_EWino.histos):
+        if 'WZ'   in h_ew.GetName():
+            h_wz = copy.deepcopy(h_ew)
+        if 'ZZ'   in h_ew.GetName():
+            h_zz = copy.deepcopy(h_ew)
+        if 'rare' in h_ew.GetName():
+            h_rare = copy.deepcopy(h_ew)
+        if 'DATA' in h_ew.GetName():
+            h_data = copy.deepcopy(h_ew)
+    
+    h_vincePred = rebinEWino(h_vincePred); h_vincePred.SetFillColor(r.kAzure+5)
+    h_wz        = rebinEWino(h_wz       ); h_wz       .SetFillColor(r.kRed+2); h_wz.GetXaxis().SetTitle('MET (GeV)')
+    h_zz        = rebinEWino(h_zz       ); h_wz       .SetFillColor(r.kGreen+1)
+    h_rare      = rebinEWino(h_rare     ); h_rare     .SetFillColor(r.kGray)
+    h_ttPredDA  = rebinEWino(h_ttPredDA ); h_ttPredDA .SetFillColor(r.kYellow+1)
+    h_data      = rebinEWino(h_data     );
+    bin75 = h_data.FindBin(75.)
+    bkg = h_wz.GetBinContent(bin75)+h_zz.GetBinContent(bin75)+h_rare.GetBinContent(bin75)+h_ttPredDA.GetBinContent(bin75)
+    data = h_data.GetBinContent(bin75)
+    dy = h_vincePred.GetBinContent(bin75)
+
+    h_vincePred.Scale((data-bkg)/dy)
+
+    stack = r.THStack()
+    stack.Add(h_wz       )
+    stack.Add(h_zz       )
+    stack.Add(h_rare     )
+    stack.Add(h_ttPredDA )
+    stack.Add(h_vincePred)
+
+    totalBKG = h_vincePred.Clone('totalBkg')
+    totalBKG.Add(h_wz)
+    totalBKG.Add(h_zz)
+    totalBKG.Add(h_rare)
+    totalBKG.Add(h_ttPredDA)
+    totalBKG.SetFillColor(1)
+    totalBKG.SetMarkerSize(0.)
+    totalBKG.SetFillStyle(3004)
+
+    res = {}
+    for i in range(1,totalBKG.GetNbinsX()+1):
+        res['ra%d'%i] = h_rare     .GetBinContent(i)
+        res['ra%d_e'%i] = h_rare     .GetBinError  (i)
+        res['wz%d'%i] = h_wz       .GetBinContent(i)
+        res['wz%d_e'%i] = h_wz       .GetBinError  (i)
+        res['zz%d'%i] = h_zz       .GetBinContent(i)
+        res['zz%d_e'%i] = h_zz       .GetBinError  (i)
+        res['dy%d'%i] = h_vincePred.GetBinContent(i)
+        res['dy%d_e'%i] = h_vincePred.GetBinError  (i)
+        res['tt%d'%i] = h_ttPredDA .GetBinContent(i)
+        res['tt%d_e'%i] = h_ttPredDA .GetBinError  (i)
+        res['to%d'%i] = totalBKG .GetBinContent(i)
+        res['to%d_e'%i] = totalBKG .GetBinError  (i)
+        res['ob%d'%i] = h_data     .GetBinContent(i)
+        res['ob%d_e'%i] = h_data     .GetBinError  (i)
+        res['di%d'%i], res['di%d_e'%i] = helper.ratioError(h_data.GetBinContent(i), h_data.GetBinError(i), totalBKG.GetBinContent(i), totalBKG.GetBinError(i) )
+
+    stack.SetMaximum(1.3*max(totalBKG.GetMaximum(),h_data.GetMaximum()) )
+    plot = Canvas.Canvas('ttbarMET/%s/plot_resultFancyEWino'%('0.8invfb'), 'png,pdf,root', 0.7, 0.7, 0.95, 0.9)
+    plot.addStack(stack, "HIST", 1, 1)
+    plot.addHisto(totalBKG, "E2,SAME", "", "", r.kBlack, 1, -1)
+    plot.addHisto(h_data, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+    plot.saveRatio(1, 1, 0, 0.8, h_data, totalBKG)
+
+    
+    tableResultsEWino = '''\\documentclass{{article}}
+\\usepackage[a4paper,margin=1in,landscape]{{geometry}}
+\\begin{{document}}
+\\begin{{table}}[hbtp] 
+\\begin{{center}} 
+\\bgroup 
+\\def\\arraystretch{{1.2}} 
+\\caption{{Result for the EWKino search for 0.8 fb$^{{-1}}$.}} 
+\\label{{tab:ewinoResult}} 
+\\begin{{tabular}}{{l| c c c c c c}} 
+ MET region      & 0-50 GeV                      & 50-100 GeV                   & 100-150 GeV                  & 150-225 GeV                  & 225-300 GeV                 & 300+ GeV \\\\ \\hline
+rare             & {ra1:.2f} $\\pm$  {ra1_e:.2f} & {ra2:.2f} $\\pm$ {ra2_e:.2f} & {ra3:.2f} $\\pm$ {ra3_e:.2f} & {ra4:.2f} $\\pm$ {ra4_e:.2f} & {ra5:.2f} $\\pm$ {ra5_e:.2f}& {ra6:.2f} $\\pm$ {ra6_e:.2f}           \\\\
+WZ3l             & {wz1:.2f} $\\pm$  {wz1_e:.2f} & {wz2:.2f} $\\pm$ {wz2_e:.2f} & {wz3:.2f} $\\pm$ {wz3_e:.2f} & {wz4:.2f} $\\pm$ {wz4_e:.2f} & {wz5:.2f} $\\pm$ {wz5_e:.2f}& {wz6:.2f} $\\pm$ {wz6_e:.2f}           \\\\
+ZZ               & {zz1:.2f} $\\pm$  {zz1_e:.2f} & {zz2:.2f} $\\pm$ {zz2_e:.2f} & {zz3:.2f} $\\pm$ {zz3_e:.2f} & {zz4:.2f} $\\pm$ {zz4_e:.2f} & {zz5:.2f} $\\pm$ {zz5_e:.2f}& {zz6:.2f} $\\pm$ {zz6_e:.2f}           \\\\
+DY prediction    & {dy1:.2f} $\\pm$  {dy1_e:.2f} & {dy2:.2f} $\\pm$ {dy2_e:.2f} & {dy3:.2f} $\\pm$ {dy3_e:.2f} & {dy4:.2f} $\\pm$ {dy4_e:.2f} & {dy5:.2f} $\\pm$ {dy5_e:.2f}& {dy6:.2f} $\\pm$ {dy6_e:.2f}           \\\\
+tt prediction    & {tt1:.2f} $\\pm$  {tt1_e:.2f} & {tt2:.2f} $\\pm$ {tt2_e:.2f} & {tt3:.2f} $\\pm$ {tt3_e:.2f} & {tt4:.2f} $\\pm$ {tt4_e:.2f} & {tt5:.2f} $\\pm$ {tt5_e:.2f}& {tt6:.2f} $\\pm$ {tt6_e:.2f}           \\\\ \\hline
+total bkg        & {to1:.2f} $\\pm$  {to1_e:.2f} & {to2:.2f} $\\pm$ {to2_e:.2f} & {to3:.2f} $\\pm$ {to3_e:.2f} & {to4:.2f} $\\pm$ {to4_e:.2f} & {to5:.2f} $\\pm$ {to5_e:.2f}& {to6:.2f} $\\pm$ {to6_e:.2f}           \\\\ \\hline
+observed         & {ob1:.2f}                     & {ob2:.2f}                    & {ob3:.2f}                    & {ob4:.2f}                    & {ob5:.2f}                   & {ob6:.2f}                          \\\\
+obs./pred.       & {di1:.2f} $\\pm$  {di1_e:.2f} & {di2:.2f} $\\pm$  {di2_e:.2f}& {di3:.2f} $\\pm$  {di3_e:.2f}& {di4:.2f} $\\pm$  {di4_e:.2f}& {di5:.2f} $\\pm$ {di5_e:.2f}& {di6:.2f} $\\pm$ {di6_e:.2f}      \\\\
+\\end{{tabular}} 
+\\egroup 
+\\end{{center}} 
+\\end{{table}} 
+\\end{{document}}'''.format(
+ra1=res['ra1'],  ra1_e=res['ra1_e'], ra2=res['ra2'], ra2_e=res['ra2_e'], ra3=res['ra3'], ra3_e=res['ra3_e'], ra4=res['ra4'], ra4_e=res['ra4_e'], ra5=res['ra5'], ra5_e=res['ra5_e'], ra6=res['ra6'], ra6_e=res['ra6_e'],
+wz1=res['wz1'],  wz1_e=res['wz1_e'], wz2=res['wz2'], wz2_e=res['wz2_e'], wz3=res['wz3'], wz3_e=res['wz3_e'], wz4=res['wz4'], wz4_e=res['wz4_e'], wz5=res['wz5'], wz5_e=res['wz5_e'], wz6=res['wz6'], wz6_e=res['wz6_e'],
+zz1=res['zz1'],  zz1_e=res['zz1_e'], zz2=res['zz2'], zz2_e=res['zz2_e'], zz3=res['zz3'], zz3_e=res['zz3_e'], zz4=res['zz4'], zz4_e=res['zz4_e'], zz5=res['zz5'], zz5_e=res['zz5_e'], zz6=res['zz6'], zz6_e=res['zz6_e'],
+dy1=res['dy1'],  dy1_e=res['dy1_e'], dy2=res['dy2'], dy2_e=res['dy2_e'], dy3=res['dy3'], dy3_e=res['dy3_e'], dy4=res['dy4'], dy4_e=res['dy4_e'], dy5=res['dy5'], dy5_e=res['dy5_e'], dy6=res['dy6'], dy6_e=res['dy6_e'],
+tt1=res['tt1'],  tt1_e=res['tt1_e'], tt2=res['tt2'], tt2_e=res['tt2_e'], tt3=res['tt3'], tt3_e=res['tt3_e'], tt4=res['tt4'], tt4_e=res['tt4_e'], tt5=res['tt5'], tt5_e=res['tt5_e'], tt6=res['tt6'], tt6_e=res['tt6_e'],
+to1=res['to1'],  to1_e=res['to1_e'], to2=res['to2'], to2_e=res['to2_e'], to3=res['to3'], to3_e=res['to3_e'], to4=res['to4'], to4_e=res['to4_e'], to5=res['to5'], to5_e=res['to5_e'], to6=res['to6'], to6_e=res['to6_e'],
+ob1=res['ob1'],                      ob2=res['ob2'],                     ob3=res['ob3'],                     ob4=res['ob4'],                     ob5=res['ob5'],                     ob6=res['ob6'],                   
+di1=res['di1'],  di1_e=res['di1_e'], di2=res['di2'], di2_e=res['di2_e'], di3=res['di3'], di3_e=res['di3_e'], di4=res['di4'], di4_e=res['di4_e'], di5=res['di5'], di5_e=res['di5_e'], di6=res['di6'], di6_e=res['di6_e'])
+    compTableFile = open('plots/ttbarMET/0.8invfb/tables/resultTable0p8invfb.tex','w')
+    compTableFile.write(tableResultsEWino)
+    compTableFile.close()
+
+    return copy.deepcopy(h_vincePred)
+    
+    
 
 if __name__ == "__main__":
 
@@ -166,7 +308,7 @@ if __name__ == "__main__":
     dyDatasets = ['DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
     mcDatasets = ['ZZ', 'TTJets_DiLepton_total', 'WWTo2L2Nu', 'WZTo2L2Q', 'WZTo3LNu', 'TTZToLLNuNu', 'TTWToLNu']
     mcDatasets += dyDatasets
-    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2', 'DoubleEG_Run2016B-PromptReco-v2', 'MuonEG_Run2016B-PromptReco-v2']
+    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_275125', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_275125']
 
 
 
@@ -175,8 +317,8 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 2.6 ; maxrun = 999999
-    lumi_str = '2.6invfb'
+    #lumi = 2.6 ; maxrun = 999999; lumi_str = '2.6invfb'
+    lumi = 4.0 ; maxrun = 275125; lumi_str = '4.0invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -187,14 +329,27 @@ if __name__ == "__main__":
     labelnjet = "N. Jets"
     
     ## ewino_SR = makePlot(0.8, '0.8invfb', treeDA, treeMC, "met_Edge", "met_ewino_SR", 12, 0, 300, cuts.AddList([cuts.ewinoSR, 'run_Edge <= 274240']), cuts, labelmet, 0, True)
+    ## makeSummaryEWino(ewino_SR)
     
     ## #3l and 4l plots
-    ## plot_3l = makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge"    , "met_3lregion_AF", 14, 60, 200, cuts.AddList([cuts.goodLepton, cuts.AF, cuts.nj0, cuts.region3l]), cuts, labelmet, 0, True)
-    ## plot_4l = makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_4lregion_AF", 10,  0, 200, cuts.AddList([cuts.goodLepton, cuts.AF, cuts.nj0, cuts.region4l]), cuts, labelmll, 0, True)
-    ## makeSummaryTable3l4l(plot_3l, plot_4l)
+    plot_3l = makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge"    , "met_3lregion_AF", 14, 60, 200, cuts.AddList([cuts.goodLepton, cuts.AF, cuts.nj0, cuts.region3l]), cuts, labelmet, 0, True)
+    plot_4l = makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_4lregion_AF", 10,  0, 200, cuts.AddList([cuts.goodLepton, cuts.AF, cuts.nj0, cuts.region4l]), cuts, labelmll, 0, True)
+    makeSummaryTable3l4l(plot_3l, plot_4l)
 
-    makePlot(lumi, lumi_str, treeDA, treeMC, "mt2_Edge", "mt2_met50_2jets_OF", 20,  0,  200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj2, 'met_Edge > 50']), cuts, 'M_{T2}', 1)
-    makePlot(lumi, lumi_str, treeDA, treeMC, "mt2_Edge", "mt2_met50_2jets_SF", 20,  0,  200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'met_Edge > 50']), cuts, 'M_{T2}', 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "mt2_Edge", "mt2_met50_2jets_OF", 20,  0,  200, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj2, 'met_Edge > 50']), cuts, 'M_{T2}', 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "mt2_Edge", "mt2_met50_2jets_SF", 20,  0,  200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'met_Edge > 50']), cuts, 'M_{T2}', 1)
+
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_mt2_140to160_2jets_SF", 10,  0,  300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelmet, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_mt2_140to160_2jets_ee", 10,  0,  300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelmet, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "met_Edge", "met_mt2_140to160_2jets_mm", 10,  0,  300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelmet, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "nBJetMedium25_Edge", "nb_mt2_140to160_2jets_SF",  3,  -0.5,    2.5, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelnjet, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_mt2_140to160_2jets_SF",  28, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelmll, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "nj_mt2_140to160_2jets_SF",  5,  1,    6, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'mt2_Edge > 140 && mt2_Edge < 160']), cuts, labelnjet, 1)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "mt2_Edge", "mt2_met50_2jets_SF", 20,  0,  200, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj2, 'met_Edge > 50']), cuts, 'M_{T2}', 1)
+
+    ## plots for fmll and r0b1b
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge"      , "fmll_region", 20,    0,  200, cuts.AddList([cuts.goodLepton, cuts.OF, 'nBJetMedium25_Edge >= 1', cuts.nj2, 'j1MetDPhi_Edge > 1.', cuts.ZmassExtended, 'run_Edge <= %d'%maxrun, 'mt2_Edge > 80.']), cuts, labelmll, 0)
+    ## makePlot(lumi, lumi_str, treeDA, treeMC, "nBJetMedium25_Edge", "r0b1b_region", 2, -0.5,  1.5, cuts.AddList([cuts.goodLepton, cuts.OF, 'j1MetDPhi_Edge > 1.', cuts.nj2, 'run_Edge <= %d'%maxrun, 'mt2_Edge > 80.', cuts.ZmassExtended]), cuts, 'N_{b-jets}', 0)
 
     ## makePlot(lumi, lumi_str, treeDA, treeMC, "nVert_Edge", "nvtx_inclusive_OF", 40,  0,  40, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.nj1]), cuts, 'n_{vertices}', 0)
     ## makePlot(lumi, lumi_str, treeDA, treeMC, "nVert_Edge", "nvtx_inclusive_SF", 40,  0,  40, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.nj1]), cuts, 'n_{vertices}', 0)
