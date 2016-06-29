@@ -336,7 +336,7 @@ def scaleByRSFOF(histo, rsfof, rsfof_err):
     histo.Multiply(h_rsfof)
     return histo
 
-def makeResultTable(resultPlotLoNLL, resultplotHiNLL):
+def makeResultTable(resultPlotLoNLL, resultplotHiNLL, lint, lint_str):
     h_obsLoNLL = resultPlotLoNLL.histos[0]
     h_preLoNLL = resultPlotLoNLL.histos[1]
     h_obsHiNLL = resultPlotHiNLL.histos[0]
@@ -345,7 +345,8 @@ def makeResultTable(resultPlotLoNLL, resultplotHiNLL):
     bin90 = h_obsLoNLL.FindBin(90.)
     binZZ = h_obsLoNLL.GetNbinsX()+1
 
-    dyTotal = 11.8; dyTotal_e = 3.1
+    ## dyTotal = 11.8; dyTotal_e = 3.1
+    dyTotal = 102.9; dyTotal_e = 14.2
     rinoutLoM = 0.109; rinoutLoM_e = math.sqrt(0.001**2 + 0.027**2)
     rinoutHiM = 0.063; rinoutHiM_e = math.sqrt(0.001**2 + 0.016**2)
     dyEffLoNLL = 0.65
@@ -379,7 +380,7 @@ def makeResultTable(resultPlotLoNLL, resultplotHiNLL):
 \\begin{{center}} 
 \\bgroup 
 \\def\\arraystretch{{1.2}} 
-\\caption{{Predicted and observed yields for 0.8 fb$^{{-1}}$ of 2016 data.}} 
+\\caption{{Predicted and observed yields for {lint} fb$^{{-1}}$ of 2016 data.}} 
 \\label{{tab:resultTableData}} 
 \\begin{{tabular}}{{r l c c }} 
               &                 & ttbar-like  & non-ttbar-like\\\\ \\hline
@@ -406,9 +407,11 @@ def makeResultTable(resultPlotLoNLL, resultplotHiNLL):
     prFSloNhiM = prFSloNhiM,      prFShiNhiM = prFShiNhiM,
     prDYloNhiM = prDYloNhiM,      prDYhiNhiM = prDYhiNhiM,
     prTOloNhiM = prTOloNhiM,      prTOhiNhiM = prTOhiNhiM,
-    obTOloNhiM = int(obTOloNhiM), obTOhiNhiM = int(obTOhiNhiM))
+    obTOloNhiM = int(obTOloNhiM), obTOhiNhiM = int(obTOhiNhiM), lint=lint)
 
-    compTableFile = open('plots/results/tables/resultTable_800invpb.tex','w')
+    helper.ensureDirectory('plots/results/%s/'%lint_str); 
+    helper.ensureDirectory('plots/results/%s/tables/'%lint_str)
+    compTableFile = open('plots/results/%s/tables/resultTable_%s.tex'%(lint_str, str(lint).replace('.','p')),'w')
     compTableFile.write(resultTable)
     compTableFile.close()
 
@@ -448,7 +451,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure_noRSFOF.addHisto(mc_OF    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure_noRSFOF.addHisto(dy_SF    , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure_noRSFOF.addLatex (0.2, 0.8, 'no R_{SFOF} scaling')
-    plot_closure_noRSFOF.saveRatio(1, 0, 0, lumi, mc_SF, mc_OF, 0.2, 1.8)
+    plot_closure_noRSFOF.saveRatio(1, 0, 1, lumi, mc_SF, mc_OF, 0.2, 1.8)
 
     mc_OF_rsfofScaled = copy.deepcopy(mc_OF)
     mc_OF_rsfofScaled = scaleByRSFOF(mc_OF_rsfofScaled, rsfof_mc, rsfof_mc_err)
@@ -464,7 +467,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.2, 0.8, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lumi, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
+    plot_closure.saveRatio(1, 0, 1, lumi, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
 
     ## if True:
     ##     mc_OF_rsfofScaled    .Scale(0.8/10.)
@@ -498,7 +501,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         return mc_SF_cum
 
 def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstring = '', returnplot = False):
-    rsfof_da = 1.080 ; rsfof_da_err = 0.050
+    rsfof_da = 1.090 ; rsfof_da_err = 0.060
     if var == 'mll':
         treevar = 'lepsMll_Edge'
         nbins, xmin, xmax = 23, 20, 250
@@ -509,19 +512,22 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
         xlabel = 'NLL'
         
 
-    newLumiString = str(lint).replace('.','p')+'invfb'
+    newLumiString = str(lint)+'invfb'
     if not specialcut:
         specialcut = 'run_Edge < {run}'.format(run=maxrun)
     else:
         specialcut += ' && run_Edge < {run}'.format(run=maxrun)
     ## ## mll ditributions
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.SF, cuts.Zveto]), '', xlabel)
+    da_mm = treeDA.getTH1F(lint, var+"da_mm"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.mm, cuts.Zveto]), '', xlabel)
+    da_ee = treeDA.getTH1F(lint, var+"da_ee"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.ee, cuts.Zveto]), '', xlabel)
     da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto]), '', xlabel)
     da_OF_err = copy.deepcopy(da_OF)
     da_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     da_OF_err.SetFillStyle(3004); da_OF_err.SetMarkerSize(0.)
 
     da_OF_rsfofScaled = copy.deepcopy(da_OF)
+    da_OF_rsfofScaled.SetName(da_OF.GetName()+'_scaledRSFOF')
     da_OF_rsfofScaled = scaleByRSFOF(da_OF_rsfofScaled, rsfof_da, rsfof_da_err)
 
     da_OF_rsfofScaled_err = copy.deepcopy(da_OF_rsfofScaled)
@@ -535,7 +541,11 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
     plot_result.addHisto(da_OF_rsfofScaled    , 'hist,SAME', 'data - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_result.addLatex (0.2, 0.80, 'R_{SFOF} scaled')
     plot_result.addLatex (0.2, 0.85, 'max. run {run}'.format(run=maxrun))
-    plot_result.saveRatio(1, 0, 0, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
+    plot_result.saveRatio(1, 1, 0, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
+    ##plot_result.name = plot_result.name+'_log'
+    ##plot_result.saveRatio(1, 1, 1, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
+    plot_result.addHisto(da_mm                , '  '       , 'data - SF', 'PL', r.kRed+1  , 0,  0)
+    plot_result.addHisto(da_ee                , '  '       , 'data - SF', 'PL', r.kRed+1  , 0,  0)
     if returnplot:
         return plot_result
 
@@ -601,13 +611,20 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
+    #lumi = 0.8 ; maxrun = 274240; lint_str = '0.8invfb'
+    lint = 4.0 ; maxrun = 999999; lint_str = '4.0invfb'
 
-    #resultPlot = makeResultData('mll', maxrun = 274240, lint = 0.864, specialcut = '' , scutstring = '', returnplot = True)
-    ##makeResultData('nll', maxrun = 274240, lint = 0.864)
-    ## resultPlotLoNLL = makeResultData('mll',          274240,        0.864, 'nll_Edge < 21.', 'nllBelow21', returnplot = True)
-    ## resultPlotHiNLL = makeResultData('mll',          274240,        0.864, 'nll_Edge > 21.', 'nllAbove21', returnplot = True)
-    ## makeResultTable(resultPlotLoNLL, resultPlotHiNLL)
+    resultPlot = makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
+    ## makeResultData('nll', maxrun = 275125, lint = 4.0)
+    resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21.', 'nllBelow21', returnplot = True)
+    resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21.', 'nllAbove21', returnplot = True)
+    makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
     ## print addsf
+    ## make for region with fixed trigger:
+    #### random shit resultPlot = makeResultData('mll', maxrun, lint, specialcut = 'run_Edge >= 274094' , scutstring = 'maxrun274094', returnplot = True)
+    #### random shit ##makeResultData('nll', maxrun = 274240, lint = 0.864)
+    #### random shit resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21. && run_Edge >= 274094', 'nllBelow21_maxrun274094', returnplot = True)
+    #### random shit resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21. && run_Edge >= 274094', 'nllAbove21_maxrun274094', returnplot = True)
     #####print asdfsadf
     ##makeClosureTests('mll','nll_Edge > 21. && run_Edge <= 274240', 'nllAbove21_0p8fb-1')
     #makeClosureTests('nll','lepsMll_Edge > 101. && run_Edge <= 274240', 'highMass_0p8fb-1')

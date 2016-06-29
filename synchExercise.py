@@ -64,6 +64,8 @@ if __name__ == '__main__':
         ## define the cut you want to have applied
         ##cutString = cuts.AddList([cuts.ewinoSR, 'run_Edge <= 274240'])
         cutString = cuts.AddList([cuts.goodLepton, cuts.OF, cuts.SignalRegionBaseLine, 'met_Edge > 250', cuts.Zmass])
+        cutString = cuts.AddList(['run_Edge < 999999', cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto, 'lepsMll_Edge <  81'])
+        ## cutString = cuts.ewinoSR
 
         #print cutString
 
