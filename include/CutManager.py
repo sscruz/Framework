@@ -80,6 +80,7 @@ class CutManager:
       self.triggerHTNEW = "( HLT_BIT_HLT_PFHT200_v ==1 ||HLT_BIT_HLT_PFHT250_v ==1 ||HLT_BIT_HLT_PFHT300_v ==1 ||HLT_BIT_HLT_PFHT350_v ==1 ||HLT_BIT_HLT_PFHT400_v ==1 ||HLT_BIT_HLT_PFHT475_v ==1 ||HLT_BIT_HLT_PFHT600_v ==1 ||HLT_BIT_HLT_PFHT650_v ==1 ||HLT_BIT_HLT_PFHT2800_v ==1 || HLT_BIT_HLT_PFHT300_PFMET110_v ==1 )" 
       self.numerator =   self.AddList([self.goodLepton, self.dPhiJetMET, self.donot(self.JetMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT, self.trigger])
       self.denominator = self.AddList([self.goodLepton, self.dPhiJetMET, self.donot(self.JetMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT])  
+
       ## for checks of the excess
       self.tightIso = 'max(Lep1_miniRelIso_Edge, Lep2_miniRelIso_Edge) < 0.05'
 
