@@ -64,14 +64,14 @@ if __name__ == '__main__':
         ## define the cut you want to have applied
         ##cutString = cuts.AddList([cuts.ewinoSR, 'run_Edge <= 274240'])
         cutString = cuts.AddList([cuts.goodLepton, cuts.OF, cuts.SignalRegionBaseLine, 'met_Edge > 250', cuts.Zmass])
-        cutString = cuts.AddList(['run_Edge < 999999', cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto, 'lepsMll_Edge <  81'])
+        cutString = cuts.AddList(['run_Edge < 999999', cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto, 'lepsMll_Edge > 101 && nll_Edge > 21.'])
         ## cutString = cuts.ewinoSR
 
         #print cutString
 
         actualTree.SetScanField(-1)
         save = os.dup( sys.stdout.fileno() )
-        newout = file( 'evtLists/synchVinceJun27_OFMET200_%d.txt'%(ind), 'w' )
+        newout = file( 'evtLists/signalRegionExcessOF%d.txt'%(ind), 'w' )
         os.dup2( newout.fileno(), sys.stdout.fileno() )
         actualTree.Scan(scanString, cutString, 'colsize=12')#colsize=8 precision=8 col=8d:12d');
         os.dup2( save, sys.stdout.fileno() )

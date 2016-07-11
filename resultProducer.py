@@ -424,7 +424,11 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         xlabel = 'm_{ll} (GeV)'
     elif var == 'nll':
         treevar = 'nll_Edge'
-        nbins, xmin, xmax = 52, 10, 36
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMC':
+        treevar = 'nll_mc_Edge'
+        nbins, xmin, xmax = 26, 10, 36
         xlabel = 'NLL'
         
 
@@ -467,19 +471,19 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.2, 0.8, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 1, lumi, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
+    plot_closure.saveRatio(1, 0, 0, lumi, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
 
-    ## if True:
-    ##     mc_OF_rsfofScaled    .Scale(0.8/10.)
-    ##     mc_OF_rsfofScaled_err.Scale(0.8/10.)
-    ##     dy_SF                .Scale(0.8/10.)
-    ##     plot_closure = Canvas.Canvas('closure/%s/plot_closure_%s_mcPreddaObs%s'%(lumi_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-    ##     plot_closure.addHisto(da_SF                , 'PE'       , 'data-SF', 'PL', r.kRed+1  , 1,  0)
-    ##     plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    ##     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    ##     plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
-    ##     plot_closure.addLatex (0.2, 0.8, 'R_{SFOF} scaled')
-    ##     plot_closure.saveRatio(1, 0, 0, 0.8 , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
+    if True:
+        mc_OF_rsfofScaled    .Scale(0.8/10.)
+        mc_OF_rsfofScaled_err.Scale(0.8/10.)
+        dy_SF                .Scale(0.8/10.)
+        plot_closure = Canvas.Canvas('closure/%s/plot_closure_%s_mcPreddaObs%s'%(lumi_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
+        plot_closure.addHisto(da_SF                , 'PE'       , 'data-SF', 'PL', r.kRed+1  , 1,  0)
+        plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
+        plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
+        plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
+        plot_closure.addLatex (0.2, 0.8, 'R_{SFOF} scaled')
+        plot_closure.saveRatio(1, 0, 0, 0.8 , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
 
     ## make cumulative distributions
     if doCumulative:
@@ -500,16 +504,43 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         plot_cumulative.saveRatio(1, 0, 0, lumi, mc_SF_cum, mc_OF_rsfofScaled_cum, 0.2, 1.8)
         return mc_SF_cum
 
-def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstring = '', returnplot = False):
+def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstring = '', returnplot = False, addRares = False, splitFlavor = False, makeTable = False):
     rsfof_da = 1.090 ; rsfof_da_err = 0.060
-    if var == 'mll':
-        treevar = 'lepsMll_Edge'
-        nbins, xmin, xmax = 23, 20, 250
-        xlabel = 'm_{ll} (GeV)'
-    elif var == 'nll':
-        treevar = 'nll_Edge'
-        nbins, xmin, xmax = 26, 10, 36
-        xlabel = 'NLL'
+
+    if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 23, 20 , 250 ; xlabel = 'm_{ll} (GeV)'
+    elif var == 'nll'      : treevar = 'nll_Edge'            ; nbins, xmin, xmax = 26, 10 , 36  ; xlabel = 'NLL'
+    elif var == 'nb'       : treevar = 'nBJetMedium35_Edge'  ; nbins, xmin, xmax =  3,  0 ,  3  ; xlabel = 'n_{b-jets,35}'
+    elif var == 'nj'       : treevar = 'nJetSel_Edge'        ; nbins, xmin, xmax =  6, 0.5, 6.5 ; xlabel = 'n_{jets}'
+    elif var == 'zpt'      : treevar = 'lepsZPt_Edge'        ; nbins, xmin, xmax = 10,  0 ,1000 ; xlabel = 'p_{T}^{ll}'
+    elif var == 'mlb'      : treevar = 'sum_mlb_Edge'        ; nbins, xmin, xmax = 15,  0 ,1500 ; xlabel = '#Sigma m_{lb}'
+    elif var == 'met'      : treevar = 'met_Edge'            ; nbins, xmin, xmax = 10,100 ,1000 ; xlabel = 'E_{T}^{miss.}'
+    elif var == 'metraw'   : treevar = 'met_raw_Edge'        ; nbins, xmin, xmax = 10,100 ,1000 ; xlabel = 'E_{T}^{miss.} raw'
+    elif var == 'ldp'      : treevar = 'abs(lepsDPhi_Edge)'  ; nbins, xmin, xmax = 10,  0 , 3.15; xlabel = '#Delta #phi ll'
+    elif var == 'pt1'      : treevar = 'Lep1_pt_Edge'        ; nbins, xmin, xmax = 20,  0 , 500 ; xlabel = 'p_{T} leading'
+    elif var == 'pt2'      : treevar = 'Lep2_pt_Edge'        ; nbins, xmin, xmax = 10, 20 , 200 ; xlabel = 'p_{T} trailing'
+    elif var == 'ldr'      : treevar = 'lepsDR_Edge'         ; nbins, xmin, xmax = 10,  0 , 6.  ; xlabel = '#Delta R (ll)'
+    elif var == 'iso1'     : treevar = 'Lep1_miniRelIso_Edge'; nbins, xmin, xmax = 10,  0 , 0.05; xlabel = 'mini iso l1'
+    elif var == 'iso2'     : treevar = 'Lep2_miniRelIso_Edge'; nbins, xmin, xmax = 10,  0 , 0.05; xlabel = 'mini iso l2'
+    elif var == 'l1reliso03'     : treevar = 'Lep1_relIso03_Edge'; nbins, xmin, xmax = 10,  0 , 0.20; xlabel = 'rel.Iso 03 leading'
+    elif var == 'l2reliso03'     : treevar = 'Lep2_relIso03_Edge'; nbins, xmin, xmax = 10,  0 , 0.20; xlabel = 'rel.Iso 03 trailing'
+    elif var == 'l1reliso04'     : treevar = 'Lep1_relIso04_Edge'; nbins, xmin, xmax = 10,  0 , 0.20; xlabel = 'rel.Iso 04 leading'
+    elif var == 'l2reliso04'     : treevar = 'Lep2_relIso04_Edge'; nbins, xmin, xmax = 10,  0 , 0.20; xlabel = 'rel.Iso 04 trailing'
+    elif var == 'eta1'     : treevar = 'Lep1_eta_Edge'       ; nbins, xmin, xmax = 10,-2.5, 2.5 ; xlabel = '#eta leading'
+    elif var == 'eta2'     : treevar = 'Lep2_eta_Edge'       ; nbins, xmin, xmax = 10,-2.5, 2.5 ; xlabel = '#eta trailing'
+    elif var == 'l1metdphi': treevar = 'abs(metl1DPhi_Edge)' ; nbins, xmin, xmax = 10,  0., 3.15; xlabel = '#Delta #phi_{MET,lead.}'
+    elif var == 'l2metdphi': treevar = 'abs(metl2DPhi_Edge)' ; nbins, xmin, xmax = 10,  0., 3.15; xlabel = '#Delta #phi_{MET,trail.}'
+    elif var == 'mt2'      : treevar = 'mt2_Edge'            ; nbins, xmin, xmax = 10,  0 , 100.; xlabel = 'M_{T2}^{ll}'
+    elif var == 'l1dxy'    : treevar = 'abs(Lep1_dxy_Edge)'  ; nbins, xmin, xmax = 10,  0., 0.03; xlabel = 'd_{xy} lead.'
+    elif var == 'l2dxy'    : treevar = 'abs(Lep2_dxy_Edge)'  ; nbins, xmin, xmax = 10,  0., 0.03; xlabel = 'd_{xy} trail.'
+    elif var == 'l1dz'     : treevar = 'abs(Lep1_dz_Edge)'   ; nbins, xmin, xmax = 10,  0., 0.03; xlabel = 'd_{z} lead.'
+    elif var == 'l2dz'     : treevar = 'abs(Lep2_dz_Edge)'   ; nbins, xmin, xmax = 10,  0., 0.03; xlabel = 'd_{z} trail.'
+    elif var == 'l1sip3d'  : treevar = 'Lep1_sip3d_Edge'     ; nbins, xmin, xmax = 10,  0., 5.  ; xlabel = 'SIP-3D lead.'
+    elif var == 'l2sip3d'  : treevar = 'Lep2_sip3d_Edge'     ; nbins, xmin, xmax = 10,  0., 5.  ; xlabel = 'SIP-3D trail.'
+
+    elif var == 'nll_noMET': treevar = '-1.*TMath::Log(lh_ana_ldp_data_Edge*lh_ana_zpt_data_Edge*lh_ana_mlb_data_Edge)'; nbins, xmin, xmax = 20, 10, 30   ; xlabel = 'NLL - no MET pdf'
+    elif var == 'nll_noMLB': treevar = '-1.*TMath::Log(lh_ana_ldp_data_Edge*lh_ana_zpt_data_Edge*lh_ana_met_data_Edge)'; nbins, xmin, xmax = 20, 10, 30   ; xlabel = 'NLL - no MLB pdf'
+    elif var == 'nll_noZPT': treevar = '-1.*TMath::Log(lh_ana_ldp_data_Edge*lh_ana_mlb_data_Edge*lh_ana_met_data_Edge)'; nbins, xmin, xmax = 20, 10, 30   ; xlabel = 'NLL - no ZPT pdf'
+    elif var == 'nll_noLDP': treevar = '-1.*TMath::Log(lh_ana_zpt_data_Edge*lh_ana_mlb_data_Edge*lh_ana_met_data_Edge)'; nbins, xmin, xmax = 20, 10, 30   ; xlabel = 'NLL - no ZPT pdf'
         
 
     newLumiString = str(lint)+'invfb'
@@ -522,9 +553,15 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
     da_mm = treeDA.getTH1F(lint, var+"da_mm"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.mm, cuts.Zveto]), '', xlabel)
     da_ee = treeDA.getTH1F(lint, var+"da_ee"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.ee, cuts.Zveto]), '', xlabel)
     da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto]), '', xlabel)
+    if addRares:
+        ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto]), '', xlabel)
+        ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.SF, cuts.Zveto]), '', xlabel)
+        ra_SF.SetFillColorAlpha(r.kRed+1, 0.8)
+        ra_SF.SetFillStyle(3017); ra_SF.SetMarkerSize(0.)
+        ra_SF.Add(ra_OF, -1.)
     da_OF_err = copy.deepcopy(da_OF)
     da_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    da_OF_err.SetFillStyle(3004); da_OF_err.SetMarkerSize(0.)
+    da_OF_err.SetFillStyle(3017); da_OF_err.SetMarkerSize(0.)
 
     da_OF_rsfofScaled = copy.deepcopy(da_OF)
     da_OF_rsfofScaled.SetName(da_OF.GetName()+'_scaledRSFOF')
@@ -532,22 +569,88 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
 
     da_OF_rsfofScaled_err = copy.deepcopy(da_OF_rsfofScaled)
     da_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    da_OF_rsfofScaled_err.SetFillStyle(3004); da_OF_rsfofScaled_err.SetMarkerSize(0.)
+    da_OF_rsfofScaled_err.SetFillStyle(3017); da_OF_rsfofScaled_err.SetMarkerSize(0.)
+
+    
+    maxCont = max(da_OF_rsfofScaled_err.GetMaximum(), da_SF.GetMaximum())
+    da_OF_rsfofScaled_err.GetYaxis().SetRangeUser(0.1, 1.5*maxCont)
+    da_SF                .GetYaxis().SetRangeUser(0.1, 1.5*maxCont)
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-    plot_result.addHisto(da_SF                , 'PE'       , 'data - SF', 'PL', r.kRed+1  , 1,  0)
+    sstring = '' if not addRares else 'withRaresFromMC'
+    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString+sstring, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.70, 0.65, 0.85, 0.85)
     plot_result.addHisto(da_OF_rsfofScaled_err, 'e2,same'  , ''         , 'PL', r.kBlue+1 , 1, -1)
     plot_result.addHisto(da_OF_rsfofScaled    , 'hist,SAME', 'data - OF', 'L' , r.kBlue+1 , 1,  1)
+    if addRares:
+        plot_result.addHisto(ra_SF, 'hist,SAME', 'rares - SF', 'L' , r.kRed+1 , 1,  2)
+    if splitFlavor:
+        plot_result.addHisto(da_ee, 'pe,same', 'data- elel'  , 'PL', r.kYellow+1  , 1,  2)
+        plot_result.addHisto(da_mm, 'pe,same', 'data- #mu#mu', 'PL', r.kGreen+1   , 1,  3)
+    plot_result.addHisto(da_SF                , 'PE,same'    , 'data - SF', 'PL', r.kBlack  , 1,  0)
     plot_result.addLatex (0.2, 0.80, 'R_{SFOF} scaled')
     plot_result.addLatex (0.2, 0.85, 'max. run {run}'.format(run=maxrun))
     plot_result.saveRatio(1, 1, 0, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
-    ##plot_result.name = plot_result.name+'_log'
-    ##plot_result.saveRatio(1, 1, 1, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
-    plot_result.addHisto(da_mm                , '  '       , 'data - SF', 'PL', r.kRed+1  , 0,  0)
-    plot_result.addHisto(da_ee                , '  '       , 'data - SF', 'PL', r.kRed+1  , 0,  0)
+
+    if makeTable:
+        makeSimpleTable(plot_result)
     if returnplot:
         return plot_result
+
+def makeSimpleTable(plot):
+    h_fs= plot.histos[0]
+    h_ra= plot.histos[2]
+    h_ee= plot.histos[3]
+    h_mm= plot.histos[4]
+    h_ob= plot.histos[5]
+
+    ob_e, fs_e, ra_e, mm_e, ee_e = r.Double(), r.Double(), r.Double(), r.Double(), r.Double()
+
+    ob = h_ob.IntegralAndError(1, h_ob.GetNbinsX()+1, ob_e)
+    mm = h_mm.IntegralAndError(1, h_mm.GetNbinsX()+1, ob_e)
+    ee = h_ee.IntegralAndError(1, h_ee.GetNbinsX()+1, ob_e)
+    fs = h_fs.IntegralAndError(1, h_ob.GetNbinsX()+1, fs_e)
+    ra = h_ra.IntegralAndError(1, h_ra.GetNbinsX()+1, ra_e)
+
+    pr = fs+ra
+    pr_e = math.sqrt(fs_e*fs_e + ra_e*ra_e)
+
+    sign = (ob-pr)/math.sqrt(ob)
+
+    regionDesc = plot.name.split('daObs_')[-1]
+    tableName='plots/'+plot.name.replace('plot','table')+'.tex'
+
+    resultTable = '''\\documentclass[12pt,a4paper]{{article}}
+\\usepackage{{multirow}}
+\\begin{{document}}
+\\begin{{table}}[hbtp] 
+\\begin{{center}} 
+\\bgroup 
+\\def\\arraystretch{{1.2}} 
+\\caption{{Predicted and observed yields for {lint} fb$^{{-1}}$ of 2016 data. In region: {regionDesc}. Significance is just sig/sqrt(sig+bkg)}} 
+\\label{{tab:resultTableData}} 
+\\begin{{tabular}}{{l c }} 
+    pred. FS         & {fs:.2f}     $\\pm$  {fs_e:.2f}  \\\\
+    pred. rare       & {ra:.2f}     $\\pm$  {ra_e:.2f}  \\\\
+    pred. total      & {pr:.2f}     $\\pm$  {pr_e:.2f}  \\\\
+    \\textbf{{ob}}  & \\textbf{{{ob}}}          \\\\ \\hline
+    \\textbf{{$\\mu\\mu$}}  & \\textbf{{{mm}}}          \\\\
+    \\textbf{{$ee$      }}  & \\textbf{{{ee}}}          \\\\ \\hline
+    sign.                   & {sig:.2f}                     \\\\
+\\end{{tabular}} 
+\\egroup 
+\\end{{center}} 
+\\end{{table}} 
+\\end{{document}}'''.format( regionDesc = regionDesc.replace('_', ' '), ob = ob, pr=pr, ra=ra, fs=fs, mm=mm, ee=ee,
+                                                 pr_e=pr_e, ra_e=ra_e, fs_e=fs_e, lint='4fb-1', sig=sign)
+
+    #helper.ensureDirectory('plots/results/%s/'%lint_str); 
+    #helper.ensureDirectory('plots/results/%s/tables/'%lint_str)
+    print 'printing table', tableName
+    compTableFile = open(tableName,'w')
+    compTableFile.write(resultTable)
+    compTableFile.close()
+
+    
 
 def makePlotsCombinedSR(srlist):
     for i,sR in enumerate(srlist):
@@ -589,14 +692,16 @@ if __name__ == '__main__':
 
     ##print asdf
     print 'Going to load DATA and MC trees...'
-    dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
+    dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext', 'WZTo3LNu', 'TTWToLNu', 'TTZToLLNuNu']
     ttDatasets = ['TTJets_DiLepton_total']
     mcDatasets = ttDatasets + ([] if opts.onlyTTbar else dyDatasets)
     daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_275125', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_275125']
+    raDatasets = ['WZTo3LNu', 'TTWToLNu', 'TTZToLLNuNu', 'ZZ', 'WZTo2L2Q', 'T_tWch', 'TBar_tWch']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT'  , 0)
+    treeRA = Sample.Tree(helper.selectSamples(opts.sampleFile, raDatasets, 'RA'), 'RA'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print 'Trees successfully loaded...'
@@ -614,11 +719,41 @@ if __name__ == '__main__':
     #lumi = 0.8 ; maxrun = 274240; lint_str = '0.8invfb'
     lint = 4.0 ; maxrun = 999999; lint_str = '4.0invfb'
 
-    resultPlot = makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
-    ## makeResultData('nll', maxrun = 275125, lint = 4.0)
-    resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21.', 'nllBelow21', returnplot = True)
-    resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21.', 'nllAbove21', returnplot = True)
-    makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+
+    ## result plots in different variables:
+    ## ===========================================
+    for v in ['l1metdphi', 'l2metdphi']:#'l2sip3d']:#'l1metdphi', 'l2metdphi']:#'eta1', 'eta2']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
+        makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge > 101.' , scutstring = 'highMassnllIncl'    , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+        makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge <  81.' , scutstring = 'lowMassnllIncl'     , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+        makeResultData(v , maxrun , lint , specialcut = ''                                      , scutstring = ''                   , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21.'                        , scutstring = 'nllAbove21'         , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21' , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'  , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+    ## for v in ['nj']:
+    ##     makeResultData(v , maxrun , lint , specialcut = 'met_Edge > 250 && nBJetMedium35_Edge ==0 && lepsMll_Edge > 101', scutstring = 'ASRmet250_nb0_highMass', returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+    ##     makeResultData(v , maxrun , lint , specialcut = 'met_Edge > 250 && nBJetMedium35_Edge ==1 && lepsMll_Edge > 101', scutstring = 'ASRmet250_nb1_highMass', returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+    ##     makeResultData(v , maxrun , lint , specialcut = 'met_Edge > 250 && nBJetMedium35_Edge >=2 && lepsMll_Edge > 101', scutstring = 'ASRmet250_nb2_highMass', returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+
+    ## for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
+    ##     for _i,(_min,_max) in enumerate([(0, 274250), (274250,274388), (274388,274971), (274971,275125)]):
+    ##         _rstr = 'run_Edge > {_minrun} && run_Edge <= {_maxrun}'.format(_minrun=_min,_maxrun=_max)
+    ##         chrono = '_fb{i}'.format(i=_i+1)
+    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+''                                        , scutstring = ''+chrono                   , returnplot = True , addRares = True, splitFlavor = True)
+    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21.'                        , scutstring = 'nllAbove21'+chrono         , returnplot = True , addRares = True, splitFlavor = True)
+    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21'+chrono , returnplot = True , addRares = True, splitFlavor = True)
+    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'+chrono  , returnplot = True , addRares = True, splitFlavor = True)
+        
+    #makeClosureTests('nll'  ,'lepsMll_Edge > 101.', 'highMass', True)
+    #makeClosureTests('nllMC','lepsMll_Edge > 101.', 'highMass', True)
+    print adsfas
+
+    ## makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
+
+    ## resultPlot = makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
+    ## ## makeResultData('nll', maxrun = 275125, lint = 4.0)
+    ## resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21.', 'nllBelow21', returnplot = True)
+    ## resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21.', 'nllAbove21', returnplot = True)
+    ## makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
     ## print addsf
     ## make for region with fixed trigger:
     #### random shit resultPlot = makeResultData('mll', maxrun, lint, specialcut = 'run_Edge >= 274094' , scutstring = 'maxrun274094', returnplot = True)
@@ -626,14 +761,16 @@ if __name__ == '__main__':
     #### random shit resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21. && run_Edge >= 274094', 'nllBelow21_maxrun274094', returnplot = True)
     #### random shit resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21. && run_Edge >= 274094', 'nllAbove21_maxrun274094', returnplot = True)
     #####print asdfsadf
-    ##makeClosureTests('mll','nll_Edge > 21. && run_Edge <= 274240', 'nllAbove21_0p8fb-1')
+    ## makeClosureTests('mll','run_Edge <= 999999', 'withWZ')
+    ##makeClosureTests('mll','nll_Edge > 21. && run_Edge <= 999999', 'nllAbove21')
+    ##makeClosureTests('mll','nll_Edge > 21. && run_Edge <= 999999 && nBJetMedium25_Edge > 1', 'nllAbove21_nb2')
     #makeClosureTests('nll','lepsMll_Edge > 101. && run_Edge <= 274240', 'highMass_0p8fb-1')
 
     ##a = makeClosureTests('nll', '', '', True)
     ##makeClosureTests('mll')
     ##makeClosureTests('mll','nll_Edge > 21.', 'nllAbove21')
     ##makeClosureTests('mll','nll_Edge < 21.', 'nllBelow21')
-    makeClosureTests('nll', '', '', True)
+    ## makeClosureTests('nll', '', '', True)
     ##makeClosureTests('nll','lepsMll_Edge < 81.' , 'lowMass')
     ##makeClosureTests('nll','lepsMll_Edge > 101.', 'highMass')
     print asdfasdfsdf
