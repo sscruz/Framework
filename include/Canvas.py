@@ -8,7 +8,8 @@ class Canvas:
    def __init__(self, name, _format, x1, y1, x2, y2, ww=0, hh=0):
       self.name = name
       self.format = _format
-      self.plotNames = [name + "." + i for i in _format.split(',')]
+      self.plotNames    = [name + "." + i for i in _format.split(',')]
+      self.plotNamesLog = [name + "_log." + i for i in _format.split(',')]
       self.myCanvas = TCanvas(name, name) if not ww else TCanvas(name, name, ww, hh)
       self.ToDraw = []
       self.orderForLegend = []
@@ -270,10 +271,11 @@ class Canvas:
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
           #tmp_ratio.SetMarkerSize (tmp_hMC.GetMarkerSize());
-          tmp_ratio.SetMarkerSize(0)
-          tmp_ratio.SetFillColor(r.kBlue-5)
+          #tmp_ratio.SetMarkerSize(0)
+          tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
+          tmp_ratio.SetFillStyle(3017)
           tmp_ratio.SetMarkerColor(tmp_hMC.GetMarkerColor());
-          #tmp_ratio.SetMarkerSize(0.6*tmp_ratio.GetMarkerSize());
+          tmp_ratio.SetMarkerSize(0.4);
           #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
           #tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
           tmp_ratio.SetLineColor  (tmp_hMC.GetLineColor());
@@ -285,18 +287,28 @@ class Canvas:
       #tmp_ratio.Draw("E,SAME");
       pad2.cd();  
       for rat in ratios:
-          rat.Draw('E2,same');
+          rat.Draw('PE2,same');
 
       line = TLine(xmin, 1, xmax, 1)
       line.SetLineColor(r.kGray+2);
       line.Draw('');
 
       pad1.cd()
+      r.gPad.RedrawAxis()
       self.banner(isData, lumi)
-      for plotName in self.plotNames:
-          path = 'plots/'+plotName
+      for i,plotName in enumerate(self.plotNames):
+          pad1.cd()
+          pad1.SetLogy(0)
+          path    = 'plots/'+plotName
+          pathlog = 'plots/'+self.plotNamesLog[i]
           self.ensurePath(path)
           self.myCanvas.SaveAs(path)
+          if not '.root' in pathlog:
+              pad1.cd()
+              pad1.SetLogy()
+              self.myCanvas.SaveAs(pathlog)
+
+          
 
       pad1.IsA().Destructor(pad1) 
       pad2.IsA().Destructor(pad2) 

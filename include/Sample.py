@@ -23,16 +23,19 @@ class Sample:
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
         self.count = self.ftfile.Get('Count').GetBinContent(1)
-      self.lumWeight =  1.0
-      self.puWeight  = '1.0'
-      self.SFWeight  = '1.0'
+      self.lumWeight =   1.0
+      self.puWeight   = '1.0'
+      self.SFWeight   = '1.0'
+      self.btagWeight = '1.0'
       if not self.isData:
         self.lumWeight = self.xSection / self.count
-        self.puWeight  = "PileupW_Edge"
+        self.puWeight    = "PileupW_Edge"
+        self.btagWeight  = "1.0"#weight_btagsf_Edge"
       if self.isScan:
-        self.SFWeight  = '1.0'
-        self.lumWeight =  1.0
-        self.puWeight  = "PileupW_Edge"
+        self.SFWeight   = '1.0'
+        self.lumWeight  =  1.0
+        self.puWeight   = "PileupW_Edge"
+        self.btagWeight = "1.0"#weight_btagsf_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
@@ -80,7 +83,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " )" 
       
       self.ttree.Project(h.GetName(), var, cut, options) 
 
@@ -105,7 +108,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
@@ -122,7 +125,7 @@ class Sample:
      h.GetZaxis().SetTitle(zlabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
