@@ -294,7 +294,6 @@ class Canvas:
       line.Draw('');
 
       pad1.cd()
-      r.gPad.RedrawAxis()
       self.banner(isData, lumi)
       for i,plotName in enumerate(self.plotNames):
           pad1.cd()

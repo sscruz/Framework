@@ -140,7 +140,7 @@ def getFrame(var, xmin=0, xmax=0):
         return w.var(vartree).frame(xmin,xmax,100)
 
 def buildModels(w):
-    for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt', 'ldp'],['_DA', '_MC']):
+    for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt', 'ldp'],['_DA', '_MC','_MC_SF']):
         if var == 'met':
             ## old vartree = 'met_pt'
             vartree = 'met_Edge'
@@ -220,12 +220,14 @@ if __name__ == '__main__':
         print '%-20s : %-20s' %(key, value)
 
     cuts = CutManager.CutManager()
-    cuts_sr_met150 = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.OF]); cuts_sr_met150 = cleanCut(cuts_sr_met150)
+    cuts_sr_met150_of = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.OF]); cuts_sr_met150_of = cleanCut(cuts_sr_met150_of)
+    cuts_sr_met150_sf = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.SF]); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
     
     ## 2016 data and MC
     tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
     tt_tree = tt_tfile.Get('sf/t')
-    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
+    #em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
+    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2_runs_271036_275125.root')
     em_tree = em_tfile.Get('sf/t')
     
     dss = []
@@ -237,11 +239,14 @@ if __name__ == '__main__':
     
     cutsAndDs = {#cuts_sr       : 'cuts_of_sr'       ,
                  #cuts_sr_met100: 'cuts_of_sr_met100'}
-                 cuts_sr_met150: 'cuts_of_sr_met150'}
+                 cuts_sr_met150_of: 'cuts_of_sr_met150_of',
+                 cuts_sr_met150_sf: 'cuts_sf_sr_met150_sf'}
     w = ROOT.RooWorkspace('w')
     for ds in dss:
         ds.makeDatasets(cutsAndDs)
-        getattr(w,'import')(getattr(ds, 'cuts_of_sr_met150'),ROOT.RooFit.Rename(ds.name), ROOT.RooFit.RenameVariable('st_Edge','st'))
+        getattr(w,'import')(getattr(ds, 'cuts_of_sr_met150_of'),ROOT.RooFit.Rename(ds.name+'_cuts_of_sr_met150_of'))
+        if not 'em_data' in ds.name:
+            getattr(w,'import')(getattr(ds, 'cuts_sf_sr_met150_sf'),ROOT.RooFit.Rename(ds.name+'_cuts_sf_sr_met150_sf'))
     
     buildModels(w)
 
@@ -250,41 +255,56 @@ if __name__ == '__main__':
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
     for var in ['ldp', 'met', 'mlb', 'zpt']:
+        print '====================================================================='
+        print '====================================================================='
+        print '====== AT VARIABLE %s ================================================'%(var)
+        print '====================================================================='
+        print '====================================================================='
         opt = 'a' if var != 'met' else 'am'
         fmin = (150 if var == 'met' else 0 if var == 'zpt' else 0 if var == 'mlb' else 0)
         fmax = (500 if var == 'met' else 600 if var == 'zpt' else 1000 if var == 'mlb' else 0)
         tmp_frame = getFrame(var, fmin, fmax); 
-        for i, ds in enumerate(reversed(dss)):
+        dslist = w.allData()
+        for ds in dslist:
+        #for i, ds in enumerate(reversed(dss)):
             model = var+'_analyticalPDF'
-            if ds.name == 'tt_mc'  : model += '_MC'
-            if ds.name == 'em_data': model += '_DA'
+            #if ds.name == 'tt_mc'  : model += '_MC'
+            #if ds.name == 'em_data': model += '_DA'
+            if 'tt_mc'   in ds.GetName() and '_of' in ds.GetName(): model += '_MC'    ; color = ROOT.kRed   ; linestyle = ROOT.kDashed
+            if 'tt_mc'   in ds.GetName() and '_sf' in ds.GetName(): model += '_MC_SF' ; color = ROOT.kBlue  ; linestyle = ROOT.kDotted
+            if 'em_data' in ds.GetName() and '_of' in ds.GetName(): model += '_DA'    ; color = ROOT.kBlack ; linestyle = ROOT.kSolid
+            #if 'em_data' in ds.GetName() and '_sf' in ds.GetName(): continue
             print '====================================================================='
             print '====================================================================='
-            print '====== AT DATASET %s ================================================'%(ds.name)
+            print '====== AT DATASET %s ================================================'%(ds.GetName())
             print '====================================================================='
             print '====================================================================='
-            color = ROOT.kBlack if i==0 else ROOT.kRed
-            linestyle = ROOT.kSolid if i == 0 else ROOT.kDashed
-            if doNDKeys: ds.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(ds, var+'_rho') )
+            #color = ROOT.kBlue if i==0 else ROOT.kRed if i == 1 else ROOT.kBlack
+            #linestyle = ROOT.kSolid if i == 0 else ROOT.kDashed
+            ##if doNDKeys: ds.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(ds, var+'_rho') )
 
-            tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1),ROOT.RooFit.Strategy(2))
+            #tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1),ROOT.RooFit.Strategy(2))
+            tmp_fr=w.pdf(model).fitTo(w.data(ds.GetName()),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1),ROOT.RooFit.Strategy(2))
             #tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Save(1))
             frs.append(copy.deepcopy(tmp_fr))
 
-            tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
+            #tmp_histo = w.pdf(model).createHistogram(ds.name+'_fit_histo_'+var+'_ds_cuts_of_sr_met150', getattr(ds,var), ROOT.RooFit.Binning(1000) )
+            tmp_histo = w.pdf(model).createHistogram(ds.GetName()+'_fit_histo_'+var, getattr(dss[0],var), ROOT.RooFit.Binning(1000) )
             #tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('_ds_cuts_of_sr_met150')+len('_ds_cuts_of_sr_met150')] )
             tmp_histo.SetName(tmp_histo.GetName()[:tmp_histo.GetName().rfind('__')] )
             tmp_histo.SetLineColor(color); tmp_histo.SetLineStyle(linestyle)
-            ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
+            #ds.ana_pdfs.append(tmp_histo); pdf_histos.append(tmp_histo)
 
-            w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
+            #w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
+            w.data(ds.GetName()).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
+            #w.data(ds.GetName()).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
             w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
-            if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
+            #if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
 
             ## # damn root takes the objects away if i write them now
             writeobjs.append(copy.deepcopy(tmp_histo))
             writeobjs.append(copy.deepcopy(w.pdf(model)))
-            if doNDKeys: writeobjs.append(copy.deepcopy(getattr(ds, 'pdf_histo_%s_ds_%s'%(var, 'cuts_of_sr_met150') ) ))
+            #if doNDKeys: writeobjs.append(copy.deepcopy(getattr(ds, 'pdf_histo_%s_ds_%s'%(var, 'cuts_of_sr_met150') ) ))
             #a = raw_input()
 
         frames.append(tmp_frame);
@@ -292,9 +312,9 @@ if __name__ == '__main__':
         tmp_frame.Draw()
         c.SaveAs('frame_%s.pdf'%(var))
 
-    w.writeToFile("pdfs/pdfs_version2_80X_2016Data_savingTheWorkspace.root")
+    w.writeToFile("pdfs/pdfs_version3_80X_2016Data_savingTheWorkspace_withSFPDFs.root")
 
-    outfile = ROOT.TFile('pdfs/pdfs_version2_80X_2016Data.root', 'RECREATE')
+    outfile = ROOT.TFile('pdfs/pdfs_version3_80X_2016Data_withSFPDFs.root', 'RECREATE')
     outfile.cd()
     for i in writeobjs:
         i.Write()
