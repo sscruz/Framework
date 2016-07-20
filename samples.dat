@@ -26,6 +26,12 @@ DoubleEG      r.kBlack      DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097  
 MuonEG        r.kBlack      MuonEG_Run2016B-PromptReco-v2_runs_271036_276097        MuonEG_Run2016B         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
 JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2_runs_271036_276097         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
 HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2_runs_271036_276097         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
+# Run2016C
+DoubleMuon    r.kBlack      DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276098    DoubleMuon_Run2016C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
+DoubleEG      r.kBlack      DoubleEG_Run2016C-PromptReco-v2_runs_275420_276098      DoubleEG_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
+MuonEG        r.kBlack      MuonEG_Run2016C-PromptReco-v2_runs_275420_276098        MuonEG_Run2016C         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
+JetHT         r.kBlack      JetHT_Run2016C-PromptReco-v2_runs_275420_276098         JetHT_Run2016C          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
+HTMHT         r.kBlack      HTMHT_Run2016C-PromptReco-v2_runs_275420_276098         HTMHT_Run2016C          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
 #
 #
 #
@@ -47,7 +53,6 @@ DYJets    r.kBlue+1    DYJetsToLL_M50_HT200to400_ext  DY+Jets     /afs/cern.ch/w
 DYJets    r.kBlue+1    DYJetsToLL_M50_HT400to600_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        6983.9   0
 DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf      DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        2703.5   0
 DYJets    r.kBlue+1    DYJetsToLL_M50_HT600toInf_ext  DY+Jets     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        2703.5   0
-#rare      r.kRed+2     WZ                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       47130.0   0
 rare      r.kRed+2     WZTo2L2Q                       Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        5595.0   0
 rare      r.kRed+2     TTZ_LO                         Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/         765.46   0
 rare      r.kRed+2     TTW_LO                         Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/         610.5   0
@@ -58,6 +63,7 @@ singleT   r.kRed+2     TBar_tWch                      singleT     /afs/cern.ch/w
 ZZ        r.kOrange+2  ZZ                             ZZ          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       16523.0   0
 WZ3l      r.kCyan+2    WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        4429.65  0
 singleT   r.kOrange+2  T_tWch                         singleT     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       35600.0   0   
+#rare      r.kRed+2     WZ                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       47130.0   0
 ##
 #rare     r.kRed+2     WW                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/      115042.2   0
 ##     TTWToLNu -> done
