@@ -21,17 +21,23 @@
 # JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2_runs_271036_275125         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
 # HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2_runs_271036_275125         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
 ## 7.65 fb-1
-DoubleMuon    r.kBlack      DoubleMuon_Run2016B-PromptReco-v2_runs_271036_276097    DoubleMuon_Run2016B     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
-DoubleEG      r.kBlack      DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097      DoubleEG_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
-MuonEG        r.kBlack      MuonEG_Run2016B-PromptReco-v2_runs_271036_276097        MuonEG_Run2016B         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
-JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2_runs_271036_276097         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
-HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2_runs_271036_276097         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friends/      1          1
+DoubleMuon   r.kBlack   DoubleMuon_Run2016B-PromptReco-v2_runs_271036_276097    DoubleMuon_Run2016B  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+DoubleEG     r.kBlack   DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097      DoubleEG_Run2016B    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+MuonEG       r.kBlack   MuonEG_Run2016B-PromptReco-v2_runs_271036_276097        MuonEG_Run2016B      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+JetHT        r.kBlack   JetHT_Run2016B-PromptReco-v2_runs_271036_276097         JetHT_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+HTMHT        r.kBlack   HTMHT_Run2016B-PromptReco-v2_runs_271036_276097         HTMHT_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
 # Run2016C
-DoubleMuon    r.kBlack      DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276098    DoubleMuon_Run2016C     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
-DoubleEG      r.kBlack      DoubleEG_Run2016C-PromptReco-v2_runs_275420_276098      DoubleEG_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
-MuonEG        r.kBlack      MuonEG_Run2016C-PromptReco-v2_runs_275420_276098        MuonEG_Run2016C         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
-JetHT         r.kBlack      JetHT_Run2016C-PromptReco-v2_runs_275420_276098         JetHT_Run2016C          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
-HTMHT         r.kBlack      HTMHT_Run2016C-PromptReco-v2_runs_275420_276098         HTMHT_Run2016C          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul19_Run2016C/friends/      1          1
+DoubleMuon   r.kBlack   DoubleMuon_Run2016C-PromptReco-v2_runs_271036_276811    DoubleMuon_Run2016C  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+DoubleEG     r.kBlack   DoubleEG_Run2016C-PromptReco-v2_runs_271036_276811      DoubleEG_Run2016C    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+MuonEG       r.kBlack   MuonEG_Run2016C-PromptReco-v2_runs_271036_276811        MuonEG_Run2016C      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+JetHT        r.kBlack   JetHT_Run2016C-PromptReco-v2_runs_271036_276811         JetHT_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+HTMHT        r.kBlack   HTMHT_Run2016C-PromptReco-v2_runs_271036_276811         HTMHT_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/   1     1
+# Run2016D
+DoubleMuon   r.kBlack   DoubleMuon_Run2016D-PromptReco-v2_runs_271036_276811    DoubleMuon_Run2016D  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/    1    1
+DoubleEG     r.kBlack   DoubleEG_Run2016D-PromptReco-v2_runs_271036_276811      DoubleEG_Run2016D    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/    1    1
+MuonEG       r.kBlack   MuonEG_Run2016D-PromptReco-v2_runs_271036_276811        MuonEG_Run2016D      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/    1    1
+JetHT        r.kBlack   JetHT_Run2016D-PromptReco-v2_runs_271036_276811         JetHT_Run2016D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/    1    1
+HTMHT        r.kBlack   HTMHT_Run2016D-PromptReco-v2_runs_271036_276811         HTMHT_Run2016D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/    1    1
 #
 #
 #
