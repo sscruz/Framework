@@ -2,17 +2,14 @@ import os, math
 
 
 
-f_list = ['synchOnFullDataset_0.txt',
-          'synchOnFullDataset_1.txt',
-          'synchOnFullDataset_2.txt',
-          'synchOnFullDataset_3.txt',
-          'synchOnFullDataset_4.txt',
-          'synchOnFullDataset_5.txt',
-          'synchOnFullDataset_6.txt',
-          'synchOnFullDataset_7.txt',
-          'synchOnFullDataset_8.txt']
+f_list = ['edgeSR_met150_2j_0.txt',
+          #'edgeSR_met150_2j_1.txt',
+          'edgeSR_met150_2j_2.txt',
+          #'edgeSR_met150_2j_3.txt',
+          'edgeSR_met150_2j_4.txt']
+          #'edgeSR_met150_2j_5.txt']
                
-ofile = open('synch_rt.txt', 'wr')
+ofile = open(f_list[0].split('_')[0]+'.txt', 'wr')
 a = set()
 b = set()
 for i in f_list:

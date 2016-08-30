@@ -29,6 +29,7 @@ def makeRatioPlot(hlist, name, opts = {}):
     pad2.Draw();
 
     leg = r.TLegend(legco[0], legco[1], legco[2], legco[3])
+    leg.SetTextSize(0.04)
     ymax = 0.
     for ih,h in enumerate(hlist):
         tmp_max = h.GetMaximum()
@@ -40,7 +41,7 @@ def makeRatioPlot(hlist, name, opts = {}):
         else: h.GetYaxis().SetRangeUser(0.01, ymax*1.2)
         h.Draw(do + ('' if not ih else ' same'))
         #leg.AddEntry(h, ' '.join(h.GetName().replace('_norm','').replace('_',' ').split()[:-1]), 'pl')
-        leg.AddEntry(h, ' '.join(h.GetName().replace('_norm','').replace('_',' ')), 'pl')
+        leg.AddEntry(h, ' '.join(h.GetName().replace('_norm','').replace('_',' ').replace('observed','obs.').replace('predicted','pred.').replace('estimated','pred.').replace('corrected','(corr.)')), 'pl')
 
     leg.Draw('same')
 

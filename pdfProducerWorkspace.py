@@ -6,6 +6,88 @@ import include.Sample     as Sample
 import itertools
 
 
+def makeFramesNice(frames):
+    for frame in frames:
+        tit = 0
+        legcoords = [0.5, 0.7, 0.88, 0.85]
+        if   'lepsDPhi' in frame.GetName():
+            name = 'ldp_frame_nice'
+            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+            leg.SetNColumns(2)
+            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('ldp_analyticalPDF_DA_Norm[lepsDPhi_Edge]'), 'fit data (OF)', 'L')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (OF)', 'L')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+            leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_SF_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (SF)', 'L')
+            tit  = 'pdf of leptons #Delta#phi'
+            atit = '#Delta#phi_{ll}'
+        elif 'lepsZPt' in frame.GetName():
+            name = 'zpt_frame_nice'
+            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+            leg.SetNColumns(2)
+            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('zpt_analyticalPDF_DA_Norm[lepsZPt_Edge]'), 'fit data (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+            leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_SF_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+            tit  = 'pdf of dilepton-p_{T}'
+            atit = 'p_{T}^{ll} (GeV)'
+        elif 'mlb' in frame.GetName():
+            name = 'mlb_frame_nice'
+            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+            leg.SetNColumns(2)
+            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('mlb_analyticalPDF_DA_Norm[sum_mlb_Edge]'), 'fit data (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+            leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_SF_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+            tit  = 'pdf of sum-m_{lb}'
+            atit = '#Sigma m_{lb} (GeV)'
+        elif 'met' in frame.GetName():
+            name = 'met_frame_nice'
+            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+            leg.SetNColumns(2)
+            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('met_analyticalPDF_DA_Norm[met_Edge]'), 'fit data (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+            leg.AddEntry(frame.findObject('met_analyticalPDF_MC_Norm[met_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+            leg.AddEntry(frame.findObject('met_analyticalPDF_MC_SF_Norm[met_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+            tit  = 'pdf of E_{T}^{miss}'
+            atit = 'E_{T}^{miss} (GeV)'
+
+
+        frame.SetAxisRange(0., 1.3*frame.findObject('h_em_data_cuts_of_sr_met150_of').GetYaxis().GetXmax(), 'Y')
+        frame.GetXaxis().SetTitle(atit)
+        frame.GetXaxis().SetLabelSize(0.04)
+        frame.GetYaxis().SetLabelSize(0.04)
+        frame.SetTitle('')
+        canv_tmp = ROOT.TCanvas('foo', 'bar', 600, 600)
+        canv_tmp.SetLeftMargin(0.13)
+        canv_tmp.SetBottomMargin(0.13)
+        frame.GetYaxis().SetTitleOffset(1.5)
+        frame.GetXaxis().SetTitleOffset(1.3)
+        frame.Draw('same')
+        leg.SetBorderSize(0)
+        leg.Draw()
+        lat = ROOT.TLatex()
+        lat.SetNDC()
+        lat.SetTextSize(0.040)
+        lat.SetTextFont(61)
+        lat.DrawLatex(0.16, 0.84, "CMS")
+        lat.SetTextFont(52)
+        lat.SetTextSize(0.035)
+        lat.DrawLatex(0.16, 0.80, "Preliminary")
+
+        lat.SetTextFont(42)
+        lat.DrawLatex(0.63, 0.92, '12.9 fb^{-1} (13 TeV)')
+        canv_tmp.SaveAs(name+'.png')
+        canv_tmp.SaveAs(name+'.pdf')
+        canv_tmp.SaveAs(name+'.root')
+
 
 def cleanCut(cut):
     cut = cut.replace(cuts.twoLeptons, 't.nPairLep_Edge')
@@ -223,18 +305,28 @@ if __name__ == '__main__':
     cuts_sr_met150_of = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.OF]); cuts_sr_met150_of = cleanCut(cuts_sr_met150_of)
     cuts_sr_met150_sf = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.SF]); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
     
-    ## 2016 data and MC
-    tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
+    # 4fb-1 ## 2016 data and MC
+    # 4fb-1 tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
+    # 4fb-1 tt_tree = tt_tfile.Get('sf/t')
+    # 4fb-1 #em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
+    # 4fb-1 em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2_runs_271036_275125.root')
+    # 4fb-1 em_tree = em_tfile.Get('sf/t')
+    # ## 7.65 fb-1
+    # tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TT_pow_ext34.root')
+    # tt_tree = tt_tfile.Get('sf/t')
+    # em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul15_7p65invfb/friendsAllJobs/evVarFriend_MuonEG_Run2016B-PromptReco-v2_runs_271036_276097.root')
+    # em_tree = em_tfile.Get('sf/t')
+    ## 12.9 fb-1
+    tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TT_pow_ext34.root')
     tt_tree = tt_tfile.Get('sf/t')
-    #em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
-    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2_runs_271036_275125.root')
+    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul21_runC_runD_12p9invfb_done/friends/allEMU.root')
     em_tree = em_tfile.Get('sf/t')
     
     dss = []
     em_data = pdfClass('em_data', em_tree)
     dss.append(em_data)
     if opts.dott: 
-        tt_mc   = pdfClass('tt_mc'   , tt_tree, opts.skimVal, 13.5*87314.8*2.6/(1.98059e+08))#1.10523e+08)) ## not sure why this normalization does not work
+        tt_mc   = pdfClass('tt_mc'   , tt_tree, opts.skimVal,    (1./1.25)*12.9*831760.0/(2.58500e+08)) #13.5*87314.8*2.6/(1.98059e+08))#1.10523e+08)) ## not sure why this normalization does not work
         dss.append(tt_mc)
     
     cutsAndDs = {#cuts_sr       : 'cuts_of_sr'       ,
@@ -242,7 +334,7 @@ if __name__ == '__main__':
                  cuts_sr_met150_of: 'cuts_of_sr_met150_of',
                  cuts_sr_met150_sf: 'cuts_sf_sr_met150_sf'}
     w = ROOT.RooWorkspace('w')
-    for ds in dss:
+    for ds in reversed(dss):
         ds.makeDatasets(cutsAndDs)
         getattr(w,'import')(getattr(ds, 'cuts_of_sr_met150_of'),ROOT.RooFit.Rename(ds.name+'_cuts_of_sr_met150_of'))
         if not 'em_data' in ds.name:
@@ -270,8 +362,8 @@ if __name__ == '__main__':
             model = var+'_analyticalPDF'
             #if ds.name == 'tt_mc'  : model += '_MC'
             #if ds.name == 'em_data': model += '_DA'
-            if 'tt_mc'   in ds.GetName() and '_of' in ds.GetName(): model += '_MC'    ; color = ROOT.kRed   ; linestyle = ROOT.kDashed
-            if 'tt_mc'   in ds.GetName() and '_sf' in ds.GetName(): model += '_MC_SF' ; color = ROOT.kBlue  ; linestyle = ROOT.kDotted
+            if 'tt_mc'   in ds.GetName() and '_of' in ds.GetName(): model += '_MC'    ; color = ROOT.kRed   ; linestyle = ROOT.kSolid
+            if 'tt_mc'   in ds.GetName() and '_sf' in ds.GetName(): model += '_MC_SF' ; color = ROOT.kBlue  ; linestyle = ROOT.kSolid
             if 'em_data' in ds.GetName() and '_of' in ds.GetName(): model += '_DA'    ; color = ROOT.kBlack ; linestyle = ROOT.kSolid
             #if 'em_data' in ds.GetName() and '_sf' in ds.GetName(): continue
             print '====================================================================='
@@ -298,7 +390,7 @@ if __name__ == '__main__':
             #w.data(ds.name).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
             w.data(ds.GetName()).plotOn(tmp_frame,ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
             #w.data(ds.GetName()).plotOn(tmp_frame,ROOT.RooFit.Normalization(w.data('em_data').numEntries(),ROOT.RooAbsReal.NumEvent),ROOT.RooFit.MarkerColor(color), ROOT.RooFit.MarkerSize(0.8))
-            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kSolid) )
+            w.pdf(model).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(linestyle) )
             #if doNDKeys: getattr(ds, 'pdf_%s_ds_cuts_of_sr_met150'%var).plotOn(tmp_frame,ROOT.RooFit.LineColor(color), ROOT.RooFit.LineStyle(ROOT.kDashed) )
 
             ## # damn root takes the objects away if i write them now
@@ -310,11 +402,15 @@ if __name__ == '__main__':
         frames.append(tmp_frame);
         c = ROOT.TCanvas()
         tmp_frame.Draw()
-        c.SaveAs('frame_%s.pdf'%(var))
+        c.SaveAs('frame_%s.pdf' %(var))
+        c.SaveAs('frame_%s.root'%(var))
 
-    w.writeToFile("pdfs/pdfs_version3_80X_2016Data_savingTheWorkspace_withSFPDFs.root")
+    #makeFramesNice(copy.deepcopy(frames))
+    
 
-    outfile = ROOT.TFile('pdfs/pdfs_version3_80X_2016Data_withSFPDFs.root', 'RECREATE')
+    w.writeToFile("pdfs/pdfs_version6_80X_2016Data_savingTheWorkspace_withSFPDFs_12p9invfb_forFrameICHEP.root")
+
+    outfile = ROOT.TFile('pdfs/pdfs_version5_80X_2016Data_withSFPDFs_12p9invfb_forFrameICHEP.root', 'RECREATE')
     outfile.cd()
     for i in writeobjs:
         i.Write()

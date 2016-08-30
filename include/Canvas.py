@@ -29,6 +29,12 @@ class Canvas:
       self.myLegend.SetBorderSize(0)
       r.gStyle.SetPadRightMargin(0.05)
 
+   def changeLabelsToNames(self):
+      newlabels = []
+      for il,lab in enumerate(self.labels):
+         print 'changing label %s to %s'%(lab, self.histos[il].GetName())
+         newlabels.append(self.histos[il].GetName())
+      self.labels = newlabels
 
    def banner(self, isData, lumi):
     
@@ -36,23 +42,25 @@ class Canvas:
       latex.SetNDC();
       latex.SetTextAngle(0);
       latex.SetTextColor(r.kBlack);
-      latex.SetTextFont(42);
-      latex.SetTextAlign(31);
+      latex.SetTextFont(61);
+      #latex.SetTextAlign(31);
       latex.SetTextSize(0.05);
-      latex.DrawLatex(0.21, 0.93, "CMS")
+      latex.SetLineWidth(2);
+      latex.DrawLatex(0.16, 0.85, "CMS")
 
       latexb = TLatex()
       latexb.SetNDC();
       latexb.SetTextAngle(0);
       latexb.SetTextColor(r.kBlack);
-      latexb.SetTextFont(42);
-      latexb.SetTextAlign(31);
-      latexb.SetTextSize(0.03);
+      latexb.SetTextFont(52);
+      #latexb.SetTextAlign(31);
+      latexb.SetLineWidth(2);
+      latexb.SetTextSize(0.035);
  
       if(isData):
-        latexb.DrawLatex(0.33, 0.93, "Preliminary")
+        latexb.DrawLatex(0.16, 0.81, "Preliminary")
       else:
-        latexb.DrawLatex(0.33, 0.93, "Simulation")
+        latexb.DrawLatex(0.16, 0.81, "Simulation")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
@@ -206,7 +214,7 @@ class Canvas:
       self.myCanvas.cd()
 
       pad1 = TPad("pad1", "pad1", 0, 0.25, 1, 1.0)
-      pad1.SetBottomMargin(0.1)
+      pad1.SetBottomMargin(0.12)
       pad1.Draw()
       pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.25)
       pad2.SetTopMargin(0.1);
@@ -260,13 +268,13 @@ class Canvas:
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
-          tmp_ratio.GetYaxis().SetTitle("Ratio");
+          tmp_ratio.GetYaxis().SetTitle("Data/Prediction");
           tmp_ratio.GetYaxis().CenterTitle();
           tmp_ratio.GetYaxis().SetLabelSize(0.12);
           tmp_ratio.GetXaxis().SetLabelSize(0.12);
           tmp_ratio.GetYaxis().SetTitleOffset(0.3);
           tmp_ratio.GetYaxis().SetNdivisions(4);
-          tmp_ratio.GetYaxis().SetTitleSize(0.14);
+          tmp_ratio.GetYaxis().SetTitleSize(0.10);
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
@@ -275,7 +283,7 @@ class Canvas:
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
           tmp_ratio.SetFillStyle(3017)
           tmp_ratio.SetMarkerColor(tmp_hMC.GetMarkerColor());
-          tmp_ratio.SetMarkerSize(0.4);
+          tmp_ratio.SetMarkerSize(0.6);
           #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
           #tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
           tmp_ratio.SetLineColor  (tmp_hMC.GetLineColor());

@@ -27,15 +27,21 @@ class Sample:
       self.puWeight   = '1.0'
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
+      self.trigScale  = '1.0'
+      ## no longer needed self.emSF_trig = 0.89
+      ## no longer needed self.eeSF_trig = 0.97
+      ## no longer needed self.mmSF_trig = 0.94
       if not self.isData:
+        self.trigScale  = 'weight_trigger_Edge'
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
-        self.btagWeight  = "1.0"#weight_btagsf_Edge"
+        self.btagWeight  = "weight_btagsf_Edge"
       if self.isScan:
+        self.trigScale  = 'weight_trigger_Edge'
         self.SFWeight   = '1.0'
         self.lumWeight  =  1.0
         self.puWeight   = "PileupW_Edge"
-        self.btagWeight = "1.0"#weight_btagsf_Edge"
+        self.btagWeight = "weight_btagsf_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
@@ -74,16 +80,16 @@ class Sample:
       if self.isData:
         if(name.find("DoubleMuon") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
-          cut = cut + "* ( " + addCut + " )"
+          cut = cut + "* ( " + addCut + " ) "
         if(name.find("DoubleEG") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
-          cut = cut + "* ( " + addCut + " )"
+          cut = cut + "* ( " + addCut + " ) "
         if(name.find("MuonEG") != -1):
           addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)))"
-          cut = cut + "* ( " + addCut + " )"
+          cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + self.trigScale + " )" 
       
       self.ttree.Project(h.GetName(), var, cut, options) 
 
@@ -108,7 +114,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h
@@ -125,7 +131,7 @@ class Sample:
      h.GetZaxis().SetTitle(zlabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale + " )" 
      
      self.ttree.Project(name, var, cut, options) 
      return h

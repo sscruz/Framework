@@ -25,76 +25,6 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
 
-class onZResult:
-    def __init__(self, infile):
-        self.infile = infile
-        self.readOnZResults()
-        self.makeFinalResult()
-
-    def readOnZResults(self):
-        f = open(self.infile, 'r')
-        for line in f.readlines():
-            if '#' in line: continue
-            if not len(line.rstrip('\n')): continue
-            setattr(self, line.split()[0]       , float(line.split()[1]))
-            setattr(self, line.split()[0]+'_err', float(line.split()[2]))
-        f.close()
-
-    def makeFinalResult(self):
-        self.DYcen_incb   = self.DYcen_incbtag
-        self.DYfwd_incb   = self.DYfwd_incbtag
-        self.DYcen_incb_e = self.DYcen_incbtag_err
-        self.DYfwd_incb_e = self.DYfwd_incbtag_err
-
-        self.DYcen_0b   = self.DYcen_0btag
-        self.DYfwd_0b   = self.DYfwd_0btag
-        self.DYcen_0b_e = self.DYcen_0btag_err
-        self.DYfwd_0b_e = self.DYfwd_0btag_err
-
-        self.DYcen_1b   = self.DYcen_1btag
-        self.DYfwd_1b   = self.DYfwd_1btag
-        self.DYcen_1b_e = self.DYcen_1btag_err
-        self.DYfwd_1b_e = self.DYfwd_1btag_err
-
-
-        self.OTHERcen_incb   = self.OTHERcen_incbtag
-        self.OTHERfwd_incb   = self.OTHERfwd_incbtag
-        self.OTHERcen_incb_e = self.OTHERcen_incbtag_err
-        self.OTHERfwd_incb_e = self.OTHERfwd_incbtag_err
-
-        self.OTHERcen_0b   = self.OTHERcen_0btag
-        self.OTHERfwd_0b   = self.OTHERfwd_0btag
-        self.OTHERcen_0b_e = self.OTHERcen_0btag_err
-        self.OTHERfwd_0b_e = self.OTHERfwd_0btag_err
-
-        self.OTHERcen_1b   = self.OTHERcen_1btag
-        self.OTHERfwd_1b   = self.OTHERfwd_1btag
-        self.OTHERcen_1b_e = self.OTHERcen_1btag_err
-        self.OTHERfwd_1b_e = self.OTHERfwd_1btag_err
-
-        self.cen_incb   = self.cen_incbtag_2jet + self.cen_incbtag_3jet
-        self.fwd_incb   = self.fwd_incbtag_2jet + self.fwd_incbtag_3jet
-        self.cen_incb_e = math.sqrt(self.cen_incbtag_2jet_err**2 + self.cen_incbtag_3jet_err**2)
-        self.fwd_incb_e = math.sqrt(self.fwd_incbtag_2jet_err**2 + self.fwd_incbtag_3jet_err**2)
-
-        self.cen_0b   = self.cen_0btag_2jet + self.cen_0btag_3jet
-        self.fwd_0b   = self.fwd_0btag_2jet + self.fwd_0btag_3jet
-        self.cen_0b_e = math.sqrt(self.cen_0btag_2jet_err**2 + self.cen_0btag_3jet_err**2)
-        self.fwd_0b_e = math.sqrt(self.fwd_0btag_2jet_err**2 + self.fwd_0btag_3jet_err**2)
-
-        self.cen_1b   = self.cen_1btag_2jet + self.cen_1btag_3jet + self.cen_2btag_2jet + self.cen_2btag_3jet
-        self.fwd_1b   = self.fwd_1btag_2jet + self.fwd_1btag_3jet + self.fwd_2btag_2jet + self.fwd_2btag_3jet
-        self.cen_1b_e = math.sqrt(self.cen_1btag_2jet_err**2 + self.cen_1btag_3jet_err**2 + self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
-        self.fwd_1b_e = math.sqrt(self.fwd_1btag_2jet_err**2 + self.fwd_1btag_3jet_err**2 + self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
-
-        self.cen_2b   = self.cen_2btag_2jet + self.cen_2btag_3jet
-        self.fwd_2b   = self.fwd_2btag_2jet + self.fwd_2btag_3jet
-        self.cen_2b_e = math.sqrt(self.cen_2btag_2jet_err**2 + self.cen_2btag_3jet_err**2)
-        self.fwd_2b_e = math.sqrt(self.fwd_2btag_2jet_err**2 + self.fwd_2btag_3jet_err**2)
-
-
-       
-
 
 def makeResultsTable(binnedSR, dyShapes, dataMC, eta, nbs):
     line0 = ' %30s &           & '  %('')
@@ -153,210 +83,45 @@ def makeRatioTable(myregion, dataMC, eta, nbs): ## for this to make sense the re
             line3+=' \\\\ '
     return header, line0, line1, line2, line3
 
-def scaleZ(histo, eta, nbs):
-    bin81  = histo.FindBin(81)
-    bin101 = histo.FindBin(100.5)
-    nb_pred = getattr(onZ, '%s_%sb'%( ('cen' if eta == 'central' else 'fwd'), str(nbs)))
-    ret_hist = copy.deepcopy(histo)
-    integral = ret_hist.Integral(bin81, bin101)
-    if not integral:
-        print 'WARNING: the DY shape histogram has no content around the Z-mass !!!'
-        print 'WARNING: this happens for nb %s' %(str(nbs))
-        print 'WARNING: putting the whole prediction into one bin at the Z-mass'
-        ret_hist.SetBinContent(ret_hist.FindBin(91.), nb_pred)
-    else:
-        scale  = nb_pred / histo.Integral(bin81, bin101)
-        ret_hist.Scale(lumi/2.1*scale)
-    return ret_hist
-
-def makePrediction(of_histo, ing):
-    #central = (eta == 'central')
-    sf_pred = copy.deepcopy(of_histo.Clone(of_histo.GetName().replace('of','pred')))
-    scale = ing.rsfof_final_cen_val  ##if central else ing.rsfof_final_fwd_val
-    s_err = ing.rsfof_final_cen_err  ##if central else ing.rsfof_final_fwd_err
-    print '========================================='
-    print 'using rsfof for %s : %.4f +- %.4f' %(ing.dType, scale, s_err)
-    print '========================================='
-    for _bin in range(1,of_histo.GetNbinsX()+1):
-        tmp_cont  = of_histo.GetBinContent(_bin)
-        tmp_err   = of_histo.GetBinError  (_bin)
-        tmp_mass  = of_histo.GetXaxis().GetBinCenter(_bin)
-        tmp_pred  = scale*tmp_cont
-        tmp_prede = math.sqrt(tmp_err*tmp_err + s_err*s_err*tmp_cont*tmp_cont)
-        sf_pred.SetBinContent(_bin, tmp_pred )
-        sf_pred.SetBinError  (_bin, tmp_prede)
-    return sf_pred
-
-def getDYShapes(binsPlot, binsFine, binsSR):
-    dy_reg = Region.region('dy_region_shortBin' , [cuts.DYControlRegion], ['mll'], [range(20,310,1)], True)
-    dy_dict = {}
-    ## open the file with the dy shapes in READ or RECREATE depending on if you want to reload it
-    dy_shapes_file = r.TFile('dy_shapes.root', 'READ')
-    dy_shapes_file.cd()
-
-    for eta in ['central', 'forward']:
-        fileHasShapes = bool((dy_shapes_file.Get('dy_shape_da_%s'%(eta)) and dy_shapes_file.Get('dy_shape_mc_%s'%(eta))))
-        print 'the DY-shape file already has the shapes for %s : %s' %(eta, str(fileHasShapes))
-        if opts.loadShapes or not fileHasShapes:
-            ## ========================================
-            ## get the dy shapes from the rinout region
-            ## ========================================
-            print 're-openining the file with UPDATE'
-            dy_shapes_file.ReOpen('UPDATE')
-            etacut = cuts.Central() if eta == 'central' else cuts.Forward()
-            thecutsSF_nomass = cuts.AddList([cuts.GoodLeptonSF()] + [etacut] + dy_reg.cuts)
-            thecutsOF_nomass = cuts.AddList([cuts.GoodLeptonOF()] + [etacut] + dy_reg.cuts)
-            print 'getting SF data'
-            setattr(dy_reg, 'mll_SF_da_'+eta, treeDA.getTH1F(lumi, "mll_SF_in_" +eta+dy_reg.name+'_data' , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
-            print 'getting OF data'
-            setattr(dy_reg, 'mll_OF_da_'+eta, treeDA.getTH1F(lumi, "mll_OF_in_" +eta+dy_reg.name+'_data' , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
-            print 'getting SF mc'
-            setattr(dy_reg, 'mll_SF_mc_'+eta, treeMC.getTH1F(lumi, "mll_SF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsSF_nomass, "", "m_{ll} (GeV)"))
-            print 'getting OF mc'
-            setattr(dy_reg, 'mll_OF_mc_'+eta, treeMC.getTH1F(lumi, "mll_OF_in_" +eta+dy_reg.name+'_mc'   , "t.lepsMll_Edge", dy_reg.bins[0], 1, 1, thecutsOF_nomass, "", "m_{ll} (GeV)"))
-
-            # take the SF histogram of the finely binned distribution
-            setattr(dy_reg, 'dy_shape_da_'+eta, getattr(dy_reg, 'mll_SF_da_'+eta).Clone('dy_shape_da_%s'%(eta)))
-            setattr(dy_reg, 'dy_shape_mc_'+eta, getattr(dy_reg, 'mll_SF_mc_'+eta).Clone('dy_shape_mc_%s'%(eta)))
-            # subtract OF from the SF yield
-            getattr(dy_reg, 'dy_shape_da_'+eta).Add(getattr(dy_reg, 'mll_OF_da_'+eta), -1.)
-            getattr(dy_reg, 'dy_shape_mc_'+eta).Add(getattr(dy_reg, 'mll_OF_mc_'+eta), -1.)
-            maxbin = getattr(dy_reg, 'dy_shape_mc_'+eta).GetXaxis().GetXmax() #axis().GetBinUpEdge(getattr(dy_reg, 'dy_shape_mc_'+eta).GetXaxis().GetLast())
-            print 'maxbin is', maxbin
-
-            print  'we now have the shapes with bin-width = 1. now let\'s rebin them'
-            # NOTE THAT THE SHAPES ARE **NOT** NORMALIZED TO ANYTHING USEFUL!!
-            dy_dict['da_%s'%(eta)] = getattr(dy_reg, 'dy_shape_da_%s'%eta)
-            dy_dict['mc_%s'%(eta)] = getattr(dy_reg, 'dy_shape_mc_%s'%eta)
-            ## print 'DA xmin  %.2f, xmax  %.2f, nbins  %.2f ' %(dy_dict['da_%s'%(eta)].GetXaxis().GetXmin(), dy_dict['da_%s'%(eta)].GetXaxis().GetXmax(), dy_dict['da_%s'%(eta)].GetNbinsX())
-            ## print 'MC xmin  %.2f, xmax  %.2f, nbins  %.2f ' %(dy_dict['mc_%s'%(eta)].GetXaxis().GetXmin(), dy_dict['mc_%s'%(eta)].GetXaxis().GetXmax(), dy_dict['mc_%s'%(eta)].GetNbinsX())
-
-            # binning relevant for the plots
-            dy_dict['da_%s_binsPlot'%(eta)] = dy_dict['da_%s'%(eta)].Rebin(len(binsPlot), dy_dict['da_%s'%(eta)].GetName()+'_binsPlot', array.array('d', binsPlot+[maxbin]))
-            dy_dict['mc_%s_binsPlot'%(eta)] = dy_dict['mc_%s'%(eta)].Rebin(len(binsPlot), dy_dict['mc_%s'%(eta)].GetName()+'_binsPlot', array.array('d', binsPlot+[maxbin]))
-            # binning relevant for the plots, but finer to show the shape
-            dy_dict['da_%s_binsFine'%(eta)] = dy_dict['da_%s'%(eta)].Rebin(len(binsFine), dy_dict['da_%s'%(eta)].GetName()+'_binsFine', array.array('d', binsFine+[maxbin]))
-            dy_dict['mc_%s_binsFine'%(eta)] = dy_dict['mc_%s'%(eta)].Rebin(len(binsFine), dy_dict['mc_%s'%(eta)].GetName()+'_binsFine', array.array('d', binsFine+[maxbin]))
-            # binning for the binned signal regions
-            dy_dict['da_%s_binsSR'  %(eta)] = dy_dict['da_%s'%(eta)].Rebin(len(binsSR  ), dy_dict['da_%s'%(eta)].GetName()+'_binsSR'  , array.array('d', binsSR  +[maxbin]))
-            dy_dict['mc_%s_binsSR'  %(eta)] = dy_dict['mc_%s'%(eta)].Rebin(len(binsSR  ), dy_dict['mc_%s'%(eta)].GetName()+'_binsSR'  , array.array('d', binsSR  +[maxbin]))
-
-            returndict = copy.deepcopy(dy_dict)
-            print 'writing shapes to file'
-            for i in ['', '_binsPlot', '_binsFine', '_binsSR']:
-                copy.deepcopy(dy_dict['mc_%s%s'%(eta, i)]).Write()
-                copy.deepcopy(dy_dict['da_%s%s'%(eta, i)]).Write()
-
-        else:
-            print 'taking pre-computed shapes'
-            for i in ['', '_binsFine', '_binsPlot', '_binsSR']:
-                dy_dict['mc_%s%s'%(eta, i)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_da_%s%s'%(eta, i)))
-                dy_dict['da_%s%s'%(eta, i)] = copy.deepcopy(dy_shapes_file.Get('dy_shape_mc_%s%s'%(eta, i)))
-            returndict = copy.deepcopy(dy_dict)
-
-    dy_shapes_file.Close()
-    return returndict
-
-def makePlot(pHisto, pHistoName, oHisto, oHistoName, plotname):#, eta, nbs, nbstr):
-
-    colors = helper.createMyColors()
-
-    #nb = re.sub('[^0-9]', '', nbstring)
-    pGraph = r.TGraphErrors(pHisto)
-    pGraph.SetFillColorAlpha(r.kBlue+3, 0.2)
-    pGraph.SetFillStyle(3001)
-    pGraph.SetFillColor(helper.myColors["MyBlue"])
-    pGraph.SetMarkerStyle(20)
-    pHisto.SetMarkerStyle(20)
-    pHisto.SetLineColor(r.kBlack)
-    oHisto.SetLineColor(r.kBlue+3)
-    oHisto.SetLineWidth(2)
-
-    maxCont = pHisto.GetBinContent(pHisto.GetMaximumBin())
-    pHisto.GetYaxis().SetRangeUser(0., 1.7*maxCont)
-
-    plot = Canvas.Canvas('2016/results/%s/plot_results_%s%s'%(lumi_str, plotname, ('' if not opts.onlyTTbar else '_onlyTT')), 'png,pdf', 0.6, 0.65, 0.85, 0.82)
-    plot.addHisto(pHisto, 'hist'     , pHistoName, 'L' , r.kBlack, 1,  0)
-    plot.addGraph(pGraph, '2,same'   , pHistoName, 'L' , r.kBlack, 1, -1)
-    plot.addHisto(oHisto, 'PE,SAME'  , oHistoName, 'PL', r.kBlue+3 , 1,  1)
-
-
-    if not opts.onlyTTbar: 
-        dy_histo = scaleZ(dy_shapes['da_%s_binsPlot'%(eta)], eta, nbs)
-        dy_histo.SetLineColor(r.kGreen+3)
-        dy_histo.SetFillColor(r.kGreen+3)
-        dy_histo.SetFillStyle(3002)
-        dy_graph = r.TGraphErrors(dy_histo)
-        print 'adding dy histo to the canvas'
-        dy_histo.SetLineStyle(2)
-        dy_histo.SetLineColor(r.kGreen+2)
-        plot.addHisto(dy_histo, 'HIST,SAME', 'Drell-Yan ', 'L', r.kGreen+3, 1,  2)
-        print 'adding dy graph to the canvas'
-        dy_graph.SetFillColorAlpha(r.kGreen+3, 0.2)
-        dy_graph.SetFillStyle(3001)
-        plot.addGraph(dy_graph, '2,same   ', 'Drell-Yan ', 'L', r.kGreen+3, 1, -1)
-    #plot.addLatex(0.7, 0.53, eta  , 62)
-    #plot.addLatex(0.7, 0.45, nbstr, 62)
-    plot.saveRatio(1, 0, 0 , lumi, oHisto, pHisto, 0.5, 1.5)
-
-def makePlots(srlist):
-    for sR in srlist:
-        print 'making plots for region', sR.name
-        for v in sR.rvars:
-            print '.. and variable',v
-            #if not getattr(sR, v).getHisto('MC'): continue
-            ## get the mc prediction and observation
-            mcObsHisto  = getattr(sR, v        ).getHisto('MC')
-            mcPredHisto = getattr(sR, v+'_pred').getHisto('MC').Clone('mcPredHisto')
-            #add the DY contribution to the MC prediction
-            if not opts.onlyTTbar: 
-                print 'adding dy shape to the mcPredHisto'
-                mcPredHisto.Add(scaleZ(dy_shapes['mc_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
-            ## get the data observed and predicted
-            daObsHisto  = getattr(sR, v).getHisto('DATA')
-            daPredHisto = copy.deepcopy( getattr(sR, v+'_pred').getHisto('DATA') )
-            if not opts.onlyTTbar:
-                print 'adding dy shape to the daPredHisto'
-                daPredHisto.Add(scaleZ(dy_shapes['da_%s'%(eta)+'_binsPlot'], eta, nb), 1.)
-
-            ## finally, make the plots.
-            makePlot(mcPredHisto, 'pred. (MC)'  , mcObsHisto , 'obs. (MC)'   , '{sn}_{vn}_MCClosure'    .format(sn=sR.name, vn=v) )## , eta, nb, nbstr) ## closure plot
-            if opts.onlyClosure: continue
-            makePlot(mcPredHisto, 'pred. (MC)'  , daPredHisto, 'pred. (DATA)', '{sn}_{vn}_dataMCPred'   .format(sn=sR.name, vn=v) )## , eta, nb, nbstr) ## prediction comparison
-            makePlot(daPredHisto, 'pred. (DATA)', mcObsHisto , 'obs. (MC)'   , '{sn}_{vn}_predDataObsMC'.format(sn=sR.name, vn=v) )## , eta, nb, nbstr) ## predData, obsMC
-            makePlot(mcObsHisto , 'obs. (MC)'   , daObsHisto , 'obs. (DATA)' , '{sn}_{vn}_dataMCobs'    .format(sn=sR.name, vn=v) )## , eta, nb, nbstr) ## observed data/mc
-            makePlot(daPredHisto, 'pred. (DATA)', daObsHisto , 'obs. (DATA)' , '{sn}_{vn}_data'         .format(sn=sR.name, vn=v) )## , eta, nb, nbstr) ## money plot
 
 def scaleByRSFOF(histo, rsfof, rsfof_err):
     h_rsfof = copy.deepcopy(histo)
     h_rsfof.SetName('h_rsfof')
     for i in range(1, h_rsfof.GetNbinsX()+1):
         h_rsfof.SetBinContent(i,rsfof)
-        h_rsfof.SetBinError  (i,rsfof_err)
+        h_rsfof.SetBinError  (i,rsfof_e)
     histo.Multiply(h_rsfof)
     return histo
 
-def makeResultTable(resultPlotLoNLL, resultplotHiNLL, lint, lint_str):
-    h_obsLoNLL = resultPlotLoNLL.histos[0]
-    h_preLoNLL = resultPlotLoNLL.histos[1]
-    h_obsHiNLL = resultPlotHiNLL.histos[0]
-    h_preHiNLL = resultPlotHiNLL.histos[1]
+def makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str):
+    for i,h in enumerate(resultPlotLoNLL.histos):
+        if 'da_SF' in h.GetName(): ob_ind = i
+        if 'da_OF' in h.GetName(): pr_ind = i
+    h_obsLoNLL = resultPlotLoNLL.histos[ob_ind]
+    h_preLoNLL = resultPlotLoNLL.histos[pr_ind]
+    h_obsHiNLL = resultPlotHiNLL.histos[ob_ind]
+    h_preHiNLL = resultPlotHiNLL.histos[pr_ind]
     bin01 = 1
     bin90 = h_obsLoNLL.FindBin(90.)
     binZZ = h_obsLoNLL.GetNbinsX()+1
 
     ## dyTotal = 11.8; dyTotal_e = 3.1
-    dyTotal = 102.9; dyTotal_e = 14.2
-    rinoutLoM = 0.109; rinoutLoM_e = math.sqrt(0.001**2 + 0.027**2)
-    rinoutHiM = 0.063; rinoutHiM_e = math.sqrt(0.001**2 + 0.016**2)
+    #dyTotal = 102.9; dyTotal_e = 14.2
+    ## dyTotal = 112.2; dyTotal_e = 34.0
+    dyTotal = 188.8; dyTotal_e = 44.2 #12.9 fb-1
+    #rinoutLoM = 0.109; rinoutLoM_e = math.sqrt(0.001**2 + 0.027**2)
+    #rinoutHiM = 0.063; rinoutHiM_e = math.sqrt(0.001**2 + 0.016**2)
+    rinoutLoM = 0.110; rinoutLoM_e = math.sqrt(0.001**2 + 0.027**2)
+    rinoutHiM = 0.062; rinoutHiM_e = math.sqrt(0.001**2 + 0.016**2)
     dyEffLoNLL = 0.65
     dyEffHiNLL = 1.-dyEffLoNLL
-
+    
     prFSloNloM_e, prFSloNhiM_e = r.Double(),  r.Double()
     prFShiNloM_e, prFShiNhiM_e = r.Double(),  r.Double()
 
+    #print fapppasdfsf
     prFSloNloM = h_preLoNLL.IntegralAndError(bin01, bin90, prFSloNloM_e)
-    prDYloNloM = dyTotal*rinoutLoM*dyEffLoNLL; prDYloNloM_e = math.sqrt(prDYloNloM)
+    prDYloNloM = dyTotal*rinoutLoM*dyEffLoNLL; prDYloNloM_e = dyTotal_e*rinoutLoM*dyEffLoNLL
     prTOloNloM = prFSloNloM+prDYloNloM; prTOloNloM_e = math.sqrt(prFSloNloM_e**2 + prDYloNloM_e**2)
     obTOloNloM = h_obsLoNLL.Integral        (bin01, bin90              )
     prFSloNhiM = h_preLoNLL.IntegralAndError(bin90, binZZ, prFSloNhiM_e)
@@ -384,13 +149,13 @@ def makeResultTable(resultPlotLoNLL, resultplotHiNLL, lint, lint_str):
 \\label{{tab:resultTableData}} 
 \\begin{{tabular}}{{r l c c }} 
               &                 & ttbar-like  & non-ttbar-like\\\\ \\hline
-\\multirow{{4}}{{*}}{{mll $<$ 81 GeV}}       & pred. FS        & {prFSloNloM:.2f}  $\\pm$  {prFSloNloM_e:.2f}    & {prFShiNloM:.2f}     $\\pm$  {prFShiNloM_e:.2f}  \\\\
-                                             & pred. DY        & {prDYloNloM:.2f}  $\\pm$  {prDYloNloM_e:.2f}    & {prDYhiNloM:.2f}     $\\pm$  {prDYhiNloM_e:.2f}  \\\\
-                                             & pred. total     & {prTOloNloM:.2f}  $\\pm$  {prTOloNloM_e:.2f}    & {prTOhiNloM:.2f}     $\\pm$  {prTOhiNloM_e:.2f}  \\\\
+\\multirow{{4}}{{*}}{{mll $<$ 81 GeV}}       & pred. FS        & {prFSloNloM:.1f}  $\\pm$  {prFSloNloM_e:.1f}    & {prFShiNloM:.1f}     $\\pm$  {prFShiNloM_e:.1f}  \\\\
+                                             & pred. DY        & {prDYloNloM:.1f}  $\\pm$  {prDYloNloM_e:.1f}    & {prDYhiNloM:.1f}     $\\pm$  {prDYhiNloM_e:.1f}  \\\\
+                                             & pred. total     & {prTOloNloM:.1f}  $\\pm$  {prTOloNloM_e:.1f}    & {prTOhiNloM:.1f}     $\\pm$  {prTOhiNloM_e:.1f}  \\\\
                                              & \\textbf{{obs}} & \\textbf{{{obTOloNloM}}}                        & \\textbf{{{obTOhiNloM}}}                         \\\\ \\hline
-\\multirow{{4}}{{*}}{{mll $>$ 101 GeV}}      & pred. FS     & {prFSloNhiM:.2f}  $\\pm$  {prFSloNhiM_e:.2f}       & {prFShiNhiM:.2f}     $\\pm$  {prFShiNhiM_e:.2f}  \\\\
-                                             & pred. DY     & {prDYloNhiM:.2f}  $\\pm$  {prDYloNhiM_e:.2f}       & {prDYhiNhiM:.2f}     $\\pm$  {prDYhiNhiM_e:.2f}  \\\\
-                                             & pred. total  & {prTOloNhiM:.2f}  $\\pm$  {prTOloNhiM_e:.2f}       & {prTOhiNhiM:.2f}     $\\pm$  {prTOhiNhiM_e:.2f}  \\\\
+\\multirow{{4}}{{*}}{{mll $>$ 101 GeV}}      & pred. FS     & {prFSloNhiM:.1f}  $\\pm$  {prFSloNhiM_e:.1f}       & {prFShiNhiM:.1f}     $\\pm$  {prFShiNhiM_e:.1f}  \\\\
+                                             & pred. DY     & {prDYloNhiM:.1f}  $\\pm$  {prDYloNhiM_e:.1f}       & {prDYhiNhiM:.1f}     $\\pm$  {prDYhiNhiM_e:.1f}  \\\\
+                                             & pred. total  & {prTOloNhiM:.1f}  $\\pm$  {prTOloNhiM_e:.1f}       & {prTOhiNhiM:.1f}     $\\pm$  {prTOhiNhiM_e:.1f}  \\\\
                                              & \\textbf{{obs}} & \\textbf{{{obTOloNhiM}}}                        & \\textbf{{{obTOhiNhiM}}}                         \\\\
 \\end{{tabular}} 
 \\egroup 
@@ -411,12 +176,13 @@ def makeResultTable(resultPlotLoNLL, resultplotHiNLL, lint, lint_str):
 
     helper.ensureDirectory('plots/results/%s/'%lint_str); 
     helper.ensureDirectory('plots/results/%s/tables/'%lint_str)
-    compTableFile = open('plots/results/%s/tables/resultTable_%s.tex'%(lint_str, str(lint).replace('.','p')),'w')
+    tablename = (resultPlotLoNLL.name.split('_')[-1]).replace('nllABove21','').replace('nllBelow21','')
+    compTableFile = open('plots/results/%s/tables/resultTable_%s%s.tex'%(lint_str, str(lint).replace('.','p'), tablename),'w')
     compTableFile.write(resultTable)
     compTableFile.close()
 
 def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False):
-    rsfof_mc = 1.060; rsfof_mc_err = 0.046
+    #rsfof_mc = 1.060; rsfof_mc_err = 0.046
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
@@ -428,6 +194,10 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         xlabel = 'NLL'
     elif var == 'nllMC':
         treevar = 'nll_mc_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMCSF':
+        treevar = 'nll_mc_sf_Edge'
         nbins, xmin, xmax = 26, 10, 36
         xlabel = 'NLL'
         
@@ -458,7 +228,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure_noRSFOF.saveRatio(1, 0, 1, lumi, mc_SF, mc_OF, 0.2, 1.8)
 
     mc_OF_rsfofScaled = copy.deepcopy(mc_OF)
-    mc_OF_rsfofScaled = scaleByRSFOF(mc_OF_rsfofScaled, rsfof_mc, rsfof_mc_err)
+    mc_OF_rsfofScaled = scaleByRSFOF(mc_OF_rsfofScaled, rsfof_mc, rsfof_mc_e)
 
     mc_OF_rsfofScaled_err = copy.deepcopy(mc_OF_rsfofScaled)
     mc_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
@@ -504,11 +274,17 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         plot_cumulative.saveRatio(1, 0, 0, lumi, mc_SF_cum, mc_OF_rsfofScaled_cum, 0.2, 1.8)
         return mc_SF_cum
 
-def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstring = '', returnplot = False, addRares = False, splitFlavor = False, makeTable = False):
-    rsfof_da = 1.090 ; rsfof_da_err = 0.060
+def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstring = '', _options = ''):
+    returnplot, addRares, splitFlavor, makeTable, printIntegral = False, False, False, False, False
+    if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
+    if 'addRares'      in _options: print 'found option %s'%'addRares'      ;addRares      = True
+    if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
+    if 'makeTable'     in _options: print 'found option %s'%'makeTable'     ;makeTable     = True
+    if 'printIntegral' in _options: print 'found option %s'%'printIntegral' ;printIntegral = True
 
-    if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 23, 20 , 250 ; xlabel = 'm_{ll} (GeV)'
-    elif var == 'nll'      : treevar = 'nll_Edge'            ; nbins, xmin, xmax = 26, 10 , 36  ; xlabel = 'NLL'
+    # if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 23, 20 , 250 ; xlabel = 'm_{ll} (GeV)'
+    if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 20, 20 , 320 ; xlabel = 'm_{ll} (GeV)'
+    elif var == 'nll'      : treevar = 'nll_Edge'            ; nbins, xmin, xmax = 15, 12 , 27  ; xlabel = 'NLL'
     elif var == 'nb'       : treevar = 'nBJetMedium35_Edge'  ; nbins, xmin, xmax =  3,  0 ,  3  ; xlabel = 'n_{b-jets,35}'
     elif var == 'nj'       : treevar = 'nJetSel_Edge'        ; nbins, xmin, xmax =  6, 0.5, 6.5 ; xlabel = 'n_{jets}'
     elif var == 'zpt'      : treevar = 'lepsZPt_Edge'        ; nbins, xmin, xmax = 10,  0 ,1000 ; xlabel = 'p_{T}^{ll}'
@@ -545,9 +321,9 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
 
     newLumiString = str(lint)+'invfb'
     if not specialcut:
-        specialcut = 'run_Edge < {run}'.format(run=maxrun)
+        specialcut = 'run_Edge <= {run}'.format(run=maxrun)
     else:
-        specialcut += ' && run_Edge < {run}'.format(run=maxrun)
+        specialcut += ' && run_Edge <= {run}'.format(run=maxrun)
     ## ## mll ditributions
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.SF, cuts.Zveto]), '', xlabel)
     da_mm = treeDA.getTH1F(lint, var+"da_mm"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.mm, cuts.Zveto]), '', xlabel)
@@ -565,43 +341,57 @@ def makeResultData(var, maxrun = 274240, lint = 0.864, specialcut = '', scutstri
 
     da_OF_rsfofScaled = copy.deepcopy(da_OF)
     da_OF_rsfofScaled.SetName(da_OF.GetName()+'_scaledRSFOF')
-    da_OF_rsfofScaled = scaleByRSFOF(da_OF_rsfofScaled, rsfof_da, rsfof_da_err)
+    da_OF_rsfofScaled = scaleByRSFOF(da_OF_rsfofScaled, rsfof, rsfof_e)
+    da_OF_rsfofScaled.SetLineWidth(2)
 
     da_OF_rsfofScaled_err = copy.deepcopy(da_OF_rsfofScaled)
     da_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     da_OF_rsfofScaled_err.SetFillStyle(3017); da_OF_rsfofScaled_err.SetMarkerSize(0.)
 
+    maxrat = 0.5
+    for ib in range(1,da_SF.GetNbinsX()+1):
+        tmp_rat = da_SF.GetBinContent(ib)/( da_OF_rsfofScaled.GetBinContent(ib) if da_OF_rsfofScaled.GetBinContent(ib) > 0 else 1. )
+        if tmp_rat > maxrat:
+            maxrat = tmp_rat
     
     maxCont = max(da_OF_rsfofScaled_err.GetMaximum(), da_SF.GetMaximum())
-    da_OF_rsfofScaled_err.GetYaxis().SetRangeUser(0.1, 1.5*maxCont)
-    da_SF                .GetYaxis().SetRangeUser(0.1, 1.5*maxCont)
+    da_OF_rsfofScaled_err.GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
+    da_SF                .GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     sstring = '' if not addRares else 'withRaresFromMC'
-    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString+sstring, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.70, 0.65, 0.85, 0.85)
+    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString+sstring, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.60, 0.65, 0.80, 0.85)
     plot_result.addHisto(da_OF_rsfofScaled_err, 'e2,same'  , ''         , 'PL', r.kBlue+1 , 1, -1)
-    plot_result.addHisto(da_OF_rsfofScaled    , 'hist,SAME', 'data - OF', 'L' , r.kBlue+1 , 1,  1)
+    plot_result.addHisto(da_OF_rsfofScaled    , 'hist,SAME', 'predicted', 'L' , r.kBlue+1 , 1,  1)
     if addRares:
         plot_result.addHisto(ra_SF, 'hist,SAME', 'rares - SF', 'L' , r.kRed+1 , 1,  2)
     if splitFlavor:
         plot_result.addHisto(da_ee, 'pe,same', 'data- elel'  , 'PL', r.kYellow+1  , 1,  2)
         plot_result.addHisto(da_mm, 'pe,same', 'data- #mu#mu', 'PL', r.kGreen+1   , 1,  3)
-    plot_result.addHisto(da_SF                , 'PE,same'    , 'data - SF', 'PL', r.kBlack  , 1,  0)
-    plot_result.addLatex (0.2, 0.80, 'R_{SFOF} scaled')
-    plot_result.addLatex (0.2, 0.85, 'max. run {run}'.format(run=maxrun))
-    plot_result.saveRatio(1, 1, 0, lint, da_SF, da_OF_rsfofScaled, 0.2, 1.8)
+    plot_result.addHisto(da_SF                , 'PE,same'    , 'observed data', 'PL', r.kBlack  , 1,  0)
+    #plot_result.addLatex (0.2, 0.80, 'R_{SFOF} scaled')
+    if maxrun < 999999: plot_result.addLatex (0.2, 0.85, 'max. run {run}'.format(run=maxrun))
+    if printIntegral  : plot_result.addLatex (0.2, 0.65, 'SF: {SF:.1f} (#mu#mu:{mm:.1f},ee:{ee:.1f})'.format(SF=da_SF.Integral(),mm=da_mm.Integral(),ee=da_ee.Integral() ) )
+    if printIntegral  : plot_result.addLatex (0.2, 0.60, 'OF: {OF:.2f}'.format(OF=da_OF_rsfofScaled.Integral() ) )
+    plot_result.saveRatio(1, 1, 0, lint, da_SF, da_OF_rsfofScaled, 0. , int(maxrat+1.0) )
 
     if makeTable:
-        makeSimpleTable(plot_result)
+        makeSimpleTable(plot_result, addRares)
     if returnplot:
         return plot_result
 
-def makeSimpleTable(plot):
-    h_fs= plot.histos[0]
-    h_ra= plot.histos[2]
-    h_ee= plot.histos[3]
-    h_mm= plot.histos[4]
-    h_ob= plot.histos[5]
+def makeSimpleTable(plot, addRares=False):
+    for i,h in enumerate(plot.histos):
+        if 'da_OF' in h.GetName(): fs_ind = i
+        if 'da_SF' in h.GetName(): ob_ind = i
+        if 'da_ee' in h.GetName(): ee_ind = i
+        if 'da_mm' in h.GetName(): mm_ind = i
+        if 'ra_SF' in h.GetName(): ra_ind = i
+
+    h_fs= plot.histos[fs_ind]
+    h_ee= plot.histos[ee_ind]
+    h_mm= plot.histos[mm_ind]
+    h_ob= plot.histos[ob_ind]
 
     ob_e, fs_e, ra_e, mm_e, ee_e = r.Double(), r.Double(), r.Double(), r.Double(), r.Double()
 
@@ -609,7 +399,11 @@ def makeSimpleTable(plot):
     mm = h_mm.IntegralAndError(1, h_mm.GetNbinsX()+1, ob_e)
     ee = h_ee.IntegralAndError(1, h_ee.GetNbinsX()+1, ob_e)
     fs = h_fs.IntegralAndError(1, h_ob.GetNbinsX()+1, fs_e)
-    ra = h_ra.IntegralAndError(1, h_ra.GetNbinsX()+1, ra_e)
+    if addRares: 
+        h_ra= plot.histos[ra_ind]
+        ra = h_ra.IntegralAndError(1, h_ra.GetNbinsX()+1, ra_e) 
+    else: 
+        ra, ra_e = 0., 0.
 
     pr = fs+ra
     pr_e = math.sqrt(fs_e*fs_e + ra_e*ra_e)
@@ -693,10 +487,19 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext', 'WZTo3LNu', 'TTWToLNu', 'TTZToLLNuNu']
-    ttDatasets = ['TTJets_DiLepton_total']
+    #ttDatasets = ['TTJets_DiLepton_total']
+    ttDatasets = ['TT_pow_ext34']
     mcDatasets = ttDatasets + ([] if opts.onlyTTbar else dyDatasets)
-    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_275125', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_275125']
     raDatasets = ['WZTo3LNu', 'TTWToLNu', 'TTZToLLNuNu', 'ZZ', 'WZTo2L2Q', 'T_tWch', 'TBar_tWch']
+    #daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_276097', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_276097']
+    #daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_276097', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_276097',
+    #              'DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276098', 'DoubleEG_Run2016C-PromptReco-v2_runs_275420_276098', 'MuonEG_Run2016C-PromptReco-v2_runs_275420_276098']
+    #daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_276097', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_276097', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_276097',
+    #              'DoubleMuon_Run2016C-PromptReco-v2_runs_271036_276811', 'DoubleEG_Run2016C-PromptReco-v2_runs_271036_276811', 'MuonEG_Run2016C-PromptReco-v2_runs_271036_276811',
+    #              'DoubleMuon_Run2016D-PromptReco-v2_runs_271036_276811', 'DoubleEG_Run2016D-PromptReco-v2_runs_271036_276811', 'MuonEG_Run2016D-PromptReco-v2_runs_271036_276811']
+    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_273150_275376', 'DoubleEG_Run2016B-PromptReco-v2_runs_273150_275376', 'MuonEG_Run2016B-PromptReco-v2_runs_273150_275376',
+                  'DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276283', 'DoubleEG_Run2016C-PromptReco-v2_runs_275420_276283', 'MuonEG_Run2016C-PromptReco-v2_runs_275420_276283',
+                  'DoubleMuon_Run2016D-PromptReco-v2_runs_276315_276811', 'DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811', 'MuonEG_Run2016D-PromptReco-v2_runs_276315_276811']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
@@ -716,19 +519,54 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    #lumi = 0.8 ; maxrun = 274240; lint_str = '0.8invfb'
-    lint = 4.0 ; maxrun = 999999; lint_str = '4.0invfb'
+    #lint = 0.8 ; maxrun = 274240; lint_str = '0.8invfb'
+    #lint = 4.0 ; maxrun = 999999; lint_str = '4.0invfb'
+    #lint = 7.65 ; maxrun = 999999; lint_str = '7.65invfb'
+    lint = 12.9  ; maxrun = 999999; lint_str = '12.9invfb'
 
+    ## ============================================================
+    ## ========== set RSFOF globally ==============================
+    ## ============================================================
+    global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
+    #rsfof   = 1.102
+    #rsfof_e = 0.076
+    rsfof   = 1.085
+    rsfof_e = 0.060
+
+    rsfof_mc   = 1.070
+    rsfof_mc_e = 0.050
 
     ## result plots in different variables:
     ## ===========================================
-    for v in ['l1metdphi', 'l2metdphi']:#'l2sip3d']:#'l1metdphi', 'l2metdphi']:#'eta1', 'eta2']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
-        makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge > 101.' , scutstring = 'highMassnllIncl'    , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
-        makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge <  81.' , scutstring = 'lowMassnllIncl'     , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
-        makeResultData(v , maxrun , lint , specialcut = ''                                      , scutstring = ''                   , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
-        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21.'                        , scutstring = 'nllAbove21'         , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
-        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21' , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
-        makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'  , returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
+    #for v in ['mll']:#'l2sip3d']:#'l1metdphi', 'l2metdphi']:#'eta1', 'eta2']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
+    #    resultPlot      = makeResultData(v , maxrun , lint , specialcut = ''                                      , scutstring = ''                   , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    resultPlotLoNLL = makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21.'                        , scutstring = 'nllAbove21'         , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    resultPlotLoNLL = makeResultData(v , maxrun , lint , specialcut = 'nll_Edge < 21.'                        , scutstring = 'nllBelow21'         , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    ## e = makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21' , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    ## a = makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge > 101.' , scutstring = 'highMassnllIncl'    , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    ## b = makeResultData(v , maxrun , lint , specialcut = '                  lepsMll_Edge <  81.' , scutstring = 'lowMassnllIncl'     , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    #    ## f = makeResultData(v , maxrun , lint , specialcut = 'nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'  , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ## resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21.' , scutstring = 'nllAbove21'         , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ## resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21.' , scutstring = 'nllBelow21'         , _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ## makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+    # resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21. && run_Edge <= 275125' , scutstring = 'nllAbove21_first4p3invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    # resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21. && run_Edge <= 275125' , scutstring = 'nllBelow21_first4p3invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    # makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+    # resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21. && run_Edge > 275125' , scutstring = 'nllAbove21_second3p4invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    # resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21. && run_Edge > 275125' , scutstring = 'nllBelow21_second3p4invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    # makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+    ## resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21. && run_Edge > 276097' , scutstring = 'nllAbove21_last5p25invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ## resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21. && run_Edge > 276097' , scutstring = 'nllBelow21_last5p25invfb', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ## makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+    ##   resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21.' , scutstring = 'nllAbove21', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ##   resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21.' , scutstring = 'nllBelow21', _options='returnplot,splitFlavor,printIntegral,makeTable')
+    ##   makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+    resultPlotLoNLL = makeResultData('nll' , maxrun , lint , specialcut = ''               , scutstring = 'mllInc'    , _options='returnplot')
+    resultPlotHiNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge > 21.' , scutstring = 'nllAbove21', _options='returnplot')
+    resultPlotLoNLL = makeResultData('mll' , maxrun , lint , specialcut = 'nll_Edge < 21.' , scutstring = 'nllBelow21', _options='returnplot')
+    print ads
+    makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
+
     ## for v in ['nj']:
     ##     makeResultData(v , maxrun , lint , specialcut = 'met_Edge > 250 && nBJetMedium35_Edge ==0 && lepsMll_Edge > 101', scutstring = 'ASRmet250_nb0_highMass', returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
     ##     makeResultData(v , maxrun , lint , specialcut = 'met_Edge > 250 && nBJetMedium35_Edge ==1 && lepsMll_Edge > 101', scutstring = 'ASRmet250_nb1_highMass', returnplot = True , addRares = True, splitFlavor = True, makeTable = True)
@@ -738,13 +576,14 @@ if __name__ == '__main__':
     ##     for _i,(_min,_max) in enumerate([(0, 274250), (274250,274388), (274388,274971), (274971,275125)]):
     ##         _rstr = 'run_Edge > {_minrun} && run_Edge <= {_maxrun}'.format(_minrun=_min,_maxrun=_max)
     ##         chrono = '_fb{i}'.format(i=_i+1)
-    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+''                                        , scutstring = ''+chrono                   , returnplot = True , addRares = True, splitFlavor = True)
-    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21.'                        , scutstring = 'nllAbove21'+chrono         , returnplot = True , addRares = True, splitFlavor = True)
-    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21'+chrono , returnplot = True , addRares = True, splitFlavor = True)
-    ##         makeResultData(v , maxrun , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'+chrono  , returnplot = True , addRares = True, splitFlavor = True)
+    ##         makeResultData(v , _max , lint , specialcut = _rstr+''                                        , scutstring = ''+chrono                   , _options='returnplot,addRares,splitFlavor,printIntegral')
+    ##         makeResultData(v , _max , lint , specialcut = _rstr+'&&nll_Edge > 21.'                        , scutstring = 'nllAbove21'+chrono         , _options='returnplot,addRares,splitFlavor,printIntegral')
+    ##         makeResultData(v , _max , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge > 101.' , scutstring = 'highMassnllAbove21'+chrono , _options='returnplot,addRares,splitFlavor,printIntegral')
+    ##         makeResultData(v , _max , lint , specialcut = _rstr+'&&nll_Edge > 21. && lepsMll_Edge < 81.'  , scutstring = 'lowMassnllAbove21'+chrono  , _options='returnplot,addRares,splitFlavor,printIntegral')
         
-    #makeClosureTests('nll'  ,'lepsMll_Edge > 101.', 'highMass', True)
-    #makeClosureTests('nllMC','lepsMll_Edge > 101.', 'highMass', True)
+    ##makeClosureTests('nll'    ,'lepsMll_Edge > 101.', 'highMass', True)
+    ##makeClosureTests('nllMC'  ,'lepsMll_Edge > 101.', 'highMass', True)
+    ##makeClosureTests('nllMCSF','lepsMll_Edge > 101.', 'highMass', True)
     print adsfas
 
     ## makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
@@ -753,7 +592,6 @@ if __name__ == '__main__':
     ## ## makeResultData('nll', maxrun = 275125, lint = 4.0)
     ## resultPlotLoNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge < 21.', 'nllBelow21', returnplot = True)
     ## resultPlotHiNLL = makeResultData('mll',    maxrun,        lint, 'nll_Edge > 21.', 'nllAbove21', returnplot = True)
-    ## makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str)
     ## print addsf
     ## make for region with fixed trigger:
     #### random shit resultPlot = makeResultData('mll', maxrun, lint, specialcut = 'run_Edge >= 274094' , scutstring = 'maxrun274094', returnplot = True)
@@ -774,88 +612,4 @@ if __name__ == '__main__':
     ##makeClosureTests('nll','lepsMll_Edge < 81.' , 'lowMass')
     ##makeClosureTests('nll','lepsMll_Edge > 101.', 'highMass')
     print asdfasdfsdf
-
-    finalBinning = range(20,310,10) # + range(81,111,10) + range(110,310,10))
-
-    #dy_shapes = getDYShapes(finalBinning, range(20,302,2), [20., 70., 81., 101., 120., 300.])
-
-    #print asdf  
-    regions = []
-    loNLL = Region.region('loNLL', 
-                           [cuts.AddList([cuts.METJetsSignalRegionMET150, cuts.MaxNLL(20.), '(lepsMll_Edge < 81. || lepsMll_Edge > 101.)']) ],
-                           ['mll', 'met', 'nll'],
-                           [finalBinning, range(150,310,10), range(10,31,1)],
-                           True if not opts.onlyClosure else False)
-    hiNLL = Region.region('hiNLL', 
-                           [cuts.AddList([cuts.METJetsSignalRegionMET150, cuts.MinNLL(20.), '(lepsMll_Edge < 81. || lepsMll_Edge > 101.)']) ],
-                           ['mll', 'met', 'nll'],
-                           [finalBinning, range(150,310,10), range(10,31,1)],
-                           True if not opts.onlyClosure else False)
-    regions.append(loNLL)
-    regions.append(hiNLL)
-
-    ## ==================================================
-    ## look for DY shapes in file, if not there make them
-    ## ==================================================
-    dy_shapes = getDYShapes(finalBinning, range(20,302,2), [20., 70., 81., 101., 120., 300.])
-    print dy_shapes
-    ## ==================================================
-    ## done with DY shapes. moving on with life          
-    ## ==================================================
-
-    #print asdf
-
-    ## global binnedSR
-    ## binnedSR = copy.deepcopy(binnedSR0b)
-
-    for reg in regions:
-        print 'i am at region %s' %(reg.name)
-
-        cuts_sf = cuts.AddList([cuts.GoodLeptonSF()]+reg.cuts+[cuts.trigger])
-        cuts_of = cuts.AddList([cuts.GoodLeptonOF()]+reg.cuts+[cuts.trigger])
-
-        for tree in ([treeMC, treeDA] if reg.doData else [treeMC]):
-            dataMC = 'DATA' if tree == treeDA else 'MC'
-            isData = (dataMC == 'DATA')
-            for var in reg.rvars:
-                v = helper.vParams(var)
-                #if not v.name in ['mll']: continue
-
-                setattr(reg, v.name+'_sf'  , tree.getTH1F(lumi, v.name+'_sf_'+reg.name+dataMC, v.vtree, reg.bins[reg.rvars.index(v.name)], 1, 1, cuts_sf, '', v.title) )
-                setattr(reg, v.name+'_of'  , tree.getTH1F(lumi, v.name+'_of_'+reg.name+dataMC, v.vtree, reg.bins[reg.rvars.index(v.name)], 1, 1, cuts_of, '', v.title) )
-                getattr(reg, v.name        ).setHisto(getattr(reg, v.name+'_sf'), dataMC)
-                getattr(reg, v.name+'_pred').setHisto(makePrediction(getattr(reg, v.name+'_of'), ingDA if isData else ingMC), dataMC)
-
-                #reg.mll     .setHisto(reg.mll_sf, dataMC)
-                #reg.mll_pred.setHisto(makePrediction(reg.mll_of, ingDA if isData else ingMC), dataMC)
-
-                #del reg.mll_sf, reg.mll_of
-
-
-    ## make some plots!!
-    ## =====================
-
-    #makePlots([loNLL, hiNLL])
-    makePlotsCombinedSR([loNLL, hiNLL])
-
-
-    ## make some tables!!
-    ## =====================
-
-    ## a = Tables.makeConciseTable(binnedSRincb, binnedSR0b, binnedSR1b, ingDA, ingMC, onZ)
-    #b = Tables.makeConciseTableWith2b(binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b, ingDA, ingMC, onZ)
-    # for i in a: print i
-    #for i in a: print i
-
-    ## make datacards
-    # Tables.makeDataCards([binnedSRincb, binnedSR0b, binnedSR1b, binnedSR2b], '', ingDA, onZ)
-
-    #a_cen    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'central', opts.nbs)
-    #a_fwd    = makeResultsTable(binnedSR, dy_shapes, 'MC', 'forward', opts.nbs)
-    #a_cen_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'central', opts.nbs)
-    #a_fwd_da = makeResultsTable(binnedSR, dy_shapes, 'DATA', 'forward', opts.nbs)
-    #print 'CENTRAL TABLE'
-    #for i in a_cen_da: print i
-    #print 'FORWARD TABLE'
-    #for i in a_fwd_da: print i
 
