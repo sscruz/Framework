@@ -37,6 +37,8 @@ if __name__ == "__main__":
               'high1': 'lepsMll_Edge > 101 && lepsMll_Edge < 200',
               'high2': 'lepsMll_Edge > 200 && lepsMll_Edge < 300',
               'high3': 'lepsMll_Edge > 300'}
+    nllCut = {'ttbar': 'nll_Edge < 21',
+              'non-ttbar': 'nll_Edge > 21'}
     Cuts = [cuts.SignalRegionBaseLineNoTrigger, cuts.SF]
     print 'yields for %4.1f /fb'%lumi
     for process in ['TT','DY']:
@@ -46,8 +48,7 @@ if __name__ == "__main__":
         for mll in ['low','onz','high1','high2','high3']:
             yields = []
             for nll in ['ttbar','non-ttbar']:
-                nllCut = 'nll_Edge > 21' if 'non' in nll else 'nll_Edge < 21' 
-                theCuts = Cuts + [nllCut] + [mllCut[mll]]
+                theCuts = Cuts + [nllCut[nll]] + [mllCut[mll]]
                 yields.append(tree.getYields(lumi,'0.5',0,1,cuts.AddList(theCuts)))
             print '%s\t %4.1f +/- %4.1f\t %4.1f +/- %4.1f'%(mll,
                                                             yields[0][0], yields[0][1],
