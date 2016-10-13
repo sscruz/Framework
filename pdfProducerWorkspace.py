@@ -225,7 +225,7 @@ if __name__ == '__main__':
     ## 2016 data and MC
     tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
     tt_tree = tt_tfile.Get('sf/t')
-    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2.root')
+    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/evVarFriend_DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125.root')
     em_tree = em_tfile.Get('sf/t')
     
     dss = []
@@ -268,6 +268,7 @@ if __name__ == '__main__':
             if doNDKeys: ds.addNDPDF(var, 'cuts_of_sr_met150', opt, getattr(ds, var+'_rho') )
 
             tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Verbose(1),ROOT.RooFit.PrintLevel(1),ROOT.RooFit.NumCPU(1,0),ROOT.RooFit.Save(1),ROOT.RooFit.Strategy(2))
+            tmp_fr.Print()
             #tmp_fr=w.pdf(model).fitTo(w.data(ds.name),ROOT.RooFit.Save(1))
             frs.append(copy.deepcopy(tmp_fr))
 

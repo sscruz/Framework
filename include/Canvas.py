@@ -17,6 +17,7 @@ class Canvas:
       self.arrows= []
       self.latexs= []
       self.bands = []
+      self.ratiobands = []
       self.options = []
       self.labels = []      
       self.labelsOption = []
@@ -30,71 +31,139 @@ class Canvas:
 
 
    def banner(self, isData, lumi):
-    
+
+
+
+
+
       latex = TLatex()
-      latex.SetNDC();
-      latex.SetTextAngle(0);
-      latex.SetTextColor(r.kBlack);
-      latex.SetTextFont(42);
-      latex.SetTextAlign(31);
-      latex.SetTextSize(0.05);
+
+      latex.SetNDC()
+
+      latex.SetTextColor(r.kBlack)
+
+      latex.SetTextFont(61)
+
+      latex.SetLineWidth(2)
+
+      latex.SetTextAlign(31)
+
+      latex.SetTextSize(0.04)
+
       latex.DrawLatex(0.21, 0.93, "CMS")
 
+
+
       latexb = TLatex()
+
       latexb.SetNDC();
-      latexb.SetTextAngle(0);
+
       latexb.SetTextColor(r.kBlack);
-      latexb.SetTextFont(42);
+
+      latexb.SetLineWidth(2)
+
+      latexb.SetTextFont(52);
+
       latexb.SetTextAlign(31);
+
       latexb.SetTextSize(0.03);
- 
+
+
+
       if(isData):
+
         latexb.DrawLatex(0.33, 0.93, "Preliminary")
+
       else:
+
         latexb.DrawLatex(0.33, 0.93, "Simulation")
 
+
+
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
+
       latexc = TLatex()
+
       latexc.SetNDC();
+
       latexc.SetTextAngle(0);
+
       latexc.SetTextColor(r.kBlack);
+
       latexc.SetTextFont(42);
+
       latexc.SetTextAlign(31);
-      latexc.SetTextSize(0.05);
+
+      latexc.SetTextSize(0.04);
+
       latexc.DrawLatex(0.90, 0.93, text_lumi)
 
    def banner2(self, isData, lumi):
-    
+
+
+
+
+
       latex = TLatex()
-      latex.SetNDC();
-      latex.SetTextAngle(0);
-      latex.SetTextColor(r.kBlack);
-      latex.SetTextFont(42);
-      latex.SetTextAlign(31);
-      latex.SetTextSize(0.05);
-      latex.DrawLatex(0.23, 0.93, "CMS")
+
+      latex.SetNDC()
+
+      latex.SetTextColor(r.kBlack)
+
+      latex.SetTextFont(61)
+
+      latex.SetLineWidth(2)
+
+      latex.SetTextAlign(31)
+
+      latex.SetTextSize(0.04)
+
+      latex.DrawLatex(0.21, 0.93, "CMS")
+
+
 
       latexb = TLatex()
+
       latexb.SetNDC();
-      latexb.SetTextAngle(0);
+
       latexb.SetTextColor(r.kBlack);
-      latexb.SetTextFont(42);
+
+      latexb.SetLineWidth(2)
+
+      latexb.SetTextFont(52);
+
       latexb.SetTextAlign(31);
+
       latexb.SetTextSize(0.03);
- 
+
+
+
       if(isData):
+
         latexb.DrawLatex(0.37, 0.93, "Preliminary")
+
       else:
+
         latexb.DrawLatex(0.37, 0.93, "Simulation")
 
+
+
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
+
       latexc = TLatex()
+
       latexc.SetNDC();
+
       latexc.SetTextAngle(0);
+
       latexc.SetTextColor(r.kBlack);
+
       latexc.SetTextFont(42);
+
       latexc.SetTextAlign(31);
-      latexc.SetTextSize(0.05);
+
+      latexc.SetTextSize(0.04);
+
       latexc.DrawLatex(0.90, 0.93, text_lumi)
 
    def addBand(self, x1, y1, x2, y2, color, opacity):
@@ -107,6 +176,16 @@ class Canvas:
       #grshade.SetFillStyle(3001)
       grshade.SetFillColorAlpha(color, opacity)
       self.bands.append(grshade)
+
+   def addBandRatio(self, x1, y1, x2, y2, color, opacity):
+      grshade = TGraph(4)
+      grshade.SetPoint(0,x1,y1)
+      grshade.SetPoint(1,x2,y1)
+      grshade.SetPoint(2,x2,y2)
+      grshade.SetPoint(3,x1,y2)
+      #grshade.SetFillStyle(3001)
+      grshade.SetFillColorAlpha(color, opacity)
+      self.ratiobands.append(grshade)
 
    def addLine(self, x1, y1, x2, y2, color, thickness = 0.):
       line = TLine(x1,y1,x2,y2)
@@ -174,17 +253,16 @@ class Canvas:
       self.orderForLegend.append(orderForLegend)
 
 
-   def addStack(self, h, option, ToDraw, orderForLegend):
+   def addStack(self, h, option, ToDraw, orderForLegend, labels = []):
 
       legendCounter = orderForLegend
       if(orderForLegend < len(self.orderForLegend)):
           legendCounter = len(self.orderForLegend)
 
       self.addHisto(h, option, "", "", "", ToDraw, -1)  
-      for h_c in h.GetHists():
-          self.addHisto(h_c, "H", h_c.GetTitle(), "F", "", 0, legendCounter)
+      for ind, h_c in enumerate(h.GetHists()):
+          self.addHisto(h_c, "H", "%s (%4.1f)"%(h_c.GetTitle(),h_c.Integral()) if len(labels) == 0 else labels[ind], "F", "", 0, legendCounter)
           legendCounter = legendCounter + 1
-       
 
  
    def makeLegend(self):
@@ -220,6 +298,7 @@ class Canvas:
           if(self.ToDraw[i] != 0):
               self.histos[i].Draw(self.options[i])
 
+              
       if(legend):
           self.makeLegend()
           self.myLegend.Draw()
@@ -259,7 +338,7 @@ class Canvas:
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
-          tmp_ratio.GetYaxis().SetTitle("Ratio");
+          tmp_ratio.GetYaxis().SetTitle("Data/Pred");
           tmp_ratio.GetYaxis().CenterTitle();
           tmp_ratio.GetYaxis().SetLabelSize(0.12);
           tmp_ratio.GetXaxis().SetLabelSize(0.12);
@@ -285,7 +364,13 @@ class Canvas:
       #tmp_ratio.Draw("E,SAME");
       pad2.cd();  
       for rat in ratios:
-          rat.Draw('E2,same');
+          rat.Draw('P,E2,same');
+          points = rat.Clone()
+          points.SetMarkerStyle(r.kFullCircle)
+          points.Draw("P,same")
+
+      for band in self.ratiobands:
+          band.Draw('f')
 
       line = TLine(xmin, 1, xmax, 1)
       line.SetLineColor(r.kGray+2);

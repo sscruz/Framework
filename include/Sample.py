@@ -14,6 +14,7 @@ class Sample:
       ftfileloc = friendlocation+'/evVarFriend_'+self.name+'.root' 
       self.ftfile = TFile(ftfileloc)
       self.ttree = self.ftfile.Get('sf/t')
+      self.ttree.AddFriend('t','%s.root'%self.name)
       self.isScan = isScan
       if not self.isData:
         gw = 0.
@@ -31,6 +32,7 @@ class Sample:
         self.puWeight  = "PileupW_Edge"
       if self.isScan:
         self.SFWeight  = '1.0'
+        #self.SFWeight  = 'sfs * (0.97*(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) + 0.94*(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)) '
         self.lumWeight =  1.0
         self.puWeight  = "PileupW_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
@@ -66,7 +68,30 @@ class Sample:
       h_of.Sumw2()
       h_of.GetXaxis().SetTitle(xlabel)
       h_of.GetYaxis().SetTitle(ylabel)
+      addCut = ""
+      if self.isData:
+        if(name.find("DoubleMuon") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
+        if(name.find("DoubleEG") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
+          cut = cut + "* ( " + addCut + " )"
+        if(name.find("MuonEG") != -1):
+          addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)))"
+          cut = cut + "* ( " + addCut + " )"
+                   
+      if(self.isData == 0):
+        cut = "(" + cut + ") * ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
+      self.ttree.Project(h.GetName(), var, cut, options) 
 
+      for _bin in range(1, h.GetNbinsX()+2):
+          h_of.SetBinContent(_bin, h.GetBinContent(_bin))
+          h_of.SetBinError  (_bin, h.GetBinError  (_bin))
+      
+      return (h_of if ofBin else h)
+
+
+   def getScatterPlot(self,name,var,cut):
       addCut = ""
       if self.isData:
         if(name.find("DoubleMuon") != -1):
@@ -80,15 +105,16 @@ class Sample:
           cut = cut + "* ( " + addCut + " )"
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
-      
-      self.ttree.Project(h.GetName(), var, cut, options) 
+        cut = "(" + cut + ") * ( " + str(self.lumWeight) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " )" 
+ 
+#      c = TCanvas()
+     # apparently this is necessary
+      self.ttree.Draw(var, cut)
+#      c.SaveAs("prueba.pdf")
 
-      for _bin in range(1, h.GetNbinsX()+2):
-          h_of.SetBinContent(_bin, h.GetBinContent(_bin))
-          h_of.SetBinError  (_bin, h.GetBinError  (_bin))
-      
-      return (h_of if ofBin else h)
+      gr = r.TGraph(self.ttree.GetSelectedRows(),self.ttree.GetV2(), self.ttree.GetV1())
+      gr.SetName(name)
+      return gr
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
    
@@ -213,7 +239,18 @@ class Block:
 
      return h   
 
-       
+   def getScatterPlot(self,name,var,cut):
+      g = r.TGraph()
+      for s in self.samples:
+         AuxName = "auxT3_block"+s.name+name
+         tmp = s.getScatterPlot(AuxName,var,cut)
+         for i in range(0,tmp.GetN()):
+            x = r.Double(); y = r.Double()
+            tmp.GetPoint(i,x,y)
+            g.SetPoint(g.GetN(), x,y)
+      g.SetName(name)
+      return g
+  
 
 class Tree:
    'Common base class for a physics meaningful tree'
@@ -384,3 +421,19 @@ class Tree:
 
      return h   
 
+
+   def getScatterPlot(self,name,var,cut, xlabel, ylabel):
+      print 'getting scatterplot', name
+      g = r.TGraph(); 
+      for b in self.blocks:
+         AuxName = "aux_block" + name + "_" + b.name
+         tmp = b.getScatterPlot(AuxName,var,cut)
+         for i in range(0,tmp.GetN()):
+            x = r.Double(); y = r.Double()
+            tmp.GetPoint(i,x,y)
+            g.SetPoint(g.GetN(), x,y)
+
+      g.SetName(name)
+      g.GetXaxis().SetTitle(xlabel)
+      g.GetYaxis().SetTitle(ylabel)
+      return g
