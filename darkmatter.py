@@ -17,12 +17,9 @@ class  darkmatter:
         self.setTrees()
         self.setSRsCuts()
     def setTrees(self):
-        mcDatasetsHT  = ['TT_pow_ext34','DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext',
-                         'DYJetsToLL_M50_HT400to600_ext','DYJetsToLL_M50_HT600toInf_ext',
+        mcDatasetsHT  = ['TT_pow_ext34','DYJetsToLL_M50','DYJetsToLL_M10to50',
                          'WWTo2L2Nu', 'WZTo2L2Q', 'TTZ_LO','TTW_LO','TBar_tWch','ZZ','T_tWch']
-        mcDatasetsNoTT  = ['DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext',
-                           'DYJetsToLL_M50_HT400to600_ext','DYJetsToLL_M50_HT600toInf_ext',
-                           'WWTo2L2Nu', 'WZTo2L2Q', 'TTZ_LO','TTW_LO','TBar_tWch','ZZ','T_tWch']
+        mcDatasetsNoTT  = ['DYJetsToLL_M50','WWTo2L2Nu', 'WZTo2L2Q', 'TTZ_LO','TTW_LO','TBar_tWch','ZZ','T_tWch']
         mcDatasetsNoTTZ = ['DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext',
                            'DYJetsToLL_M50_HT400to600_ext','DYJetsToLL_M50_HT600toInf_ext',
                            'WWTo2L2Nu', 'WZTo2L2Q', 'TTW_LO','TBar_tWch','ZZ','T_tWch']
@@ -37,12 +34,14 @@ class  darkmatter:
                       'DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811',
                       'MuonEG_Run2016D-PromptReco-v2_runs_276315_276811']
         ttZDatasets = ['TTZ_LO']
-        
+        siDatasets   = ['TTDM_scalar_Mchi-1_Mphi-10']
+        siDatasets300= ['TTDM_scalar_Mchi-1_Mphi-300']
         self.treeMCHT   = Sample.Tree(helper.selectSamples('samples.dat', mcDatasetsHT,   'MC'), 'MC', 0, isScan = 0)
         self.treeTT     = Sample.Tree(helper.selectSamples('samples.dat', ttDatasets,   'MC'), 'MC', 0, isScan = 0)
         self.treeDA   = Sample.Tree(helper.selectSamples('samples.dat', daDatasets,   'DA'), 'DA', 1, isScan = 0)
-
-# tree for data driven studies. choose treeDA when studies are done (choose treeMC for closure tests)
+        self.treeSI   = Sample.Tree(helper.selectSamples('samples.dat', siDatasets,   'MC'), 'MC', 1, isScan = 0)
+        self.treeSI300= Sample.Tree(helper.selectSamples('samples.dat', siDatasets300,'MC'), 'MC', 1, isScan = 0)
+# TreeSI for data driven studies. choose treeDA when studies are done (choose treeMC for closure tests)
         self.treeDataDriven = self.treeDA
         self.treeMCNoTT     = Sample.Tree(helper.selectSamples('samples.dat', mcDatasetsNoTT,   'MC'),
                                           'MC', 0, isScan = 0)
@@ -59,45 +58,46 @@ class  darkmatter:
                              'nLepLoose_Edge < 3','mt2_Edge > 60','mt2_Edge < 100','nJetSel_Edge>1']
         self.ttzControCuts = [cuts.goodLepton, 'nBJetMedium35_Edge > 0','mt2_Edge > 90', 'nLepTight_Edge > 2',
                               'nJetSel_Edge>1'] 
+        self.baseCuts      = [ cuts.goodLepton]
 
+        self.baseCuts      = self.getTheCuts(self.baseCuts)
         self.baselineCuts  = self.getTheCuts(self.baselineCuts)
         self.ttControCuts  = self.getTheCuts(self.ttControCuts)
         self.ttzControCuts = self.getTheCuts(self.ttzControCuts,False)
 
     def getTheCuts(self,theCuts,doZVeto=True):
         finalcuts = ''
-        for fl in ['ee','OF','mm']:
-            if doZVeto:
-                if len(finalcuts) == 0: 
-                    finalcuts = "("+ cuts.AddList(theCuts+[getattr(cuts,fl)]+([] if fl == 'OF' else ['TMath::Abs(lepsMll_Edge - 91) > 20'])) + ")"
-                else: 
-                    finalcuts += "|| (" + cuts.AddList(theCuts+[getattr(cuts,fl)]+([] if fl == 'OF' else ['TMath::Abs(lepsMll_Edge - 91) > 20'])) + ")"
-            else:
-                if len(finalcuts) == 0: 
-                    finalcuts = "("+ cuts.AddList(theCuts+[getattr(cuts,fl)]) + ")"
-                else: 
-                    finalcuts += "|| (" + cuts.AddList(theCuts+[getattr(cuts,fl)]) + ")"
+        if doZVeto:
+            finalcuts = cuts.AddList(theCuts+[cuts.ZVeto])
+        else: 
+            finalcuts = cuts.AddList(theCuts)
 
         return finalcuts
 
     def doTTControlRegionStack(self):
-        ttControl = self.treeMCHT.getStack(lumi, "ttCont_all", 'mt2_Edge',20 ,0,200,
+        ttControl = self.treeMCHT.getStack(lumi, "ttCont_all", 'met_Edge',20 ,0,500,
                                            "(" + self.ttControCuts+")", "", "MET [GeV]")
-        data      = self.treeDA.getTH1F(lumi,    "ttCont_data", 'mt2_Edge',20 ,0,200,
+        data      = self.treeDA.getTH1F(lumi,    "ttCont_data", 'met_Edge',20 ,0,500,
                                         "(" + self.ttControCuts+") && (%s)"%cuts.trigger, "", "MET [GeV]")
         data.SetMarkerStyle(r.kFullCircle)
-        plot = Canvas.Canvas('DMStuff/TT_Control','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot = Canvas.Canvas('DMStuff/TT_Control','png,pdf,cxx', 0.6, 0.55, 0.8, 0.8)
         plot.addStack(ttControl,'HIST',True,1)
         plot.addHisto(data,'P,SAME',"Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,0)
-        plot.save(True, True, False, lumi,0.1,5e4)
+        plot.addLatex(0.6, 0.50, 't#bar{t} control region')
+        plot.saveRatio(True, True, False, lumi, data, ttControl.GetStack().Last())
 
     def doTTZControlRegionStack(self):
         ttzControl = self.treeMCHT.getStack(lumi, "ttzCont_all", 'nJetSel_Edge',6 ,-0.5,5.5,
-                                            "(" + self.ttzControCuts+")", "", "MET [GeV]")
-
+                                            "(" + self.ttzControCuts+")", "", "n_{jet}")
+        data       = self.treeDA.getTH1F(lumi,    "ttCont_data", 'nJetSel_Edge',6 ,-0.5,5.5,
+                                         "(" + self.ttzControCuts+") && (%s)"%cuts.trigger, "", "n_{jet}")
         plot = Canvas.Canvas('DMStuff/TTZ_Control_nBJet','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
-        plot.addStack(ttzControl,'HIST',True,1)
-        plot.save(True, True, False, lumi,0.1,5e4)
+        plot.addHisto(data,'P', "Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,-1)
+        plot.addStack(ttzControl,'HIST,SAME',True,1)
+        plot.addHisto(data,'P,SAME', "Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,0)
+        plot.addLatex(0.6, 0.50, 't#bar{t}Z control region')
+        plot.saveRatio(True, True, False, lumi, data, ttzControl.GetStack().Last())
+
 
     def DoMCStackSR(self):
         searchReg = self.treeMCHT.getStack(lumi, "stack_all", 'met_Edge',10 ,100,500,
@@ -149,7 +149,7 @@ class  darkmatter:
         
 
     def GetDataDriven(self):
-
+        print self.baselineCuts
         searchReg = self.treeMCNoTTZNoTT.getStack(lumi, "stack_some", 'met_Edge',10 ,100,500,
                                                   "(" + self.baselineCuts+")", "", "MET [GeV]")
         tt       = self.treeTT .getTH1F(lumi, "tt_sr",  'met_Edge',10 ,100,500,
@@ -175,12 +175,30 @@ class  darkmatter:
         searchReg.Add(ttz);         searchReg.Add(tt)
         data     = self.treeDA.getTH1F(lumi, "data",  'met_Edge',10 ,100,500,
                                        "(" + self.baselineCuts+") && (%s)"%cuts.trigger, "", "MET [GeV]")
-        plot = Canvas.Canvas('DMStuff/SR_data_driven','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
-        plot.addHisto(data,'P',"Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,0)
+        sig     = self.treeSI.getTH1F(lumi, "sig",  'met_Edge',10 ,100,500,
+                                      "(" + self.baselineCuts+")", "", "MET [GeV]")
+        sig300  = self.treeSI300.getTH1F(lumi, "sig300",  'met_Edge',10 ,100,500,
+                                      "(" + self.baselineCuts+")", "", "MET [GeV]")
+        sig300.Scale(3.5*3.5)
+        print self.baselineCuts
+        sig.SetLineWidth(2); sig300.SetLineWidth(2)
+        plot = Canvas.Canvas('DMStuff/SR_data_driven','png,pdf,cxx', 0.5, 0.60, 0.8, 0.8)
+        plot.addHisto(sig, 'HIST','Signal (%4.1f)'%sig.Integral(),"L",r.kBlue,True,-1)
+        plot.addHisto(data,'P,SAME',"Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,1)
         plot.addStack(searchReg,'HIST,SAME',True,1)
-#        plot.addHisto(data,'P,SAME',"Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,0)
+        plot.addHisto(sig, 'HIST,SAME','Signal (%4.1f)'%sig.Integral(),"L",r.kBlue,True,1)
+        plot.addHisto(sig300, 'HIST,SAME','Signal (300) g = 3.5 (%4.1f)'%sig300.Integral(),"L",r.kViolet,True,1)
+
         plot.save(True, True, False, lumi,0.1,5e4)
-    
+
+    def signalPlot(self):
+        sig     = self.treeSI.getTH1F(lumi, "sig",  'met_Edge',10 ,100,500,
+                                      "(" + self.baselineCuts+")", "", "MET [GeV]")
+        print sig.Integral()
+        c = r.TCanvas()
+        sig.Draw()
+        c.SaveAs('signal.pdf')
+
     def dump(self,filename):
         f = open(filename,'wb')
         for argname in ['TTZScaleFactor','TTZScaleFactor_e','TTScaleFactor','TTScaleFactor_e']:
@@ -191,6 +209,63 @@ class  darkmatter:
         f = open(filename,'rb')
         for line in f.read().splitlines():
             setattr(self,line.split()[0],float(line.split()[1]))
+
+    def plotVariablesBaseline(self):
+
+        # mll = self.treeMCHT.getStack(lumi, "stack_mll", 'lepsMll_Edge',50 ,0,500,
+        #                              "(" + self.baseCuts+")", "", "MLL [GeV]")
+        # mll_da = self.treeDA.getTH1F(lumi, "stack_mll", 'lepsMll_Edge',50 ,0,500,
+        #                              "(" + self.baseCuts+") && (%s)"%cuts.trigger, "", "MLL [GeV]")
+        # plot_mll = Canvas.Canvas('DMStuff/Base_MLL','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        # plot_mll.addStack(mll,'HIST',True,1)
+        # plot_mll.addHisto(mll_da, 'P,SAME','Data (%4.1f)'%mll_da.Integral(),"P",r.kBlack,True,0)
+        # plot_mll.saveRatio(True, True, False, lumi, mll_da, mll.GetStack().Last())
+
+
+        met = self.treeMCHT.getStack(lumi, "stack_met", 'met_Edge',50 ,0,500,
+                                     "(" + self.baseCuts+")", "", "MET [GeV]")
+        met_da = self.treeDA.getTH1F(lumi, "stack_met", 'met_Edge',50 ,0,500,
+                                     "(" + self.baseCuts+") && (%s)"%cuts.trigger, "", "MET [GeV]")
+        plot_met = Canvas.Canvas('DMStuff/Base_MET','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot_met.addStack(met,'HIST',True,1)
+        plot_met.addHisto(met_da, 'P,SAME','Data (%4.1f)'%met_da.Integral(),"P",r.kBlack,True,0)
+        plot_met.saveRatio(True, True, False, lumi, met_da, met.GetStack().Last())
+
+        mt2 = self.treeMCHT.getStack(lumi, "stack_mt2", 'mt2_Edge',50 ,0,200,
+                                     "(" + self.baseCuts+")", "", "m_{T2} [GeV]")
+        mt2_da = self.treeDA.getTH1F(lumi, "stack_mt2", 'mt2_Edge',50 ,0,200,
+                                     "(" + self.baseCuts+")&& (%s)"%cuts.trigger, "", "m_{T2} [GeV]")
+        plot_mt2 = Canvas.Canvas('DMStuff/Base_MT2','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot_mt2.addStack(mt2,'HIST',True,1)
+        plot_mt2.addHisto(mt2_da, 'P,SAME','Data (%4.1f)'%mt2_da.Integral(),"P",r.kBlack,True,0)
+        plot_mt2.saveRatio(True, True, False, lumi, mt2_da, mt2.GetStack().Last())
+
+        phi = self.treeMCHT.getStack(lumi, "stack_phi", 'phi_ptboost',50 ,-3.2,3.2,
+                                     "(" + self.baseCuts+")", "", "#Delta#phi_{boost}")
+        phi_da = self.treeDA.getTH1F(lumi, "stack_phi", 'phi_ptboost',50 ,-3.2,3.2,
+                                     "(" + self.baseCuts+")&& (%s)"%cuts.trigger, "", "#Delta#phi_{boost}")
+        plot_phi = Canvas.Canvas('DMStuff/Base_PHI','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot_phi.addStack(phi,'HIST',True,1)
+        plot_phi.addHisto(phi_da, 'P,SAME','Data (%4.1f)'%phi_da.Integral(),"P",r.kBlack,True,0)
+        plot_phi.saveRatio(True, True, False, lumi, phi_da, phi.GetStack().Last())
+
+        extra = self.treeMCHT.getStack(lumi, "stack_phi", 'nLepLoose_Edge',6 ,-0.5,5.5,
+                                     "(" + self.baseCuts+")", "", "n_{Loose Lep}")
+        extra_da = self.treeDA.getTH1F(lumi, "stack_phi", 'nLepLoose_Edge',6 ,-0.5,5.5,
+                                     "(" + self.baseCuts+")&& (%s)"%cuts.trigger, "", "n_{Loose Lep}")
+        plot_extra = Canvas.Canvas('DMStuff/Base_EXTRA','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot_extra.addStack(extra,'HIST',True,1)
+        plot_extra.addHisto(extra_da, 'P,SAME','Data (%4.1f)'%extra_da.Integral(),"P",r.kBlack,True,0)
+        plot_extra.saveRatio(True, True, False, lumi, extra_da, extra.GetStack().Last())
+
+        btag =  self.treeMCHT.getStack(lumi, "stack_phi", 'nBJetMedium35_Edge',6 ,-0.5,5.5,
+                                     "(" + self.baseCuts+")", "", "n_{b}")
+        btag_da = self.treeDA.getTH1F(lumi, "stack_phi", 'nBJetMedium35_Edge',6 ,-0.5,5.5,
+                                     "(" + self.baseCuts+")&& (%s)"%cuts.trigger, "", "n_{b}")
+        plot_btag = Canvas.Canvas('DMStuff/Base_BTAG','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
+        plot_btag.addStack(btag,'HIST',True,1)
+        plot_btag.addHisto(btag_da, 'P,SAME','Data (%4.1f)'%btag_da.Integral(),"P",r.kBlack,True,0)
+        plot_btag.saveRatio(True, True, False, lumi, btag_da, btag.GetStack().Last())
 
 if __name__ == "__main__":
     
@@ -218,5 +293,7 @@ if __name__ == "__main__":
         analysis.dump('darkmatter.txt')
 
     print 'done.'
-
+#    analysis.doTTControlRegionStack()
     analysis.GetDataDriven()
+#    analysis.plotVariablesBaseline()
+#    analysis.doTTZControlRegionStack()
