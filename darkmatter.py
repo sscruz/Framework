@@ -9,13 +9,15 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
-import cPickle as pickle
 
 
 class  darkmatter:
     def __init__(self,name):
+        self.sys = sys
+        self.name = name
         self.setTrees()
         self.setSRsCuts()
+
     def setTrees(self):
         mcDatasetsHT  = ['TT_pow_ext34','DYJetsToLL_M50','DYJetsToLL_M10to50',
                          'WWTo2L2Nu', 'WZTo2L2Q', 'TTZ_LO','TTW_LO','TBar_tWch','ZZ','T_tWch']
@@ -52,6 +54,7 @@ class  darkmatter:
 
     def setSRsCuts(self):
         theCuts = []
+        print 'nominal cuts'
         self.baselineCuts = [cuts.goodLepton, 'nBJetMedium35_Edge > 0','mt2_Edge > 120',
                              'TMath::Abs(phi_ptboost) < 1.','nLepLoose_Edge < 3']
         self.ttControCuts = [cuts.goodLepton, 'nBJetMedium35_Edge > 0', 'TMath::Abs(phi_ptboost) < 1.',
@@ -60,10 +63,31 @@ class  darkmatter:
                               'nJetSel_Edge>1'] 
         self.baseCuts      = [ cuts.goodLepton]
 
-        self.baseCuts      = self.getTheCuts(self.baseCuts)
-        self.baselineCuts  = self.getTheCuts(self.baselineCuts)
-        self.ttControCuts  = self.getTheCuts(self.ttControCuts)
-        self.ttzControCuts = self.getTheCuts(self.ttzControCuts,False)
+        print 'jes up' 
+        self.baselineCuts_jecUp = [cuts.goodLepton, 'nBJetMedium35_jecUp_Edge > 0','mt2_jecUp_Edge > 120',
+                             'TMath::Abs(phi_ptboost_jecUp) < 1.','nLepLoose_Edge < 3']
+        self.ttControCuts_jecUp = [cuts.goodLepton, 'nBJetMedium35_jecUp_Edge > 0', 'TMath::Abs(phi_ptboost_jecUp) < 1.',
+                             'nLepLoose_Edge < 3','mt2_jecUp_Edge > 60','mt2_Edge < 100','nJetSel_jecUp_Edge>1']
+        self.ttzControCuts_jecUp = [cuts.goodLepton, 'nBJetMedium35_jecUp_Edge > 0','mt2_jecUp_Edge > 90', 'nLepTight_Edge > 2',
+                              'nJetSel_jecUp_Edge>1'] 
+
+
+        print 'jec dn'
+        self.baselineCuts_jecDn = [cuts.goodLepton, 'nBJetMedium35_jecDn_Edge > 0','mt2_jecDn_Edge > 120',
+                             'TMath::Abs(phi_ptboost_jecDn) < 1.','nLepLoose_Edge < 3']
+        self.ttControCuts_jecDn = [cuts.goodLepton, 'nBJetMedium35_jecDn_Edge > 0', 'TMath::Abs(phi_ptboost_jecDn) < 1.',
+                             'nLepLoose_Edge < 3','mt2_jecDn_Edge > 60','mt2_Edge < 100','nJetSel_jecDn_Edge>1']
+        self.ttzControCuts_jecDn = [cuts.goodLepton, 'nBJetMedium35_jecDn_Edge > 0','mt2_jecDn_Edge > 90', 'nLepTight_Edge > 2',
+                              'nJetSel_jecDn_Edge>1'] 
+
+
+
+        for sys in ['']:
+            setattr(self,'baseCuts'+sys     , self.getTheCuts(getattr(self,'baseCuts'+sys)))
+            setattr(self,'baselineCuts'+sys , self.getTheCuts(getattr(self,'baselineCuts'+sys)))
+            setattr(self,'ttControCuts'+sys , self.getTheCuts(getattr(self,'ttControCuts'+sys)))
+            setattr(self,'ttzControCuts'+sys, self.getTheCuts(getattr(self,'ttzControCuts'+sys),False))
+
 
     def getTheCuts(self,theCuts,doZVeto=True):
         finalcuts = ''
@@ -118,7 +142,7 @@ class  darkmatter:
         DataMCFactor_e = num_e/den + bkg_e/den + num*den_e/den**2
         self.TTScaleFactor   = DataMCFactor
         self.TTScaleFactor_e = DataMCFactor_e
-        print 'ttbar sf is', self.TTScaleFactor, '+/-', self.TTScaleFactor_e
+        print 'ttbar sf is', self.TTScaleFactor, '+/-', self.TTScaleFactor_e, self.sys
 
     def GetDataMCFactorTTZ(self):
         # tt bar is subtracted using the data/mc correction
@@ -127,7 +151,7 @@ class  darkmatter:
             print 'GetDataMCFactorTTZ shouldnt be called like that. GetDataMCFactorTT should be called first'
             print 'Calling GetDataMCFactorTT...'
             self.GetDataMCFactorTT()
-
+        print self.ttzControCuts
         _den = self.treeTTZ.getYields(lumi,'0.5',0,1,self.ttzControCuts)
         den = _den[0]; den_e = _den[1]
         _num = self.treeDataDriven.getYields(lumi,'0.5',0,1,self.ttzControCuts)
@@ -137,6 +161,7 @@ class  darkmatter:
         _tt  = self.treeTT.getYields(lumi,'0.5',0,1,self.ttzControCuts)
         tt = _tt[0]*self.TTScaleFactor; tt_e = _tt[1]*self.TTScaleFactor
         bkg = bkg + tt; bkg_e = bkg_e + tt_e
+        print num, bkg, den
         DataMCFactor   = (num-bkg)/den
         DataMCFactor_e = num_e/den + bkg_e/den + num*den_e/den**2
         self.TTZScaleFactor  =DataMCFactor
@@ -173,8 +198,8 @@ class  darkmatter:
         ttz.SetFillColor(r.kRed)
 
         searchReg.Add(ttz);         searchReg.Add(tt)
-        data     = self.treeDA.getTH1F(lumi, "data",  'met_Edge',10 ,100,500,
-                                       "(" + self.baselineCuts+") && (%s)"%cuts.trigger, "", "MET [GeV]")
+#        data     = self.treeDA.getTH1F(lumi, "data",  'met_Edge',10 ,100,500,
+#                                       "(" + self.baselineCuts+") && (%s)"%cuts.trigger, "", "MET [GeV]")
         sig     = self.treeSI.getTH1F(lumi, "sig",  'met_Edge',10 ,100,500,
                                       "(" + self.baselineCuts+")", "", "MET [GeV]")
         sig300  = self.treeSI300.getTH1F(lumi, "sig300",  'met_Edge',10 ,100,500,
@@ -182,12 +207,15 @@ class  darkmatter:
         sig300.Scale(3.5*3.5)
         print self.baselineCuts
         sig.SetLineWidth(2); sig300.SetLineWidth(2)
-        plot = Canvas.Canvas('DMStuff/SR_data_driven','png,pdf,cxx', 0.5, 0.60, 0.8, 0.8)
-        plot.addHisto(sig, 'HIST','Signal (%4.1f)'%sig.Integral(),"L",r.kBlue,True,-1)
-        plot.addHisto(data,'P,SAME',"Data (%4.0f)"%data.Integral(),"P",r.kBlack,True,1)
-        plot.addStack(searchReg,'HIST,SAME',True,1)
-        plot.addHisto(sig, 'HIST,SAME','Signal (%4.1f)'%sig.Integral(),"L",r.kBlue,True,1)
-        plot.addHisto(sig300, 'HIST,SAME','Signal (300) g = 3.5 (%4.1f)'%sig300.Integral(),"L",r.kViolet,True,1)
+        dummy = sig.Clone()
+        dummy.Reset()
+        dummy.SetBinContent(2,10.)
+        
+        plot = Canvas.Canvas('DMStuff/SR_data_driven','png,pdf,cxx', 0.4, 0.55, 0.8, 0.85)
+        plot.addHisto(dummy, 'HIST','Signal (100 GeV) (%4.1f)'%sig.Integral(),"L",r.kWhite,True,-1)
+        plot.addStack(searchReg,'HIST,SAME',True,2)
+        plot.addHisto(sig, 'HIST,SAME','Signal (%4.1f)'%sig.Integral(),"L",r.kBlue,True,0)
+        plot.addHisto(sig300, 'HIST,SAME','Signal (300 GeV, g = 3.5) (%4.1f)'%sig300.Integral(),"L",r.kViolet,True,1)
 
         plot.save(True, True, False, lumi,0.1,5e4)
 
@@ -211,16 +239,6 @@ class  darkmatter:
             setattr(self,line.split()[0],float(line.split()[1]))
 
     def plotVariablesBaseline(self):
-
-        # mll = self.treeMCHT.getStack(lumi, "stack_mll", 'lepsMll_Edge',50 ,0,500,
-        #                              "(" + self.baseCuts+")", "", "MLL [GeV]")
-        # mll_da = self.treeDA.getTH1F(lumi, "stack_mll", 'lepsMll_Edge',50 ,0,500,
-        #                              "(" + self.baseCuts+") && (%s)"%cuts.trigger, "", "MLL [GeV]")
-        # plot_mll = Canvas.Canvas('DMStuff/Base_MLL','png,pdf,cxx', 0.6, 0.60, 0.8, 0.8)
-        # plot_mll.addStack(mll,'HIST',True,1)
-        # plot_mll.addHisto(mll_da, 'P,SAME','Data (%4.1f)'%mll_da.Integral(),"P",r.kBlack,True,0)
-        # plot_mll.saveRatio(True, True, False, lumi, mll_da, mll.GetStack().Last())
-
 
         met = self.treeMCHT.getStack(lumi, "stack_met", 'met_Edge',50 ,0,500,
                                      "(" + self.baseCuts+")", "", "MET [GeV]")
