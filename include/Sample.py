@@ -44,7 +44,8 @@ class Sample:
       if self.isScan:
         self.trigScale  = 'weight_trigger_Edge'
         self.SFWeight   = '1.0'
-        self.lumWeight  =  isScan
+        self.SFWeight   = '0.85'
+        self.lumWeight  =  1.0
         self.puWeight   = "PileupW_Edge"
         self.btagWeight = "weight_btagsf_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
