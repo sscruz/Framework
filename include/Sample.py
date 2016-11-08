@@ -27,10 +27,8 @@ class Sample:
       self.puWeight   = '1.0'
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
-      self.trigScale  = '1.0'
-      #self.emSF_trig = 0.89
-      #self.eeSF_trig = 0.97
-      #self.mmSF_trig = 0.94
+      self.triggWeight = '1.0'
+
       if not self.isData:
         self.trigScale  = 'weight_trigger_Edge'
         self.lumWeight = self.xSection / self.count
@@ -42,6 +40,8 @@ class Sample:
         #print 'lumweight ' ,self.lumWeight
 
         self.SFWeight    = "weight_LepSF_Edge"
+
+        self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
         self.trigScale  = 'weight_trigger_Edge'
@@ -60,7 +60,7 @@ class Sample:
       print "#################################"
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin=True):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin=True, extraWeight='1'):
      
       if(xmin == xmax):
         _nbins = len(nbin)-1
@@ -96,7 +96,8 @@ class Sample:
           cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + self.trigScale + " )" 
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + " )" 
+
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -105,7 +106,7 @@ class Sample:
       
       return (h_of if ofBin else h)
 
-   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight='1'):
+   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight):
    
      if(xmin == xmax) and (ymax == ymin):
         h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
@@ -168,11 +169,11 @@ class Block:
    def addSample(self, s):
       self.samples.append(s)
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True, extraWeight='1'):
 
      for _is,s in enumerate(self.samples):
        AuxName = "auxT1_sample" + s.name
-       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin)
+       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin, extraWeight)
        if not _is:
           h = haux.Clone(name+'_blockHisto')
        else:
@@ -185,7 +186,7 @@ class Block:
 
      return h
 
-   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
+   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight):
      if(xmin == xmax) and (ymax == ymin):
         h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
      elif (xmin == xmax):
@@ -202,7 +203,7 @@ class Block:
      for s in self.samples:
      
        AuxName = "auxT2_block" + s.name
-       haux = s.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel)
+       haux = s.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight)
        h.Add(haux)
        del haux
 
@@ -343,11 +344,11 @@ class Tree:
      return hs   
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True, extraWeight = '1'):
      
      for ib,b in enumerate(self.blocks):
        AuxName = "auxh1_block_" + name + "_" + b.name
-       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin)
+       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin, extraWeight)
        if not ib:
           h = haux.Clone(name+'_treeHisto')
        else:
@@ -356,7 +357,7 @@ class Tree:
 
      return h
 
-   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel):
+   def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight='1'):
      if(xmin == xmax) and (ymax == ymin):
         h = TH2F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny))
      elif (xmin == xmax):
@@ -373,13 +374,13 @@ class Tree:
      for b in self.blocks:
      
        AuxName = "aux_block" + name + "_" + b.name
-       haux = b.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel)
+       haux = b.getTH2F(lumi, AuxName, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, ylabel, extraWeight)
        h.Add(haux)
        del haux
 
      return h   
 
-   def getTH3F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel, extraWeight):
+   def getTH3F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, nbinz, zmin, zmax, cut, options, xlabel, ylabel, zlabel, extraWeight='1'):
      if(xmin == xmax) and (ymax == ymin) and (zmax == zmin):
         h = TH3F(name, "", len(nbinx)-1, array('d', nbinx),len(nbiny)-1, array('d', nbiny), len(nbinz)-1, array('d', nbinz))
      else: 
