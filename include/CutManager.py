@@ -60,6 +60,45 @@ class CutManager:
       self.ewinoClosureExt =  '('+self.goodLepton+'&&'+self.dPhiJetMET+'&&'+ self.nj2 +'&&'+ self.ZmassExtended +' && nLepLoose_Edge == 2  && mt2_Edge > 80.   )'
       self.ewinoCR ='('+self.goodLepton+'&&'+self.dPhiJetMET+'&&'+ self.nj2 +' && nLepLoose_Edge == 2 )'
       self.ewinoSR ='('+self.goodLepton+'&&'+self.dPhiJetMET+'&&'+ self.nj2 +'&&'+ self.Zmass +' && nBJetMedium25_Edge == 0 && mt2_Edge > 80. && nLepLoose_Edge == 2 && met_Edge > 150 )'
+
+      self.nbExact2 = '(nBJetMedium25_Edge == 2)'
+      self.mT2_80 = "(mt2_Edge > 80)"
+      self.mT2_100 = "(mt2_Edge > 100)"
+      self.bVeto  = "(nBJetMedium25_Edge == 0)"
+      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2)'
+      self.JetMETPhi04 = "abs(j1MetDPhi_Edge) >  0.4 && abs(j2MetDPhi_Edge) > 0.4"
+      # to do cuts #####################################
+      print 'still to do this'
+      self.mjj110  = '1'
+      self.mbb150  = '1'
+      self.mT2b200 = '1'
+      self.mbb150  = '1'
+######################
+      self.narrowZMass = '(lepsMll_Edge > 86 && lepsMll_Edge < 96)'
+      self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
+      self.Baseline = self.AddList([self.nj2,self.MET100,self.JetMETPhi04,self.goodLepton, self.trigger])
+      self.BaselineNoTrigger = self.AddList([self.nj2,self.MET100,self.JetMETPhi04,self.goodLepton])
+      self.EdgeBaseline = self.AddList( [self.MET150, self.mT2_80])
+      self.ewinoCharNeu = self.AddList( [self.MET150, self.bVeto,  self.mjj110, self.narrowZMass]); 
+      print 'has this a third lepton veto?'
+      self.ewinoNeuNeu  = self.AddList( [self.nbExact2, self.narrowZMass, self.mT2b200, self.mbb150])
+      self.strongOnZBVeto    = self.AddList( [ self.mT2_80  , self.bVeto ])
+      self.strongOnZWithB    = self.AddList( [ self.mT2_100 , self.nbj1   ])
+      self.strongOnZBase     = self.AddList( [self.narrowZMass, self.ThirdLeptonVeto, self.OR(strongOnZBase,strongOnZWithB)])
+
+      self.lowmass = "lepsMll_Edge > 20 && lepsMll_Edge < 81"
+      self.loMass= "lepsMll_Edge <  81."
+      self.hiMass= "lepsMll_Edge > 101."
+      self.highmass = "lepsMll_Edge > 101"
+      self.SignalRegionBaseLine          = self.AddList([self.goodLepton, self.JetMETBaseline, self.trigger ]) 
+      self.SignalRegionBaseLineNoTrigger = self.AddList([self.goodLepton, self.JetMETBaseline]) 
+#      self.SignalRegionBaseLine = self.AddList([self.goodLepton, self.trigger, self.JetMETBaseline]) 
+#      self.SignalRegionBaseLineNoTrigger = self.AddList([self.goodLepton, self.JetMETBaseline]) 
+
+      self.region3l = '(nLepTight_Edge == 3 && met_Edge > 60 && nBJetMedium25_Edge == 0)'
+      self.region4l = '(nLepTight_Edge == 4)'
+
+      
       ##### Needed by RSFOF direct calculation ########
       self.RSFOFDirectControlRegion = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
       self.RSFOFDirectControlRegionNoMll = "((met_Edge > 100 && met_Edge < 150 && nJetSel_Edge == 2) && (lepsMll_Edge>20)&& (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4))"
