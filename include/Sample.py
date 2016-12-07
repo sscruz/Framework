@@ -92,7 +92,6 @@ class Sample:
            
       if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + " )" 
-
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
