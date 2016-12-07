@@ -32,7 +32,8 @@ class CutManager:
       self.nbj1 = "(nBJetMedium25_Edge >= 1)"
       self.nbj0 = "(nBJetMedium25_Edge >= 0)"
       self.MET50  = "(met_Edge < 50)"
-      self.MET100 = "(met_Edge > 100)"
+      self.MET100 = "(met_Edge < 100)"
+      self.METg100 = "(met_Edge > 100)"
       self.MET150 = "(met_Edge > 150)"
       self.MET200 = "(met_Edge > 200)"
       self.JetMETBaseline = "(met_Edge > 150 && nJetSel_Edge >= 2 && mt2_Edge > 80.)"
@@ -75,8 +76,8 @@ class CutManager:
 ######################
       self.narrowZMass = '(lepsMll_Edge > 86 && lepsMll_Edge < 96)'
       self.trigger = "((" + self.trigMMc + " && " + self.mm + ") || (" + self.trigEEc + " && " + self.ee + ") || (" + self.trigEMc + " && " + self.OF + "))"
-      self.Baseline = self.AddList([self.nj2,self.MET100,self.JetMETPhi04,self.goodLepton, self.trigger])
-      self.BaselineNoTrigger = self.AddList([self.nj2,self.MET100,self.JetMETPhi04,self.goodLepton])
+      self.Baseline = self.AddList([self.nj2,self.METg100,self.JetMETPhi04,self.goodLepton, self.trigger])
+      self.BaselineNoTrigger = self.AddList([self.nj2,self.METg100,self.JetMETPhi04,self.goodLepton])
       self.EdgeBaseline = self.AddList( [self.MET150, self.mT2_80])
       self.ewinoCharNeu = self.AddList( [self.MET150, self.bVeto,  self.mjj110, self.narrowZMass, self.ThirdLeptonVeto]); 
       print 'has this a third lepton veto?'
