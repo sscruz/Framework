@@ -51,10 +51,9 @@ def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueData, 
             foutput.write(line)
 
     foutput.close()
-    subprocess.call(['mv ' + theFile + "_aux " + theFile], shell=True)
+    subprocess.call(['mv ' + theFile + "_aux " + theFile], shell=True)                                                                                                        
    
-
-
+                                                                                                                                                                              
 def make_rsfof(histo_sf, histo_of, dataMC):
 
     ratio = histo_sf.Clone('rsfof_' + histo_sf.GetName())
@@ -74,15 +73,12 @@ def make_rsfof(histo_sf, histo_of, dataMC):
     return ratio
 
 
-
-
 def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
 
-
     labelx = "m_{ll} [GeV]"
-    labelmet = "MET [GeV]"
+    labelmet = "E_{T}^{miss} [GeV]"
     labelnjet = "N. Jets"
-
+    labelmt2 = "mt2"
 
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
@@ -137,13 +133,16 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
 
     ######Met and JET plots 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting jet and met plot' + bcolors.ENDC
-    MCSignalSFMET =      treeMC.getTH1F(lumi, "MCSignalSFMET", "met_Edge", [20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]), '', labelmet)
-    MCSignalOFMET =      treeMC.getTH1F(lumi, "MCSignalOFMET", "met_Edge", [20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]), '', labelmet)
+    MCSignalSFMET =      treeMC.getTH1F(lumi, "MCSignalSFMET", "met_Edge", [10, 20, 30, 40, 50, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]), '', labelmet)
+    MCSignalOFMET =      treeMC.getTH1F(lumi, "MCSignalOFMET", "met_Edge", [10, 20, 30, 40, 50, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]), '', labelmet)
     MCSignalSFJet =      treeMC.getTH1F(lumi, "MCSignalSFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet)
     MCSignalOFJet =      treeMC.getTH1F(lumi, "MCSignalOFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
-    
+    MCSignalSFmt2 =      treeMC.getTH1F(lumi, "MCSignalSFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
+    MCSignalOFmt2 =      treeMC.getTH1F(lumi, "MCSignalOFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
+
     MCSignalMET   =      make_rsfof(MCSignalSFMET, MCSignalOFMET, "MC")
     MCSignalJet   =      make_rsfof(MCSignalSFJet, MCSignalOFJet, "MC")
+    MCSignalmt2   =      make_rsfof(MCSignalSFmt2, MCSignalOFmt2, "MC")
 
     plot_rsfofmet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_met'%(lumi_str,tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rsfofmet.addHisto(MCSignalMET, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
@@ -155,9 +154,13 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     plot_rsfofjet.addHisto(MCSignalJet, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
     plot_rsfofjet.addBand(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofjet.addLine(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC, r.kGreen)
-    plot_rsfofjet.save(1, 1, 0, lumi, 0.2, 1.8)
-     
-
+    plot_rsfofjet.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                           
+    
+    plot_rsfofmt2 = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_mt2'%(lumi_str,tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+    plot_rsfofmt2.addHisto(MCSignalmt2, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rsfofmt2.addBand(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
+    plot_rsfofmt2.addLine(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC, r.kGreen)
+    plot_rsfofmt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                           
 
 
 ##Main body of the analysis
@@ -175,18 +178,18 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    #mcDatasets = ['TTJets_DiLepton', 'TTJets_DiLepton_ext', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'WZTo3LNu', 'TTZToLLNuNu', 'TTWToLNu']
-    mcDatasets = ['TTJets_DiLepton_total', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WZTo2L2Q', 'WZTo3LNu', 'TTZToLLNuNu', 'TTWToLNu']
-    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2', 'DoubleEG_Run2016B-PromptReco-v2', 'MuonEG_Run2016B-PromptReco-v2']
+    mcDatasets = ['TTJets_DiLepton', 'TTJets_DiLepton_ext',  'DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_273150_275376', 'DoubleEG_Run2016B-PromptReco-v2_runs_273150_275376', 'MuonEG_Run2016B-PromptReco-v2_runs_273150_275376',
+                  'DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276283', 'DoubleEG_Run2016C-PromptReco-v2_runs_275420_276283', 'MuonEG_Run2016C-PromptReco-v2_runs_275420_276283',
+                  'DoubleMuon_Run2016D-PromptReco-v2_runs_276315_276811', 'DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811', 'MuonEG_Run2016D-PromptReco-v2_runs_276315_276811']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
   
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 2.6
     maxrun = 999999
-    lumi_str = str(lumi).replace('.','p')+'invfb'
+    lumi = 12.9 ; maxrun = 276811; lumi_str = '12.9invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 

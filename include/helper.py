@@ -12,6 +12,107 @@ def ratioError(num, num_e, den, den_e, opt=''):
     tmp_r.Divide(tmp_n, tmp_d, 1., 1., opt)
     return tmp_r.GetBinContent(1), tmp_r.GetBinError(1)
 
+
+def readFromFileEWKFactors(theFile, dataMC, factor, reg): 
+
+    for line in open(theFile).readlines():
+        if line.find(factor) != -1 and line.find(reg) != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                r = splitline[19+x]
+                stat = splitline[25+x]
+                arr = []
+                arr.append(r)
+                arr.append(stat)
+                print "using this ",factor , " ", reg, " : ",  r
+                if arr[0] == '':
+                    print "warning probably not right rsfof!!!", arr
+                return map(float, arr)                                       
+
+
+def readFromFileRsfofD(theFile, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rsfof") != -1 and line.find("direct") != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rsfof = splitline[25+x]
+                stat = splitline[31+x]
+                syst = splitline[38+x]
+                arr = []
+                arr.append(rsfof)
+                arr.append(stat)
+                arr.append(syst)
+                print "using these direct rsfofs: ", arr
+                if arr[0] == '':
+                    print "warning probably not right rsfof!!!", arr
+                return map(float, arr)                                                          
+
+def readFromFileRinout(theFile, dataMC, reg): 
+
+    for line in open(theFile).readlines():
+        if line.find("rinout") != -1 and line.find(reg) != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rinout = splitline[25+x]
+                stat = splitline[31+x]
+                syst = splitline[38+x]
+                arr = []
+                arr.append(rinout)
+                arr.append(stat)
+                arr.append(syst)
+                print "using these rinouts: ", arr
+                if arr[0] == '':
+                    print "warning probably not right rinout!!!", arr
+                return map(float, arr)                                           
+
+
+def readFromFileRmue(theFile, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rmue") != -1 and line.find("factor") != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rmue = splitline[27+x]
+                stat = splitline[33+x]
+                arr = []
+                arr.append(rmue)
+                arr.append(stat)
+                arr.append('0.0000')
+                print "using these rmues: ", arr
+                if arr[0] == '':
+                    print "warning probably not right rmue!!!", arr
+                return map(float, arr)                                               
+
+def readFromFileRT(theFile, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rt") != -1 and line.find("region") != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rt   = splitline[28+x]
+                stat = splitline[34+x]
+                syst = splitline[41+x]
+                arr = []
+                arr.append(rt)
+                arr.append(stat)
+                arr.append(syst)
+                print "using these rts: ", arr
+                if arr[0] == '':
+                    print "warning probably not right rt!!!", arr
+                return map(float, arr)                                       
+
+
 def makeRatioPlot(hlist, name, opts = {}):
 
     norm = False; do = 'pe'; legco = [0.6,0.5,0.88,0.9];

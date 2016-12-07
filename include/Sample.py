@@ -28,18 +28,23 @@ class Sample:
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
       self.trigScale  = '1.0'
-      ## no longer needed self.emSF_trig = 0.89
-      ## no longer needed self.eeSF_trig = 0.97
-      ## no longer needed self.mmSF_trig = 0.94
+      #self.emSF_trig = 0.89
+      #self.eeSF_trig = 0.97
+      #self.mmSF_trig = 0.94
       if not self.isData:
         self.trigScale  = 'weight_trigger_Edge'
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
+        #print 'name ',self.name
+        #print 'xsec ',self.xSection
+        #print 'count ',self.count
+        #print 'lumweight ' ,self.lumWeight
+
       if self.isScan:
         self.trigScale  = 'weight_trigger_Edge'
         self.SFWeight   = '1.0'
-        self.lumWeight  =  1.0
+        self.lumWeight  =  isScan
         self.puWeight   = "PileupW_Edge"
         self.btagWeight = "weight_btagsf_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
@@ -90,7 +95,6 @@ class Sample:
            
       if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + self.trigScale + " )" 
-      
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -115,7 +119,6 @@ class Sample:
      
      if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale + " )" 
-     
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -132,7 +135,6 @@ class Sample:
      
      if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale + " )" 
-     
      self.ttree.Project(name, var, cut, options) 
      return h
 
