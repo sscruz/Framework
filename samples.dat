@@ -159,7 +159,6 @@ TTW       r.kCyan+1      TTWToQQ                        TTW         /afs/cern.ch
 VV2l      r.kCyan+3      WWTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/       12178.0   0
 VV2l      r.kCyan+3      WZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/        5595.0   0
 VV2l      r.kCyan+3      ZZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/        3220.0   0
-VV2l      r.kCyan+3      ZZTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/         564.0   0
 ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/        1212.0   0
 WZ3l      r.kGreen-8     WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/       4429.65   0
 rares     r.kGreen-5     WWW                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/         208.6   0
@@ -169,4 +168,3 @@ rares     r.kGreen-5     ZZZ                            rares       /afs/cern.ch
 rares     r.kGreen-5     TTHnobb_pow                    rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/         215.0   0
 rares     r.kGreen-5     VHToNonbb                      rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/         927.0   0
 rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/    61526700.0   0
-
