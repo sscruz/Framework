@@ -34,13 +34,7 @@ class Sample:
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
-        #print 'name ',self.name
-        #print 'xsec ',self.xSection
-        #print 'count ',self.count
-        #print 'lumweight ' ,self.lumWeight
-
         self.SFWeight    = "weight_LepSF_Edge"
-
         self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
@@ -48,7 +42,8 @@ class Sample:
         self.lumWeight  =  1.0
         self.puWeight   = "PileupW_Edge"
         self.btagWeight = "weight_btagsf_Edge"
-        self.SFWeight    = "weight_LepSF_Edge"
+        self.SFWeight    = "weight_LepSF_Edge*weight_FSlepSF_Edge"
+        self.triggWeight = "weight_trigger_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
