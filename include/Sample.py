@@ -30,7 +30,6 @@ class Sample:
       self.triggWeight = '1.0'
 
       if not self.isData:
-        self.trigScale  = 'weight_trigger_Edge'
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
@@ -38,7 +37,6 @@ class Sample:
         self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
-        self.trigScale  = 'weight_trigger_Edge'
         self.lumWeight  =  1.0
         self.puWeight   = "PileupW_Edge"
         self.btagWeight = "weight_btagsf_Edge"
@@ -91,7 +89,7 @@ class Sample:
           cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -115,8 +113,7 @@ class Sample:
      h.GetYaxis().SetTitle(ylabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale + " * " + extraWeight + " )" 
-
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -132,8 +129,7 @@ class Sample:
      h.GetZaxis().SetTitle(zlabel)
      
      if(self.isData == 0):
-        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight +  " * " + self.btagWeight + " * " + self.trigScale +  " * " + extraWeight +" )" 
-
+        cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
      self.ttree.Project(name, var, cut, options) 
      return h
 
