@@ -32,7 +32,7 @@ class CutManager:
       self.nbj1 = "(nBJetMedium25_Edge >= 1)"
       self.nbj0 = "(nBJetMedium25_Edge >= 0)"
       self.MET50  = "(met_Edge < 50)"
-      self.MET100 = "(met_Edge < 100)"
+      self.MET100 = "(met_Edge > 100)"
       self.MET150 = "(met_Edge > 150)"
       self.MET200 = "(met_Edge > 200)"
       self.JetMETBaseline = "(met_Edge > 150 && nJetSel_Edge >= 2 && mt2_Edge > 80.)"

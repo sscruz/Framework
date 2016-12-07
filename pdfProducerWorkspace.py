@@ -308,7 +308,7 @@ if __name__ == '__main__':
     cuts_sr_met150_of = cuts.AddList([cuts.BaselineNoTrigger, cuts.OF, cuts.MET150]); cuts_sr_met150_of = cleanCut(cuts_sr_met150_of)
 #    cuts_sr_met150_sf = cuts.AddList([cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.SF]); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
     cuts_sr_met150_sf = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.MET150]); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
-    
+    print cuts_sr_met150_of
     ## 2016 data and MC
 #    tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
 #    tt_tree = tt_tfile.Get('sf/t')
@@ -323,9 +323,11 @@ if __name__ == '__main__':
     em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044.root')
     em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044.root')
     em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2.root')
     em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016H-PromptReco-v2_runs_281613_284035.root')
     em_tree.Add('/afs/cern.ch/work/s/sesanche/public/ntuples/Data/evVarFriend_MuonEG_Run2016H-PromptReco-v3_runs_284036_284044.root')
-
+    em_tree.Add('/afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/evVarFriend_MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044.root')
 
    
     dss = []

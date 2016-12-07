@@ -8,47 +8,142 @@
 # BLOCK        COLOR                         NAME                 LABEL                                     LOCATION OF FRIENDS                                                     XSEC     ISDATA
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-------------------------- 25 ns --------------------------
-# ## 2.6 fb-1
-# DoubleMuon    r.kBlack      DoubleMuon_Run2016B-PromptReco-v2    DoubleMuon_Run2016B     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1         
-# DoubleEG      r.kBlack      DoubleEG_Run2016B-PromptReco-v2      DoubleEG_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
-# MuonEG        r.kBlack      MuonEG_Run2016B-PromptReco-v2        MuonEG_Run2016B         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
-# JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
-# HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun20_prompt/friends/      1          1
-# ## 4.0 fb-1
-# DoubleMuon    r.kBlack      DoubleMuon_Run2016B-PromptReco-v2_runs_271036_275125    DoubleMuon_Run2016B     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
-# DoubleEG      r.kBlack      DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125      DoubleEG_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
-# MuonEG        r.kBlack      MuonEG_Run2016B-PromptReco-v2_runs_271036_275125        MuonEG_Run2016B         /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
-# JetHT         r.kBlack      JetHT_Run2016B-PromptReco-v2_runs_271036_275125         JetHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
-# HTMHT         r.kBlack      HTMHT_Run2016B-PromptReco-v2_runs_271036_275125         HTMHT_Run2016B          /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/      1          1
-## 7.65 fb-1
-DoubleMuon   r.kBlack   DoubleMuon_Run2016B-PromptReco-v2_runs_273150_275376    DoubleMuon_Run2016B  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-DoubleEG     r.kBlack   DoubleEG_Run2016B-PromptReco-v2_runs_273150_275376      DoubleEG_Run2016B    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-MuonEG       r.kBlack   MuonEG_Run2016B-PromptReco-v2_runs_273150_275376        MuonEG_Run2016B      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-JetHT        r.kBlack   JetHT_Run2016B-PromptReco-v2_runs_271036_276097         JetHT_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-HTMHT        r.kBlack   HTMHT_Run2016B-PromptReco-v2_runs_271036_276097         HTMHT_Run2016B       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-# Run2016C
-DoubleMuon   r.kBlack   DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276283    DoubleMuon_Run2016C  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-DoubleEG     r.kBlack   DoubleEG_Run2016C-PromptReco-v2_runs_275420_276283      DoubleEG_Run2016C    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-MuonEG       r.kBlack   MuonEG_Run2016C-PromptReco-v2_runs_275420_276283        MuonEG_Run2016C      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-JetHT        r.kBlack   JetHT_Run2016C-PromptReco-v2_runs_271036_276811         JetHT_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-HTMHT        r.kBlack   HTMHT_Run2016C-PromptReco-v2_runs_271036_276811         HTMHT_Run2016C       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends   1     1
-# Run2016D
-DoubleMuon   r.kBlack   DoubleMuon_Run2016D-PromptReco-v2_runs_276315_276811    DoubleMuon_Run2016D  /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends    1    1
-DoubleEG     r.kBlack   DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811      DoubleEG_Run2016D    /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends    1    1
-MuonEG       r.kBlack   MuonEG_Run2016D-PromptReco-v2_runs_276315_276811        MuonEG_Run2016D      /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends    1    1
-JetHT        r.kBlack   JetHT_Run2016D-PromptReco-v2_runs_271036_276811         JetHT_Run2016D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends    1    1
-HTMHT        r.kBlack   HTMHT_Run2016D-PromptReco-v2_runs_271036_276811         HTMHT_Run2016D       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jul28_relIsoFix/friends    1    1
+DoubleEG         r.kBlack      DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1         DoubleEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2         DoubleEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3         DoubleEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4         DoubleEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5         DoubleEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part10         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016H-PromptReco-v2_runs_281613_284035         JetHT_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016H-PromptReco-v3_runs_284036_284044         JetHT_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016H-PromptReco-v2_runs_281613_284035         MET_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016H-PromptReco-v3_runs_284036_284044         MET_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016H-PromptReco-v2_runs_281613_284035         MuonEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016H-PromptReco-v3_runs_284036_284044         MuonEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+no block for Tau_Run2016H-PromptReco-v2_runs_281613_284035
+MET         r.kBlack      Tau_Run2016H-PromptReco-v2_runs_281613_284035         MET_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+no block for Tau_Run2016H-PromptReco-v3_runs_284036_284044
+MET         r.kBlack      Tau_Run2016H-PromptReco-v3_runs_284036_284044         MET_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part1         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part2         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part3         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part4         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part5         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part6         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part7         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part8         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part9         JetHT_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016B_23Sep2016_v3_runs_273150_275376         MET_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1         MuonEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2         MuonEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3         MuonEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4         MuonEG_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1         DoubleEG_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2         DoubleEG_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3         DoubleEG_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1         DoubleEG_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2         DoubleEG_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3         DoubleEG_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4         DoubleEG_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1         DoubleEG_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2         DoubleEG_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3         DoubleEG_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4         DoubleEG_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1         DoubleMuon_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2         DoubleMuon_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7         DoubleMuon_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6         DoubleMuon_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016E_23Sep2016_v1_runs_271036_284044         JetHT_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016C_23Sep2016_v1_runs_271036_284044         MET_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016D_23Sep2016_v1_runs_271036_284044         MET_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016E_23Sep2016_v1_runs_271036_284044         MET_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044         MuonEG_Run2016C  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044         MuonEG_Run2016D  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044         MuonEG_Run2016E  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2         DoubleMuon_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3         DoubleEG_Run2016H  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6         DoubleMuon_Run2016B  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6         DoubleEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9         DoubleMuon_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+JetHT         r.kBlack      JetHT_Run2016G_23Sep2016_v1_runs_271036_284044         JetHT_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MET         r.kBlack      MET_Run2016G_23Sep2016_v1_runs_271036_284044         MET_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1         MuonEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2         MuonEG_Run2016G  /afs/cern.ch/work/s/sesanche/public/ntuples/Data/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1         DoubleEG_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2         DoubleEG_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleEG         r.kBlack      DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3         DoubleEG_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1         DoubleMuon_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2         DoubleMuon_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3         DoubleMuon_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4         DoubleMuon_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+DoubleMuon         r.kBlack      DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5         DoubleMuon_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+JetHT         r.kBlack      JetHT_Run2016F_23Sep2016_v1_runs_271036_284044         JetHT_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+MET         r.kBlack      MET_Run2016F_23Sep2016_v1_runs_271036_284044         MET_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+MuonEG         r.kBlack      MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044         MuonEG_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+no block for SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044
+MET         r.kBlack      SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044         MET_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+no block for SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044
+MET         r.kBlack      SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044         MET_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
+no block for Tau_Run2016F_23Sep2016_v1_runs_271036_284044
+MET         r.kBlack      Tau_Run2016F_23Sep2016_v1_runs_271036_284044         MET_Run2016F  /afs/cern.ch/work/p/pablom/public/friendTrees-18-Nov/      1          1
 #
-#
-#
-TChiWZ  r.kBlack+2          SMS_TChiWZ_ZToLL                                       SMS_TChiWZ_ZToLL     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/   1     0
-#TChiWZ  r.kBlack+2          SMS_TChiWZ_ZToLL                                       SMS_TChiWZ_ZToLL     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/   46.35   0
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
 #-----------------------------------------------------------
 # BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
+TChiWZ  r.kBlack+2          SMS_TChiWZ_ZToLL                                       SMS_TChiWZ_ZToLL     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/   1     0
+#TChiWZ  r.kBlack+2          SMS_TChiWZ_ZToLL                                       SMS_TChiWZ_ZToLL     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/   46.35   0
 vince_sync r.kYellow-9    vince_sync                    sync        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/       87314.8   0
 DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO          DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/    18610000.0   0
 DYJets    r.kYellow-9    DYJetsToLL_M50_LO              DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/friends/     6024000.0   0
@@ -114,5 +209,4 @@ ZZ        r.kOrange+2  ZZ                             ZZ          /afs/cern.ch/w
 WZ3l      r.kCyan+2    WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/        4429.65  0
 singleT   r.kOrange+2  T_tWch                         singleT     /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       35600.0   0   
 #rare      r.kRed+2     WZ                             Other       /afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/       47130.0   0
->>>>>>> Systematics partially implemented
-##
+
