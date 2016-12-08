@@ -1,4 +1,4 @@
-#include <skimmer.C>
+#include "skimmer.C"
 
 void runSkim(TString name="", TString path="")
 {

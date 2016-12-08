@@ -11,6 +11,7 @@
 #include <TROOT.h>
 #include <TChain.h>
 #include <TFile.h>
+#include <TH1D.h>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -19,7 +20,8 @@ public :
    TTree          *fChain;   //!pointer to the analyzed TTree or TChain
    TTree          *outputtree;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
-
+   TH1D           *counts;
+   TH1D           *genWeights;
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
    // Declaration of leaf types
@@ -429,6 +431,8 @@ skimmer::skimmer(TString sampleName, TString pathString) : fChain(0)
   path   = pathString;
   TFile* f = TFile::Open(path + "evVarFriend_" + sample + ".root","READ");
   TTree* tree = (TTree*) f->Get("sf/t");
+  counts = (TH1D *) f->Get("Count");
+  genWeights = (TH1D *) f->Get("SumGenWeights");
 
    /* if (tree == 0) { */
    /*    TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/pool/ciencias/HeppyTrees/EdgeZ/Moriond17/finalFriends/evVarFriend_DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1.root"); */

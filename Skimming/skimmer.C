@@ -3,6 +3,8 @@
 #include <TH2.h>
 #include <TStyle.h>
 #include <TCanvas.h>
+#include <iostream>
+#include <TDirectory.h>
 
 void skimmer::Loop()
 {
@@ -30,11 +32,10 @@ void skimmer::Loop()
 //    fChain->GetEntry(jentry);       //read all branches
 //by  b_branchname->GetEntry(ientry); //read only this branch
    if (fChain == 0) return;
-   TFile* out = TFile::Open("skim" + sample+".root","recreate");
-   outputtree = (TTree*) fChain->GetTree()->Clone("output");
+   TFile* out = TFile::Open("evVarFriend_" + sample+".root","recreate");
+   outputtree = (TTree*) fChain->GetTree()->Clone("t");
    outputtree->Reset();
    SetOutVariables();
-
    Long64_t nentries = fChain->GetEntriesFast();
    Long64_t nbytes = 0, nb = 0;
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -45,6 +46,11 @@ void skimmer::Loop()
       if (nJetSel_Edge < 2) continue;
       outputtree->Fill();
    }
+   
+   if(counts != NULL) counts->Write();
+   if(genWeights != NULL) genWeights->Write();
+   TDirectory *cddir = out->mkdir("sf");
+   out->cd("sf");
    outputtree->Write();
    out->Close();
 }

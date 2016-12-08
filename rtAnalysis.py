@@ -209,11 +209,7 @@ if __name__ == '__main__':
     #daDatasets = ['JetHT_Run2016B-PromptReco-v2_runs_271036_276097', 'HTMHT_Run2016B-PromptReco-v2_runs_271036_276097',
     #        'JetHT_Run2016C-PromptReco-v2_runs_271036_276811', 'HTMHT_Run2016C-PromptReco-v2_runs_271036_276811',
     #        'JetHT_Run2016D-PromptReco-v2_runs_271036_276811', 'HTMHT_Run2016D-PromptReco-v2_runs_271036_276811']
-    daDatasets = ['MuonEG_Run2016H-PromptReco-v2_runs_281613_284035', 'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044', 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-        	  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2', 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3', 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-	          'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044', 'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044', 'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-	          'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1', 'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2', 'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
-	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part1', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part2', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+    daDatasets = ['JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part1', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part2', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
  	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part4', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part5', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
 	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part7', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part8', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
 	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part10', 'JetHT_Run2016H-PromptReco-v2_runs_281613_284035', 'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',
@@ -224,17 +220,13 @@ if __name__ == '__main__':
 
 
 
-    daDatasets = ['JetHT_Run2016B-PromptReco-v2_runs_271036_276097',
-            'JetHT_Run2016C-PromptReco-v2_runs_271036_276811',
-            'JetHT_Run2016D-PromptReco-v2_runs_271036_276811']
-
     #treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     
-    lumi = 12.9 ; maxrun = 999999; lumi_str = '12.9invfb'
+    lumi = 36.4 ; maxrun = 999999; lumi_str = '12.9invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
