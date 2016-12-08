@@ -4,11 +4,80 @@
 ## ===========================================================
 ## ===================== r_mue ===============================
 ## ===========================================================
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
+rmue        alone           MC          1.2594      0.0030       0.1259
 rmue        alone           MC          1.2173      0.0083       0.1217
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.1299      0.0017       0.1130
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
+rmue        alone           DATA        1.3280      0.0015       0.1328
 rmue        alone           DATA        1.2554      0.0025       0.1255
 ## here are the values for (rmue+1./rmue)*0.5
-rmue        factor           MC          1.0002      0.0007       
-rmue        factor           DATA        1.0003      0.0011       
+rmue        factor           MC          1.0003      0.0012       
+rmue        factor           MC          1.0003      0.0012       
+rmue        factor           DATA        1.0008      0.0022       
+rmue        factor           DATA        1.0008      0.0022       
+## here are the values to the fit of rmue
+rmue        coeffA           DATA        1.1468      0.0058       
+rmue        coeffA           MC        1.1318      0.0120       
+rmue        coeffB           DATA        6.5892      0.2069       
+rmue        coeffB           MC        4.5983      0.4219       
 ## ===========================================================
 ## ===================== r_sfof ==============================
 ## ===========================================================
