@@ -282,7 +282,7 @@ class Canvas:
           #tmp_ratio.SetMarkerSize(0)
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
           tmp_ratio.SetFillStyle(3017)
-          tmp_ratio.SetMarkerColor(tmp_hMC.GetMarkerColor());
+          tmp_ratio.SetMarkerColor(r.kBlack);
           tmp_ratio.SetMarkerSize(0.6);
           #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
           #tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
@@ -302,7 +302,7 @@ class Canvas:
       line.Draw('');
 
       pad1.cd()
-      self.banner(isData, lumi)
+      self.banner2(isData, lumi)
       for i,plotName in enumerate(self.plotNames):
           pad1.cd()
           pad1.SetLogy(0)

@@ -22,7 +22,6 @@ class Sample:
             if gw: break
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
-        print name
         #self.count = self.ftfile.Get('Count').GetBinContent(1)
         self.count = self.ftfile.Get('sf/t').GetEntries()
       self.lumWeight =   1.0
@@ -91,7 +90,8 @@ class Sample:
       #    cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
