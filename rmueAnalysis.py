@@ -64,19 +64,19 @@ def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueUncSys
                 foutput.write('rmue        alone           DATA        %.4f      %0.4f       %.4f\n'%(measuredValueData, measuredValueUncData, measuredValueUncSystData))
             else:
                 foutput.write('rmue        alone           MC          %.4f      %0.4f       %.4f\n'%(measuredValueMC, measuredValueUncMC, measuredValueUncSystMC))           
-        if line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("factor") != -1 :
+        elif line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("factor") != -1 :
             if line.find("DATA") != -1:
                 foutput.write('rmue        factor           DATA        %.4f      %0.4f       \n'%(getFactor(measuredValueData, measuredValueUncData, measuredValueUncSystData)))
             else:
                 foutput.write('rmue        factor           MC          %.4f      %0.4f       \n'%(getFactor(measuredValueMC, measuredValueUncMC, measuredValueUncSystMC)))           
         
-        if line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("coeffA") != -1 :
+        elif line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("coeffA") != -1 :
             if line.find("DATA") != -1:
                 foutput.write('rmue        coeffA           DATA        %.4f      %0.4f       \n'%(measuredValueData, measuredValueUncSystData))
             else:
                 foutput.write('rmue        coeffA           MC        %.4f      %0.4f       \n'%(measuredValueMC, measuredValueUncSystMC))
 
-        if line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("coeffB") != -1 :
+        elif line.find("rmue") != -1 and line.find(tag) != -1 and  line.find("coeffB") != -1 :
             if line.find("DATA") != -1:
                 foutput.write('rmue        coeffB           DATA        %.4f      %0.4f       \n'%(measuredValueData, measuredValueUncSystData))
             else:
