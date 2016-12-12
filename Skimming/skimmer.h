@@ -179,6 +179,9 @@ public :
    Float_t         HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge;
    Float_t         HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge;
    Float_t         HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge;
+   Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   Float_t         HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT200_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT250_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT300_v_Edge;
@@ -381,6 +384,9 @@ public :
    TBranch        *b_HLT_BIT_HLT_PFHT650_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT800_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT300_PFMET110_v_Edge;   //!
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    TBranch        *b_GenSusyMScan1_Edge;   //!
    TBranch        *b_GenSusyMScan2_Edge;   //!
    TBranch        *b_GenSusyMScan3_Edge;   //!
@@ -678,6 +684,9 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("JetSel_Edge_mcPt", JetSel_Edge_mcPt, &b_JetSel_Edge_mcPt);
    fChain->SetBranchAddress("JetSel_Edge_mcFlavour", JetSel_Edge_mcFlavour, &b_JetSel_Edge_mcFlavour);
    fChain->SetBranchAddress("JetSel_Edge_mcMatchId", JetSel_Edge_mcMatchId, &b_JetSel_Edge_mcMatchId);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge,&b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    Notify();
 }
 
@@ -873,6 +882,9 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("JetSel_Edge_mcPt", JetSel_Edge_mcPt, &b_JetSel_Edge_mcPt);
    outputtree->SetBranchAddress("JetSel_Edge_mcFlavour", JetSel_Edge_mcFlavour, &b_JetSel_Edge_mcFlavour);
    outputtree->SetBranchAddress("JetSel_Edge_mcMatchId", JetSel_Edge_mcMatchId, &b_JetSel_Edge_mcMatchId);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge,&b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
 
 
 }
