@@ -19,7 +19,7 @@ _r = r.TRandom3(42)
 
 def makeMCDatacards():
     print 'producing mc datacards'
-    ttDatasets = ['TT_pow_ext34']
+    ttDatasets = ['TTJets_DiLepton']
     dyDatasets = ['DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext',
                   'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
     print 'getting trees'
@@ -188,7 +188,8 @@ def PutHistosIntoRootFiles():
             if sysHistos[''].Integral() == 0: continue # if no sensitivity
 
 
-            helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,mass=massString))
+            helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,
+                                                                                      mass=massString))
             for SR, label in scan.shortLabels.items():
                 itsOk = True
                 template = open('datacards/datacards_{scan}/{scan}/template_{sr}.txt'.format(scan=scan.name,sr=label),'r').read()
@@ -207,7 +208,9 @@ def PutHistosIntoRootFiles():
                     up = sysHistos[sys+'Up']  .GetBinContent(sysHistos[sys+'Up']  .FindBin(SR))
                     dn = sysHistos[sys+'Down'].GetBinContent(sysHistos[sys+'Down'].FindBin(SR))
                     nom= sysHistos['']        .GetBinContent(sysHistos['']        .FindBin(SR))
-#                    print sys, up, dn, nom
+                    scan.SysForTableMax[sys] = max( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMax[sys])
+                    scan.SysForTableMin[sys] = min( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMin[sys])
+
                     template = template.replace('XX'+sys+'XX', '%4.4f/%4.4f'%(dn/nom,up/nom))
                     if dn/nom < 1e-4 or up/nom < 1e-4: 
                         print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
@@ -217,6 +220,9 @@ def PutHistosIntoRootFiles():
                 for sys in scan.SysString.split():
                     var = sysHistos[sys]  .GetBinContent(sysHistos[sys]  .FindBin(SR))
                     nom= sysHistos['']    .GetBinContent(sysHistos['']   .FindBin(SR))
+                    scan.SysForTableMax[sys] = max( abs(var/nom-1), scan.SysForTableMax[sys])
+                    scan.SysForTableMin[sys] = min( abs(var/nom-1), scan.SysForTableMin[sys])
+
                     # gen met variation is different...
                     if sys == 'genMet':
                         var = (nom+var) / 2 
@@ -229,7 +235,20 @@ def PutHistosIntoRootFiles():
                                                                                                           label=label),'w')
                 card.write(template)
                 card.close()
-                
+
+def makeTable():
+    print 'Source of uncertainty                 &    Uncertainty (\%)'
+    print 'Luminosity                            &    6.2 \\'
+    print 'Pileup                                &    %4.0f-%4.0f\\'%(scan.SysForTableMin['PU'],scan.SysForTableMax['PU'])
+    print 'b tag modelling                       &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['bHe']**2 + scan.SysForTableMin['bLi']**2), math.sqrt( scan.SysForTableMax['bHe']**2 + scan.SysForTableMax['bLi']**2))
+    print 'Lepton reconstruction and isolation   &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['Mu']**2 + scan.SysForTableMin['El']**2), math.sqrt( scan.SysForTableMax['Mu']**2 + scan.SysForTableMax['El']**2))
+    print 'Fast simulation scale factors         &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['FastSimMu']**2 + scan.SysForTableMin['FastSimEl']**2), math.sqrt( scan.SysForTableMax['FastSimMu']**2 + scan.SysForTableMax['FastSimEl']**2))
+    print 'Trigger modelling                     &    5 \\'
+    print 'Jet energy scale                      &    %4.0f-%4.0f\\'%(scan.SysForTableMin['jec'],scan.SysForTableMax['jec'])
+    print 'ISR modelling TODO \\'
+    print 'Statistical uncertainty               &    %4.0f-%4.0f\\'%()
+    
+     
 if __name__ == "__main__":
 
     r.gStyle.SetPaintTextFormat(".2f")
@@ -250,13 +269,8 @@ if __name__ == "__main__":
 
     global lumi, scan
 
-    ##ttDatasets = ['TTLep_pow']
-    ##treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT'  , 0, isScan = False)
     cuts = CutManager.CutManager()
     lumi = 36.2
-
-    ## have to think a way of reweighting the events with trigger and lepton SFs.
-    ## weighting now done with isScan=True flag in samples.py
 
     global replaceCutsForSys, extraWeightsForSys
     replaceCutsForSys = {'':      [],
@@ -294,6 +308,8 @@ if __name__ == "__main__":
                          'FastSimMuDown': [],
                          'MuUp'   : [],
                          'MuDown' : [],
+                         'PUUp'   : [],
+                         'PUDown' : [],
                          'genMet' : [['met_Edge','genMet_Edge'],
                                      ['nll_Edge','nll_genMet_Edge']]}
     
@@ -312,7 +328,10 @@ if __name__ == "__main__":
                           'FastSimMuDown': 'weight_FSlepSF_MuDn_Edge / weight_FSlepSF_Edge',
                           'MuUp'      : 'weight_LepSF_MuUp_Edge / weight_LepSF_Edge',
                           'MuDown'    : 'weight_LepSF_MuDn_Edge / weight_LepSF_Edge',
+                          'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
+                          'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
                           'genMet'    : '1'}
+
 
 
     ## ==============================================
@@ -327,10 +346,11 @@ if __name__ == "__main__":
     else:
         ## everything that takes long should be done here!
         scan = Scans.Scan(opts.scanName)
-        scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         if scan.makeMCDatacards:
             print 'preparing datacards from MC'
             a = makeMCDatacards()
+        scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
+
 
 
         ## Load the number of generated events to produce efficiency maps per systematic
@@ -357,8 +377,14 @@ if __name__ == "__main__":
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
 
-        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimDown'
+        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU'
         scan.SysString = 'genMet'
+        scan.SysForTableMax = {}
+        scan.SysForTableMin = {}
+        for sys in scan.SysStringUpDown.split()+scan.SysString.split():
+            scan.SysForTableMax[sys] = 0.
+            scan.SysForTableMin[sys] = -1.
+
         scan.maps = {}
         scan.maps['']   = getEffMapsSys('')
         print 'normali systematics'

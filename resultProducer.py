@@ -24,7 +24,7 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
-
+import include.Scans      as Scans
 
 def saveInFile(theFile, measuredValueMC, measuredValueUncMC,  measuredValueData, measuredValueUncData):
 
@@ -78,38 +78,6 @@ def makeResultsTable(binnedSR, dyShapes, dataMC, eta, nbs):
 
     return line0, line1, line2, line3, line4                                                                                          
 
-def makeFactorsTable(): ## for this to make sense the region should be properly binned!!
-    rmue_da = helper.readFromFileRmue("ingredients.dat", "DATA") 
-    rmue_mc = helper.readFromFileRmue("ingredients.dat", "MC") 
-    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
-    rsfof_mc = helper.readFromFileRsfofD("ingredients.dat", "MC")   
-    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
-    rt_mc = helper.readFromFileRT("ingredients.dat", "MC")  
-    rsfof_fac_da, rsfof_fac_da_e = getFactor(rmue_da[0], rmue_da[1],rmue_da[2], rt_da[0], rt_da[1], rt_da[2]) 
-    rsfof_fac_mc, rsfof_fac_mc_e = getFactor(rmue_mc[0], rmue_mc[1],rmue_mc[2], rt_da[0], rt_da[1], rt_da[2]) 
-    line0 = ' & Data & MC '
-    line05 = '\\hline '
-    line1 = 'rmue  &  %.3f $\\pm$ %.3f  & %.3f $\\pm$ %.3f \\\  ' %(rmue_da[0],getFinalError(rmue_da[1], rmue_da[2]), rmue_mc[0],getFinalError(rmue_mc[1], rmue_mc[2]))
-    line2 = 'RT    &  %.3f $\\pm$ %.3f  & %.3f $\\pm$ %.3f  \\\ ' %(rt_da[0],getFinalError(rt_da[1], rt_da[2]), rt_mc[0],getFinalError(rt_mc[1], rt_mc[2]))
-    line25 = '\\hline '
-    line3 = 'RSFOF factorization &  %.3f $\\pm$ %.3f  & %.3f $\\pm$ %.3f  \\\ ' %(rsfof_fac_da, rsfof_fac_da_e, rsfof_fac_mc, rsfof_fac_mc_e)
-    line4 = 'RSFOF direct        &  %.3f $\\pm$ %.3f  & %.3f $\\pm$ %.3f  \\\ ' %(rsfof_da[0],getFinalError(rsfof_da[1], rsfof_da[2]), rsfof_mc[0],getFinalError(rsfof_mc[1], rsfof_mc[2]))
-    line5 = 'RSFOF weighted average&  %.3f $\\pm$ %.3f  & %.3f $\\pm$ %.3f  \\\ ' %((rsfof_da[0]+rsfof_fac_da)/2, getFinalError(rsfof_fac_da_e,  getFinalError(rsfof_da[1], rsfof_da[2])), (rsfof_mc[0]+rsfof_fac_mc)/2, getFinalError( rsfof_fac_mc_e, getFinalError(rsfof_mc[1], rsfof_mc[2])))
-    line55 = '\\hline'
-    print line0                                                                                                                                                      
-    print line05                                                                                                                                                      
-    print line1                                                                                                                                                      
-    print line2                                                                                                                                                      
-    print line25                                                                                                                                                      
-    print line3                                                                                                                                                      
-    print line4                                                                                                                                                      
-    print line5                                                                                                                                                      
-    print line55 
-    saveInFile("ingredients.dat", rsfof_fac_mc, rsfof_fac_mc_e, rsfof_fac_da, rsfof_fac_da_e)
-    return (rsfof_da[0]+rsfof_fac_da)/2, getFinalError(rsfof_fac_da_e,  getFinalError(rsfof_da[1], rsfof_da[2])), (rsfof_mc[0]+rsfof_fac_mc)/2, getFinalError(rsfof_fac_mc_e,  getFinalError(rsfof_mc[1], rsfof_mc[2]))
-
-
-
 def makeRatioTable(myregion, dataMC, eta, nbs): ## for this to make sense the region should be properly binned!!
     header= 'THIS IS THE TABLE FOR %s in %s for %s b-tags'%(dataMC, eta, str(nbs))
     line0 = ' %30s &           & '  %('')
@@ -144,7 +112,7 @@ def scaleByRSFOF(histo, rsfof, rsfof_err):
     h_rsfof.SetName('h_rsfof')
     for i in range(1, h_rsfof.GetNbinsX()+1):
         h_rsfof.SetBinContent(i,rsfof)
-        h_rsfof.SetBinError  (i,rsfof_e)
+        h_rsfof.SetBinError  (i,rsfof_err)
     histo.Multiply(h_rsfof)
     return histo
 
@@ -337,7 +305,52 @@ def makeResultTable(resultPlotLoNLL, resultPlotHiNLL, lint, lint_str):
     compTableFile.close()
     compTableFileWWW.close()
 
-def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False):
+def getRMueError(norm, up, dn):
+    print '#####################'
+    print 'rmue error'
+    final = copy.deepcopy(norm)
+    for i in range(1,norm.GetNbinsX()+1):
+        stat = norm.GetBinError(i)
+        syst = max( abs(norm.GetBinContent(i) - up.GetBinContent(i)), abs(norm.GetBinContent(i) - dn.GetBinContent(i)))
+        print stat, syst, math.sqrt(stat**2 + syst**2), final.GetBinContent(i)
+        final.SetBinError(i, math.sqrt(stat**2 + syst**2))
+    print '#####################'
+    return final
+                                  
+
+def weightedAverage( factor, direct, unwght):
+    print unwght.Integral()
+    rsfof_factor = copy.deepcopy(factor)
+    rsfof_direct = copy.deepcopy(factor)
+    rsfof_final  = copy.deepcopy(factor)
+    nof_final    = copy.deepcopy(unwght)
+    for i in range(1, unwght.GetNbinsX()+1):
+        if not unwght.GetBinContent(i): 
+            rsfof_factor.SetBinContent( i, 0.)             
+            rsfof_direct.SetBinContent( i, 0.) 
+            rsfof_final .SetBinContent( i, 0.) 
+            nof_final   .SetBinContent( i, 0.)    
+            continue 
+        rsfof_factor.SetBinContent(i,factor.GetBinContent(i) / unwght.GetBinContent(i))
+        print 'unwght', unwght.GetBinContent(i), unwght.GetBinError(i)
+        print 'factor', factor.GetBinContent(i), factor.GetBinError(i)
+        rsfof_factor.SetBinError  (i, math.sqrt(abs(factor.GetBinError(i)**2 - (rsfof_factor.GetBinContent(i)*unwght.GetBinError(i))**2)) / unwght.GetBinContent(i) )
+        rsfof_direct.SetBinContent(i, direct.GetBinContent(i) / unwght.GetBinContent(i))
+        rsfof_direct.SetBinError  (i, math.sqrt(abs(direct.GetBinError(i)**2 - (rsfof_direct.GetBinContent(i)*unwght.GetBinError(i))**2)) / unwght.GetBinContent(i) )
+        rsfof_final .SetBinContent(i, (rsfof_factor.GetBinContent(i) / rsfof_factor.GetBinError(i)**2 + rsfof_direct.GetBinContent(i) / rsfof_factor.GetBinError(i)**2) / ( 1. / rsfof_factor.GetBinError(i)**2 + 1. / rsfof_factor.GetBinError(i)**2 ))
+        rsfof_final .SetBinError  (i, 1 / math.sqrt(1/rsfof_factor.GetBinError(i)**2 + 1/rsfof_direct.GetBinError(i)**2))
+        
+        nof_final.SetBinContent(i, unwght.GetBinContent(i)*rsfof_final.GetBinContent(i))
+        nof_final.SetBinError  (i, math.sqrt( (unwght.GetBinError(i)*rsfof_final.GetBinContent(i))**2 + (unwght.GetBinContent(i)*rsfof_final.GetBinError(i))**2))
+        print 'factor', rsfof_factor.GetBinContent(i), rsfof_factor.GetBinError(i)
+        print 'direct', rsfof_direct.GetBinContent(i), rsfof_direct.GetBinError(i)
+        print 'final', rsfof_final.GetBinContent(i), rsfof_final.GetBinError(i)
+
+    return [rsfof_factor, rsfof_direct, rsfof_final, nof_final]
+
+
+
+def makePred(var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0):
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
@@ -355,16 +368,101 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         treevar = 'nll_mc_sf_Edge'
         nbins, xmin, xmax = 26, 10, 36
         xlabel = 'NLL'
-        
+    else: 
+        treevar = var
+        xlabel = ''
 
-    ## ## mll ditributions
-    mc_OF = treeMC.getTH1F(lint, var+"mc_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.Zveto, cuts.OF]), '', xlabel)
-    mc_SF = treeMC.getTH1F(lint, var+"mc_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.Zveto, cuts.SF]), '', xlabel)
-    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.Zveto, cuts.OF]), '', xlabel)
-    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.Zveto, cuts.SF]), '', xlabel)
-    #mc_ee = treeMC.getTH1F(lint, var+"mc_ee"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.Zveto, cuts.ee]), '', xlabel)
-    #mc_mm = treeMC.getTH1F(lint, var+"mc_mm"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.Zveto, cuts.mm]), '', xlabel)
-    dy_SF = treeDY.getTH1F(lint, var+"dy_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegionBaseLineNoTrigger, cuts.Zveto, cuts.SF]), '', xlabel)
+
+    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
+    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
+    rmue_a_da = helper.readFromFileRmueFits("ingredients.dat","DATA","A")
+    rmue_b_da = helper.readFromFileRmueFits("ingredients.dat","DATA","B")
+
+    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0]+rmue_a_da[1],b=rmue_b_da[0]+rmue_b_da[1]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0]-rmue_a_da[1],b=rmue_b_da[0]-rmue_b_da[1]))
+
+    print '#######################################################################'
+    print '#######################################################################'
+    print '#######################################################################'
+    print da_OF_factor.GetBinContent(1) -  da_OF_factorUp.GetBinContent(1)
+    print '#######################################################################'
+    print '#######################################################################'
+    print '#######################################################################'
+
+
+    da_OF_direct = copy.deepcopy(da_OF)
+    print 'direct check' 
+    print '##############'
+    print 'scaling by', rsfof_da[0], '+/-', rsfof_da[1]
+    for i in range(1,da_OF_direct.GetNbinsX()+1):
+        print da_OF_direct.GetBinContent(i), da_OF_direct.GetBinError(i)
+    da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
+    print 'direct check2'
+    print '##############'
+    for i in range(1,da_OF_direct.GetNbinsX()+1):
+        print da_OF_direct.GetBinContent(i), da_OF_direct.GetBinError(i)
+    
+
+    da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
+    print 'check1 ###################'
+    for i in range(1,da_OF_factor.GetNbinsX()+1):
+        print da_OF_factor.GetBinContent(i), da_OF_factor.GetBinError(i)
+    print '#################'
+    print 'scaling by', rt_da[0], getFinalError(rt_da[1],rt_da[2])
+    da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
+    print 'check2 ###################'
+    for i in range(1,da_OF_factor.GetNbinsX()+1):
+        print da_OF_factor.GetBinContent(i), da_OF_factor.GetBinError(i)
+    print '#################'
+    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)
+
+
+    return result
+
+    
+
+def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
+
+    if var == 'mll':
+        treevar = 'lepsMll_Edge'
+        nbins, xmin, xmax = 28, 20, 300
+        xlabel = 'm_{ll} (GeV)'
+    elif var == 'nll':
+        treevar = 'nll_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMC':
+        treevar = 'nll_mc_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMCSF':
+        treevar = 'nll_mc_sf_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    else: 
+        treevar = var
+        xlabel = ''
+
+
+    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
+    rsfof_mc = helper.readFromFileRsfofD("ingredients.dat", "MC")   
+    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
+    rt_mc = helper.readFromFileRT("ingredients.dat", "MC")  
+    rmue_a_da = helper.readFromFileRmueFits("ingredients.dat","DATA","A")
+    rmue_a_mc = helper.readFromFileRmueFits("ingredients.dat","MC","A")
+    rmue_b_da = helper.readFromFileRmueFits("ingredients.dat","DATA","B")
+    rmue_b_mc = helper.readFromFileRmueFits("ingredients.dat","MC","B")
+
+
+    
+    mc_OF = treeMC.getTH1F(lint, var+"mc_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel)
+    mc_SF = treeMC.getTH1F(lint, var+"mc_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.SF, cuts.EdgeBaseline]), '', xlabel)
+    dy_SF = treeDY.getTH1F(lint, var+"dy_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.SF, cuts.EdgeBaseline]), '', xlabel)
+    mc_OF_factor = treeMC.getTH1F(lint, var+"mc_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    mc_OF_factorUp = treeMC.getTH1F(lint, var+"mc_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_mc[0]+rmue_a_mc[1],b=rmue_b_mc[0]+rmue_b_mc[1]))
+    mc_OF_factorDn = treeMC.getTH1F(lint, var+"mc_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_mc[0]-rmue_a_mc[1],b=rmue_b_mc[0]-rmue_b_mc[1]))
     mc_OF_err = copy.deepcopy(mc_OF)
     mc_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_err.SetFillStyle(3004); mc_OF_err.SetMarkerSize(0.)
@@ -372,38 +470,41 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
 
     mc_SF.GetYaxis().SetRangeUser(0., 1.3*mc_SF.GetMaximum())
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_closure_noRSFOF = Canvas.Canvas('closure/%s/plot_closure_%s_mcPredmcObs%s_noRSFOF'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-    plot_closure_noRSFOF.addHisto(mc_SF    , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
-    plot_closure_noRSFOF.addHisto(mc_OF_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure_noRSFOF.addHisto(mc_OF    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure_noRSFOF.addHisto(dy_SF    , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
-    plot_closure_noRSFOF.addLatex (0.61, 0.82, 'no R_{SFOF} scaling')
-    plot_closure_noRSFOF.saveRatio(1, 0, 1, lint, mc_SF, mc_OF, 0.2, 1.8)
+    if save:
+        plot_closure_noRSFOF = Canvas.Canvas('closure/%s/plot_closure_%s_mcPredmcObs%s_noRSFOF'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
+        plot_closure_noRSFOF.addHisto(mc_SF    , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
+        plot_closure_noRSFOF.addHisto(mc_OF_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
+        plot_closure_noRSFOF.addHisto(mc_OF    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
+        plot_closure_noRSFOF.addHisto(dy_SF    , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
+        plot_closure_noRSFOF.addLatex (0.61, 0.82, 'no R_{SFOF} scaling')
+        plot_closure_noRSFOF.saveRatio(1, 0, 1, lint, mc_SF, mc_OF, 0.2, 1.8)
 
-    mc_OF_rsfofScaled = copy.deepcopy(mc_OF)
-    mc_OF_rsfofScaled = scaleByRSFOF(mc_OF_rsfofScaled, rsfof_mc, rsfof_mc_e)
-    mc_OF_rsfofScaled_err = copy.deepcopy(mc_OF_rsfofScaled)
+    print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
+
+    mc_OF_direct = copy.deepcopy(mc_OF)
+    mc_OF_direct = scaleByRSFOF(mc_OF_direct, rsfof_mc[0], rsfof_mc[1])
+
+    
+
+    mc_OF_factor = getRMueError(mc_OF_factor, mc_OF_factorUp, mc_OF_factorDn)
+    mc_OF_factor = scaleByRSFOF(mc_OF_factor, rt_mc[0], getFinalError(rt_mc[1],rt_mc[2]))
+
+    result = weightedAverage( mc_OF_factor, mc_OF_direct, mc_OF)
+    mc_OF_rsfofScaled = result[3] 
+    mc_OF_rsfofScaled_err = copy.deepcopy( mc_OF_rsfofScaled ) 
     mc_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_rsfofScaled_err.SetFillStyle(3004); mc_OF_rsfofScaled_err.SetMarkerSize(0.)
 
-    print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_closure = Canvas.Canvas('closure/%s/plot_closure_%s_mcPredmcObs%s'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-    plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
-    plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
-    plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
-
-    if False:
-        plot_closure = Canvas.Canvas('closure/%s/plot_closure_%s_mcPreddaObs%s'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-        plot_closure.addHisto(da_SF                , 'PE'       , 'data-SF', 'PL', r.kRed+1  , 1,  0)
+    if save:
+        plot_closure = Canvas.Canvas('closure/%s/plot_closure_%s_mcPredmcObs%s'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
+        plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
         plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
         plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
         plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
-        plot_closure.addLatex(0.61, 0.82, 'R_{SFOF} scaled')
-        plot_closure.saveRatio(1, 0, 0, lint , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
+        plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
+        plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
 
+    return result
     ## make cumulative distributions
     if doCumulative:
         mc_SF_cum                 = copy.deepcopy(mc_SF                ).GetCumulative()
@@ -422,6 +523,17 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         plot_cumulative.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
         plot_cumulative.saveRatio(1, 0, 0, lint, mc_SF_cum, mc_OF_rsfofScaled_cum, 0.2, 1.8)
         return mc_SF_cum
+
+def makeRSOFTable(analysis):
+    scan = Scans.Scan(analysis)
+    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, nof_final_mc = makeClosureTests(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
+    rsfof_factor_da, rsfof_direct_da, rsfof_final_da, nof_final_da = makePred(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5)
+    print '                  Data                                                        MC'
+    print '                  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ &  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ \\\\'
+    for bin, label in scan.SRLabels.items():
+        print '%s       %4.3f $\pm$ %4.3f   & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f \\\\'%(label, rsfof_factor_da.GetBinContent(rsfof_factor_da.FindBin(bin)), rsfof_factor_da.GetBinError(rsfof_factor_da.FindBin(bin)), rsfof_direct_da.GetBinContent(rsfof_direct_da.FindBin(bin)), rsfof_direct_da.GetBinError(rsfof_direct_da.FindBin(bin)), rsfof_final_da.GetBinContent(rsfof_final_da.FindBin(bin)), rsfof_final_da.GetBinError(rsfof_final_da.FindBin(bin)), rsfof_factor_mc.GetBinContent(rsfof_factor_mc.FindBin(bin)), rsfof_factor_mc.GetBinError(rsfof_factor_mc.FindBin(bin)), rsfof_direct_mc.GetBinContent(rsfof_direct_mc.FindBin(bin)), rsfof_direct_mc.GetBinError(rsfof_direct_mc.FindBin(bin)), rsfof_final_mc.GetBinContent(rsfof_final_mc.FindBin(bin)), rsfof_final_mc.GetBinError(rsfof_final_mc.FindBin(bin)))
+        
+
 
 def makeResultData(var, maxrun = 999999, lint = 12.9, specialcut = '', scutstring = '', _options = ''):
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
@@ -613,12 +725,112 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_HT100to200', 'DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600toInf', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
-    raDatasets = ['ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+    raDatasets = ['ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
     ttDatasets = ['TTJets_DiLepton', 'TTJets_DiLepton_ext']
-    mcDatasets = ttDatasets + ([] if opts.onlyTTbar else dyDatasets)
-    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_273150_275376', 'DoubleEG_Run2016B-PromptReco-v2_runs_273150_275376', 'MuonEG_Run2016B-PromptReco-v2_runs_273150_275376',
-                  'DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276283', 'DoubleEG_Run2016C-PromptReco-v2_runs_275420_276283', 'MuonEG_Run2016C-PromptReco-v2_runs_275420_276283',
-                  'DoubleMuon_Run2016D-PromptReco-v2_runs_276315_276811', 'DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811', 'MuonEG_Run2016D-PromptReco-v2_runs_276315_276811']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_DiLepton_ext', 'ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+    daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5',
+                  'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
+                  'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
+                   #'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
+                   #'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
+                  'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  #'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
+                  #'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  #'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  #'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
+                  #'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  #'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
@@ -640,9 +852,10 @@ if __name__ == '__main__':
     ## ============================================================
     ## ========== set RSFOF globally ==============================
     ## ============================================================
-    global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
-    rsfof, rsfof_e, rsfof_mc, rsfof_mc_e =  makeFactorsTable()
-    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
+#    global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
+#    global rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
+#    rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc =  makeFactorsTable()
+#    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     ## result plots in different variables:
  
  #detta har du gjort leo!!
@@ -669,7 +882,8 @@ if __name__ == '__main__':
  #       makeResultData(v,maxrun,lint,specialcut='nll_Edge <= 21. && lepsMll_Edge <= 400. && lepsMll_Edge > 300' , scutstring ='mll300-400_nllBelow21',_options='returnplot,splitFlavor')
  #       makeResultData(v,maxrun,lint,specialcut='nll_Edge > 21. && lepsMll_Edge > 400' , scutstring = 'mll400_nllAbove21', _options='returnplot,splitFlavor')
  #       makeResultData(v,maxrun,lint,specialcut='nll_Edge <= 21. && lepsMll_Edge > 400' , scutstring = 'mll400_nllBelow21', _options='returnplot,splitFlavor')
-
+    makeRSOFTable('Edge_Moriond2017')
+    print adfasdf
 
     makeClosureTests('nll','', 'inclusive', True)
     makeClosureTests('nll','lepsMll_Edge <= 86. && lepsMll_Edge > 20', 'mll20-86', True)
