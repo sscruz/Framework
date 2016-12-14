@@ -66,7 +66,7 @@ class Scan(object):
                               3 : 'High m_{ll} / Non t#bar{t}-like '}
 
         if self.name == 'Edge_Moriond2017':
-#            self.makeMCDatacards = True; print 'cambiar esto'
+            self.makeMCDatacards = True; print 'cambiar esto'
             self.doTwoSigmas = True
             self.paper = 'SUS16034'
             self.datasets = ['SMS_T6bbllslepton_mSbottom400to575_mLSP150to550',
@@ -115,7 +115,7 @@ class Scan(object):
                              13: 'Huge m_{ll} / Non t#bar{t}-like'}
 
         if self.name == 'CharNeu_Moriond2017':
-            self.makeMCDatacards = False
+            self.makeMCDatacards = True
             self.paper = 'SUS16034'
             self.datasets = ['work in progress :) ']
             self.xbins = binning(400,950,25)
@@ -129,13 +129,20 @@ class Scan(object):
             self.xsecFile = ('datacards/charneuXsec.txt')
             self.regions = []
             self.xtitle = 'm_{chi^{0}_{2}} = m_{chi^{+}_{1}}'; self.ytitle = 'm_{chi^{0}_{1}}'
-            self.srID   = '0'
-            self.srIDMax = 0 
-            self.shortLabels = {0: 'only SR' }
-            self.SRLabels    = {0: 'only SR' }
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 150) + 1*(met_Edge > 150)*(met_Edge < 250) + 2*(met_Edge > 250)*(met_Edge < 350) + 3*(met_Edge > 350)'
+            self.srIDMax = 3
+            self.shortLabels = {0: 'vlowmet',
+                                1: 'lowmet',
+                                2: 'medmet',
+                                3: 'highmet'}
+            self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
+                                1: '150 GeV < ME_{T} < 250 GeV',
+                                2: '250 GeV < ME_{T} < 350 GeV', 
+                                3: 'ME_{T} > 350 GeV'}
+
 
         if self.name == 'NeuNeu_Moriond2017':
-            self.makeMCDatacards = False
+            self.makeMCDatacards = True
             self.paper = 'SUS16034'
             self.datasets = ['work in progress :) ']
             self.xbins =  binning(400,950,25) # ### to do the proper binning
@@ -159,7 +166,7 @@ class Scan(object):
                                 2: '250 GeV > ME_{T}'}
 
         if self.name == 'StrongOnZ_Moriond2017':
-            self.makeMCDatacards = False
+            self.makeMCDatacards = True
             self.paper = 'SUS16034'
             self.datasets = ['T5ZZ work in progress :) ']
             self.xbins = binning(400,950,25) # ### to do the proper binning 
