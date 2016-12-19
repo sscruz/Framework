@@ -32,7 +32,40 @@ def makeMCDatacards():
     data = tt.Clone('data_obs'); data.Add(dy)
     helper.ensureDirectory('datacards/datacards_%s/%s'%(scan.name,scan.name))
     for SR, label in scan.shortLabels.items():
-        datacard = '''imax 1 number of bins
+        if scan.hasOther:
+            datacard = '''imax 1 number of bins
+jmax 2 number of processes minus 1
+kmax *  number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}
+observation  {obs}   
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}      {label}        {label}      {label}
+process      XXSIGNALXX     FSbkg          DY         Other
+process      0             1              2           3
+rate         XXSIGRATEXX    {fs}           {DY}       {other}
+----------------------------------------------------------------------------------------------------------------------------------
+fs_stat_{label} gmN  {fs_int}  -            1.0             -         - 
+fs_unc lnN             -            1.05             -          -
+jec   lnN           XXjecXX            -             -          -
+El    lnN           XXElXX             -             -          -
+Mu    lnN           XXMuXX             -             -          -
+FastSimEl   lnN     XXFastSimElXX      -             -          -
+FastSimMu   lnN     XXFastSimMuXX      -             -          -
+SigTrig  lnN          1.05             -             -          -
+bHe   lnN           XXbHeXX            -             -          -
+bLi   lnN           XXbLiXX            -             -          -
+genMet lnU              XXgenMetXX     -             -          - 
+signalMCstats_{label} lnN    XXmcStatXX  -           -          -
+dySys  lnN           -                  -            1.4        - 
+otherSys lnN         -                  -            -          1.5
+lumi   lnN             1.2              -            -          - 
+'''.format(obs = tt.GetBinContent(tt.FindBin(SR)) + dy.GetBinContent(dy.FindBin(SR)), 
+           fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), other=0., 
+           label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))))
+
+        else:
+            datacard = '''imax 1 number of bins
 jmax 2 number of processes minus 1
 kmax *  number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------

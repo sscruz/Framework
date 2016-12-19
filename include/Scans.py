@@ -31,6 +31,7 @@ class Scan(object):
         self.loadData()
         self.loadXsecs()
         self.doTwoSigmas = False
+        self.hasOther = True
     def __getstate__(self): 
         return self.__dict__
     def __setstate__(self, d): 
@@ -38,7 +39,8 @@ class Scan(object):
 
     def loadData(self):
         if self.name == 'Edge_ICHEP2016':
-            self.makeMCDatacards = True
+            self.hasOther = False
+            self.makeMCDatacards = False
             self.paper = 'SUS15011'
             self.datasets = ['SMS_T6bbllslepton_mSbottom400to575_mLSP150to550',
                              'SMS_T6bbllslepton_mSbottom600to775_mLSP150to725',
@@ -66,7 +68,8 @@ class Scan(object):
                               3 : 'High m_{ll} / Non t#bar{t}-like '}
 
         if self.name == 'Edge_Moriond2017':
-            self.makeMCDatacards = True; print 'cambiar esto'
+            self.hasOther = False
+#            self.makeMCDatacards = True; print 'cambiar esto'
             self.doTwoSigmas = True
             self.paper = 'SUS16034'
             self.datasets = ['SMS_T6bbllslepton_mSbottom400to575_mLSP150to550',
