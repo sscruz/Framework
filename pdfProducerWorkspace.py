@@ -6,87 +6,121 @@ import include.Sample     as Sample
 import itertools
 
 
-def makeFramesNice(frames):
-    for frame in frames:
-        tit = 0
-        legcoords = [0.5, 0.7, 0.88, 0.85]
-        if   'lepsDPhi' in frame.GetName():
-            name = 'ldp_frame_nice'
-            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
-            leg.SetNColumns(2)
-            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('ldp_analyticalPDF_DA_Norm[lepsDPhi_Edge]'), 'fit data (OF)', 'L')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (OF)', 'L')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-            leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_SF_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (SF)', 'L')
-            tit  = 'pdf of leptons #Delta#phi'
-            atit = '#Delta#phi_{ll}'
-        elif 'lepsZPt' in frame.GetName():
-            name = 'zpt_frame_nice'
-            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
-            leg.SetNColumns(2)
-            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('zpt_analyticalPDF_DA_Norm[lepsZPt_Edge]'), 'fit data (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-            leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_SF_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (SF)', 'LP')
-            tit  = 'pdf of dilepton-p_{T}'
-            atit = 'p_{T}^{ll} (GeV)'
-        elif 'mlb' in frame.GetName():
-            name = 'mlb_frame_nice'
-            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
-            leg.SetNColumns(2)
-            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('mlb_analyticalPDF_DA_Norm[sum_mlb_Edge]'), 'fit data (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-            leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_SF_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (SF)', 'LP')
-            tit  = 'pdf of sum-m_{lb}'
-            atit = '#Sigma m_{lb} (GeV)'
-        elif 'met' in frame.GetName():
-            name = 'met_frame_nice'
-            leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
-            leg.SetNColumns(2)
-            leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('met_analyticalPDF_DA_Norm[met_Edge]'), 'fit data (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-            leg.AddEntry(frame.findObject('met_analyticalPDF_MC_Norm[met_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-            leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-            leg.AddEntry(frame.findObject('met_analyticalPDF_MC_SF_Norm[met_Edge]'), 'fit t#bar{t} (SF)', 'LP')
-            tit  = 'pdf of E_{T}^{miss}'
-            atit = 'E_{T}^{miss} (GeV)'
+def makeFramesNice(frameSet):
+    
+    frame  = frameSet[0]
+    frame2 = frameSet[1]
+    tit = 0
+    legcoords = [0.5, 0.7, 0.88, 0.85]
+    if   'lepsDPhi' in frame.GetName():
+        name = 'ldp_frame_nice'
+        leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+        leg.SetNColumns(2)
+        leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('ldp_analyticalPDF_DA_Norm[lepsDPhi_Edge]'), 'fit data (OF)', 'L')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (OF)', 'L')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_SF_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (SF)', 'L')
+        tit  = 'pdf of leptons #Delta#phi'
+        atit = '#Delta#phi_{ll}'
+    elif 'lepsZPt' in frame.GetName():
+        name = 'zpt_frame_nice'
+        leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+        leg.SetNColumns(2)
+        leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('zpt_analyticalPDF_DA_Norm[lepsZPt_Edge]'), 'fit data (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_SF_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        tit  = 'pdf of dilepton-p_{T}'
+        atit = 'p_{T}^{ll} (GeV)'
+    elif 'mlb' in frame.GetName():
+        name = 'mlb_frame_nice'
+        leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+        leg.SetNColumns(2)
+        leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('mlb_analyticalPDF_DA_Norm[sum_mlb_Edge]'), 'fit data (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_SF_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        tit  = 'pdf of sum-m_{lb}'
+        atit = '#Sigma m_{lb} (GeV)'
+    elif 'met' in frame.GetName():
+        name = 'met_frame_nice'
+        leg = ROOT.TLegend(legcoords[0], legcoords[1], legcoords[2], legcoords[3])
+        leg.SetNColumns(2)
+        leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('met_analyticalPDF_DA_Norm[met_Edge]'), 'fit data (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        leg.AddEntry(frame.findObject('met_analyticalPDF_MC_Norm[met_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        leg.AddEntry(frame.findObject('met_analyticalPDF_MC_SF_Norm[met_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        tit  = 'pdf of E_{T}^{miss}'
+        atit = 'E_{T}^{miss} (GeV)'
 
 
-        frame.SetAxisRange(0., 1.3*frame.findObject('h_em_data_cuts_of_sr_met150_of').GetYaxis().GetXmax(), 'Y')
-        frame.GetXaxis().SetTitle(atit)
-        frame.GetXaxis().SetLabelSize(0.04)
-        frame.GetYaxis().SetLabelSize(0.04)
-        frame.SetTitle('')
-        canv_tmp = ROOT.TCanvas('foo', 'bar', 600, 600)
-        canv_tmp.SetLeftMargin(0.13)
-        canv_tmp.SetBottomMargin(0.13)
-        frame.GetYaxis().SetTitleOffset(1.5)
-        frame.GetXaxis().SetTitleOffset(1.3)
-        frame.Draw('same')
-        leg.SetBorderSize(0)
-        leg.Draw()
-        lat = ROOT.TLatex()
-        lat.SetNDC()
-        lat.SetTextSize(0.040)
-        lat.SetTextFont(61)
-        lat.DrawLatex(0.16, 0.84, "CMS")
-        lat.SetTextFont(52)
-        lat.SetTextSize(0.035)
-        lat.DrawLatex(0.16, 0.80, "Preliminary")
+    frame.SetAxisRange(0., 1.3*frame.findObject('h_em_data_cuts_of_sr_met150_of').GetYaxis().GetXmax(), 'Y')
+    frame.GetXaxis().SetTitle(atit)
+    frame.GetXaxis().SetLabelSize(0.04)
+    frame.GetYaxis().SetLabelSize(0.04)
+    frame.SetTitle('')
 
-        lat.SetTextFont(42)
-        lat.DrawLatex(0.63, 0.92, '12.9 fb^{-1} (13 TeV)')
-        canv_tmp.SaveAs(name+'.png')
-        canv_tmp.SaveAs(name+'.pdf')
-        canv_tmp.SaveAs(name+'.root')
+
+    canv_tmp = ROOT.TCanvas('foo', 'bar', 600, 600)
+
+#        canv_tmp.SetLeftMargin(0.13)
+#        canv_tmp.SetBottomMargin(0.13)
+    canv_tmp.cd()
+    pad1 = ROOT.TPad("pad1", "pad1", 0, 0.25, 1, 1.0)
+    pad1.SetBottomMargin(0.12)
+    pad1.Draw()
+    pad2 = ROOT.TPad("pad2", "pad2", 0, 0.05, 1, 0.25)
+    pad2.SetTopMargin(0.1);
+    pad2.SetBottomMargin(0.3);
+    pad2.Draw();
+    
+    pad1.cd()
+
+    frame.GetYaxis().SetTitleOffset(1.5)
+    frame.GetXaxis().SetTitleOffset(1.3)
+    frame.Draw('same')
+    leg.SetBorderSize(0)
+    leg.Draw()
+    lat = ROOT.TLatex()
+    lat.SetNDC()
+    lat.SetTextSize(0.040)
+    lat.SetTextFont(61)
+    lat.DrawLatex(0.16, 0.84, "CMS")
+    lat.SetTextFont(52)
+    lat.SetTextSize(0.035)
+    lat.DrawLatex(0.16, 0.80, "Preliminary")
+
+    lat.SetTextFont(42)
+    lat.DrawLatex(0.63, 0.92, '36.4 fb^{-1} (13 TeV)')
+    lat.DrawLatex(legcoords[0],legcoords[1]-0.05,'#chi^{2} / ndof = %1.2f'%frame.chiSquare())
+    
+    pad2.cd()
+    frame2.SetTitle('')
+    frame2.GetYaxis().SetTitle('Pull')
+    frame2.GetYaxis().SetLabelSize(0.12)
+    frame2.GetYaxis().SetTitleSize(0.1)
+    frame2.GetYaxis().SetTitleOffset(0.3);
+    frame2.GetYaxis().CenterTitle()
+    frame2.GetXaxis().SetTitle('')
+    frame2.GetXaxis().SetLabelSize(0)
+    line = ROOT.TLine(frame.GetXaxis().GetXmin(),0,frame.GetXaxis().GetXmax(),0)
+    line.SetLineColor(ROOT.kGray+2)
+    frame2.Draw()
+    line.Draw('same')
+
+
+
+    canv_tmp.SaveAs(name+'.png')
+    canv_tmp.SaveAs(name+'.pdf')
+    canv_tmp.SaveAs(name+'.root')
 
 
 def cleanCut(cut):
@@ -504,13 +538,20 @@ if __name__ == '__main__':
             #if doNDKeys: writeobjs.append(copy.deepcopy(getattr(ds, 'pdf_histo_%s_ds_%s'%(var, 'cuts_of_sr_met150') ) ))
             #a = raw_input()
 
-        frames.append(tmp_frame);
+        pulls = tmp_frame.pullHist()
+        for i in range(1,pulls.GetN()):
+            pulls.SetPointEXhigh(i,0.); pulls.SetPointEXlow(i,0.); 
+        frame2 = getFrame(var, fmin, fmax)
+        frame2.addPlotable(pulls,'P')
+        frame2.SetMinimum(-3.); frame2.SetMaximum(3.)
+            
         c = ROOT.TCanvas()
         tmp_frame.Draw()
         c.SaveAs('frame_%s.pdf' %(var))
         c.SaveAs('frame_%s.root'%(var))
 
-    #makeFramesNice(copy.deepcopy(frames))
+        
+        makeFramesNice([tmp_frame,frame2])
     
 
     w.writeToFile("pdfs/pdfs_version6_80X_2016Data_savingTheWorkspace_withSFPDFs_12p9invfb_forFrameICHEP.root")

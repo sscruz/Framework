@@ -92,6 +92,9 @@ class Sample:
       if(self.isData == 0):
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+      else: 
+         cut = cut + "* ( " + extraWeight + ")"
+
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -116,6 +119,9 @@ class Sample:
      
      if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+     else: 
+        cut = cut + "* ( " + extraWeight + ")"
+
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -132,6 +138,9 @@ class Sample:
      
      if(self.isData == 0):
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+     else: 
+        cut = cut + "* ( " + extraWeight + ")"
+
      self.ttree.Project(name, var, cut, options) 
      return h
 
