@@ -255,7 +255,7 @@ def getFrame(var, xmin=0, xmax=0):
     if xmax <= xmin:
         return w.var(vartree).frame()
     else:
-        return w.var(vartree).frame(xmin,xmax,100)
+        return w.var(vartree).frame(xmin,xmax,75)
 
 def buildModels(w):
     for var,t in itertools.product(['a3d', 'met', 'mlb', 'ldr', 'zpt', 'ldp'],['_DA', '_MC','_MC_SF']):
@@ -270,8 +270,8 @@ def buildModels(w):
             vartree = "sum_mlb_Edge";
             w.factory("mlb_peak{t}[170,120,220]".format(t=t))
             w.factory("mlb_sigma{t}[40.,1.,100.]".format(t=t))
-            w.factory("mlb_alpha{t}[-1.,-2.5,-0.5]".format(t=t))
-            w.factory("mlb_n{t}[1.5,0.,2.5]".format(t=t))
+            w.factory("mlb_alpha{t}[-1.,-2.5,-0.1]".format(t=t))
+            w.factory("mlb_n{t}[1.5,0.,10.0]".format(t=t))
             w.var(vartree).setMin(0.); w.var(vartree).setMax(3000.);
             w.factory("CBShape::{var}_analyticalPDF{t}({vartree},mlb_peak{t},mlb_sigma{t},mlb_alpha{t},mlb_n{t})".format(var=var, vartree=vartree,t=t))
         elif var == 'ldr':
@@ -289,7 +289,7 @@ def buildModels(w):
             w.factory("zpt_alpha{t}[-1.,-2.5,0.]".format(t=t))
             w.factory("zpt_n{t}[5.0,5.0,100.0]".format(t=t))
             #w.factory('CBShape::{var}_analyticalPDF({vartree},zpt_peak,zpt_sigma,zpt_alpha,zpt_n)'.format(var=var, vartree=vartree))
-            w.factory('SUM::{var}_analyticalPDF{t}(zpt{t}[0,1]*CBShape::{var}_cb{t}({vartree},zpt_peak{t},zpt_sigma{t},zpt_alpha{t},zpt_n{t}))'.format(var=var, vartree=vartree, t=t))
+            w.factory('SUM::{var}_analyticalPDF{t}(CBShape::{var}_cb{t}({vartree},zpt_peak{t},zpt_sigma{t},zpt_alpha{t},zpt_n{t}))'.format(var=var, vartree=vartree, t=t))
         elif var == 'a3d':
             vartree = 'd3D_Edge'
             ## w.factory("a3d_offset[1.5,1.4,1.6]")
@@ -485,7 +485,7 @@ if __name__ == '__main__':
     
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
-    for var in ['ldp', 'met', 'mlb', 'zpt']:
+    for var in [ 'mlb', 'zpt', 'ldp', 'met']:
         print '====================================================================='
         print '====================================================================='
         print '====== AT VARIABLE %s ================================================'%(var)
@@ -493,7 +493,7 @@ if __name__ == '__main__':
         print '====================================================================='
         opt = 'a' if var != 'met' else 'am'
         fmin = (150 if var == 'met' else 0 if var == 'zpt' else 0 if var == 'mlb' else 0)
-        fmax = (500 if var == 'met' else 600 if var == 'zpt' else 1000 if var == 'mlb' else 0)
+        fmax = (500 if var == 'met' else 600 if var == 'zpt' else 1000 if var == 'mlb' else 3.14 if var =='ldp' else 0)
         tmp_frame = getFrame(var, fmin, fmax); 
         dslist = w.allData()
         for ds in dslist:
