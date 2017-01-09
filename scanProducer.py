@@ -11,6 +11,8 @@ import include.Sample     as Sample
 import include.Tables     as Tables
 import include.Scans      as Scans
 
+import include.nll
+
 from multiprocessing import Pool
 
 global _r

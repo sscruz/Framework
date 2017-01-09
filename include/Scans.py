@@ -69,7 +69,7 @@ class Scan(object):
 
         if self.name == 'Edge_Moriond2017':
             self.hasOther = False
-#            self.makeMCDatacards = True; print 'cambiar esto'
+            self.makeMCDatacards = True; print 'cambiar esto'
             self.doTwoSigmas = True
             self.paper = 'SUS16034'
             self.datasets = ['SMS_T6bbllslepton_mSbottom400to575_mLSP150to550',
@@ -86,7 +86,7 @@ class Scan(object):
             self.xsecFile = ('datacards/sbottomXsec.txt')
             self.regions = []
             self.xtitle = 'm_{sbottom}'; self.ytitle = 'm_{neu2}'
-            self.srID   = '0*(lepsMll_Edge < 60) + 1*(lepsMll_Edge > 60)*(lepsMll_Edge < 86) + 2*(lepsMll_Edge > 96)*(lepsMll_Edge < 150.) + 3*(lepsMll_Edge > 150)*(lepsMll_Edge < 200) + 4*(lepsMll_Edge > 200)*(lepsMll_Edge < 300) + 5*(lepsMll_Edge > 300)*(lepsMll_Edge < 400) + 6*(lepsMll_Edge > 400) + 0*(nll_Edge < 21.) + 7*(nll_Edge > 21.)'
+            self.srID   = '0*(lepsMll_Edge < 60) + 1*(lepsMll_Edge > 60)*(lepsMll_Edge < 86) + 2*(lepsMll_Edge > 96)*(lepsMll_Edge < 150.) + 3*(lepsMll_Edge > 150)*(lepsMll_Edge < 200) + 4*(lepsMll_Edge > 200)*(lepsMll_Edge < 300) + 5*(lepsMll_Edge > 300)*(lepsMll_Edge < 400) + 6*(lepsMll_Edge > 400) + 0*(nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21.) + 7*(nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.)'
             self.srIDMax = 13 # its good to avoid empty bins to be in the safe side
             self.shortLabels = { 0: 'lowmll_lownll',
                                  1: 'belowZ_lownll',
