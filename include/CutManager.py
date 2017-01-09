@@ -54,11 +54,13 @@ class CutManager:
       self.METl50  = "(met_Edge < 50)"
       self.METl100 = "(met_Edge < 100)"
       self.METl150 = "(met_Edge < 150)"
-      self.METg60 = "(met_Edge > 100)"
+      self.METg60 = "(met_Edge >  60)"
+      self.METg80 = "(met_Edge >  80)"
       self.METg100 = "(met_Edge > 100)"
       self.METg150 = "(met_Edge > 150)"
       self.METg200 = "(met_Edge > 200)"
       self.dPhiJETMET = " (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)"
+      self.metSig5 = "(met_Edge/sqrt(htJet35j_Edge) > 5)"
 
       
       ########################################################################
@@ -77,6 +79,7 @@ class CutManager:
       ########################################################################
       ######Basic Mass cuts###################################################
       ########################################################################
+      self.wideZ = "lepsMll_Edge > 76 && lepsMll_Edge < 106"
       self.Zmass = "lepsMll_Edge > 86 && lepsMll_Edge < 96"
       self.mll20_86= "lepsMll_Edge < 86. && lepsMll_Edge > 20 "
       self.mll86_96= "lepsMll_Edge < 96. && lepsMll_Edge > 86 "
