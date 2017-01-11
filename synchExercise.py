@@ -17,7 +17,7 @@
 
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
-import math, sys, optparse, os
+import math, sys, optparse, os, subprocess
 
 import include.helper     as helper
 import include.Region     as Region
@@ -41,7 +41,10 @@ if __name__ == '__main__':
 
     print 'Going to load DATA and MC trees...'
 
-    synchDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_271036_275125', 'DoubleEG_Run2016B-PromptReco-v2_runs_271036_275125', 'MuonEG_Run2016B-PromptReco-v2_runs_271036_275125']
+    synchDatasets = ['DoubleEG_Run2016*_23Sep2016_v*',
+                     'DoubleMuon_Run2016*_23Sep2016_v*',
+                     'MuonEG_Run2016*_23Sep2016_v*']
+
     treeSynch = Sample.Tree(helper.selectSamples(inputFileName, synchDatasets, 'SYNCH'), 'SYNCH'  , 1)
 
     print 'Trees successfully loaded...'
@@ -51,8 +54,9 @@ if __name__ == '__main__':
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
 
-    for i in synchDatasets:
-        ind = synchDatasets.index(i)
+    outputName = 'synch_20170111'
+
+    for ind,sam in enumerate(treeSynch.blocks[0].samples):
         actualTree = treeSynch.blocks[0].samples[ind].ttree
 
         ## define the variables you want to have scanned
@@ -62,19 +66,21 @@ if __name__ == '__main__':
         #scanString += "lepsMll_Edge:met_pt:met_rawPt:nJetSel_Edge:nBJetMedium35_Edge:rhoCN:(Lep1_pdgId_Edge*Lep2_pdgId_Edge)"
 
         ## define the cut you want to have applied
-        ##cutString = cuts.AddList([cuts.ewinoSR, 'run_Edge <= 274240'])
-        cutString = cuts.AddList([cuts.goodLepton, cuts.OF, cuts.SignalRegionBaseLine, 'met_Edge > 250', cuts.Zmass])
-        cutString = cuts.AddList(['run_Edge < 999999', cuts.goodLepton, cuts.SignalRegionBaseLine, cuts.OF, cuts.Zveto, 'lepsMll_Edge > 101 && nll_Edge > 21.'])
-        ## cutString = cuts.ewinoSR
+        cutString = cuts.AddList([cuts.protection, cuts.Baseline, cuts.Zveto, cuts.OF, cuts.EdgeBaseline])
 
         #print cutString
 
         actualTree.SetScanField(-1)
         save = os.dup( sys.stdout.fileno() )
-        newout = file( 'evtLists/signalRegionExcessOF%d.txt'%(ind), 'w' )
+        if not ind:
+            of_name = 'evtLists/{on}.txt'.format(on=outputName)
+            newout = file( of_name, 'w' )
         os.dup2( newout.fileno(), sys.stdout.fileno() )
         actualTree.Scan(scanString, cutString, 'colsize=12')#colsize=8 precision=8 col=8d:12d');
         os.dup2( save, sys.stdout.fileno() )
-        newout.close()
+        if ind == len(treeSynch.blocks[0].samples)-1:
+            newout.close()
+
+subprocess.call(['python']+['evtLists/overlap.py', '{of}'.format(of=of_name)] )#+['/dev/null'],stderr=subprocess.PIPE)
 
    

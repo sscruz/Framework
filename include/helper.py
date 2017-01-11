@@ -1,4 +1,4 @@
-import math, sys, os, copy
+import math, sys, os, copy, re
 import ROOT as r
 from   ROOT import TGraphErrors, gROOT, TCanvas, TFile
 
@@ -239,7 +239,8 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     for line in f.readlines():
         if '#' in line or not len(line.rstrip('\r')): continue
         for _sample in selList:
-            if _sample == line.split()[2]:
+            _sample = _sample.replace('*','.*')
+            if _sample == line.split()[2] or re.search(_sample, line.split()[2]):
                 if not sType == 'SYNCH':
                     tmp_file.write(line)
                 else:
@@ -249,10 +250,13 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
                 checkedList.append(_sample)
                 typeList   .append(int(line.split()[-1]))
     for _selSample in selList:
-        if _selSample not in checkedList:
-            print 'ERROR: some samples weren\'t selected, check all sample names!'
-            print 'check this sample:', _selSample
-            sys.exit('exiting...')
+        if not '*' in _selSample:
+            if _selSample not in checkedList:
+                print 'ERROR: some samples weren\'t selected, check all sample names!'
+                print 'check this sample:', _selSample
+                sys.exit('exiting...')
+        else:
+            print 'you used some wildcards in selecting the samples. be careful with that!'
     if not len(set(typeList)) == 1:
             print 'ERROR: you\'re mixing DATA and MC!'
             sys.exit('exiting...')
