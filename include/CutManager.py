@@ -121,6 +121,8 @@ class CutManager:
 
       self.ttBarLike    = ' nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21'
       self.NonttBarLike = ' nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21'
+      self.loNLL = self.ttBarLike
+      self.hiNLL = self.NonttBarLike
 
       ########################################################################
       ######EWK signal regions ###############################################

@@ -24,6 +24,7 @@ import include.Region     as Region
 import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
+import include.nll
 
 
 
@@ -54,21 +55,26 @@ if __name__ == '__main__':
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
 
-    outputName = 'synch_20170111'
+    outputName = 'synch_baseline_nonttbarlike_allMll_20170112'
+
+    ## define the cut you want to have applied
+    cutString = cuts.AddList([cuts.protection, cuts.Baseline, cuts.Zveto, cuts.OF, cuts.EdgeBaseline, cuts.ttBarLike])
+    print 'producing event list for the following cutstring:\r==================================================='
+    print cutString
+    print '==================================================='
+
 
     for ind,sam in enumerate(treeSynch.blocks[0].samples):
         actualTree = treeSynch.blocks[0].samples[ind].ttree
 
         ## define the variables you want to have scanned
-        scanString  = "evt_Edge:met_Edge:abs(j1MetDPhi_Edge):mt2_Edge"
-        #scanString += "Lep1_pt_Edge:Lep1_eta_Edge:Lep1_phi_Edge:Lep1_pdgId_Edge:Lep1_miniRelIso_Edge:Lep1_mvaIdSpring15_Edge:t.Lep1_minTauDR_Edge:"
-        #scanString += "Lep2_pt_Edge:Lep2_eta_Edge:Lep2_phi_Edge:Lep2_pdgId_Edge:Lep2_miniRelIso_Edge:Lep2_mvaIdSpring15_Edge:t.Lep2_minTauDR_Edge:"
-        #scanString += "lepsMll_Edge:met_pt:met_rawPt:nJetSel_Edge:nBJetMedium35_Edge:rhoCN:(Lep1_pdgId_Edge*Lep2_pdgId_Edge)"
+        scanString  = "run_Edge:lumi_Edge:evt_Edge:"
+        scanString += "Lep1_pt_Edge:Lep1_eta_Edge:Lep1_phi_Edge:Lep1_pdgId_Edge:Lep1_miniRelIso_Edge:"
+        scanString += "Lep2_pt_Edge:Lep2_eta_Edge:Lep2_phi_Edge:Lep2_pdgId_Edge:Lep2_miniRelIso_Edge:"
+        scanString += "lepsMll_Edge:met_Edge:mt2_Edge:nJetSel_Edge:nBJetMedium35_Edge:abs(j1MetDPhi_Edge):abs(j2MetDPhi_Edge)"
 
-        ## define the cut you want to have applied
-        cutString = cuts.AddList([cuts.protection, cuts.Baseline, cuts.Zveto, cuts.OF, cuts.EdgeBaseline])
+        lenScan = len(scanString.split(':'))
 
-        #print cutString
 
         actualTree.SetScanField(-1)
         save = os.dup( sys.stdout.fileno() )
