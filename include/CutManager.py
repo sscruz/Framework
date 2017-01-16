@@ -112,6 +112,7 @@ class CutManager:
  
       self.DYControlRegion = self.AddList([self.goodLepton, self.METl50, self.nj2, self.ZmassExtended])
       self.DYControlRegionNoJet = self.AddList([self.goodLepton, self.METl50, self.ZmassExtended])
+      self.DYControlRegionNoMllNoJet = self.AddList([self.goodLepton, self.METl50])
       self.DYControlRegionNoMll = self.AddList([self.goodLepton, self.METl50, self.nj2])
       self.DYControlRegionNoMET = self.AddList([self.goodLepton, self.nj2, self.ZmassExtended])
       self.DYControlRegionNoMllNoMET = self.AddList([self.goodLepton, self.nj2])

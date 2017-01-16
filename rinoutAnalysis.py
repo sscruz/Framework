@@ -24,7 +24,6 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 
 
-
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -35,58 +34,31 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-def makeResultsTable(rinout_1_mc, rinout_2_mc, rinout_3_mc, rinout_4_mc, rinout_5_mc, rinout_6_mc, rinout_1_da, rinout_2_da, rinout_3_da, rinout_4_da, rinout_5_da, rinout_6_da,lumi, lumi_str):
+def makeResultsTable(mc, da, rinout_20_60_mc, rinout_60_86_mc,rinout_96_150_mc, rinout_150_200_mc, rinout_200_300_mc, rinout_300_400_mc, rinout_400_mc, rinout_20_60_da,  rinout_60_86_da, rinout_96_150_da, rinout_150_200_da, rinout_200_300_da, rinout_300_400_da, rinout_400_da,lumi, lumi_str):
+    line00 = '&Data N_{in}:  %.0f $\\pm$ %.0f  & & MC N_{in}:  %.0f $\\pm$ %.0f \\\\'%(da.GetBinContent(3), da.GetBinError(3),mc.GetBinContent(3), mc.GetBinError(3))
+    line0  = 'm_{ll} & N_{out} & R_{inout} & N_{out} & R_{inout} \\\\\hline'                   
+    line1  = '20-60& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f  \\\\'%(da.GetBinContent(1), da.GetBinError(1), rinout_20_60_da[0], rinout_20_60_da[1], mc.GetBinContent(1), mc.GetBinError(1), rinout_20_60_mc[0], rinout_20_60_mc[1]) 
+    line2  = '60-86& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(2), da.GetBinError(2), rinout_60_86_da[0], rinout_60_86_da[1], mc.GetBinContent(2), mc.GetBinError(2), rinout_60_86_mc[0], rinout_60_86_mc[1]) 
+    line3  = '96-150& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(4), da.GetBinError(4), rinout_96_150_da[0], rinout_96_150_da[1], mc.GetBinContent(4), mc.GetBinError(4), rinout_96_150_mc[0], rinout_96_150_mc[1]) 
+    line4  = '150-200& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(5), da.GetBinError(5), rinout_150_200_da[0], rinout_150_200_da[1], mc.GetBinContent(5), mc.GetBinError(5), rinout_150_200_mc[0], rinout_150_200_mc[1]) 
+    line5  = '200-300& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(6), da.GetBinError(6), rinout_200_300_da[0], rinout_200_300_da[1], mc.GetBinContent(6), mc.GetBinError(6), rinout_200_300_mc[0], rinout_200_300_mc[1]) 
+    line6  = '300-400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(7), da.GetBinError(7), rinout_300_400_da[0], rinout_300_400_da[1], mc.GetBinContent(7), mc.GetBinError(7), rinout_300_400_mc[0], rinout_300_400_mc[1]) 
+    line7  = '+400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(8), da.GetBinError(8), rinout_400_da[0], rinout_400_da[1], mc.GetBinContent(8), mc.GetBinError(8), rinout_400_mc[0], rinout_400_mc[1]) 
     
-    line0  = '\\begin{tabular}{ccc}'                                                                 
-    line1  = '\\hline'                                                                 
-    line2  = '\\hline'                                                                 
-    line3 = '   $\mathrm{r}_{\mathrm{inout}}$  & '
-    line35 = '\\hline'
-    line4 = '   MC   & '
-    line5 = '   DATA & ' 
-    line6 =  '\\hline'
-    line7 =  '\\hline'
-    line8 = '\\end{{tabular}}' 
-    line3 += '\\& $\mathrm{m}_{ll}$ in [20,86] $\mathrm{m}_{ll}$ in [96, 150] $\mathrm{m}_{ll}$ in [150, 200] $\mathrm{m}_{ll}$ in [200,300] $\mathrm{m}_{ll}$ in [300, 400] $\mathrm{m}_{ll}$ above 400    \\hline  \\\\'
-    line4 += '  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f' %(rinout_1_mc[0], rinout_1_mc[1],rinout_2_mc[0], rinout_2_mc[1], rinout_3_mc[0], rinout_3_mc[1], rinout_4_mc[0], rinout_4_mc[1], rinout_5_mc[0], rinout_5_mc[1], rinout_6_mc[0], rinout_6_mc[1] )
-    line5 += '  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f &  %.3f $\\pm$ %.3f' %(rinout_1_da[0], rinout_1_da[1],rinout_2_da[0], rinout_2_da[1], rinout_3_da[0], rinout_3_da[1], rinout_4_da[0], rinout_4_da[1], rinout_5_da[0], rinout_5_da[1], rinout_6_da[0], rinout_6_da[1] )
-
-    helper.ensureDirectory('plots/rinout/%s/'%lumi_str)
     helper.ensureDirectory('plots/rionut/%s/tables/'%lumi_str)
-    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s.tex'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
+    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
+    compTableFile.write(line00+'\n')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
     compTableFile.write(line2+'\n')
     compTableFile.write(line3+'\n')
-    compTableFile.write(line35+'\n')
     compTableFile.write(line4+'\n')
     compTableFile.write(line5+'\n')
     compTableFile.write(line6+'\n')
     compTableFile.write(line7+'\n')
-    compTableFile.write(line8+'\n')
     compTableFile.close()
                                                                                                                                                                         
                                                                                                                                                                          
-def readFromFile(theFile, dataMC): 
-
-    for line in open(theFile).readlines():
-        if line.find("rsfof") != -1 and line.find("final") != -1:
-            if line.find(dataMC) != -1:
-                splitline = line.split(" ")
-                x = 0
-                if dataMC == 'MC': x = 2
-                rsfof = splitline[26+x]
-                stat = splitline[32+x]
-                syst = splitline[38+x]
-                arr = []
-                arr.append(rsfof)
-                arr.append(stat)
-                arr.append(syst)
-                if arr[0] == '':
-                    print "warning probably not right rsfof!!!", arr
-                return map(float, arr)
-                                                                                    
-                                                                                                
 def saveInFile(theFile, region, dataMC, rinout, stat, syst):
     foutput = open(theFile + "_aux", 'w')
     for line in open(theFile).readlines():
@@ -108,20 +80,24 @@ def calc_frac(inSF, outSF, Ein, Eout):
     return val
 
 
-def calc_rinout(inSF,outSF, EinSF, EoutSF):
-
-    Ein  = math.sqrt(EinSF*EinSF)
-    Eout = math.sqrt(EoutSF*EoutSF)
-
+def calc_rinout(inSF,outSF, EinSF, EoutSF, syst):
+    
+    Ein  = math.sqrt(EinSF*EinSF +(syst*inSF)**2)
+    Eout = math.sqrt(EoutSF*EoutSF +(syst*outSF)**2)
+    print "Ein " ,Ein
+    print "Eout " ,Eout
     return calc_frac(inSF, outSF, Ein, Eout)                                                                                         
 
 def subtractTT(SF, OF, rsfof, dataMC):
     
       corr = SF.Clone("rinout_" + SF.GetName())
       corr.Add(OF , -rsfof)
+      print '#################################################################'
+      print ' ', dataMC
       print ' i have %.3f events in the SF sample' %(SF.Integral())
       print ' i have %.3f events in the OF sample' %(OF.Integral())
       print ' i have %.3f events in the subtracted sample' %(corr.Integral())
+      print '#################################################################'
       return corr                                                           
 
 
@@ -144,28 +120,28 @@ def make_rinout_histo(histo_out ,  histo_in, ymin, ymax):
 
 def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
 
-    makeNicePlot = False
-    saveInFile = False
+    makeNicePlot = True
+    saveThisInFile = True
     labelx = "m_{ll} [GeV]"
     labelmet = "MET [GeV]"
     labelnjet = "N. Jets"
     inclusivebins  = range(20, 450, 5)
     metbins  = [0, 10, 20, 30, 40, 50, 60, 70, 90]
     njbins  = [-0.5, 0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 7.5]
-    coarsebins  = [20, 86, 96, 150, 200, 300, 400]
+    coarsebins  = [20, 60, 86, 96, 150, 200, 300, 400]
 
     #####Main mll control plot
     print bcolors.HEADER + '[RinoutAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
     logx = 1
     if makeNicePlot:
        #make the nice finely binned plots for the presentation
-        mll_SF_inclusive_mc = treeMC.getTH1F(lumi,"MC_inclusive_mll_SF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll, cuts.MET100]), '', labelx)
-        mll_OF_inclusive_mc = treeMC.getTH1F(lumi,"MC_inclusive_mll_OF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll, cuts.MET100]), '', labelx)
-        mll_SF_inclusive_da = treeDA.getTH1F(lumi,"DA_inclusive_mll_SF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll, cuts.MET100]), '', labelx)
-        mll_OF_inclusive_da = treeDA.getTH1F(lumi,"DA_inclusive_mll_OF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll, cuts.MET100]), '', labelx)
+        mll_SF_inclusive_mc = treeMC.getTH1F(lumi,"MC_inclusive_mll_SF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll]), '', labelx)
+        mll_OF_inclusive_mc = treeMC.getTH1F(lumi,"MC_inclusive_mll_OF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll]), '', labelx)
+        mll_SF_inclusive_da = treeDA.getTH1F(lumi,"DA_inclusive_mll_SF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll, cuts.trigger]),'', labelx)
+        mll_OF_inclusive_da = treeDA.getTH1F(lumi,"DA_inclusive_mll_OF","lepsMll_Edge",inclusivebins,1,1,cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll, cuts.trigger]),'', labelx)
     
-        mll_corrected_inclusive_mc = subtractTT(mll_SF_inclusive_mc, mll_OF_inclusive_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-        mll_corrected_inclusive_da = subtractTT(mll_SF_inclusive_da, mll_OF_inclusive_da, readFromFile(ingredientsFile, "DATA")[0], "DATA")
+        mll_corrected_inclusive_mc = subtractTT(mll_SF_inclusive_mc, mll_OF_inclusive_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+        mll_corrected_inclusive_da = subtractTT(mll_SF_inclusive_da, mll_OF_inclusive_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0], "DATA")
     
         plot_mll_inclusive_SF = Canvas.Canvas('rinout/%s_%s/plot_mll_inclusive_SF'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
         plot_mll_inclusive_SF.addHisto(mll_SF_inclusive_mc, 'HIST', 'SF MC', 'L', r.kGreen+1 , 1, 0)
@@ -180,17 +156,17 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
         plot_mll_inclusive_corrected = Canvas.Canvas('rinout/%s_%s/plot_mll_inclusive_corrected'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
         plot_mll_inclusive_corrected.addHisto(mll_corrected_inclusive_mc, 'HIST', 'SF-OF MC', 'L', r.kGreen+1 , 1, 0)
         plot_mll_inclusive_corrected.addHisto(mll_corrected_inclusive_da, 'E1,SAME', 'SF-OF DATA', 'PL', r.kBlack , 1, 0)
-        plot_mll_inclusive_corrected.saveRatio(1, 1, logx, lumi, mll_corrected_inclusive_da, mll_corrected_inclusive_mc)                                                                                
+        plot_mll_inclusive_corrected.saveRatio(1, 1, logx, lumi, mll_corrected_inclusive_da, mll_corrected_inclusive_mc)                                                        
 
     #make the histos for the rinout calculationi
-    mll_SF_coarse_mc = treeMC.getTH1F(lumi, "MC_inclusive_mll_SF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll,cuts.MET100]), '', labelx)
-    mll_OF_coarse_mc = treeMC.getTH1F(lumi, "MC_inclusive_mll_OF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll,cuts.MET100]), '', labelx)
-    mll_SF_coarse_da = treeDA.getTH1F(lumi, "DA_inclusive_mll_SF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll,cuts.MET100]), '', labelx)
-    mll_OF_coarse_da = treeDA.getTH1F(lumi, "DA_inclusive_mll_OF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll,cuts.MET100]), '', labelx)
+    mll_SF_coarse_mc = treeMC.getTH1F(lumi, "MC_inclusive_mll_SF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll]), '', labelx)
+    mll_OF_coarse_mc = treeMC.getTH1F(lumi, "MC_inclusive_mll_OF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll]), '', labelx)
+    mll_SF_coarse_da = treeDA.getTH1F(lumi, "DA_inclusive_mll_SF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll, cuts.trigger]), '', labelx)
+    mll_OF_coarse_da = treeDA.getTH1F(lumi, "DA_inclusive_mll_OF", "lepsMll_Edge", coarsebins, 1, 1, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll, cuts.trigger]), '', labelx)
     print "mll_SF_coarse_mc" , mll_SF_coarse_mc.Integral()
     print "mll_SF_coarse_da" , mll_SF_coarse_da.Integral()
-    mll_corrected_mc = subtractTT(mll_SF_coarse_mc, mll_OF_coarse_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    mll_corrected_da = subtractTT(mll_SF_coarse_da, mll_OF_coarse_da, readFromFile(ingredientsFile, "DATA")[0], "DATA")
+    mll_corrected_mc = subtractTT(mll_SF_coarse_mc, mll_OF_coarse_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    mll_corrected_da = subtractTT(mll_SF_coarse_da, mll_OF_coarse_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0], "DATA")
     print "mll_corrected_mc", mll_corrected_mc.Integral()                                                                                                                     
     print "mll_corrected_da", mll_corrected_da.Integral()                                                                                                                     
     plot_mll_coarse_SF = Canvas.Canvas('rinout/%s_%s/plot_mll_SF'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
@@ -206,259 +182,296 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     plot_mll_coarse_corrected.addHisto(mll_corrected_da, 'E1,SAME', 'SF-OF DATA', 'PL', r.kBlack , 1, 0)
     plot_mll_coarse_corrected.saveRatio(1, 1, logx, lumi, mll_corrected_da, mll_corrected_mc)                                                                                
 
-    rinout_1_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(1) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(1))
-    rinout_z_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(2) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(2))
-    rinout_2_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(3) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(3))
-    rinout_3_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(4) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(4))
-    rinout_4_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(5) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(5))
-    rinout_5_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(6) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(6))
-    rinout_6_mc  = calc_rinout(mll_corrected_mc.GetBinContent(2), mll_corrected_mc.GetBinContent(7) , mll_corrected_mc.GetBinError(2), mll_corrected_mc.GetBinError(7))      
-    rinout_1_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(1) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(1))
-    rinout_z_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(2) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(2))
-    rinout_2_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(3) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(3))
-    rinout_3_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(4) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(4))
-    rinout_4_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(5) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(5))
-    rinout_5_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(6) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(6))
-    rinout_6_da  = calc_rinout(mll_corrected_da.GetBinContent(2), mll_corrected_da.GetBinContent(7) , mll_corrected_da.GetBinError(2), mll_corrected_da.GetBinError(7))      
+    rinout_20_60_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(1) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(1), 0.5)
+    rinout_60_86_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(2) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(2), 0.5)
+    rinout_86_96_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(3) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(3), 0.5)
+    rinout_96_150_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(4) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(4), 0.5)
+    rinout_150_200_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(5) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(5), 0.5)
+    rinout_200_300_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(6) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(6), 1.)
+    rinout_300_400_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(7) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(7), 1.)
+    rinout_400_mc  = calc_rinout(mll_corrected_mc.GetBinContent(3), mll_corrected_mc.GetBinContent(8) , mll_corrected_mc.GetBinError(3), mll_corrected_mc.GetBinError(8), 1.)      
+    rinout_20_60_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(1) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(1), 0.5)
+    rinout_60_86_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(2) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(2), 0.5)
+    rinout_86_96_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(3) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(3), 0.5)
+    rinout_96_150_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(4) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(4), 0.5)
+    rinout_150_200_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(5) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(5), 0.5)
+    rinout_200_300_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(6) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(6),1.)
+    rinout_300_400_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(7) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(7), 1.)
+    rinout_400_da  = calc_rinout(mll_corrected_da.GetBinContent(3), mll_corrected_da.GetBinContent(8) , mll_corrected_da.GetBinError(3), mll_corrected_da.GetBinError(8), 1.)      
     
-    print 'rinout_1_da ', rinout_1_da
-    print 'rinout_1_mc ', rinout_1_mc
-    print 'rinout_2_da ', rinout_2_da
-    print 'rinout_2_mc ', rinout_2_mc
-    print 'rinout_3_da ', rinout_3_da
-    print 'rinout_3_mc ', rinout_3_mc
-    print 'rinout_4_da ', rinout_4_da
-    print 'rinout_4_mc ', rinout_4_mc
-    print 'rinout_5_da ', rinout_5_da
-    print 'rinout_5_mc ', rinout_5_mc
-    print 'rinout_6_da ', rinout_6_da
-    print 'rinout_6_mc ', rinout_6_mc    
-    if saveInFile:
-        makeResultsTable(rinout_1_mc, rinout_2_mc , rinout_3_mc, rinout_4_mc, rinout_5_mc, rinout_6_mc,rinout_1_da, rinout_2_da , rinout_3_da, rinout_4_da, rinout_5_da, rinout_6_da, lumi, str(lumi))
-        saveInFile(ingredientsFile, 'dy_m1', 'DATA', rinout_1_da[0], rinout_1_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_oz', 'DATA', rinout_z_da[0], rinout_z_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m2', 'DATA', rinout_2_da[0], rinout_2_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m3', 'DATA', rinout_3_da[0], rinout_3_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m4', 'DATA', rinout_4_da[0], rinout_4_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m5', 'DATA', rinout_5_da[0], rinout_5_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m6', 'DATA', rinout_6_da[0], rinout_6_da[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m1', 'MC  ', rinout_1_mc[0], rinout_1_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_oz', 'MC  ', rinout_z_mc[0], rinout_z_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m2', 'MC  ', rinout_2_mc[0], rinout_2_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m3', 'MC  ', rinout_3_mc[0], rinout_3_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m4', 'MC  ', rinout_4_mc[0], rinout_4_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m5', 'MC  ', rinout_5_mc[0], rinout_5_mc[1], 0.2)
-        saveInFile(ingredientsFile, 'dy_m6', 'MC  ', rinout_6_mc[0], rinout_6_mc[1], 0.2)
+    print 'rinout_20_60_da ', rinout_20_60_da[0] , rinout_20_60_da[1] 
+    print 'rinout_60_86_da ', rinout_60_86_da[0] , rinout_60_86_da[1] 
+    print 'rinout_86_96_da ', rinout_86_96_da[0] , rinout_86_96_da[1] 
+    print 'rinout_96_150_da ', rinout_96_150_da[0] , rinout_96_150_da[1] 
+    print 'rinout_150_200_da ', rinout_150_200_da[0] , rinout_150_200_da[1] 
+    print 'rinout_200_300_da ', rinout_200_300_da[0] , rinout_200_300_da[1] 
+    print 'rinout_300_400_da ', rinout_300_400_da[0] , rinout_300_400_da[1] 
+    print 'rinout_400_da ', rinout_400_da[0] , rinout_400_da[1] 
+    if saveThisInFile:
+        makeResultsTable(mll_corrected_mc, mll_corrected_da, rinout_20_60_mc, rinout_60_86_mc, rinout_96_150_mc, rinout_150_200_mc, rinout_200_300_mc, rinout_300_400_mc, rinout_400_mc, rinout_20_60_da, rinout_60_86_da, rinout_96_150_da, rinout_150_200_da, rinout_200_300_da, rinout_300_400_da, rinout_400_da,  lumi, str(lumi))
+        print "ingredientsFile", ingredientsFile
+        saveInFile(ingredientsFile, 'dy_m20_60__', 'DATA', rinout_20_60_da[0], rinout_20_60_da[1],rinout_20_60_da[0]* 0.5)
+        saveInFile(ingredientsFile, 'dy_m60_86__', 'DATA', rinout_60_86_da[0], rinout_60_86_da[1], rinout_60_86_da[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m86_96__', 'DATA', rinout_86_96_da[0], rinout_86_96_da[1], rinout_86_96_da[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m96_150_', 'DATA', rinout_96_150_da[0], rinout_96_150_da[1], rinout_96_150_da[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m150_200', 'DATA', rinout_150_200_da[0], rinout_150_200_da[1], rinout_150_200_da[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m200_300', 'DATA', rinout_200_300_da[0], rinout_200_300_da[1], rinout_200_300_da[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m300_400', 'DATA', rinout_300_400_da[0], rinout_300_400_da[1], rinout_300_400_da[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m400____', 'DATA', rinout_400_da[0]      , rinout_400_da[1], rinout_400_da[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m20_60__', 'MC  ', rinout_20_60_mc[0], rinout_20_60_mc[1], rinout_20_60_mc[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m60_86__', 'MC  ', rinout_60_86_mc[0], rinout_60_86_mc[1], rinout_60_86_mc[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m86_96__', 'MC  ', rinout_86_96_mc[0], rinout_86_96_mc[1], rinout_86_96_mc[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m96_150_', 'MC  ', rinout_96_150_mc[0], rinout_96_150_mc[1], rinout_96_150_mc[0]*0.5)
+        saveInFile(ingredientsFile, 'dy_m150_200', 'MC  ', rinout_150_200_mc[0], rinout_150_200_mc[1], rinout_150_200_mc[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m200_300', 'MC  ', rinout_200_300_mc[0], rinout_200_300_mc[1], rinout_200_300_mc[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m300_400', 'MC  ', rinout_300_400_mc[0], rinout_300_400_mc[1], rinout_300_400_mc[0]*1.)
+        saveInFile(ingredientsFile, 'dy_m400____', 'MC  ', rinout_400_mc[0], rinout_400_mc[1], rinout_400_mc[0]*1.)
         print "done writing in the ingredients.dat"
 
-    met_1_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_20-86_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll20_86]),'', labelmet)
-    met_1_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_20-86_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll20_86]),'', labelmet)
-    met_1_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_20-86_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll20_86]),'', labelmet)
-    met_1_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_20-86_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll20_86]),'', labelmet)
-    met_z_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_86-96_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll86_96]),'', labelmet)
-    met_z_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_86-96_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll86_96]),'', labelmet)
-    met_z_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_86-96_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll86_96]),'', labelmet)
-    met_z_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_86-96_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll86_96]),'', labelmet)
-    met_2_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_96-150_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll96_150]),'', labelmet)
-    met_2_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_96-150_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll96_150]),'', labelmet)
-    met_2_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_96-150_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll96_150]),'', labelmet)
-    met_2_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_96-150_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll96_150]),'', labelmet)
-    met_3_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_150-200_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll150_200]),'', labelmet)
-    met_3_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_150-200_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll150_200]),'', labelmet)
-    met_3_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_150-200_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll150_200]),'', labelmet)
-    met_3_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_150-200_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll150_200]),'', labelmet)
-    met_4_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_200-300_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll200_300]),'', labelmet)
-    met_4_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_200-300_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll200_300]),'', labelmet)
-    met_4_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_200-300_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll200_300]),'', labelmet)
-    met_4_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_200-300_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll200_300]),'', labelmet)
-    met_5_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_300-400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll300_400]),'', labelmet)
-    met_5_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_300-400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll300_400]),'', labelmet)
-    met_5_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_300-400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll300_400]),'', labelmet)
-    met_5_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_300-400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll300_400]),'', labelmet)
-    met_6_SF_mc= treeMC.getTH1F(lumi, "MC_met_mll_400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll400]),'', labelmet)
-    met_6_SF_da= treeDA.getTH1F(lumi, "DA_met_mll_400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll400]),'', labelmet)
-    met_6_OF_mc= treeMC.getTH1F(lumi, "MC_met_mll_400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll400]),'', labelmet)
-    met_6_OF_da= treeDA.getTH1F(lumi, "DA_met_mll_400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.MET100, cuts.DYControlRegionNoMETNoMll,cuts.mll400]),'', labelmet)
+    met_1_SF_mc= treeMC.getTH1F(lumi, "MC_met_20-60_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll20_60]),'', labelmet)
+    met_1_SF_da= treeDA.getTH1F(lumi, "DA_met_20-60_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll20_60, cuts.trigger]),'', labelmet)
+    met_1_OF_mc= treeMC.getTH1F(lumi, "MC_met_20-60_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll20_60]),'', labelmet)
+    met_1_OF_da= treeDA.getTH1F(lumi, "DA_met_20-60_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll20_60, cuts.trigger]),'', labelmet)
+    met_2_SF_mc= treeMC.getTH1F(lumi, "MC_met_60-86_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll60_86]),'', labelmet)
+    met_2_SF_da= treeDA.getTH1F(lumi, "DA_met_60-86_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll60_86, cuts.trigger]),'', labelmet)
+    met_2_OF_mc= treeMC.getTH1F(lumi, "MC_met_60-86_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll60_86]),'', labelmet)
+    met_2_OF_da= treeDA.getTH1F(lumi, "DA_met_60-86_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll60_86, cuts.trigger]),'', labelmet)
+    met_z_SF_mc= treeMC.getTH1F(lumi, "MC_met_86-96_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll86_96]),'', labelmet)
+    met_z_SF_da= treeDA.getTH1F(lumi, "DA_met_86-96_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll86_96, cuts.trigger]),'', labelmet)
+    met_z_OF_mc= treeMC.getTH1F(lumi, "MC_met_86-96_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll86_96]),'', labelmet)
+    met_z_OF_da= treeDA.getTH1F(lumi, "DA_met_86-96_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll86_96, cuts.trigger]),'', labelmet)
+    met_3_SF_mc= treeMC.getTH1F(lumi, "MC_met_96-150_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll96_150]),'', labelmet)
+    met_3_SF_da= treeDA.getTH1F(lumi, "DA_met_96-150_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll96_150, cuts.trigger]),'', labelmet)
+    met_3_OF_mc= treeMC.getTH1F(lumi, "MC_met_96-150_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll96_150]),'', labelmet)
+    met_3_OF_da= treeDA.getTH1F(lumi, "DA_met_96-150_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll96_150, cuts.trigger]),'', labelmet)
+    met_4_SF_mc= treeMC.getTH1F(lumi, "MC_met_150-200_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll150_200]),'', labelmet)
+    met_4_SF_da= treeDA.getTH1F(lumi, "DA_met_150-200_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll150_200, cuts.trigger]),'', labelmet)
+    met_4_OF_mc= treeMC.getTH1F(lumi, "MC_met_150-200_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll150_200]),'', labelmet)
+    met_4_OF_da= treeDA.getTH1F(lumi, "DA_met_150-200_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll150_200, cuts.trigger]),'', labelmet)
+    met_5_SF_mc= treeMC.getTH1F(lumi, "MC_met_200-300_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll200_300]),'', labelmet)
+    met_5_SF_da= treeDA.getTH1F(lumi, "DA_met_200-300_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll200_300, cuts.trigger]),'', labelmet)
+    met_5_OF_mc= treeMC.getTH1F(lumi, "MC_met_200-300_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll200_300]),'', labelmet)
+    met_5_OF_da= treeDA.getTH1F(lumi, "DA_met_200-300_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll200_300, cuts.trigger]),'', labelmet)
+    met_6_SF_mc= treeMC.getTH1F(lumi, "MC_met_300-400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll300_400]),'', labelmet)
+    met_6_SF_da= treeDA.getTH1F(lumi, "DA_met_300-400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll300_400, cuts.trigger]),'', labelmet)
+    met_6_OF_mc= treeMC.getTH1F(lumi, "MC_met_300-400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll300_400]),'', labelmet)
+    met_6_OF_da= treeDA.getTH1F(lumi, "DA_met_300-400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll300_400, cuts.trigger]),'', labelmet)
+    met_7_SF_mc= treeMC.getTH1F(lumi, "MC_met_400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll400]),'', labelmet)
+    met_7_SF_da= treeDA.getTH1F(lumi, "DA_met_400_SF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll400, cuts.trigger]),'', labelmet)
+    met_7_OF_mc= treeMC.getTH1F(lumi, "MC_met_400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll400]),'', labelmet)
+    met_7_OF_da= treeDA.getTH1F(lumi, "DA_met_400_OF","met_Edge",metbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.METl100, cuts.DYControlRegionNoMllNoMET,cuts.mll400, cuts.trigger]),'', labelmet)
     print "met_1_SF_mc", met_1_SF_mc.Integral()
     print "met_1_SF_da", met_1_SF_da.Integral()
     #subtract the OF from the total
-    met_1_corrected_mc  = subtractTT(met_1_SF_mc, met_1_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_1_corrected_da  = subtractTT(met_1_SF_da, met_1_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_z_corrected_mc  = subtractTT(met_z_SF_mc, met_z_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_z_corrected_da  = subtractTT(met_z_SF_da, met_z_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_2_corrected_mc  = subtractTT(met_2_SF_mc, met_2_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_2_corrected_da  = subtractTT(met_2_SF_da, met_2_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_3_corrected_mc  = subtractTT(met_3_SF_mc, met_3_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_3_corrected_da  = subtractTT(met_3_SF_da, met_3_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_4_corrected_mc  = subtractTT(met_4_SF_mc, met_4_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_4_corrected_da  = subtractTT(met_4_SF_da, met_4_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_5_corrected_mc  = subtractTT(met_5_SF_mc, met_5_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_5_corrected_da  = subtractTT(met_5_SF_da, met_5_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    met_6_corrected_mc  = subtractTT(met_6_SF_mc, met_6_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    met_6_corrected_da  = subtractTT(met_6_SF_da, met_6_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
+    met_1_corrected_mc  = subtractTT(met_1_SF_mc, met_1_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_1_corrected_da  = subtractTT(met_1_SF_da, met_1_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_2_corrected_mc  = subtractTT(met_2_SF_mc, met_2_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_2_corrected_da  = subtractTT(met_2_SF_da, met_2_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_z_corrected_mc  = subtractTT(met_z_SF_mc, met_z_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_z_corrected_da  = subtractTT(met_z_SF_da, met_z_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_3_corrected_mc  = subtractTT(met_3_SF_mc, met_3_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_3_corrected_da  = subtractTT(met_3_SF_da, met_3_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_4_corrected_mc  = subtractTT(met_4_SF_mc, met_4_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_4_corrected_da  = subtractTT(met_4_SF_da, met_4_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_5_corrected_mc  = subtractTT(met_5_SF_mc, met_5_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_5_corrected_da  = subtractTT(met_5_SF_da, met_5_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_6_corrected_mc  = subtractTT(met_6_SF_mc, met_6_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_6_corrected_da  = subtractTT(met_6_SF_da, met_6_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    met_7_corrected_mc  = subtractTT(met_7_SF_mc, met_7_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    met_7_corrected_da  = subtractTT(met_7_SF_da, met_7_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
    
     print "met_1_corrected_mc", met_1_corrected_mc.Integral()
     print "met_1_corrected_da", met_1_corrected_da.Integral()
     #calculate rinout with the corrected (OF subtracted) samples
-    met_rinout_1_mc = make_rinout_histo(met_1_corrected_mc, met_z_corrected_mc, 0., 1. )
-    met_rinout_1_da = make_rinout_histo(met_1_corrected_da, met_z_corrected_da, 0., 1. )  
-    met_rinout_2_mc = make_rinout_histo(met_2_corrected_mc, met_z_corrected_mc, 0., 0.5 )
-    met_rinout_2_da = make_rinout_histo(met_2_corrected_da, met_z_corrected_da, 0., 0.5 )
-    met_rinout_3_mc = make_rinout_histo(met_3_corrected_mc, met_z_corrected_mc, 0., 0.05) 
-    met_rinout_3_da = make_rinout_histo(met_3_corrected_da, met_z_corrected_da, 0., 0.05)
-    met_rinout_4_mc = make_rinout_histo(met_4_corrected_mc, met_z_corrected_mc, 0., 0.05)  
-    met_rinout_4_da = make_rinout_histo(met_4_corrected_da, met_z_corrected_da, 0., 0.05)
-    met_rinout_5_mc = make_rinout_histo(met_5_corrected_mc, met_z_corrected_mc, 0., 0.05) 
-    met_rinout_5_da = make_rinout_histo(met_5_corrected_da, met_z_corrected_da, 0., 0.05)
-    met_rinout_6_mc = make_rinout_histo(met_6_corrected_mc, met_z_corrected_mc, 0., 0.05) 
-    met_rinout_6_da = make_rinout_histo(met_6_corrected_da, met_z_corrected_da, 0., 0.05)
-    print "met_rinout_1_mc", met_rinout_1_mc.Integral()
-    print "met_rinout_1_da", met_rinout_1_da.Integral()
+    met_rinout_20_60_mc = make_rinout_histo(met_1_corrected_mc, met_z_corrected_mc, 0., 0.5 )
+    met_rinout_20_60_da = make_rinout_histo(met_1_corrected_da, met_z_corrected_da, 0., 0.5 )  
+    met_rinout_60_86_mc = make_rinout_histo(met_2_corrected_mc, met_z_corrected_mc, 0., 1. )
+    met_rinout_60_86_da = make_rinout_histo(met_2_corrected_da, met_z_corrected_da, 0., 1. )  
+    met_rinout_96_150_mc = make_rinout_histo(met_3_corrected_mc, met_z_corrected_mc, 0., 0.2) 
+    met_rinout_96_150_da = make_rinout_histo(met_3_corrected_da, met_z_corrected_da, 0., 0.2)
+    met_rinout_150_200_mc = make_rinout_histo(met_4_corrected_mc, met_z_corrected_mc, 0., 0.03)  
+    met_rinout_150_200_da = make_rinout_histo(met_4_corrected_da, met_z_corrected_da, 0., 0.03)
+    met_rinout_200_300_mc = make_rinout_histo(met_5_corrected_mc, met_z_corrected_mc, 0., 0.03) 
+    met_rinout_200_300_da = make_rinout_histo(met_5_corrected_da, met_z_corrected_da, 0., 0.03)
+    met_rinout_300_400_mc = make_rinout_histo(met_6_corrected_mc, met_z_corrected_mc, 0., 0.03) 
+    met_rinout_300_400_da = make_rinout_histo(met_6_corrected_da, met_z_corrected_da, 0., 0.03)
+    met_rinout_400_mc     = make_rinout_histo(met_7_corrected_mc, met_z_corrected_mc, 0., 0.03) 
+    met_rinout_400_da     = make_rinout_histo(met_7_corrected_da, met_z_corrected_da, 0., 0.03) 
+    print "met_rinout_20_60_mc", met_rinout_20_60_mc.Integral()
+    print "met_rinout_20_60_da", met_rinout_20_60_da.Integral()
 
-    plot_met_rinout_1 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_20-86'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)
-    plot_met_rinout_1.addHisto(met_rinout_1_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_1.addHisto(met_rinout_1_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_1.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 20-86"%(rinout_1_da[0]) )
-    plot_met_rinout_1.addBand(met_rinout_1_mc.GetXaxis().GetXmin(), rinout_1_da[0]*0.8, met_rinout_1_mc.GetXaxis().GetXmax(), rinout_1_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_1.addLine(met_rinout_1_mc.GetXaxis().GetXmin(), rinout_1_da[0], met_rinout_1_mc.GetXaxis().GetXmax(), rinout_1_da[0] ,r.kBlue)
-    plot_met_rinout_1.saveRatio(1, 1, 0, lumi, met_rinout_1_da, met_rinout_1_mc)                                                                                                  
-    plot_met_rinout_2 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_86-150'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)
-    plot_met_rinout_2.addHisto(met_rinout_2_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_2.addHisto(met_rinout_2_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_2.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 86-150"%(rinout_2_da[0]) )
-    plot_met_rinout_2.addBand(met_rinout_2_mc.GetXaxis().GetXmin(), rinout_2_da[0]*0.8, met_rinout_2_mc.GetXaxis().GetXmax(), rinout_2_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_2.addLine(met_rinout_2_mc.GetXaxis().GetXmin(), rinout_2_da[0], met_rinout_2_mc.GetXaxis().GetXmax(), rinout_2_da[0] ,r.kBlue)
-    plot_met_rinout_2.saveRatio(1, 1, 0, lumi, met_rinout_2_da, met_rinout_2_mc)                                                        
-    plot_met_rinout_3 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_150-200'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
-    plot_met_rinout_3.addHisto(met_rinout_3_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_3.addHisto(met_rinout_3_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_3.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 150-200"%(rinout_3_da[0]) )
-    plot_met_rinout_3.addBand(met_rinout_3_mc.GetXaxis().GetXmin(), rinout_3_da[0]*0.8, met_rinout_3_mc.GetXaxis().GetXmax(), rinout_3_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_3.addLine(met_rinout_3_mc.GetXaxis().GetXmin(), rinout_3_da[0], met_rinout_3_mc.GetXaxis().GetXmax(), rinout_3_da[0] ,r.kBlue)
-    plot_met_rinout_3.saveRatio(1, 1, 0, lumi, met_rinout_3_da, met_rinout_3_mc)                                                        
-    plot_met_rinout_4 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_200-300'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
-    plot_met_rinout_4.addHisto(met_rinout_4_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_4.addHisto(met_rinout_4_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_4.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 200-300"%(rinout_4_da[0]) )
-    plot_met_rinout_4.addBand(met_rinout_4_mc.GetXaxis().GetXmin(), rinout_4_da[0]*0.8, met_rinout_4_mc.GetXaxis().GetXmax(), rinout_4_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_4.addLine(met_rinout_4_mc.GetXaxis().GetXmin(), rinout_4_da[0], met_rinout_4_mc.GetXaxis().GetXmax(), rinout_4_da[0] ,r.kBlue)
-    plot_met_rinout_4.saveRatio(1, 1, 0, lumi, met_rinout_4_da, met_rinout_4_mc)                                                        
-    plot_met_rinout_5 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_300-400'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
-    plot_met_rinout_5.addHisto(met_rinout_5_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_5.addHisto(met_rinout_5_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_5.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300-400"%(rinout_5_da[0]) )
-    plot_met_rinout_5.addBand(met_rinout_5_mc.GetXaxis().GetXmin(), rinout_5_da[0]*0.8, met_rinout_5_mc.GetXaxis().GetXmax(), rinout_5_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_5.addLine(met_rinout_5_mc.GetXaxis().GetXmin(), rinout_5_da[0], met_rinout_5_mc.GetXaxis().GetXmax(), rinout_5_da[0] ,r.kBlue)
-    plot_met_rinout_5.saveRatio(1, 1, 0, lumi, met_rinout_5_da, met_rinout_5_mc)                                                        
-    plot_met_rinout_6 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_400'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)       
-    plot_met_rinout_6.addHisto(met_rinout_6_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_met_rinout_6.addHisto(met_rinout_6_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_met_rinout_6.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} > 400"%(rinout_6_da[0]) )
-    plot_met_rinout_6.addBand(met_rinout_6_mc.GetXaxis().GetXmin(), rinout_6_da[0]*0.8, met_rinout_6_mc.GetXaxis().GetXmax(), rinout_6_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_met_rinout_6.addLine(met_rinout_6_mc.GetXaxis().GetXmin(), rinout_6_da[0], met_rinout_6_mc.GetXaxis().GetXmax(), rinout_6_da[0] ,r.kBlue)
-    plot_met_rinout_6.saveRatio(1, 1, 0, lumi, met_rinout_6_da, met_rinout_6_mc)                                                                                 
+    plot_met_rinout_20_60 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_20-60'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)
+    plot_met_rinout_20_60.addHisto(met_rinout_20_60_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_20_60.addHisto(met_rinout_20_60_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_20_60.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 20-60"%(rinout_20_60_da[0]) )
+    plot_met_rinout_20_60.addBand(met_rinout_20_60_mc.GetXaxis().GetXmin(), rinout_20_60_da[0]*0.8, met_rinout_20_60_mc.GetXaxis().GetXmax(), rinout_20_60_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_20_60.addLine(met_rinout_20_60_mc.GetXaxis().GetXmin(), rinout_20_60_da[0], met_rinout_20_60_mc.GetXaxis().GetXmax(), rinout_20_60_da[0] ,r.kBlue)
+    plot_met_rinout_20_60.saveRatio(1, 1, 0, lumi, met_rinout_20_60_da, met_rinout_20_60_mc)                                                                                                  
     
+    plot_met_rinout_60_86 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_60-86'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)
+    plot_met_rinout_60_86.addHisto(met_rinout_60_86_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)                                                                                         
+    plot_met_rinout_60_86.addHisto(met_rinout_60_86_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)                                                                                   
+    plot_met_rinout_60_86.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 60-86"%(rinout_20_60_da[0]) )                                                                             
+    plot_met_rinout_60_86.addBand(met_rinout_60_86_mc.GetXaxis().GetXmin(), rinout_60_86_da[0]*0.8, met_rinout_60_86_mc.GetXaxis().GetXmax(), rinout_60_86_da[0]*1.2, r.kOrange+6, 0.2)         
+    plot_met_rinout_60_86.addLine(met_rinout_60_86_mc.GetXaxis().GetXmin(), rinout_60_86_da[0], met_rinout_60_86_mc.GetXaxis().GetXmax(), rinout_60_86_da[0] ,r.kBlue)                          
+    plot_met_rinout_60_86.saveRatio(1, 1, 0, lumi, met_rinout_60_86_da, met_rinout_60_86_mc)                                                                                            
+    
+    
+    plot_met_rinout_96_150 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_96-150'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
+    plot_met_rinout_96_150.addHisto(met_rinout_96_150_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_96_150.addHisto(met_rinout_96_150_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_96_150.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 96-150"%(rinout_96_150_da[0]) )
+    plot_met_rinout_96_150.addBand(met_rinout_96_150_mc.GetXaxis().GetXmin(), rinout_96_150_da[0]*0.8, met_rinout_96_150_mc.GetXaxis().GetXmax(), rinout_96_150_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_96_150.addLine(met_rinout_96_150_mc.GetXaxis().GetXmin(), rinout_96_150_da[0], met_rinout_96_150_mc.GetXaxis().GetXmax(), rinout_96_150_da[0] ,r.kBlue)
+    plot_met_rinout_96_150.saveRatio(1, 1, 0, lumi, met_rinout_96_150_da, met_rinout_96_150_mc)                                                        
+    
+    plot_met_rinout_150_200 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_150-200'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
+    plot_met_rinout_150_200.addHisto(met_rinout_150_200_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_150_200.addHisto(met_rinout_150_200_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_150_200.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 150-200"%(rinout_150_200_da[0]) )
+    plot_met_rinout_150_200.addBand(met_rinout_150_200_mc.GetXaxis().GetXmin(), rinout_150_200_da[0]*0.8, met_rinout_150_200_mc.GetXaxis().GetXmax(), rinout_150_200_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_150_200.addLine(met_rinout_150_200_mc.GetXaxis().GetXmin(), rinout_150_200_da[0], met_rinout_150_200_mc.GetXaxis().GetXmax(), rinout_150_200_da[0] ,r.kBlue)
+    plot_met_rinout_150_200.saveRatio(1, 1, 0, lumi, met_rinout_150_200_da, met_rinout_150_200_mc)                                                        
+    
+    plot_met_rinout_200_300 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_200-300'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)           
+    plot_met_rinout_200_300.addHisto(met_rinout_200_300_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_200_300.addHisto(met_rinout_200_300_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_200_300.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 200-300"%(rinout_200_300_da[0]) )
+    plot_met_rinout_200_300.addBand(met_rinout_200_300_mc.GetXaxis().GetXmin(), rinout_200_300_da[0]*0.8, met_rinout_200_300_mc.GetXaxis().GetXmax(), rinout_200_300_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_200_300.addLine(met_rinout_200_300_mc.GetXaxis().GetXmin(), rinout_200_300_da[0], met_rinout_200_300_mc.GetXaxis().GetXmax(), rinout_200_300_da[0] ,r.kBlue)
+    plot_met_rinout_200_300.saveRatio(1, 1, 0, lumi, met_rinout_200_300_da, met_rinout_200_300_mc)                                                        
+    
+    plot_met_rinout_300_400 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_300-400'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)       
+    plot_met_rinout_300_400.addHisto(met_rinout_300_400_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_300_400.addHisto(met_rinout_300_400_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_300_400.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300- 400"%(rinout_300_400_da[0]) )
+    plot_met_rinout_300_400.addBand(met_rinout_300_400_mc.GetXaxis().GetXmin(), rinout_300_400_da[0]*0.8, met_rinout_300_400_mc.GetXaxis().GetXmax(), rinout_300_400_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_300_400.addLine(met_rinout_300_400_mc.GetXaxis().GetXmin(), rinout_300_400_da[0], met_rinout_300_400_mc.GetXaxis().GetXmax(), rinout_300_400_da[0] ,r.kBlue)
+    plot_met_rinout_300_400.saveRatio(1, 1, 0, lumi, met_rinout_300_400_da, met_rinout_300_400_mc)                                                                                                  
+    plot_met_rinout_400 = Canvas.Canvas('rinout/%s_%s/plot_met_rinout_mll_400'%(lumi_str,tag), 'png,pdf', 0.6, 0.7, 0.85, 0.9)       
+    plot_met_rinout_400.addHisto(met_rinout_400_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_met_rinout_400.addHisto(met_rinout_400_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_met_rinout_400.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} + 400"%(rinout_300_400_da[0]) )
+    plot_met_rinout_400.addBand(met_rinout_400_mc.GetXaxis().GetXmin(), rinout_400_da[0]*0.8, met_rinout_400_mc.GetXaxis().GetXmax(), rinout_400_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_met_rinout_400.addLine(met_rinout_400_mc.GetXaxis().GetXmin(), rinout_400_da[0], met_rinout_400_mc.GetXaxis().GetXmax(), rinout_400_da[0] ,r.kBlue)
+    plot_met_rinout_400.saveRatio(1, 1, 0, lumi, met_rinout_400_da, met_rinout_400_mc)                                                                                                 
+
     #make njet plot##############################################################################################################################################################################
-    nj_1_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_20-86_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll20_86]),'', labelnjet) 
-    nj_1_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_20-86_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll20_86]),'', labelnjet)
-    nj_1_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_20-86_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll20_86]),'', labelnjet)
-    nj_1_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_20-86_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll20_86]),'', labelnjet)
-    nj_z_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_86-96_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll86_96]),'', labelnjet)
-    nj_z_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_86-96_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll86_96]),'', labelnjet)
-    nj_z_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_86-96_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll86_96]),'', labelnjet)
-    nj_z_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_86-96_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll86_96]),'', labelnjet)
-    nj_2_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_96-150_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll96_150]),'',labelnjet)
-    nj_2_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_96-150_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll96_150]),'',labelnjet)
-    nj_2_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_96-150_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll96_150]),'',labelnjet)
-    nj_2_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_96-150_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll96_150]),'',labelnjet)
-    nj_3_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_150-200_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll150_200]),'',labelnjet)
-    nj_3_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_150-200_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll150_200]),'',labelnjet)
-    nj_3_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_150-200_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll150_200]),'',labelnjet)
-    nj_3_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_150-200_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll150_200]),'',labelnjet)
-    nj_4_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_200-300_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll200_300]),'',labelnjet)
-    nj_4_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_200-300_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll200_300]),'',labelnjet)
-    nj_4_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_200-300_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll200_300]),'',labelnjet)
-    nj_4_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_200-300_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll200_300]),'',labelnjet)
-    nj_5_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_300-400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll300_400]),'',labelnjet)
-    nj_5_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_300-400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll300_400]),'',labelnjet)
-    nj_5_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_300-400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll300_400]),'',labelnjet)
-    nj_5_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_300-400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll300_400]),'',labelnjet)
-    nj_6_SF_mc=treeMC.getTH1F(lumi,"M_njet_mll_400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll400]),'',labelnjet)
-    nj_6_SF_da=treeDA.getTH1F(lumi,"D_njet_mll_400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll400]),'',labelnjet)
-    nj_6_OF_mc=treeMC.getTH1F(lumi,"M_njet_mll_400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll400]),'',labelnjet)
-    nj_6_OF_da=treeDA.getTH1F(lumi,"D_njet_mll_400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoNjetNoMll,cuts.MET100,cuts.mll400]),'',labelnjet)
+    nj_1_SF_mc=treeMC.getTH1F(lumi,"M_njet_20-60_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll20_60]),'', labelnjet) 
+    nj_1_SF_da=treeDA.getTH1F(lumi,"D_njet_20-60_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll20_60, cuts.trigger]),'', labelnjet)
+    nj_1_OF_mc=treeMC.getTH1F(lumi,"M_njet_20-60_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll20_60]),'', labelnjet)
+    nj_1_OF_da=treeDA.getTH1F(lumi,"D_njet_20-60_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll20_60, cuts.trigger]),'', labelnjet)
+    nj_2_SF_mc=treeMC.getTH1F(lumi,"M_njet_60-86_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll60_86]),'', labelnjet)
+    nj_2_SF_da=treeDA.getTH1F(lumi,"D_njet_60-86_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll60_86, cuts.trigger]),'', labelnjet)
+    nj_2_OF_mc=treeMC.getTH1F(lumi,"M_njet_60-86_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll60_86]),'', labelnjet)
+    nj_2_OF_da=treeDA.getTH1F(lumi,"D_njet_60-86_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll60_86, cuts.trigger]),'', labelnjet)
+    nj_z_SF_mc=treeMC.getTH1F(lumi,"M_njet_86-96_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll86_96]),'', labelnjet)
+    nj_z_SF_da=treeDA.getTH1F(lumi,"D_njet_86-96_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll86_96, cuts.trigger]),'', labelnjet)
+    nj_z_OF_mc=treeMC.getTH1F(lumi,"M_njet_86-96_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll86_96]),'', labelnjet)
+    nj_z_OF_da=treeDA.getTH1F(lumi,"D_njet_86-96_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll86_96, cuts.trigger]),'', labelnjet)
+    nj_3_SF_mc=treeMC.getTH1F(lumi,"M_njet_96-150_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll96_150]),'',labelnjet)
+    nj_3_SF_da=treeDA.getTH1F(lumi,"D_njet_96-150_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll96_150, cuts.trigger]),'',labelnjet)
+    nj_3_OF_mc=treeMC.getTH1F(lumi,"M_njet_96-150_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll96_150]),'',labelnjet)
+    nj_3_OF_da=treeDA.getTH1F(lumi,"D_njet_96-150_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll96_150, cuts.trigger]),'',labelnjet)
+    nj_4_SF_mc=treeMC.getTH1F(lumi,"M_njet_150-200_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll150_200]),'',labelnjet)
+    nj_4_SF_da=treeDA.getTH1F(lumi,"D_njet_150-200_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll150_200, cuts.trigger]),'',labelnjet)
+    nj_4_OF_mc=treeMC.getTH1F(lumi,"M_njet_150-200_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll150_200]),'',labelnjet)
+    nj_4_OF_da=treeDA.getTH1F(lumi,"D_njet_150-200_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll150_200, cuts.trigger]),'',labelnjet)
+    nj_5_SF_mc=treeMC.getTH1F(lumi,"M_njet_200-300_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll200_300]),'',labelnjet)
+    nj_5_SF_da=treeDA.getTH1F(lumi,"D_njet_200-300_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll200_300, cuts.trigger]),'',labelnjet)
+    nj_5_OF_mc=treeMC.getTH1F(lumi,"M_njet_200-300_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll200_300]),'',labelnjet)
+    nj_5_OF_da=treeDA.getTH1F(lumi,"D_njet_200-300_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll200_300, cuts.trigger]),'',labelnjet)
+    nj_6_SF_mc=treeMC.getTH1F(lumi,"M_njet_300-400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll300_400]),'',labelnjet)
+    nj_6_SF_da=treeDA.getTH1F(lumi,"D_njet_300-400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll300_400, cuts.trigger]),'',labelnjet)
+    nj_6_OF_mc=treeMC.getTH1F(lumi,"M_njet_300-400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll300_400]),'',labelnjet)
+    nj_6_OF_da=treeDA.getTH1F(lumi,"D_njet_300-400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF,cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll300_400, cuts.trigger]),'',labelnjet)
+    nj_7_SF_mc=treeMC.getTH1F(lumi,"M_njet_400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll400]),'',labelnjet)
+    nj_7_SF_da=treeDA.getTH1F(lumi,"D_njet_400_SF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.SF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll400, cuts.trigger]),'',labelnjet)
+    nj_7_OF_mc=treeMC.getTH1F(lumi,"M_njet_400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll400]),'',labelnjet)
+    nj_7_OF_da=treeDA.getTH1F(lumi,"D_njet_400_OF","nJetSel_Edge",njbins,1,1,cuts.AddList([cuts.goodLepton,cuts.OF, cuts.DYControlRegionNoMllNoNJet,cuts.METl100,cuts.mll400, cuts.trigger]),'',labelnjet)
                                                                                                                              
-    nj_1_corrected_mc  = subtractTT(nj_1_SF_mc, nj_1_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_1_corrected_da  = subtractTT(nj_1_SF_da, nj_1_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_z_corrected_mc  = subtractTT(nj_z_SF_mc, nj_z_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_z_corrected_da  = subtractTT(nj_z_SF_da, nj_z_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_2_corrected_mc  = subtractTT(nj_2_SF_mc, nj_2_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_2_corrected_da  = subtractTT(nj_2_SF_da, nj_2_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_3_corrected_mc  = subtractTT(nj_3_SF_mc, nj_3_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_3_corrected_da  = subtractTT(nj_3_SF_da, nj_3_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_4_corrected_mc  = subtractTT(nj_4_SF_mc, nj_4_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_4_corrected_da  = subtractTT(nj_4_SF_da, nj_4_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_5_corrected_mc  = subtractTT(nj_5_SF_mc, nj_5_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_5_corrected_da  = subtractTT(nj_5_SF_da, nj_5_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
-    nj_6_corrected_mc  = subtractTT(nj_6_SF_mc, nj_6_OF_mc, readFromFile(ingredientsFile, "MC")[0],  "MC")
-    nj_6_corrected_da  = subtractTT(nj_6_SF_da, nj_6_OF_da, readFromFile(ingredientsFile, "DATA")[0],  "DATA")
+    nj_1_corrected_mc  = subtractTT(nj_1_SF_mc, nj_1_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_1_corrected_da  = subtractTT(nj_1_SF_da, nj_1_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_2_corrected_mc  = subtractTT(nj_2_SF_mc, nj_2_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_2_corrected_da  = subtractTT(nj_2_SF_da, nj_2_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_z_corrected_mc  = subtractTT(nj_z_SF_mc, nj_z_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_z_corrected_da  = subtractTT(nj_z_SF_da, nj_z_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_3_corrected_mc  = subtractTT(nj_3_SF_mc, nj_3_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_3_corrected_da  = subtractTT(nj_3_SF_da, nj_3_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_4_corrected_mc  = subtractTT(nj_4_SF_mc, nj_4_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_4_corrected_da  = subtractTT(nj_4_SF_da, nj_4_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_5_corrected_mc  = subtractTT(nj_5_SF_mc, nj_5_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_5_corrected_da  = subtractTT(nj_5_SF_da, nj_5_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_6_corrected_mc  = subtractTT(nj_6_SF_mc, nj_6_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_6_corrected_da  = subtractTT(nj_6_SF_da, nj_6_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
+    nj_7_corrected_mc  = subtractTT(nj_7_SF_mc, nj_7_OF_mc, helper.readFromFileRsfofD(ingredientsFile, "MC")[0],  "MC")
+    nj_7_corrected_da  = subtractTT(nj_7_SF_da, nj_7_OF_da, helper.readFromFileRsfofD(ingredientsFile, "DATA")[0],  "DATA")
     
-    nj_rinout_1_mc = make_rinout_histo(nj_1_corrected_mc, nj_z_corrected_mc, 0., 1. )
-    nj_rinout_1_da = make_rinout_histo(nj_1_corrected_da, nj_z_corrected_da, 0., 1. )  
-    nj_rinout_2_mc = make_rinout_histo(nj_2_corrected_mc, nj_z_corrected_mc, 0., 0.5 )
-    nj_rinout_2_da = make_rinout_histo(nj_2_corrected_da, nj_z_corrected_da, 0., 0.5 )
-    nj_rinout_3_mc = make_rinout_histo(nj_3_corrected_mc, nj_z_corrected_mc, 0., 0.05 ) 
-    nj_rinout_3_da = make_rinout_histo(nj_3_corrected_da, nj_z_corrected_da, 0., 0.05 )
-    nj_rinout_4_mc = make_rinout_histo(nj_4_corrected_mc, nj_z_corrected_mc, 0., 0.05 )  
-    nj_rinout_4_da = make_rinout_histo(nj_4_corrected_da, nj_z_corrected_da, 0., 0.05 )
-    nj_rinout_5_mc = make_rinout_histo(nj_5_corrected_mc, nj_z_corrected_mc, 0., 0.05 ) 
-    nj_rinout_5_da = make_rinout_histo(nj_5_corrected_da, nj_z_corrected_da, 0., 0.05 )
-    nj_rinout_6_mc = make_rinout_histo(nj_6_corrected_mc, nj_z_corrected_mc, 0., 0.05 ) 
-    nj_rinout_6_da = make_rinout_histo(nj_6_corrected_da, nj_z_corrected_da, 0., 0.05 )
+    nj_rinout_20_60_mc = make_rinout_histo(nj_1_corrected_mc, nj_z_corrected_mc, 0., 0.5 )
+    nj_rinout_20_60_da = make_rinout_histo(nj_1_corrected_da, nj_z_corrected_da, 0., 0.5 )  
+    nj_rinout_60_86_mc = make_rinout_histo(nj_2_corrected_mc, nj_z_corrected_mc, 0., 1. )
+    nj_rinout_60_86_da = make_rinout_histo(nj_2_corrected_da, nj_z_corrected_da, 0., 1. )  
+    nj_rinout_96_150_mc = make_rinout_histo(nj_3_corrected_mc, nj_z_corrected_mc, 0., 0.2 ) 
+    nj_rinout_96_150_da = make_rinout_histo(nj_3_corrected_da, nj_z_corrected_da, 0., 0.2 )
+    nj_rinout_150_200_mc = make_rinout_histo(nj_4_corrected_mc, nj_z_corrected_mc, 0., 0.05 )  
+    nj_rinout_150_200_da = make_rinout_histo(nj_4_corrected_da, nj_z_corrected_da, 0., 0.05 )
+    nj_rinout_200_300_mc = make_rinout_histo(nj_5_corrected_mc, nj_z_corrected_mc, 0., 0.02 ) 
+    nj_rinout_200_300_da = make_rinout_histo(nj_5_corrected_da, nj_z_corrected_da, 0., 0.02 )
+    nj_rinout_300_400_mc = make_rinout_histo(nj_6_corrected_mc, nj_z_corrected_mc, 0., 0.02 ) 
+    nj_rinout_300_400_da = make_rinout_histo(nj_6_corrected_da, nj_z_corrected_da, 0., 0.02 )
+    nj_rinout_400_mc = make_rinout_histo(nj_7_corrected_mc, nj_z_corrected_mc, 0., 0.02 ) 
+    nj_rinout_400_da = make_rinout_histo(nj_7_corrected_da, nj_z_corrected_da, 0., 0.02 )
                                                                                                                                                                                        
-    plot_nj_rinout_1 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_20-86'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
-    plot_nj_rinout_1.addHisto(nj_rinout_1_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_1.addHisto(nj_rinout_1_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_1.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 20-86"%(rinout_1_da[0]) )
-    plot_nj_rinout_1.addBand(nj_rinout_1_mc.GetXaxis().GetXmin(), rinout_1_da[0]*0.8, nj_rinout_1_mc.GetXaxis().GetXmax(), rinout_1_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_1.addLine(nj_rinout_1_mc.GetXaxis().GetXmin(), rinout_1_da[0], nj_rinout_1_mc.GetXaxis().GetXmax(), rinout_1_da[0] ,r.kBlue)
-    plot_nj_rinout_1.saveRatio(1, 1, 0, lumi, nj_rinout_1_da, nj_rinout_1_mc)                                                                                                  
-    plot_nj_rinout_2 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_86-150'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
-    plot_nj_rinout_2.addHisto(nj_rinout_2_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_2.addHisto(nj_rinout_2_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_2.addBand(nj_rinout_2_mc.GetXaxis().GetXmin(), rinout_2_da[0]*0.8, nj_rinout_2_mc.GetXaxis().GetXmax(), rinout_2_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_2.addLine(nj_rinout_2_mc.GetXaxis().GetXmin(), rinout_2_da[0], nj_rinout_2_mc.GetXaxis().GetXmax(), rinout_2_da[0] ,r.kBlue)
-    plot_nj_rinout_2.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 86-150"%(rinout_2_da[0]) )
-    plot_nj_rinout_2.saveRatio(1, 1, 0, lumi, nj_rinout_2_da, nj_rinout_2_mc)                                                        
-    plot_nj_rinout_3 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_150-200'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
-    plot_nj_rinout_3.addHisto(nj_rinout_3_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_3.addHisto(nj_rinout_3_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_3.addBand(nj_rinout_3_mc.GetXaxis().GetXmin(), rinout_3_da[0]*0.8, nj_rinout_3_mc.GetXaxis().GetXmax(), rinout_3_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_3.addLine(nj_rinout_3_mc.GetXaxis().GetXmin(), rinout_3_da[0], nj_rinout_3_mc.GetXaxis().GetXmax(), rinout_3_da[0] ,r.kBlue) 
-    plot_nj_rinout_3.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 150-200"%(rinout_3_da[0]) )
-    plot_nj_rinout_3.saveRatio(1, 1, 0, lumi, nj_rinout_3_da, nj_rinout_3_mc)                                                        
-    plot_nj_rinout_4 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_200-300'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
-    plot_nj_rinout_4.addHisto(nj_rinout_4_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_4.addHisto(nj_rinout_4_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_4.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 200-300"%(rinout_4_da[0]) )
-    plot_nj_rinout_4.addBand(nj_rinout_4_mc.GetXaxis().GetXmin(), rinout_4_da[0]*0.8, nj_rinout_4_mc.GetXaxis().GetXmax(), rinout_4_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_4.addLine(nj_rinout_4_mc.GetXaxis().GetXmin(), rinout_4_da[0], nj_rinout_4_mc.GetXaxis().GetXmax(), rinout_4_da[0] ,r.kBlue) 
-    plot_nj_rinout_4.saveRatio(1, 1, 0, lumi, nj_rinout_4_da, nj_rinout_4_mc)                                                        
-    plot_nj_rinout_5 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_300-400'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
-    plot_nj_rinout_5.addHisto(nj_rinout_5_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_5.addHisto(nj_rinout_5_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_5.addBand(nj_rinout_5_mc.GetXaxis().GetXmin(), rinout_5_da[0]*0.8, nj_rinout_5_mc.GetXaxis().GetXmax(), rinout_5_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_5.addLine(nj_rinout_5_mc.GetXaxis().GetXmin(), rinout_5_da[0], nj_rinout_5_mc.GetXaxis().GetXmax(), rinout_5_da[0] ,r.kBlue) 
-    plot_nj_rinout_5.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300-400"%(rinout_5_da[0]) )
-    plot_nj_rinout_5.saveRatio(1, 1, 0, lumi, nj_rinout_5_da, nj_rinout_5_mc)                                                        
-    plot_nj_rinout_6 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_400'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)       
-    plot_nj_rinout_6.addHisto(nj_rinout_6_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
-    plot_nj_rinout_6.addHisto(nj_rinout_6_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
-    plot_nj_rinout_6.addBand(nj_rinout_6_mc.GetXaxis().GetXmin(), rinout_6_da[0]*0.8, nj_rinout_6_mc.GetXaxis().GetXmax(), rinout_6_da[0]*1.2, r.kOrange+6, 0.2)
-    plot_nj_rinout_6.addLine(nj_rinout_6_mc.GetXaxis().GetXmin(), rinout_6_da[0], nj_rinout_6_mc.GetXaxis().GetXmax(), rinout_6_da[0] ,r.kBlue) 
-    plot_nj_rinout_6.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} > 400"%(rinout_6_da[0]) )
-    plot_nj_rinout_6.saveRatio(1, 1, 0, lumi, nj_rinout_6_da, nj_rinout_6_mc)                                                                                              
-    
+    plot_nj_rinout_20_60 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_20-60'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
+    plot_nj_rinout_20_60.addHisto(nj_rinout_20_60_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_20_60.addHisto(nj_rinout_20_60_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_20_60.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 20-60"%(rinout_20_60_da[0]) )
+    plot_nj_rinout_20_60.addBand(nj_rinout_20_60_mc.GetXaxis().GetXmin(), rinout_20_60_da[0]*0.8, nj_rinout_20_60_mc.GetXaxis().GetXmax(), rinout_20_60_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_20_60.addLine(nj_rinout_20_60_mc.GetXaxis().GetXmin(), rinout_20_60_da[0], nj_rinout_20_60_mc.GetXaxis().GetXmax(), rinout_20_60_da[0] ,r.kBlue)
+    plot_nj_rinout_20_60.saveRatio(1, 1, 0, lumi, nj_rinout_20_60_da, nj_rinout_20_60_mc)                                                                                                  
+    plot_nj_rinout_60_86 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_60-86'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)
+    plot_nj_rinout_60_86.addHisto(nj_rinout_60_86_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_60_86.addHisto(nj_rinout_60_86_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_60_86.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 60-86"%(rinout_60_86_da[0]) )
+    plot_nj_rinout_60_86.addBand(nj_rinout_60_86_mc.GetXaxis().GetXmin(), rinout_60_86_da[0]*0.8, nj_rinout_60_86_mc.GetXaxis().GetXmax(), rinout_60_86_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_60_86.addLine(nj_rinout_60_86_mc.GetXaxis().GetXmin(), rinout_60_86_da[0], nj_rinout_60_86_mc.GetXaxis().GetXmax(), rinout_60_86_da[0] ,r.kBlue)
+    plot_nj_rinout_60_86.saveRatio(1, 1, 0, lumi, nj_rinout_60_86_da, nj_rinout_60_86_mc)                                                                                         
+    plot_nj_rinout_96_150 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_96-150'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
+    plot_nj_rinout_96_150.addHisto(nj_rinout_96_150_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_96_150.addHisto(nj_rinout_96_150_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_96_150.addBand(nj_rinout_96_150_mc.GetXaxis().GetXmin(), rinout_96_150_da[0]*0.8, nj_rinout_96_150_mc.GetXaxis().GetXmax(), rinout_96_150_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_96_150.addLine(nj_rinout_96_150_mc.GetXaxis().GetXmin(), rinout_96_150_da[0], nj_rinout_96_150_mc.GetXaxis().GetXmax(), rinout_96_150_da[0] ,r.kBlue) 
+    plot_nj_rinout_96_150.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 96-150"%(rinout_96_150_da[0]) )
+    plot_nj_rinout_96_150.saveRatio(1, 1, 0, lumi, nj_rinout_96_150_da, nj_rinout_96_150_mc)                                                        
+    plot_nj_rinout_150_200 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_150-200'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
+    plot_nj_rinout_150_200.addHisto(nj_rinout_150_200_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_150_200.addHisto(nj_rinout_150_200_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_150_200.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 150-200"%(rinout_150_200_da[0]) )
+    plot_nj_rinout_150_200.addBand(nj_rinout_150_200_mc.GetXaxis().GetXmin(), rinout_150_200_da[0]*0.8, nj_rinout_150_200_mc.GetXaxis().GetXmax(), rinout_150_200_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_150_200.addLine(nj_rinout_150_200_mc.GetXaxis().GetXmin(), rinout_150_200_da[0], nj_rinout_150_200_mc.GetXaxis().GetXmax(), rinout_150_200_da[0] ,r.kBlue) 
+    plot_nj_rinout_150_200.saveRatio(1, 1, 0, lumi, nj_rinout_150_200_da, nj_rinout_150_200_mc)                                                        
+    plot_nj_rinout_200_300 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_200-300'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)           
+    plot_nj_rinout_200_300.addHisto(nj_rinout_200_300_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_200_300.addHisto(nj_rinout_200_300_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_200_300.addBand(nj_rinout_200_300_mc.GetXaxis().GetXmin(), rinout_200_300_da[0]*0.8, nj_rinout_200_300_mc.GetXaxis().GetXmax(), rinout_200_300_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_200_300.addLine(nj_rinout_200_300_mc.GetXaxis().GetXmin(), rinout_200_300_da[0], nj_rinout_200_300_mc.GetXaxis().GetXmax(), rinout_200_300_da[0] ,r.kBlue) 
+    plot_nj_rinout_200_300.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 200-300"%(rinout_200_300_da[0]) )
+    plot_nj_rinout_200_300.saveRatio(1, 1, 0, lumi, nj_rinout_200_300_da, nj_rinout_200_300_mc)                                                        
+    plot_nj_rinout_300_400 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_300-400'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)       
+    plot_nj_rinout_300_400.addHisto(nj_rinout_300_400_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_300_400.addHisto(nj_rinout_300_400_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_300_400.addBand(nj_rinout_300_400_mc.GetXaxis().GetXmin(), rinout_300_400_da[0]*0.8, nj_rinout_300_400_mc.GetXaxis().GetXmax(), rinout_300_400_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_300_400.addLine(nj_rinout_300_400_mc.GetXaxis().GetXmin(), rinout_300_400_da[0], nj_rinout_300_400_mc.GetXaxis().GetXmax(), rinout_300_400_da[0] ,r.kBlue) 
+    plot_nj_rinout_300_400.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300-400"%(rinout_300_400_da[0]) )
+    plot_nj_rinout_300_400.saveRatio(1, 1, 0, lumi, nj_rinout_300_400_da, nj_rinout_300_400_mc)                                                                                                  
+    plot_nj_rinout_400 = Canvas.Canvas('rinout/%s_%s/plot_njet_rinout_mll_400'%(lumi_str,tag), 'png,pdf', 0.7, 0.7, 0.85, 0.9)       
+    plot_nj_rinout_400.addHisto(nj_rinout_400_mc, 'E1', 'MC', 'L', r.kGreen+1 , 1, 0)
+    plot_nj_rinout_400.addHisto(nj_rinout_400_da, 'E1,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
+    plot_nj_rinout_400.addBand(nj_rinout_400_mc.GetXaxis().GetXmin(), rinout_400_da[0]*0.8, nj_rinout_400_mc.GetXaxis().GetXmax(), rinout_400_da[0]*1.2, r.kOrange+6, 0.2)
+    plot_nj_rinout_400.addLine(nj_rinout_400_mc.GetXaxis().GetXmin(), rinout_400_da[0], nj_rinout_400_mc.GetXaxis().GetXmax(), rinout_400_da[0] ,r.kBlue) 
+    plot_nj_rinout_400.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300-400"%(rinout_400_da[0]) )
+    plot_nj_rinout_400.saveRatio(1, 1, 0, lumi, nj_rinout_400_da, nj_rinout_400_mc)                                                                                                  
+
 
 if __name__ == '__main__':
 
@@ -474,10 +487,105 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RinoutAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    mcDatasets = ['TTJets_DiLepton', 'TTJets_DiLepton_ext',   'DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO','ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
-    daDatasets = ['DoubleMuon_Run2016B-PromptReco-v2_runs_273150_275376', 'DoubleEG_Run2016B-PromptReco-v2_runs_273150_275376', 'MuonEG_Run2016B-PromptReco-v2_runs_273150_275376',
-                  'DoubleMuon_Run2016C-PromptReco-v2_runs_275420_276283', 'DoubleEG_Run2016C-PromptReco-v2_runs_275420_276283', 'MuonEG_Run2016C-PromptReco-v2_runs_275420_276283',
-                  'DoubleMuon_Run2016D-PromptReco-v2_runs_276315_276811', 'DoubleEG_Run2016D-PromptReco-v2_runs_276315_276811', 'MuonEG_Run2016D-PromptReco-v2_runs_276315_276811']
+    mcDatasets = ['TTJets_DiLepton_ext',   'DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO','ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Q', 'ZZTo2L2Nu','WZTo3LNu',  'WZTo2L2Q', 'TTTT', 'tZq_ll', 'TWZ','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT','WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'TTZToQQ', 'TTWToQQ', 'T_tWch', 'TBar_tWch' , 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+
+    
+    daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5',
+                  'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
+                  'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
+                  'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
+                  'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']           
+
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
@@ -485,7 +593,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RinoutAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     maxrun = 999999
-    lumi = 12.9 ; maxrun = 276811; lumi_str = '12.9invfb'
+    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 
