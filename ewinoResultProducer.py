@@ -126,8 +126,12 @@ def getFraction(x,  xstat, y, ystat):
         print "denominator < 0!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return x, xstat
 
-def makeResultsTable(da, fs, dy, zz, wz, ttz, others ):
-    line0 = '  & 50-100 & 100-150 & 150-250 & 250+\\hline  '
+def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
+    if region == "TChiWZ":
+        line0 = 'TChiWZ  & 50-100 & 100-150 & 150-250 & 250-350 & 350+\\\\ \\hline  '
+    if region == "TChiZH":
+        line0 = 'TChiZH  & 50-100 & 100-150 & 150-250 & 250+\\\\ \\hline  '
+    
     line1 = '  Templates  & '
     line2 = '  FS  & ' 
     line3 = '  ZZ  & ' 
@@ -356,36 +360,41 @@ def makeTheFactors():
    # makeEWKFactorsTable(r0b1b_mll_OF_mc, r0b1b_mll_OF_mc_e,  r0b1b_mll_ext_OF_mc, r0b1b_mll_ext_OF_mc_e , r0b1b_mll_ext_SF_mc, r0b1b_mll_ext_SF_mc_e, r0b1b_mll_OF_da, r0b1b_mll_OF_da_e,  r0b1b_mll_ext_OF_da, r0b1b_mll_ext_OF_da_e , 0.0000, 0.0000,'r0b1b' )    
     return kappa_met150_250_da, kappa_met150_250_da_e, kappa_met150_250_mc, kappa_met150_250_mc_e
 
-def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False):
+def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, region = ''):
     if var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
     if isBlinded:
+        if region == "TChiWZ":
+            bin1  = 282.8; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
+            metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
+            metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
+            nbin = 5
+        if region == "TChiZH":
+            bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
+            metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
+            metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
+            nbin = 4
         lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
-        bin1  = 282.8; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
         specialcut = '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     else:
         lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-    metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
-    metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
-    met_mc=treeDY.getTH1F(lint,"met_mc",'met_Edge', metbins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.ewinoCR,cuts.Zmass,cuts.bveto, cuts.OF]), '',xlabel)
-    met_mc.SetFillColorAlpha(r.kRed, 0.5)
-    dy = r.TH1F('dy','dy', 4, metbins_)
+    dy = r.TH1F('dy','dy', nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
     dy.SetBinContent(3, bin3);dy.SetBinError(3,bin3_e);
     dy.SetBinContent(4, bin4);dy.SetBinError(4,bin4_e);
-    dy.SetBinContent(5, bin5);dy.SetBinError(5,bin5_e);
+    if region == "TChiWZ":
+        dy.SetBinContent(5, bin5);dy.SetBinError(5,bin5_e);
 
-    plot = Canvas.Canvas('ewino/%s/templates'%(lint_str), 'png,pdf,root', 0.65, 0.6, 0.85, 0.9)
-    #plot.addHisto(met_mc, "HIST", "DY MC", "L", r.kBlue,  1, 0)
-    plot.addHisto(dy, "HIST", "templates", "L", r.kBlack,  1, 0)
+    plot = Canvas.Canvas('ewino/%s/templates_%s'%(lint_str, region), 'png,pdf,root', 0.65, 0.6, 0.85, 0.9)
+    plot.addHisto(dy, "HIST, SAME", "templates", "L", r.kBlack,  1, 0)
     plot.save(1, 1, 1, lint)                                                                              
     return dy                                                                                                                                                                   
     
     
-def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False):
+def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, region = ''):
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
@@ -394,20 +403,25 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         nbins, xmin, xmax = 5, 50, 300
-        #nbins, xmin, xmax = 15, 0, 300
         xlabel = 'E_{T}^{miss} [GeV]'                    
     lint = 18.1  ; maxrun = 999999 ; lint_str = '18.1invfb'
     specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    if region == "TChiWZ":
+        regioncut =  cuts.ewinoExtMll
+        bins = [50., 100., 150., 250., 350.]
+    if region == "TChiZH":
+        regioncut =  cuts.ewinoNeuNeuExtMll
+        bins = [50., 100., 150., 250.]
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     ## mll distributions
-    mc_OF = treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut,cuts.goodLepton,cuts.ewinoClosureExtMll,cuts.OF]), '', xlabel)
-    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut,cuts.goodLepton,cuts.ewinoClosureExtMll,cuts.trigger,cuts.OF]), '', xlabel)
+    mc_OF = treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut,cuts.goodLepton,regioncut,cuts.OF]), '', xlabel)
+    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut,cuts.goodLepton,regioncut,cuts.trigger,cuts.OF]), '', xlabel)
     print "mc_OF", mc_OF.Integral()
     print "da_OF", da_OF.Integral()
     print "mc_OF_corr", mc_OF.Integral()*kappa_mc
     print "da_OF_corr", da_OF.Integral()*kappa_da
-    mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0, 350.0], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoClosureReg,  cuts.SF]), '', xlabel)
+    mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut ,cuts.Zmass, cuts.SF]), '', xlabel)
     print "mc_SF", mc_SF.Integral()
     mc_OF_err = copy.deepcopy(mc_OF)
     mc_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
@@ -431,7 +445,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     da_OF_rsfofScaled_err.SetFillStyle(3004); da_OF_rsfofScaled_err.SetMarkerSize(0.)                                                                                    
 
     print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_closure = Canvas.Canvas('ewino/%s/plot_closure_%s_mcPredmcObs%s'%(lint_str, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.55, 0.75, 0.8)
+    plot_closure = Canvas.Canvas('ewino/%s/plot_closure_%s_%s_%s'%(lint_str, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.6, 0.55, 0.75, 0.8)
     plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
@@ -442,27 +456,34 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return da_OF_rsfofScaled                                                                                                                                                                                        
 
 
-def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', _options = ''):
-    lint = 18.1 
-    dy_shape =  makeDYMETShape('met','', 'inclusive', True)
-    fs_shape  = makeClosureTests('met','','inclusive', True)
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', region = '', _options = ''):
+    lint = 18.1
+    print "Doing region: ", region
+    dy_shape =  makeDYMETShape('met','', '', True, region)
+    fs_shape  = makeClosureTests('met','','', True, region)
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
+    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
     if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
     if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
     if 'makeTable'     in _options: print 'found option %s'%'makeTable'     ;makeTable     = True
     if 'printIntegral' in _options: print 'found option %s'%'printIntegral' ;printIntegral = True
 
-    if var == 'met'      : treevar = 'met_Edge'            ; nbins, xmin, xmax = 18, 100, 1000 ; xlabel = 'E_{T}^{miss.} [GeV]'
-    
+    if var == 'met'      : treevar = 'met_Edge'     ; xlabel = 'E_{T}^{miss.} [GeV]'
+    if region == "TChiWZ":
+        bins = [50.0, 100.0, 150.0, 250.0, 350.0]
+        regioncut = cuts.ewinoSR
+    if region == "TChiZH":
+        bins = [50.0, 100.0, 150.0, 250.0]
+        regioncut = cuts.ewinoNeuNeu
     mc_stack = r.THStack() 
     newLumiString = '18.1invfb'
     specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
-    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoSR,  cuts.SF, cuts.trigger]), '', xlabel)
-    ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoSR, cuts.SF]), '', xlabel)
-    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoSR, cuts.SF]), '', xlabel)
-    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoSR, cuts.SF]), '', xlabel)
-    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar, [50.0, 100.0, 150.0, 250.0], 1,1, cuts.AddList([specialcut, cuts.goodLepton, cuts.ewinoSR, cuts.SF]), '', xlabel)
+    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF, cuts.trigger]), '', xlabel)
+    ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
     da_SF.SetTitle("data SF")
     ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack)
     ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)                                                             
@@ -470,14 +491,6 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
     wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)                                                             
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
     fs_shape.SetFillColorAlpha(r.kRed-9, 0.8);fs_shape.SetTitle("FS")                                  
-    print "50-100 ", da_SF.GetBinContent(1)
-    print "100-150 ", da_SF.GetBinContent(2)
-    print "150-250 ", da_SF.GetBinContent(3)
-    print "250-350 ", da_SF.GetBinContent(4)
-    print "fs 50-100 ",  fs_shape.GetBinContent(1)
-    print "fs 100-150 ", fs_shape.GetBinContent(2)
-    print "fs 150-250 ", fs_shape.GetBinContent(3)
-    print "fs 250-350 ", fs_shape.GetBinContent(4)
     
     mc_full = copy.deepcopy(zz_SF)
     mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
@@ -486,9 +499,13 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
     mc_stack.Add(fs_shape); mc_full.Add(fs_shape, 1.) 
     mc_stack.Add(zz_SF); 
     mc_stack.Add(dy_shape); mc_full.Add(dy_shape, 1.) 
-    #wz_SF.GetXaxis().SetTitle(xlabel)
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
+    mc_full_e = copy.deepcopy(mc_full)
+    mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.)
+    
+    
+    
     maxCont = max(fs_shape.GetMaximum(), da_SF.GetMaximum())
     da_SF.GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
 
@@ -496,12 +513,12 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
 
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_result = Canvas.Canvas('ewino/%s/plot_result_%s_daPreddaObs%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
+    plot_result = Canvas.Canvas('ewino/%s/plot_result_%s_%s_%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack, "HIST" , 1, 1)
+    plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlue+1 , 1, -1)
     plot_result.addHisto(da_SF, 'E1, SAME', 'data SF' , 'P', r.kBlack , 1, 0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
-    #plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , 1 ) 
-    makeResultsTable(da_SF, fs_shape, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF )
+    makeResultsTable(da_SF, fs_shape, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, region )
     if makeTable:
         makeSimpleTable(plot_result, addRares)
     if returnplot:
@@ -691,7 +708,9 @@ if __name__ == '__main__':
 
 
     #makeClosureTests('met','', 'inclusive', True)
+    #makeClosureTests('met','', 'inclusive', True)
     #makeDYMETShape('met','', 'inclusive', True)
     
-    makeResultData('met', maxrun, lint, specialcut = '' , scutstring = '')
+    makeResultData('met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiZH')
+    makeResultData('met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiWZ')
 

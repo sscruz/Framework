@@ -64,7 +64,7 @@ def makeTable(DATAnumeratoree, DATAnumeratormm, DATAnumeratorOF, DATAdenominator
     print line0
     print line1
     print line2                                                                                                                                                                      
-    print line3                                                                                                                                                                      
+    print line3                                                                                                                                                                                         
 
 
 ############################################################
@@ -197,27 +197,162 @@ if __name__ == '__main__':
     print '#######################################################################' + bcolors.ENDC
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples_forRt.dat', help='the samples file. default \'samples.dat\'')
     parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 
     theFile = opts.ingredientsFile
-
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    #mcDatasets = ['TT_pow_ext34', 'DYJetsToLL_M10to50', 'DYJetsToLL_M50']
-    #daDatasets = ['JetHT_Run2016B-PromptReco-v2_runs_271036_276097', 'HTMHT_Run2016B-PromptReco-v2_runs_271036_276097',
-    #        'JetHT_Run2016C-PromptReco-v2_runs_271036_276811', 'HTMHT_Run2016C-PromptReco-v2_runs_271036_276811',
-    #        'JetHT_Run2016D-PromptReco-v2_runs_271036_276811', 'HTMHT_Run2016D-PromptReco-v2_runs_271036_276811']
-    daDatasets = ['JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part1', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part2', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
- 	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part4', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part5', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
-	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part7', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part8', 'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
-	          'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376_part10', 'JetHT_Run2016H-PromptReco-v2_runs_281613_284035', 'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',
-	          'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044', 'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044', 'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',
-	          'MET_Run2016H-PromptReco-v2_runs_281613_284035', 'MET_Run2016H-PromptReco-v3_runs_284036_284044', 'MET_Run2016B_23Sep2016_v3_runs_273150_275376',
-	          'MET_Run2016C_23Sep2016_v1_runs_271036_284044', 'MET_Run2016D_23Sep2016_v1_runs_271036_284044', 'MET_Run2016E_23Sep2016_v1_runs_271036_284044', 
-	          'MET_Run2016G_23Sep2016_v1_runs_271036_284044', 'MET_Run2016F_23Sep2016_v1_runs_271036_284044']
-
+    
+    
+    daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5',
+                  'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
+                  'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
+                  'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
+                  'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3',
+                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
+                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part12',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part13',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part14',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part15',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part16',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part17',
+                  'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part18',
+                  'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',
+                  'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                  'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                  'SingleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
+                  'SingleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2',
+                  'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',           
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part12',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part13',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part14',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part15',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part16',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part17',
+                  'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376_part18',
+                  'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',
+                  'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',
+                  'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',
+                  'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',
+                  'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044']          
+    
+    
+    
 
 
     #treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
@@ -226,7 +361,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     
-    lumi = 36.4 ; maxrun = 999999; lumi_str = '12.9invfb'
+    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -247,7 +382,9 @@ if __name__ == '__main__':
     specialcut = ''
 
     DATAdenominatorMllee = treeDA.getTH1F(lumi, "DATAdenominatoree", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    print "DATAdenominatorMllee", DATAdenominatorMllee.Integral()
     DATAnumeratorMllee =   treeDA.getTH1F(lumi, "DATAnumeratoree", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.ee]), '', labelx)
+    print "DATAnumeratorMllee", DATAnumeratorMllee.Integral()
     DATAdenominatorMllmm = treeDA.getTH1F(lumi, "DATAdenominatormm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
     DATAnumeratorMllmm =   treeDA.getTH1F(lumi, "DATAnumeratormm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.mm]), '', labelx)
     DATAdenominatorMllSF = treeDA.getTH1F(lumi, "DATAdenominatorSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)

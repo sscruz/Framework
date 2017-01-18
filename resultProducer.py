@@ -638,17 +638,17 @@ if __name__ == '__main__':
         resultPlotLoNll = makeResultData(v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
 
 
-#    makeClosureTests('nll','', 'inclusive', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
-#    makeClosureTests('nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
-#    makeClosureTests('nll','lepsMll_Edge > 400', 'mll400', True)
-#    makeClosureTests('mll','', 'inclusive', True)
-#    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
-#    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
+    makeClosureTests('nll','', 'inclusive', True)
+    makeClosureTests('nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
+    makeClosureTests('nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
+    makeClosureTests('nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
+    makeClosureTests('nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
+    makeClosureTests('nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
+    makeClosureTests('nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
+    makeClosureTests('nll','lepsMll_Edge > 400', 'mll400', True)
+    makeClosureTests('mll','', 'inclusive', True)
+    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
+    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
     
     #makeResultData('mll', maxrun, lint, specialcut = '' , scutstring = '', returnplot = True)
 
