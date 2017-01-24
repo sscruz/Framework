@@ -14,7 +14,7 @@
 #####################################################################
 
 import ROOT as r
-from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle,   SetOwnership
+from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle, TH1,   SetOwnership
 import math, sys, optparse, copy, re, array, subprocess
 from array import array
 
@@ -24,6 +24,7 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
+import include.Scans      as Scans
 
 
 def saveInFile(theFile, measuredValueMC, measuredValueUncMC,  measuredValueData, measuredValueUncData):
@@ -126,7 +127,49 @@ def getFraction(x,  xstat, y, ystat):
         print "denominator < 0!!!!!!!!!!!!!!!!!!!!!!!!!!!"
         return x, xstat
 
+
+def getRMueError(norm, up, dn):
+    final = copy.deepcopy(norm)
+    for i in range(1,norm.GetNbinsX()+1):
+        stat = norm.GetBinError(i)
+        syst = max( abs(norm.GetBinContent(i) - up.GetBinContent(i)), abs(norm.GetBinContent(i) - dn.GetBinContent(i)))
+        final.SetBinError(i, math.sqrt(stat**2 + syst**2))
+    return final                                                                                                                 
+
+
+
+
+
+def weightedAverage( factor, direct, unwght):
+    
+    rsfof_factor = copy.deepcopy(factor)
+    rsfof_direct = copy.deepcopy(factor)
+    rsfof_final  = copy.deepcopy(factor)
+    nof_final    = copy.deepcopy(unwght)
+    
+    for i in range(1, unwght.GetNbinsX()+1):
+        if not unwght.GetBinContent(i): 
+            rsfof_factor.SetBinContent( i, 0.)             
+            rsfof_direct.SetBinContent( i, 0.) 
+            rsfof_final .SetBinContent( i, 0.) 
+            nof_final   .SetBinContent( i, 0.)    
+            continue 
+        rsfof_factor.SetBinContent(i,factor.GetBinContent(i) / unwght.GetBinContent(i))
+        rsfof_factor.SetBinError  (i, math.sqrt(abs(factor.GetBinError(i)**2 - (rsfof_factor.GetBinContent(i)*unwght.GetBinError(i))**2)) / unwght.GetBinContent(i) )
+        rsfof_direct.SetBinContent(i, direct.GetBinContent(i) / unwght.GetBinContent(i))
+        rsfof_direct.SetBinError  (i, math.sqrt(abs(direct.GetBinError(i)**2 - (rsfof_direct.GetBinContent(i)*unwght.GetBinError(i))**2)) / unwght.GetBinContent(i) )
+        
+        rsfof_final .SetBinContent(i, (rsfof_factor.GetBinContent(i) / rsfof_factor.GetBinError(i)**2 + rsfof_direct.GetBinContent(i) / rsfof_factor.GetBinError(i)**2) / ( 1. / rsfof_factor.GetBinError(i)**2 + 1. / rsfof_factor.GetBinError(i)**2 ))
+        rsfof_final .SetBinError  (i, 1 / math.sqrt(1/rsfof_factor.GetBinError(i)**2 + 1/rsfof_direct.GetBinError(i)**2))
+        
+        nof_final.SetBinContent(i, unwght.GetBinContent(i)*rsfof_final.GetBinContent(i))
+        nof_final.SetBinError  (i, math.sqrt( (unwght.GetBinError(i)*rsfof_final.GetBinContent(i))**2 + (unwght.GetBinContent(i)*rsfof_final.GetBinError(i))**2))
+
+    return [rsfof_factor, rsfof_direct, rsfof_final, nof_final]                                                                              
+
+
 def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
+    line00 = '\\begin{tabular}{r l c c c c}  '
     if region == "TChiWZ":
         line0 = 'TChiWZ  & 50-100 & 100-150 & 150-250 & 250-350 & 350+\\\\ \\hline  '
     if region == "TChiZH":
@@ -140,6 +183,7 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
     line6 = '  others  & ' 
     line7 = '  total     & ' 
     line8 = '  obs.      & ' 
+    line9 = '  \end{tabular}  ' 
 
     my_range = range(1,da.GetNbinsX()+1)
     for i in my_range:
@@ -161,6 +205,7 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
         line8 += '  %.2f       %s' %(tmp_da , ' & ' if i != max(my_range) else '\\\\')
     line6 += '\\hline'; line8 += '\\hline'
 
+    print line00
     print line0
     print line1
     print line2
@@ -170,8 +215,8 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
     print line6
     print line7
     print line8
+    print line9
     
-    return line0, line1, line2, line3, line4                                                                                          
 
 def makeFactorsTable(): ## for this to make sense the region should be properly binned!!
     rmue_da = helper.readFromFileRmue("ingredients.dat", "DATA") 
@@ -212,15 +257,13 @@ def scaleByRSFOF(histo, rsfof, rsfof_err):
         h_rsfof.SetBinError  (i,rsfof_e)
     histo.Multiply(h_rsfof)
     return histo                                   
-def scaleByEWKFactors(histo, rsfof, rsfof_err, kappa, kappa_e):
-    h_rsfof = copy.deepcopy(histo)
-    h_rsfof.SetName('h_rsfof')
-    factor = rsfof*kappa
-    factor_e = rsfof*kappa*math.sqrt((rsfof_e/rsfof)**2 + (kappa_e/kappa)**2 )
-    for i in range(1, h_rsfof.GetNbinsX()+1):
-        h_rsfof.SetBinContent(i,factor)
-        h_rsfof.SetBinError  (i,factor_e)
-    histo.Multiply(h_rsfof)
+def scaleByEWKFactors(histo, kappa, kappa_e):
+    h_scaled = copy.deepcopy(histo)
+    h_scaled.SetName('h_scaled')
+    for i in range(1, h_scaled.GetNbinsX()+1):
+        h_scaled.SetBinContent(i,kappa)
+        h_scaled.SetBinError  (i,kappa_e)
+    histo.Multiply(h_scaled)
     return histo                                  
 
 def makeTheFactors():
@@ -353,11 +396,6 @@ def makeTheFactors():
     c1.SaveAs('plots/ewino/factors/fmll.png')                                                                                                                                  
     
     
-   # saveInFileFactors("ingredients.dat", fmll_bveto_OF_mc, fmll_bveto_OF_mc_e,  fmll_bveto_OF_da, fmll_bveto_OF_da_e,"fmll_",  "fmll_bveto_OF")
-   # saveInFileFactors("ingredients.dat", fmll_bveto_SF_mc, fmll_bveto_SF_mc_e,  0.0000, 0.0000,"fmll_",  "fmll_bveto_SF")
-   # saveInFileFactors("ingredients.dat", fmll_binv_OF_mc, fmll_binv_OF_mc_e,  fmll_binv_OF_da, fmll_binv_OF_da_e, "fmll_", "fmll_binv__OF")
-   # makeEWKFactorsTable(fmll_bveto_OF_mc, fmll_bveto_OF_mc_e,  fmll_binv_OF_mc, fmll_binv_OF_mc_e , fmll_bveto_SF_mc, fmll_bveto_SF_mc_e, fmll_bveto_OF_da, fmll_bveto_OF_da_e, fmll_binv_OF_da, fmll_binv_OF_da_e , 0.0000, 0.0000, 'fmll' )    
-   # makeEWKFactorsTable(r0b1b_mll_OF_mc, r0b1b_mll_OF_mc_e,  r0b1b_mll_ext_OF_mc, r0b1b_mll_ext_OF_mc_e , r0b1b_mll_ext_SF_mc, r0b1b_mll_ext_SF_mc_e, r0b1b_mll_OF_da, r0b1b_mll_OF_da_e,  r0b1b_mll_ext_OF_da, r0b1b_mll_ext_OF_da_e , 0.0000, 0.0000,'r0b1b' )    
     return kappa_met150_250_da, kappa_met150_250_da_e, kappa_met150_250_mc, kappa_met150_250_mc_e
 
 def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, region = ''):
@@ -398,11 +436,9 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
-        nbins, xmin, xmax = 28, 20, 300
         xlabel = 'm_{ll} (GeV)'              
     elif var == 'met':
         treevar = 'met_Edge'
-        nbins, xmin, xmax = 5, 50, 300
         xlabel = 'E_{T}^{miss} [GeV]'                    
     lint = 18.1  ; maxrun = 999999 ; lint_str = '18.1invfb'
     specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
@@ -415,48 +451,86 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     ## mll distributions
-    mc_OF = treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut,cuts.goodLepton,regioncut,cuts.OF]), '', xlabel)
-    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut,cuts.goodLepton,regioncut,cuts.trigger,cuts.OF]), '', xlabel)
-    print "mc_OF", mc_OF.Integral()
-    print "da_OF", da_OF.Integral()
-    print "mc_OF_corr", mc_OF.Integral()*kappa_mc
-    print "da_OF_corr", da_OF.Integral()*kappa_da
+    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
+    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
+    rmue_a_da = helper.readFromFileRmueCoeff("ingredients.dat","A","DATA")
+    rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","B","DATA")
+    rsfof_mc = helper.readFromFileRsfofD("ingredients.dat", "MC") 
+    rt_mc = helper.readFromFileRT("ingredients.dat", "MC")
+    rmue_a_mc = helper.readFromFileRmueCoeff("ingredients.dat","A","MC")
+    rmue_b_mc = helper.readFromFileRmueCoeff("ingredients.dat","B","MC")
+
+    da_OF =        treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    print 'trivial check'
+    for i in range(1, da_OF.GetNbinsX()+1):
+        if not  da_OF.GetBinContent(i): continue
+                                                                                                 
+    da_OF_direct = copy.deepcopy(da_OF)
+    da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
+    da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
+    da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
+    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                 
+    prediction = copy.deepcopy( da_OF )
+    da_OF.SetBinErrorOption( TH1.kPoisson)                                                                                                                                  
+    for i in range(1, prediction.GetNbinsX()+1):
+        prediction.SetBinError(i,0.)
+    prediction.Multiply(result[2])                                                                                                                                                                                                                                                                                                      
+   
+    mc_OF =        treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
+    mc_OF_factor = treeFS.getTH1F(lint, var+"mc_OF_factor"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    mc_OF_factorUp = treeFS.getTH1F(lint, var+"mc_OF_factorUp"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    mc_OF_factorDn = treeFS.getTH1F(lint, var+"mc_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    print 'trivial check'
+    for i in range(1, mc_OF.GetNbinsX()+1):
+        if not  mc_OF.GetBinContent(i): continue
+                                                                                                 
+    mc_OF_direct = copy.deepcopy(mc_OF)
+    mc_OF_direct = scaleByRSFOF(mc_OF_direct, rsfof_mc[0], rsfof_mc[1])
+    mc_OF_factor = getRMueError(mc_OF_factor, mc_OF_factorUp, mc_OF_factorDn)
+    mc_OF_factor = scaleByRSFOF(mc_OF_factor, rt_mc[0], getFinalError(rt_mc[1],rt_mc[2]))
+    mc_result = weightedAverage( mc_OF_factor, mc_OF_direct, mc_OF)                                 
+    mc_prediction = copy.deepcopy( mc_OF )
+    mc_OF.SetBinErrorOption( TH1.kPoisson)                                                                                                                                  
+    for i in range(1, mc_prediction.GetNbinsX()+1):
+        mc_prediction.SetBinError(i,0.)
+    mc_prediction.Multiply(mc_result[2])                                                                                                                                                          
+
     mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut ,cuts.Zmass, cuts.SF]), '', xlabel)
-    print "mc_SF", mc_SF.Integral()
     mc_OF_err = copy.deepcopy(mc_OF)
     mc_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_err.SetFillStyle(3004); mc_OF_err.SetMarkerSize(0.)
-    da_OF_err = copy.deepcopy(da_OF)
-    da_OF_err.SetFillColorAlpha(r.kBlack+1, 0.8)
-    da_OF_err.SetFillStyle(3004); da_OF_err.SetMarkerSize(0.)
 
     mc_SF.GetYaxis().SetRangeUser(0., 2*mc_SF.GetMaximum())
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
 
-    mc_OF_rsfofScaled = copy.deepcopy(mc_OF)
-    mc_OF_rsfofScaled = scaleByEWKFactors(mc_OF_rsfofScaled, rsfof_mc, rsfof_mc_e,kappa_mc, kappa_mc_e)
-    mc_OF_rsfofScaled_err = copy.deepcopy(mc_OF_rsfofScaled)
-    mc_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    mc_OF_rsfofScaled_err.SetFillStyle(3004); mc_OF_rsfofScaled_err.SetMarkerSize(0.)                                                                                    
-    da_OF_rsfofScaled = copy.deepcopy(da_OF)
-    da_OF_rsfofScaled = scaleByEWKFactors(da_OF_rsfofScaled, rsfof_mc, rsfof_mc_e, kappa_da, kappa_da_e)
-    da_OF_rsfofScaled_err = copy.deepcopy(da_OF_rsfofScaled)
-    da_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
-    da_OF_rsfofScaled_err.SetFillStyle(3004); da_OF_rsfofScaled_err.SetMarkerSize(0.)                                                                                    
+    mc_OF_fmllScaled = copy.deepcopy(mc_prediction)
+    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc, kappa_mc_e)
+    mc_OF_fmllScaled_err = copy.deepcopy(mc_OF_fmllScaled)
+    mc_OF_fmllScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
+    mc_OF_fmllScaled_err.SetFillStyle(3004); mc_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
+    da_OF_fmllScaled = copy.deepcopy(da_OF)
+    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
+    da_OF_fmllScaled_err = copy.deepcopy(da_OF_fmllScaled)
+    da_OF_fmllScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
+    da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
 
     print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     plot_closure = Canvas.Canvas('ewino/%s/plot_closure_%s_%s_%s'%(lint_str, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.6, 0.55, 0.75, 0.8)
     plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
-    plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure.addHisto(da_OF_rsfofScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
+    plot_closure.addHisto(mc_OF_fmllScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
+    plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
+    plot_closure.addHisto(da_OF_fmllScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
-    makeClosureTable(mc_SF, mc_OF_rsfofScaled, da_OF_rsfofScaled)
-    return da_OF_rsfofScaled                                                                                                                                                                                        
+    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_fmllScaled, 0.2, 1.8)
+    makeClosureTable(mc_SF, mc_OF_fmllScaled, da_OF_fmllScaled)
+    return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', region = '', _options = ''):
+    scan = Scans.Scan(analysis)
     lint = 18.1
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
@@ -479,24 +553,68 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
     mc_stack = r.THStack() 
     newLumiString = '18.1invfb'
     specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+
+    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
+    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
+    rmue_a_da = helper.readFromFileRmueCoeff("ingredients.dat","A","DATA")
+    rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","B","DATA")
+    
+    da_OF =        treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    print 'trivial check'
+    for i in range(1, da_OF.GetNbinsX()+1):
+        if not  da_OF.GetBinContent(i): continue
+                                                                                                 
+    da_OF_direct = copy.deepcopy(da_OF)
+    da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
+    da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
+    da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
+    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                 
+    prediction = copy.deepcopy( da_OF )
+    da_OF.SetBinErrorOption( TH1.kPoisson)                                                                                                                                  
+    for i in range(1, prediction.GetNbinsX()+1):
+        prediction.SetBinError(i,0.)
+    prediction.Multiply(result[2])                                                                                                                                                                                                                                                                                                       
+    for bin, label in scan.SRLabels.items():
+        bin = prediction.FindBin(bin)
+        # to get asymmetric errors (i dont know why it doesnt work another way)
+        dummyHisto = r.TH1F()
+        dummyHisto.SetBinErrorOption(TH1.kPoisson)
+        for i in range(1, int(da_OF.GetBinContent(bin))+1):
+            dummyHisto.Fill(0.5)
+        dummyHisto.GetBinContent(1), '+/-', dummyHisto.GetBinErrorUp(1), dummyHisto.GetBinErrorLow(1)
+        syst = '  {value:4.1f}^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(value = prediction.GetBinContent(bin),
+                                                                             errUp = prediction.GetBinErrorUp(bin),
+                                                                             errDn = prediction.GetBinErrorLow(bin))
+        stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
+                                                               errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
+        del dummyHisto                                                                                                                           
+
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF, cuts.trigger]), '', xlabel)
     ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    zz_OF = treeZZ.getTH1F(lint, var+"zz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
+    ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)                                                                                 
     da_SF.SetTitle("data SF")
     ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack)
     ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)                                                             
     zz_SF.SetFillColorAlpha(r.kCyan+2 , 0.8);zz_SF.SetTitle("ZZ");zz_SF.SetLineColor(r.kBlack)                                                             
     wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)                                                             
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
-    fs_shape.SetFillColorAlpha(r.kRed-9, 0.8);fs_shape.SetTitle("FS")                                  
+    prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS")                                  
     
     mc_full = copy.deepcopy(zz_SF)
     mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.) 
-    mc_stack.Add(fs_shape); mc_full.Add(fs_shape, 1.) 
+    mc_stack.Add(prediction); mc_full.Add(prediction, 1.) 
     mc_stack.Add(zz_SF); 
     mc_stack.Add(dy_shape); mc_full.Add(dy_shape, 1.) 
     mc_stack.Draw()
@@ -504,9 +622,7 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
     mc_full_e = copy.deepcopy(mc_full)
     mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.)
     
-    
-    
-    maxCont = max(fs_shape.GetMaximum(), da_SF.GetMaximum())
+    maxCont = max(prediction.GetMaximum(), da_SF.GetMaximum())
     da_SF.GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
 
     SetOwnership(mc_stack, 0 );SetOwnership(da_SF, 0 )                                                                                                                       
@@ -515,10 +631,10 @@ def makeResultData(var, maxrun = 999999, lint = 18.1, specialcut = '', scutstrin
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     plot_result = Canvas.Canvas('ewino/%s/plot_result_%s_%s_%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack, "HIST" , 1, 1)
-    plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlue+1 , 1, -1)
+    plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
     plot_result.addHisto(da_SF, 'E1, SAME', 'data SF' , 'P', r.kBlack , 1, 0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
-    makeResultsTable(da_SF, fs_shape, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, region )
+    makeResultsTable(da_SF, prediction, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, region )
     if makeTable:
         makeSimpleTable(plot_result, addRares)
     if returnplot:
@@ -563,13 +679,12 @@ if __name__ == '__main__':
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     #dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext', 'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
-    fsDatasets = ['TTJets_DiLepton_ext', 'WWTo2L2Nu', 'WWW', 'TTWToLNu','TTWToQQ', 'T_tWch', 'TBar_tWch' ,'TToLeptons_sch','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg']
+    fsDatasets = ['TTJets_DiLepton_ext', 'WWTo2L2Nu', 'WWW', 'TTWToLNu','TTWToQQ', 'T_tWch', 'TBar_tWch' ,'TToLeptons_sch','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg',  'WJetsToLNu_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Q', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
     ttzDatasets = ['TTZToLLNuNu', 'TTZToQQ']
-    raDatasets = ['TTTT', 'tZq_ll', 'TWZ','WWZ','WZZ', 'ZZZ',  'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+    raDatasets = ['TTTT', 'tZq_ll', 'TWZ','WWZ','WZZ', 'ZZZ',  'TTHnobb_pow', 'VHToNonbb']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
-    #mcDatasets = fsDatasets+ ([] if opts.onlyTTbar else dyDatasets + raDatasets)
     
     daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
                   'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
@@ -711,6 +826,6 @@ if __name__ == '__main__':
     #makeClosureTests('met','', 'inclusive', True)
     #makeDYMETShape('met','', 'inclusive', True)
     
-    makeResultData('met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiZH')
-    makeResultData('met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiWZ')
+    #makeResultData('Edge_Moriond2017', 'met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiZH')
+    makeResultData('Edge_Moriond2017', 'met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiWZ')
 

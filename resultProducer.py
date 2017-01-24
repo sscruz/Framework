@@ -329,7 +329,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)                            
+    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)                                                                                              
     return result
     if False:
         plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPreddaObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
@@ -339,14 +339,14 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
         plot_closure.addLatex(0.61, 0.82, 'R_{SFOF} scaled')
         plot_closure.saveRatio(1, 0, 0, lint , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
-                                                                                                                                                                                                                  
+                                                                                                                                                                             
 def getRMueError(norm, up, dn):
     final = copy.deepcopy(norm)
     for i in range(1,norm.GetNbinsX()+1):
         stat = norm.GetBinError(i)
         syst = max( abs(norm.GetBinContent(i) - up.GetBinContent(i)), abs(norm.GetBinContent(i) - dn.GetBinContent(i)))
         final.SetBinError(i, math.sqrt(stat**2 + syst**2))
-    return final
+    return final                                                                                                                 
                                   
 
 def weightedAverage( factor, direct, unwght):
@@ -354,14 +354,14 @@ def weightedAverage( factor, direct, unwght):
     rsfof_factor = copy.deepcopy(factor)
     rsfof_direct = copy.deepcopy(factor)
     rsfof_final  = copy.deepcopy(factor)
-    nof_final    = copy.deepcopy(unwght)
+    prediction_final    = copy.deepcopy(unwght)
     
     for i in range(1, unwght.GetNbinsX()+1):
         if not unwght.GetBinContent(i): 
             rsfof_factor.SetBinContent( i, 0.)             
             rsfof_direct.SetBinContent( i, 0.) 
             rsfof_final .SetBinContent( i, 0.) 
-            nof_final   .SetBinContent( i, 0.)    
+            prediction_final   .SetBinContent( i, 0.)    
             continue 
         rsfof_factor.SetBinContent(i,factor.GetBinContent(i) / unwght.GetBinContent(i))
         rsfof_factor.SetBinError  (i, math.sqrt(abs(factor.GetBinError(i)**2 - (rsfof_factor.GetBinContent(i)*unwght.GetBinError(i))**2)) / unwght.GetBinContent(i) )
@@ -371,21 +371,19 @@ def weightedAverage( factor, direct, unwght):
         rsfof_final .SetBinContent(i, (rsfof_factor.GetBinContent(i) / rsfof_factor.GetBinError(i)**2 + rsfof_direct.GetBinContent(i) / rsfof_factor.GetBinError(i)**2) / ( 1. / rsfof_factor.GetBinError(i)**2 + 1. / rsfof_factor.GetBinError(i)**2 ))
         rsfof_final .SetBinError  (i, 1 / math.sqrt(1/rsfof_factor.GetBinError(i)**2 + 1/rsfof_direct.GetBinError(i)**2))
         
-        nof_final.SetBinContent(i, unwght.GetBinContent(i)*rsfof_final.GetBinContent(i))
-        nof_final.SetBinError  (i, math.sqrt( (unwght.GetBinError(i)*rsfof_final.GetBinContent(i))**2 + (unwght.GetBinContent(i)*rsfof_final.GetBinError(i))**2))
+        prediction_final.SetBinContent(i, unwght.GetBinContent(i)*rsfof_final.GetBinContent(i))
+        prediction_final.SetBinError  (i, math.sqrt( (unwght.GetBinError(i)*rsfof_final.GetBinContent(i))**2 + (unwght.GetBinContent(i)*rsfof_final.GetBinError(i))**2))
 
-    return [rsfof_factor, rsfof_direct, rsfof_final, nof_final]
+    return [rsfof_factor, rsfof_direct, rsfof_final, prediction_final]                                                                                                    
 
 
 def makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0):
     var = scan.srID
     if var == 'mll':
         treevar = 'lepsMll_Edge'
-        nbins, xmin, xmax = 28, 20, 300
         xlabel = 'm_{ll} (GeV)'
     elif var == 'nll':
         treevar = 'nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)'
-        nbins, xmin, xmax = 26, 10, 36
         xlabel = 'NLL'
     elif var == 'nllMC':
         treevar = 'nll_mc_Edge'
@@ -398,30 +396,25 @@ def makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins
     else: 
         treevar = var
         xlabel = ''
-
-
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
     rmue_a_da = helper.readFromFileRmueCoeff("ingredients.dat","A","DATA")
     rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","B","DATA")
 
-    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel)
-    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.BaselineNoTrigger, cuts.Zveto, cuts.OF, cuts.EdgeBaseline]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
     print '(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0])
     print 'trivial check'
     for i in range(1, da_OF.GetNbinsX()+1):
         if not  da_OF.GetBinContent(i): continue
-
 
     da_OF_direct = copy.deepcopy(da_OF)
     da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
     da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
     da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
     result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                   
-
-
     ### 
 
     prediction = copy.deepcopy( da_OF )
@@ -445,80 +438,76 @@ def makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins
         stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
                                                                errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
         del dummyHisto
-
-        print label, syst, stat
-
-    return result
+        print label, syst, stat                                                                                                           
+    
+    return result                                                                                                                                                             
 
 def makeRSOFTable(analysis):
     scan = Scans.Scan(analysis)
-    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, nof_final_mc = makeClosureTests(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
-    rsfof_factor_da, rsfof_direct_da, rsfof_final_da, nof_final_da = makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5)
+    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, prediction_final_mc = makeClosureTests(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
+    rsfof_factor_da, rsfof_direct_da, rsfof_final_da, prediction_final_da = makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5)
     print '                  Data                                                        MC'
     print '                  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ &  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ \\\\'
     for bin, label in scan.SRLabels.items():
         print '%s       %4.3f $\pm$ %4.3f   & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f \\\\'%(label, rsfof_factor_da.GetBinContent(rsfof_factor_da.FindBin(bin)), rsfof_factor_da.GetBinError(rsfof_factor_da.FindBin(bin)), rsfof_direct_da.GetBinContent(rsfof_direct_da.FindBin(bin)), rsfof_direct_da.GetBinError(rsfof_direct_da.FindBin(bin)), rsfof_final_da.GetBinContent(rsfof_final_da.FindBin(bin)), rsfof_final_da.GetBinError(rsfof_final_da.FindBin(bin)), rsfof_factor_mc.GetBinContent(rsfof_factor_mc.FindBin(bin)), rsfof_factor_mc.GetBinError(rsfof_factor_mc.FindBin(bin)), rsfof_direct_mc.GetBinContent(rsfof_direct_mc.FindBin(bin)), rsfof_direct_mc.GetBinError(rsfof_direct_mc.FindBin(bin)), rsfof_final_mc.GetBinContent(rsfof_final_mc.FindBin(bin)), rsfof_final_mc.GetBinError(rsfof_final_mc.FindBin(bin)))
 
 
-
-def makeResultData(var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', _options = ''):
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
     if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
     if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
     if 'makeTable'     in _options: print 'found option %s'%'makeTable'     ;makeTable     = True
     if 'printIntegral' in _options: print 'found option %s'%'printIntegral' ;printIntegral = True
-
-    # if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 23, 20 , 250 ; xlabel = 'm_{ll} (GeV)'
-    if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins, xmin, xmax = 30, 20 , 420 ; xlabel = 'm_{ll} [GeV]'
-    elif var == 'nll'      : treevar = 'nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)'     ; nbins, xmin, xmax = 15, 12 , 27  ; xlabel = 'NLL'
-    elif var == 'nb'       : treevar = 'nBJetMedium35_Edge'  ; nbins, xmin, xmax =  3,  0 ,  3  ; xlabel = 'n_{b-jets,35}'
-    elif var == 'nj'       : treevar = 'nJetSel_Edge'        ; nbins, xmin, xmax =  6, 0.5, 6.5 ; xlabel = 'n_{jets}'
-    elif var == 'zpt'      : treevar = 'lepsZPt_Edge'        ; nbins, xmin, xmax = 10,  0 ,1000 ; xlabel = 'p_{T}^{ll}'
-    elif var == 'mlb'      : treevar = 'sum_mlb_Edge'        ; nbins, xmin, xmax = 15,  0 ,1500 ; xlabel = '#Sigma m_{lb}'
-    elif var == 'met'      : treevar = 'met_Edge'            ; nbins, xmin, xmax = 10,100 ,1000 ; xlabel = 'E_{T}^{miss.} [GeV]'
-    elif var == 'metraw'   : treevar = 'met_raw_Edge'        ; nbins, xmin, xmax = 10,100 ,1000 ; xlabel = 'E_{T}^{miss.} raw'
-    elif var == 'ldp'      : treevar = 'abs(lepsDPhi_Edge)'  ; nbins, xmin, xmax = 10,  0 , 3.15; xlabel = '#Delta #phi ll'
-    elif var == 'pt1'      : treevar = 'Lep1_pt_Edge'        ; nbins, xmin, xmax = 20,  0 , 500 ; xlabel = 'p_{T} leading'
-    elif var == 'pt2'      : treevar = 'Lep2_pt_Edge'        ; nbins, xmin, xmax = 10, 20 , 200 ; xlabel = 'p_{T} trailing'
-    elif var == 'ldr'      : treevar = 'lepsDR_Edge'         ; nbins, xmin, xmax = 10,  0 , 6.  ; xlabel = '#Delta R (ll)'
-    elif var == 'iso1'     : treevar = 'Lep1_miniRelIso_Edge'; nbins, xmin, xmax = 10,  0 , 0.05; xlabel = 'mini iso l1'
-        
-
-    mc_stack = r.THStack() 
-    nbins = [20, 60, 86, 96, 150, 200, 300, 400]
-    newLumiString = '18.1invfb'
+    if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins = [20, 60, 86, 96, 150, 200, 300, 400]; xmin =1 ; xmax = 1; xlabel = 'm_{ll} [GeV]'
     if not specialcut:
         specialcut = specialcut + '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     else:
         specialcut = specialcut + '&&((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
-    ## ## mll distributions
-
-    
+    scan = Scans.Scan(analysis)
+    mc_stack = r.THStack() 
+    newLumiString = '18.1invfb'
+    ##get the ingredients
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
     rmue_a_da = helper.readFromFileRmueCoeff("ingredients.dat","A","DATA")
     rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","B","DATA")
-    
-    da_OF =        treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel)
-    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    print 'trivial check'
+    #get the fs prediction
+    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    print '(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0])
     for i in range(1, da_OF.GetNbinsX()+1):
         if not  da_OF.GetBinContent(i): continue
-                                                                                                 
     da_OF_direct = copy.deepcopy(da_OF)
     da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
     da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
     da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
-    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                 
+    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                   
+    ### 
     prediction = copy.deepcopy( da_OF )
     da_OF.SetBinErrorOption( TH1.kPoisson)
     for i in range(1, prediction.GetNbinsX()+1):
         prediction.SetBinError(i,0.)
     prediction.Multiply(result[2])                       
-
-
+                                                                                                                                
+    for bin, label in scan.SRLabels.items():
+        bin = prediction.FindBin(bin)
+        # to get asymmetric errors (i dont know why it doesnt work another way)
+        dummyHisto = r.TH1F()
+        dummyHisto.SetBinErrorOption(TH1.kPoisson)
+        for i in range(1, int(da_OF.GetBinContent(bin))+1):
+            dummyHisto.Fill(0.5)
+        dummyHisto.GetBinContent(1), '+/-', dummyHisto.GetBinErrorUp(1), dummyHisto.GetBinErrorLow(1)
+        syst = '  {value:4.1f}^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(value = prediction.GetBinContent(bin),
+                                                                             errUp = prediction.GetBinErrorUp(bin),
+                                                                             errDn = prediction.GetBinErrorLow(bin))
+        stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
+                                                               errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
+        del dummyHisto                                                                                                                           
+    
+    # get the dy shape, data and rares
+    dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.SF, cuts.Zveto]), '', xlabel)
     ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
     ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
@@ -528,18 +517,14 @@ def makeResultData(var, maxrun = 999999, lint = 36.4, specialcut = '', scutstrin
     wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
+    # aesthetics
     ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)                                                                                 
-    ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack)
-    ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)                                                             
-    zz_SF.SetFillColorAlpha(r.kCyan+2 , 0.8);zz_SF.SetTitle("ZZ");zz_SF.SetLineColor(r.kBlack)                                                             
-    wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)                                                             
-    da_SF.SetTitle("data SF")                                                                           
-    others = copy.deepcopy(ra_SF)
+    ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack);ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)    
+    zz_SF.SetFillColorAlpha(r.kCyan+2 , 0.8);zz_SF.SetTitle("ZZ");zz_SF.SetLineColor(r.kBlack);wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)       
+    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");da_SF.SetTitle("data SF")       
+    # add different samples to stack and full mc histo 
+    others = copy.deepcopy(ra_SF);mc_full = copy.deepcopy(zz_SF)
     others.Add(ttz_SF);others.Add(zz_SF);others.Add(wz_SF);
-    dy_shape = makeDYMllShape('mll',specialcut,scutstring )
-    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
-    prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS")                                  
-    mc_full = copy.deepcopy(zz_SF)
     mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.) 
@@ -569,86 +554,10 @@ def makeResultData(var, maxrun = 999999, lint = 36.4, specialcut = '', scutstrin
     plot_result.addHisto(da_SF                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
     if maxrun < 999999: plot_result.addLatex (0.2, 0.85, 'max. run %s'%("run <=276811) ||  (278820 < run && run < 279931)"))
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
-    print "making table ", scutstring
     makeResultsTable(da_SF, prediction, dy_shape, others, mc_full, scutstring)
     if returnplot:
         return plot_result                                                                                                                                                                         
 
-def makeSimpleTable(plot, addRares=False):
-    for i,h in enumerate(plot.histos):
-        if 'da_OF' in h.GetName(): fs_ind = i
-        if 'da_SF' in h.GetName(): ob_ind = i
-        if 'da_ee' in h.GetName(): ee_ind = i
-        if 'da_mm' in h.GetName(): mm_ind = i
-        if 'ra_SF' in h.GetName(): ra_ind = i
-
-    h_fs= plot.histos[fs_ind]
-    h_ee= plot.histos[ee_ind]
-    h_mm= plot.histos[mm_ind]
-    h_ob= plot.histos[ob_ind]
-
-    ob_e, fs_e, ra_e, mm_e, ee_e = r.Double(), r.Double(), r.Double(), r.Double(), r.Double()
-
-    ob = h_ob.IntegralAndError(1, h_ob.GetNbinsX()+1, ob_e)
-    mm = h_mm.IntegralAndError(1, h_mm.GetNbinsX()+1, ob_e)
-    ee = h_ee.IntegralAndError(1, h_ee.GetNbinsX()+1, ob_e)
-    fs = h_fs.IntegralAndError(1, h_ob.GetNbinsX()+1, fs_e)
-    if addRares: 
-        h_ra= plot.histos[ra_ind]
-        ra = h_ra.IntegralAndError(1, h_ra.GetNbinsX()+1, ra_e) 
-    else: 
-        ra, ra_e = 0., 0.
-
-    pr = fs+ra
-    pr_e = math.sqrt(fs_e*fs_e + ra_e*ra_e)
-
-    sign = (ob-pr)/math.sqrt(ob)
-
-    regionDesc = plot.name.split('daObs_')[-1]
-    tableName='plots/'+plot.name.replace('plot','table')+'.tex'
-
-    resultTable = '''\\documentclass[12pt,a4paper]{{article}}
-\\usepackage{{multirow}}
-\\begin{{document}}
-\\begin{{table}}[hbtp] 
-\\begin{{center}} 
-\\bgroup 
-\\def\\arraystretch{{1.2}} 
-\\caption{{Predicted and observed yields for {lint} fb$^{{-1}}$ of 2016 data. In region: {regionDesc}. Significance is just sig/sqrt(sig+bkg)}} 
-\\label{{tab:resultTableData}} 
-\\begin{{tabular}}{{l c }} 
-    pred. FS         & {fs:.2f}     $\\pm$  {fs_e:.2f}  \\\\
-    pred. rare       & {ra:.2f}     $\\pm$  {ra_e:.2f}  \\\\
-    pred. total      & {pr:.2f}     $\\pm$  {pr_e:.2f}  \\\\
-    \\textbf{{ob}}  & \\textbf{{{ob}}}          \\\\ \\hline
-    \\textbf{{$\\mu\\mu$}}  & \\textbf{{{mm}}}          \\\\
-    \\textbf{{$ee$      }}  & \\textbf{{{ee}}}          \\\\ \\hline
-    sign.                   & {sig:.2f}                     \\\\
-\\end{{tabular}} 
-\\egroup 
-\\end{{center}} 
-\\end{{table}} 
-\\end{{document}}'''.format( regionDesc = regionDesc.replace('_', ' '), ob = ob, pr=pr, ra=ra, fs=fs, mm=mm, ee=ee,
-                                                 pr_e=pr_e, ra_e=ra_e, fs_e=fs_e, lint='4fb-1', sig=sign)
-
-    #helper.ensureDirectory('plots/results/%s/'%lint_str); 
-    #helper.ensureDirectory('plots/results/%s/tables/'%lint_str)
-    print 'printing table', tableName
-    compTableFile = open(tableName,'w')
-    compTableFile.write(resultTable)
-    compTableFile.close()
-
-    
-
-def makePlotsCombinedSR(srlist):
-    for i,sR in enumerate(srlist):
-        if not i: newSR = copy.deepcopy(sR)
-        else:
-            newSR = newSR.add(sR)
-    print 'this is newSR.mll', newSR.mll
-    print 'this is newSR.mll_pred', newSR.mll_pred
-    print 'this is newSR.mll_pred.mc', newSR.mll_pred.mc
-    makePlots([newSR])
 
 if __name__ == '__main__':
 
@@ -673,8 +582,6 @@ if __name__ == '__main__':
         print '%-20s : %-20s' %(key, value)
     print ' \n\n'
 
-
-    ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Q', 'ZZTo2L2Nu']
@@ -808,9 +715,9 @@ if __name__ == '__main__':
 #    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     ## result plots in different variables:
     for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
-        makeResultData(v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
-        resultPlotHiNll = makeResultData(v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
-        resultPlotLoNll = makeResultData(v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
+        makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
+        resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
+        resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
 
     makeRSOFTable('Edge_Moriond2017')
     makeClosureTests('nll','', 'inclusive', True)
