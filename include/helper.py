@@ -73,6 +73,24 @@ def readFromFileRinout(theFile, dataMC, reg):
                 return map(float, arr)                                           
 
 
+def readFromFileRmueCoeff(theFile, coeff, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rmue") != -1 and line.find(coeff) != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                rmue = splitline[27]
+                stat = splitline[33]
+                arr = []
+                arr.append(rmue)
+                arr.append(stat)
+                arr.append(0.0000)
+                print "using these rmues: ", arr
+                if arr[0] == '':
+                    print "warning probably not right rmue!!!", arr
+                return map(float, arr)                                        
+
+
 def readFromFileRmue(theFile, dataMC): 
 
     for line in open(theFile).readlines():
