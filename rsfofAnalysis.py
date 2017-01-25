@@ -58,15 +58,15 @@ def makeTable(DATAee, DATAmm, DATASF, DATAOF, MCee, MCmm, MCSF, MCOF,DATArsfof, 
     line0 = '  \hline'
     line1 = '  ee &' 
     line2 = '  \mu\mu   &' 
-    line3 = '  SF   &' 
+    line3 = '  OF   &' 
     line4 = '  SF   &' 
     line5 = '  R_{\mathrm{SF/OF}}   &' 
-    line0 += ' & Data  & MC  \\\\'
-    line1 += ' %.f & %.f    ' %(DATAee.Integral(), MCee.Integral())
-    line2 += ' %.f & %.f    ' %(DATAmm.Integral(), MCmm.Integral())
-    line3 += ' %.f & %.f    ' %(DATAOF.Integral(), MCSF.Integral())
-    line4 += ' %.f & %.f    ' %(DATASF.Integral(), MCOF.Integral())
-    line5 += ' %.3f \pm %.3f & %.3f \pm %.3f   ' %(DATArsfof,DATArsfof_e, MCrsfof, MCrsfof_e)
+    line0 += ' & Data  & MC   \\\\'
+    line1 += ' %.f & %.f   \\\ ' %(DATAee.Integral(), MCee.Integral())
+    line2 += ' %.f & %.f   \\\ ' %(DATAmm.Integral(), MCmm.Integral())
+    line3 += ' %.f & %.f   \\\ ' %(DATAOF.Integral(), MCOF.Integral())
+    line4 += ' %.f & %.f   \\\ ' %(DATASF.Integral(), MCSF.Integral())
+    line5 += ' %.3f \pm %.3f & %.3f \pm %.3f  \\\ ' %(DATArsfof,DATArsfof_e, MCrsfof, MCrsfof_e)
     line0 += '\\hline'; line4 += '\\hline'; line5 += '\\hline';
                                                                                                                                                                                      
     helper.ensureDirectory('plots/rsfof/%s/'%lumi_str)
@@ -81,16 +81,9 @@ def makeTable(DATAee, DATAmm, DATASF, DATAOF, MCee, MCmm, MCSF, MCOF,DATArsfof, 
     print line0
     print line1
     print line2                                                                                                                                                                      
-    print line3                                                                                                                                                                                        
-    print line4                                                                                                                                                                                        
-    print line5                                                                                                                                                                                        
-
-
-
-
-
-
-
+    print line3                                                                                                                                             
+    print line4                                                                                                                                                      
+    print line5                                                                                                                                                     
 
 
                                                                                                                                                                               
@@ -122,23 +115,23 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
 
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
-    
-    MCControlSF =        treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
-    MCControlee =        treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx)
-    MCControlmm =        treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx)
-    MCControlOF =        treeMC.getTH1F(lumi, "MCControlOF", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
-    MCSignalSF =         treeMC.getTH1F(lumi, "MCSignalSF", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx)
-    MCSignalOF =         treeMC.getTH1F(lumi, "MCSignalOF", "lepsMll_Edge", [20, 81, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx)
-    MCControlSFvalue =   treeMC.getTH1F(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
-    MCControlOFvalue =   treeMC.getTH1F(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
-    MCSignalSFvalue =    treeMC.getTH1F(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx)
-    MCSignalOFvalue =    treeMC.getTH1F(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 300], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx)
-    DataControlee =      treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx)
-    DataControlmm =      treeDA.getTH1F(lumi, "DataControlmm", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx)
-    DataControlSF =      treeDA.getTH1F(lumi, "DataControlSF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
-    DataControlOF =      treeDA.getTH1F(lumi, "DataControlOF", "lepsMll_Edge", [20, 70, 81, 101, 111, 300], 1, 1, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
-    DataControlSFvalue = treeDA.getTH1F(lumi, "DataControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
-    DataControlOFvalue = treeDA.getTH1F(lumi, "DataControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
+    bins = [20,70,81,101,111,300] 
+    MCControlSF =      treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
+    MCControlee =      treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx)
+    MCControlmm =      treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx)
+    MCControlOF =      treeMC.getTH1F(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
+    MCSignalSF =       treeMC.getTH1F(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx)
+    MCSignalOF =       treeMC.getTH1F(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx)
+    MCControlSFvalue = treeMC.getTH1F(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
+    MCControlOFvalue = treeMC.getTH1F(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
+    MCSignalSFvalue =  treeMC.getTH1F(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx)
+    MCSignalOFvalue =  treeMC.getTH1F(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx)
+    DataControlee =    treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx)
+    DataControlmm=treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.trigger,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx)
+    DataControlSF=treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.trigger,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
+    DataControlOF=treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.trigger,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
+    DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
+    DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
     print "ee ", DataControlee.Integral() 
     print "mm ", DataControlmm.Integral() 
     print "SF ", DataControlSF.Integral() 
@@ -153,7 +146,6 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     MCSignalvalue =      make_rsfof(MCSignalSFvalue, MCSignalOFvalue, "MC")
     DataControl =        make_rsfof(DataControlSF, DataControlOF, "DATA")
     DataControlvalue =   make_rsfof(DataControlSFvalue, DataControlOFvalue, "DATA")
-
 
     measuredValueMC =         MCControlvalue.GetBinContent(1)
     measuredValueUncMC =      MCControlvalue.GetBinError(1)
@@ -178,34 +170,45 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
         "saved!!!"
         saveInFile(ingredientsFile, measuredValueMC, measuredValueUncMC, measuredValueData, measuredValueUncData)    
 
-
     ######Met and JET plots 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting jet and met plot' + bcolors.ENDC
-    MCSignalSFMET =      treeMC.getTH1F(lumi, "MCSignalSFMET", "met_Edge", [10, 20, 30, 40, 50, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]), '', labelmet)
-    MCSignalOFMET =      treeMC.getTH1F(lumi, "MCSignalOFMET", "met_Edge", [10, 20, 30, 40, 50, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]), '', labelmet)
-    MCSignalSFJet =      treeMC.getTH1F(lumi, "MCSignalSFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet)
-    MCSignalOFJet =      treeMC.getTH1F(lumi, "MCSignalOFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
-    MCSignalSFmt2 =      treeMC.getTH1F(lumi, "MCSignalSFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
-    MCSignalOFmt2 =      treeMC.getTH1F(lumi, "MCSignalOFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
+    MCSignalSFMET =treeMC.getTH1F(lumi, "MCSignalSFMET", "met_Edge", [10,20,30,40,50,60,80,100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]), '', labelmet)
+    DASignalSFMET =treeDA.getTH1F(lumi, "DASignalSFMET", "met_Edge", [10,20,30,40,50,60,80,100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]), '', labelmet)
+    MCSignalOFMET =treeMC.getTH1F(lumi, "MCSignalOFMET", "met_Edge", [10,20,30,40,50,60,80,100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]), '', labelmet)
+    DASignalOFMET =treeDA.getTH1F(lumi, "DASignalOFMET", "met_Edge", [10,20,30,40,50,60,80,100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]), '', labelmet)
+    MCSignalSFJet =treeMC.getTH1F(lumi, "MCSignalSFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet)
+    DASignalSFJet =treeDA.getTH1F(lumi, "DASignalSFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet)
+    MCSignalOFJet =treeMC.getTH1F(lumi, "MCSignalOFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
+    DASignalOFJet =treeDA.getTH1F(lumi, "DASignalOFJets", "nJetSel_Edge", 10, 0, 10, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
+    MCSignalSFmt2 =treeMC.getTH1F(lumi, "MCSignalSFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
+    DASignalSFmt2 =treeDA.getTH1F(lumi, "DASignalSFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
+    MCSignalOFmt2 =treeMC.getTH1F(lumi, "MCSignalOFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
+    DASignalOFmt2 =treeDA.getTH1F(lumi, "DASignalOFmt2", "mt2_Edge",  [0, 20, 40, 60, 80, 100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
 
-    MCSignalMET   =      make_rsfof(MCSignalSFMET, MCSignalOFMET, "MC")
-    MCSignalJet   =      make_rsfof(MCSignalSFJet, MCSignalOFJet, "MC")
-    MCSignalmt2   =      make_rsfof(MCSignalSFmt2, MCSignalOFmt2, "MC")
+    MCSignalMET   =make_rsfof(MCSignalSFMET, MCSignalOFMET, "MC")
+    DASignalMET   =make_rsfof(DASignalSFMET, DASignalOFMET, "DATA")
+    MCSignalJet   =make_rsfof(MCSignalSFJet, MCSignalOFJet, "MC")
+    DASignalJet   =make_rsfof(DASignalSFJet, DASignalOFJet, "DATA")
+    MCSignalmt2   =make_rsfof(MCSignalSFmt2, MCSignalOFmt2, "MC")
+    DASignalmt2   =make_rsfof(DASignalSFmt2, DASignalOFmt2, "DATA")
 
     plot_rsfofmet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_met'%(lumi_str,tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rsfofmet.addHisto(MCSignalMET, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rsfofmet.addHisto(DASignalMET, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmet.addBand(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofmet.addLine(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC, r.kGreen)
     plot_rsfofmet.save(1, 1, 0, lumi, 0.2, 1.8)
 
     plot_rsfofjet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_jet'%(lumi_str,tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rsfofjet.addHisto(MCSignalJet, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rsfofjet.addHisto(DASignalJet, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofjet.addBand(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofjet.addLine(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC, r.kGreen)
     plot_rsfofjet.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                           
     
     plot_rsfofmt2 = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_mt2'%(lumi_str,tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rsfofmt2.addHisto(MCSignalmt2, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
+    plot_rsfofmt2.addHisto(DASignalmt2, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmt2.addBand(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofmt2.addLine(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC, r.kGreen)
     plot_rsfofmt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                           

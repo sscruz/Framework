@@ -540,7 +540,7 @@ if __name__ == '__main__':
     effRTMll.addHisto(RTMll, 'PE,SAME', 'R_{T}', 'PL', r.kBlack , 1, 0)
     effRTMll.addBand(h_auxrtMll.GetXaxis().GetXmin(), rt-systrt, h_auxrtMll.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTMll.addLine(h_auxrtMll.GetXaxis().GetXmin(), rt, h_auxrtMll.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTMll.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTMll.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTMll.save(1, 1, 0, lumi, 0.8, 1.2)                                                            
     
     effRTMET = Canvas.Canvas('rt/%s/plot_rt_met'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
@@ -552,7 +552,7 @@ if __name__ == '__main__':
     effRTMET.addHisto(RTMET, 'PE,SAME', 'R_{T}', 'PL', r.kBlack , 1, 0)
     effRTMET.addBand(h_auxrtMET.GetXaxis().GetXmin(), rt-systrt, h_auxrtMET.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTMET.addLine(h_auxrtMET.GetXaxis().GetXmin(), rt, h_auxrtMET.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTMET.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTMET.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTMET.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                  
 
     
@@ -565,7 +565,7 @@ if __name__ == '__main__':
     effRTmt2.addHisto(RTmt2, 'PE,SAME', 'R_{T}', 'PL', r.kBlack , 1, 0)
     effRTmt2.addBand(h_auxrtmt2.GetXaxis().GetXmin(), rt-systrt, h_auxrtmt2.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTmt2.addLine(h_auxrtmt2.GetXaxis().GetXmin(), rt, h_auxrtmt2.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTmt2.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTmt2.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTmt2.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                 
 
     effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
@@ -577,7 +577,7 @@ if __name__ == '__main__':
     effRTpt1.addHisto(RTpt1, 'PE,SAME', 'RT', 'PL', r.kBlack , 1, 0)
     effRTpt1.addBand(h_auxrtpt1.GetXaxis().GetXmin(), rt-systrt, h_auxrtpt1.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTpt1.addLine(h_auxrtpt1.GetXaxis().GetXmin(), rt, h_auxrtpt1.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTpt1.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTpt1.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTpt1.save(1, 1, 0, lumi, 0.8, 1.2)
 
     effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
@@ -589,7 +589,7 @@ if __name__ == '__main__':
     effRTpt2.addHisto(RTpt2, 'PE,SAME', 'R_{T}', 'PL', r.kBlack , 1, 0)
     effRTpt2.addBand(h_auxrtpt2.GetXaxis().GetXmin(), rt-systrt, h_auxrtpt2.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTpt2.addLine(h_auxrtpt2.GetXaxis().GetXmin(), rt, h_auxrtpt2.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTpt2.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTpt2.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTpt2.save(1, 1, 0, lumi, 0.8, 1.2)
 
     effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
@@ -601,7 +601,7 @@ if __name__ == '__main__':
     effRTeta1.addHisto(RTeta1, 'PE,SAME', 'RT', 'PL', r.kBlack , 1, 0)
     effRTeta1.addBand(h_auxrteta1.GetXaxis().GetXmin(), rt-systrt, h_auxrteta1.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTeta1.addLine(h_auxrteta1.GetXaxis().GetXmin(), rt, h_auxrteta1.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTeta1.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTeta1.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTeta1.save(1, 1, 0, lumi, 0.8, 1.2)
 
     effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
@@ -613,7 +613,7 @@ if __name__ == '__main__':
     effRTeta2.addHisto(RTeta2, 'PE,SAME', 'RT', 'PL', r.kBlack , 1, 0)
     effRTeta2.addBand(h_auxrteta2.GetXaxis().GetXmin(), rt-systrt, h_auxrteta2.GetXaxis().GetXmax(), rt+systrt, r.kOrange+6, 0.2)
     effRTeta2.addLine(h_auxrteta2.GetXaxis().GetXmin(), rt, h_auxrteta2.GetXaxis().GetXmax(), rt ,r.kBlue)
-    effRTeta2.addLatex (0.6, 0.25, 'Mean R_{T}: %.2f '%(rt))
+    effRTeta2.addLatex (0.6, 0.25, 'Mean R_{T}: %.3f '%(rt))
     effRTeta2.save(1, 1, 0, lumi, 0.8, 1.2)
    
     effMll = Canvas.Canvas('rt/%s/plot_eff_mll'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)

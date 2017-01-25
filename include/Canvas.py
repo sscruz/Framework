@@ -44,9 +44,9 @@ class Canvas:
       latex.SetTextColor(r.kBlack);
       latex.SetTextFont(61);
       #latex.SetTextAlign(31);
-      latex.SetTextSize(0.05);
+      latex.SetTextSize(0.08);
       latex.SetLineWidth(2);
-      latex.DrawLatex(0.16, 0.85, "CMS")
+      latex.DrawLatex(0.15, 0.85, "#bf{CMS}")
 
       latexb = TLatex()
       latexb.SetNDC();
@@ -55,12 +55,12 @@ class Canvas:
       latexb.SetTextFont(52);
       #latexb.SetTextAlign(31);
       latexb.SetLineWidth(2);
-      latexb.SetTextSize(0.035);
+      latexb.SetTextSize(0.06);
  
       if(isData):
-        latexb.DrawLatex(0.16, 0.81, "Preliminary")
+        latexb.DrawLatex(0.15, 0.81, "#it{Preliminary}")
       else:
-        latexb.DrawLatex(0.16, 0.81, "Simulation")
+        latexb.DrawLatex(0.15, 0.81, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
@@ -69,7 +69,7 @@ class Canvas:
       latexc.SetTextColor(r.kBlack);
       latexc.SetTextFont(42);
       latexc.SetTextAlign(31);
-      latexc.SetTextSize(0.05);
+      latexc.SetTextSize(0.04);
       latexc.DrawLatex(0.90, 0.93, text_lumi)
 
    def banner2(self, isData, lumi):
@@ -80,8 +80,8 @@ class Canvas:
       latex.SetTextColor(r.kBlack);
       latex.SetTextFont(42);
       latex.SetTextAlign(31);
-      latex.SetTextSize(0.05);
-      latex.DrawLatex(0.23, 0.93, "CMS")
+      latex.SetTextSize(0.06);
+      latex.DrawLatex(0.23, 0.93, "#bf{CMS}")
 
       latexb = TLatex()
       latexb.SetNDC();
@@ -89,12 +89,12 @@ class Canvas:
       latexb.SetTextColor(r.kBlack);
       latexb.SetTextFont(42);
       latexb.SetTextAlign(31);
-      latexb.SetTextSize(0.03);
+      latexb.SetTextSize(0.04);
  
       if(isData):
-        latexb.DrawLatex(0.37, 0.93, "Preliminary")
+        latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
       else:
-        latexb.DrawLatex(0.37, 0.93, "Simulation")
+        latexb.DrawLatex(0.38, 0.93, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()

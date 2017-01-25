@@ -48,6 +48,8 @@ class CutManager:
       self.nbExact2 = '(nBJetMedium25_Edge == 2)'
       self.mjj110  = 'dphiMjj_Edge < 110.'
       self.mbb150  = 'mbb_Edge < 150.'
+      self.mZ2g20  = 'mZ2_Edge > 20.'
+      self.mZ1inZ  = 'mZ1_Edge >= 86 && mZ1_Edge < 96'
       
       ########################################################################
       ######Basic MET cuts##########################################################
@@ -94,6 +96,7 @@ class CutManager:
       self.mll300_400= "lepsMll_Edge < 400. && lepsMll_Edge >= 300 "
       self.mll400= "lepsMll_Edge >= 400 "
       self.ZmassExtended = "lepsMll_Edge >= 61 && lepsMll_Edge < 121"
+      self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
       self.baseline = self.AddList([self.dilepPt, self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
       self.baselineNoMT2 = self.AddList([self.dilepPt, self.nj2,  self.dPhiJETMET,self.goodLepton])
@@ -108,13 +111,13 @@ class CutManager:
       self.SignalRegionNoMT2 = self.AddList([self.goodLepton, self.JETMETBaselineNoMT2, self.dPhiJETMET]) 
       self.SignalRegionNLL = self.AddList([self.goodLepton, self.JETMETBaseline, self.dPhiJETMET, self.NLL]) 
 
-      self.RSFOFDirectControlRegion = self.AddList([self.goodLepton, self.dPhiJETMET, self.METg100, self.METl150, self.njExact2, self.donot(self.Zmass)])
-      self.RSFOFDirectControlRegionNoMll = self.AddList([self.goodLepton, self.dPhiJETMET, self.METg100, self.METl150, self.njExact2])
-      self.RSFOFDirectControlRegionNoMET = self.AddList([self.goodLepton, self.dPhiJETMET, self.njExact2, self.donot(self.Zmass)])
-      self.RSFOFDirectSignalRegion = "((met_Edge > 150 && nJetSel_Edge >= 2) &&(abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20&& lepsMll_Edge < 70)||lepsMll_Edge >110))"
-      self.RSFOFDirectSignalRegionNoMET = "((nJetSel_Edge >= 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
-      self.RSFOFDirectSignalRegionNoJet = "((nJetSel_Edge >= 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110) && met_Edge > 150.)"
-      self.RSFOFDirectSignalRegionNLL   = "((nJetSel_Edge >= 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&& met_Edge > 150. && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectControlRegion = self.AddList([self.goodLepton, self.METg100, self.METl150, self.njExact2, self.donot(self.ZmassExtendedRsfof)])
+      self.RSFOFDirectControlRegionNoMll = self.AddList([self.goodLepton,  self.METg100, self.METl150, self.njExact2])
+      self.RSFOFDirectControlRegionNoMET = self.AddList([self.goodLepton,  self.njExact2, self.donot(self.ZmassExtendedRsfof)])
+      self.RSFOFDirectSignalRegion = "((met_Edge > 150 && nJetSel_Edge == 2) &&(abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20&& lepsMll_Edge < 70)||lepsMll_Edge >110))"
+      self.RSFOFDirectSignalRegionNoMET = "((nJetSel_Edge == 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
+      self.RSFOFDirectSignalRegionNoJet = "((nJetSel_Edge == 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&&((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110) && met_Edge > 150.)"
+      self.RSFOFDirectSignalRegionNLL   = "((nJetSel_Edge == 2) && (abs(j1MetDPhi_Edge)> 0.4)&& (abs(j2MetDPhi_Edge)> 0.4)&& met_Edge > 150. && ((lepsMll_Edge > 20 && lepsMll_Edge < 70) || lepsMll_Edge > 110))"
  
       self.DYControlRegion = self.AddList([self.goodLepton, self.METl50, self.nj2, self.ZmassExtended])
       self.DYControlRegionNoJet = self.AddList([self.goodLepton, self.METl50, self.ZmassExtended])
@@ -140,8 +143,8 @@ class CutManager:
       ######EWK signal regions ###############################################
       ########################################################################
       self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto])
-      self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET])
-      self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30 ])
+      self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET, self.mZ2g20])
+      self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30])
 
       self.ewinoExtMll  = self.AddList([self.baseline,self.goodLepton,self.dPhiJETMET, self.nj2, self.twoLooseLeptons, self.mT2_80, self.bveto, self.mjj110, self.ThirdLeptonVeto])
       self.ewinoSR      = self.AddList([self.baseline,self.goodLepton,self.dPhiJETMET, self.nj2, self.twoLooseLeptons, self.mT2_80, self.bveto, self.mjj110, self.ThirdLeptonVeto, self.Zmass])
