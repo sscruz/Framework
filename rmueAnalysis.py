@@ -323,8 +323,7 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    #mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_DiLepton_ext', 'ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_DiLepton_ext', 'ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton_ext', 'ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','WZZ', 'ZZZ',  'TTZToLLNuNu' ,'TTWToLNu', 'T_tWch', 'TBar_tWch' , 'TToLeptons_sch', 'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg', 'TTHnobb_pow', 'VHToNonbb', 'WJetsToLNu_LO']
     daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
                   'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
                   'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
@@ -361,8 +360,6 @@ if __name__ == "__main__":
                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
                   'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
-                   #'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
-                   #'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
                   'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
                   'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
@@ -384,7 +381,6 @@ if __name__ == "__main__":
                   'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
                   'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
                   'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
-                  #'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
                   'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
@@ -400,9 +396,6 @@ if __name__ == "__main__":
                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
-                  #'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
-                  #'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
-                  #'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
                   'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
                   'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
                   'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
@@ -424,8 +417,6 @@ if __name__ == "__main__":
                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
-                  #'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  #'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']
                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']
 
