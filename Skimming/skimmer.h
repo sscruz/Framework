@@ -29,6 +29,14 @@ public :
    Int_t           run_Edge;
    Int_t           lumi_Edge;
    Int_t           nVert_Edge;
+   Int_t           Flag_HBHENoiseFilter_Edge;
+   Int_t           Flag_HBHENoiseIsoFilter_Edge;
+   Int_t           Flag_EcalDeadCellTriggerPrimitiveFilter_Edge;
+   Int_t           Flag_goodVertices_Edge;
+   Int_t           Flag_eeBadScFilter_Edge;
+   Int_t           Flag_globalTightHalo2016Filter_Edge;
+   Int_t           Flag_CSCTightHalo2016Filter_Edge;                      
+   Float_t         Flag_badMuonFilter_Edge;                      
    Int_t           nLepTight_Edge;
    Int_t           nLepLoose_Edge;
    Int_t           nJetSel_Edge;
@@ -80,6 +88,14 @@ public :
    Float_t         met_jecUp_Edge;
    Float_t         met_jecDn_Edge;
    Float_t         met_raw_Edge;
+   Float_t         mZ1_Edge;
+   Float_t         mZ2_Edge;
+   Float_t         mt2bb_Edge;
+   Float_t         mt2bb_jecUp_Edge;
+   Float_t         mt2bb_jecDown_Edge;
+   Float_t         mbb_Edge;
+   Float_t         mbb_jecUp_Edge;
+   Float_t         mbb_jecDown_Edge;     
    Float_t         genMet_Edge;
    Float_t         genMet_phi_Edge;
    Float_t         lepsDPhi_Edge;
@@ -225,6 +241,14 @@ public :
    TBranch        *b_lumi_Edge;   //!
    TBranch        *b_nVert_Edge;   //!
    TBranch        *b_nLepTight_Edge;   //!
+   TBranch        *b_Flag_HBHENoiseFilter_Edge;
+   TBranch        *b_Flag_HBHENoiseIsoFilter_Edge;
+   TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge;
+   TBranch        *b_Flag_goodVertices_Edge;
+   TBranch        *b_Flag_eeBadScFilter_Edge;
+   TBranch        *b_Flag_globalTightHalo2016Filter_Edge;
+   TBranch        *b_Flag_CSCTightHalo2016Filter_Edge;             
+   TBranch        *b_Flag_badMuonFilter_Edge;                                    
    TBranch        *b_nLepLoose_Edge;   //!
    TBranch        *b_nJetSel_Edge;   //!
    TBranch        *b_nJetSel_jecUp_Edge;   //!
@@ -275,6 +299,14 @@ public :
    TBranch        *b_met_jecUp_Edge;   //!
    TBranch        *b_met_jecDn_Edge;   //!
    TBranch        *b_met_raw_Edge;   //!
+   TBranch        *b_mZ1_Edge;
+   TBranch        *b_mZ2_Edge;
+   TBranch        *b_mt2bb_Edge;
+   TBranch        *b_mt2bb_jecUp_Edge;
+   TBranch        *b_mt2bb_jecDown_Edge;
+   TBranch        *b_mbb_Edge;
+   TBranch        *b_mbb_jecUp_Edge;
+   TBranch        *b_mbb_jecDown_Edge;     
    TBranch        *b_genMet_Edge;   //!
    TBranch        *b_genMet_phi_Edge;   //!
    TBranch        *b_lepsDPhi_Edge;   //!
@@ -497,7 +529,14 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("evt_Edge", &evt_Edge, &b_evt_Edge);
    fChain->SetBranchAddress("run_Edge", &run_Edge, &b_run_Edge);
    fChain->SetBranchAddress("lumi_Edge", &lumi_Edge, &b_lumi_Edge);
-   fChain->SetBranchAddress("nVert_Edge", &nVert_Edge, &b_nVert_Edge);
+   fChain->SetBranchAddress("Flag_HBHENoiseFilter_Edge", &Flag_HBHENoiseFilter_Edge, &b_Flag_HBHENoiseFilter_Edge); 
+   fChain->SetBranchAddress("Flag_HBHENoiseIsoFilter_Edge", &Flag_HBHENoiseIsoFilter_Edge, &b_Flag_HBHENoiseIsoFilter_Edge);
+   fChain->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter_Edge", &Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, &b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge);
+   fChain->SetBranchAddress("Flag_goodVertices_Edge", &Flag_goodVertices_Edge, &b_Flag_goodVertices_Edge);
+   fChain->SetBranchAddress("Flag_eeBadScFilter_Edge", &Flag_eeBadScFilter_Edge, &b_Flag_eeBadScFilter_Edge);
+   fChain->SetBranchAddress("Flag_globalTightHalo2016Filter_Edge", &Flag_globalTightHalo2016Filter_Edge, &b_Flag_globalTightHalo2016Filter_Edge);
+   fChain->SetBranchAddress("Flag_CSCTightHalo2016Filter_Edge", &Flag_CSCTightHalo2016Filter_Edge, &b_Flag_CSCTightHalo2016Filter_Edge);
+   fChain->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    fChain->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    fChain->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
    fChain->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
@@ -594,7 +633,14 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("srID_Edge", &srID_Edge, &b_srID_Edge);
    fChain->SetBranchAddress("mt2_Edge", &mt2_Edge, &b_mt2_Edge);
    fChain->SetBranchAddress("mt2_jecUp_Edge", &mt2_jecUp_Edge, &b_mt2_jecUp_Edge);
-   fChain->SetBranchAddress("mt2_jecDn_Edge", &mt2_jecDn_Edge, &b_mt2_jecDn_Edge);
+   fChain->SetBranchAddress("mZ1_Edge", &mZ1_Edge, &b_mZ1_Edge);
+   fChain->SetBranchAddress("mZ2_Edge", &mZ2_Edge, &b_mZ2_Edge);
+   fChain->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
+   fChain->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
+   fChain->SetBranchAddress("mt2bb_jecDown_Edge", &mt2bb_jecDown_Edge, &b_mt2bb_jecDown_Edge);
+   fChain->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
+   fChain->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
+   fChain->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
    fChain->SetBranchAddress("lh_ana_zpt_data_Edge", &lh_ana_zpt_data_Edge, &b_lh_ana_zpt_data_Edge);
    fChain->SetBranchAddress("lh_ana_met_data_Edge", &lh_ana_met_data_Edge, &b_lh_ana_met_data_Edge);
    fChain->SetBranchAddress("lh_ana_genMet_data_Edge", &lh_ana_genMet_data_Edge, &b_lh_ana_genMet_data_Edge);
@@ -696,6 +742,14 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("run_Edge", &run_Edge, &b_run_Edge);
    outputtree->SetBranchAddress("lumi_Edge", &lumi_Edge, &b_lumi_Edge);
    outputtree->SetBranchAddress("nVert_Edge", &nVert_Edge, &b_nVert_Edge);
+   outputtree->SetBranchAddress("Flag_HBHENoiseFilter_Edge", &Flag_HBHENoiseFilter_Edge, &b_Flag_HBHENoiseFilter_Edge); 
+   outputtree->SetBranchAddress("Flag_HBHENoiseIsoFilter_Edge", &Flag_HBHENoiseIsoFilter_Edge, &b_Flag_HBHENoiseIsoFilter_Edge);
+   outputtree->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter_Edge", &Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, &b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge);
+   outputtree->SetBranchAddress("Flag_goodVertices_Edge", &Flag_goodVertices_Edge, &b_Flag_goodVertices_Edge);
+   outputtree->SetBranchAddress("Flag_eeBadScFilter_Edge", &Flag_eeBadScFilter_Edge, &b_Flag_eeBadScFilter_Edge);
+   outputtree->SetBranchAddress("Flag_globalTightHalo2016Filter_Edge", &Flag_globalTightHalo2016Filter_Edge, &b_Flag_globalTightHalo2016Filter_Edge);
+   outputtree->SetBranchAddress("Flag_CSCTightHalo2016Filter_Edge", &Flag_CSCTightHalo2016Filter_Edge, &b_Flag_CSCTightHalo2016Filter_Edge);
+   outputtree->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    outputtree->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    outputtree->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
    outputtree->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
@@ -793,7 +847,14 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("mt2_Edge", &mt2_Edge, &b_mt2_Edge);
    outputtree->SetBranchAddress("mt2_jecUp_Edge", &mt2_jecUp_Edge, &b_mt2_jecUp_Edge);
    outputtree->SetBranchAddress("mt2_jecDn_Edge", &mt2_jecDn_Edge, &b_mt2_jecDn_Edge);
-   outputtree->SetBranchAddress("lh_ana_zpt_data_Edge", &lh_ana_zpt_data_Edge, &b_lh_ana_zpt_data_Edge);
+   outputtree->SetBranchAddress("mZ1_Edge", &mZ1_Edge, &b_mZ1_Edge);
+   outputtree->SetBranchAddress("mZ2_Edge", &mZ2_Edge, &b_mZ2_Edge);
+   outputtree->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
+   outputtree->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
+   outputtree->SetBranchAddress("mt2bb_jecDown_Edge", &mt2bb_jecDown_Edge, &b_mt2bb_jecDown_Edge);
+   outputtree->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
+   outputtree->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
+   outputtree->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
    outputtree->SetBranchAddress("lh_ana_met_data_Edge", &lh_ana_met_data_Edge, &b_lh_ana_met_data_Edge);
    outputtree->SetBranchAddress("lh_ana_genMet_data_Edge", &lh_ana_genMet_data_Edge, &b_lh_ana_genMet_data_Edge);
    outputtree->SetBranchAddress("lh_ana_mlb_data_Edge", &lh_ana_mlb_data_Edge, &b_lh_ana_mlb_data_Edge);

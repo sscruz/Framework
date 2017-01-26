@@ -43,8 +43,8 @@ void skimmer::Loop()
       if (ientry < 0) break;
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       if (nPairLep_Edge == 0) continue;
-      if (htJet35j_Edge < 200) continue;
-      //if (nJetSel_Edge < 2) continue;
+      //if (htJet35j_Edge < 200) continue;
+      if (nJetSel_Edge < 2) continue;
       outputtree->Fill();
    }
    
