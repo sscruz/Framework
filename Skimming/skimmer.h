@@ -29,6 +29,8 @@ public :
    Int_t           run_Edge;
    Int_t           lumi_Edge;
    Int_t           nVert_Edge;
+   Int_t           nPFHad10_Edge;
+   Int_t           nPFLep5_Edge;
    Int_t           Flag_HBHENoiseFilter_Edge;
    Int_t           Flag_HBHENoiseIsoFilter_Edge;
    Int_t           Flag_EcalDeadCellTriggerPrimitiveFilter_Edge;
@@ -193,11 +195,12 @@ public :
    Float_t         HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge;
    Float_t         HLT_BIT_HLT_Mu30_TkMu11_v_Edge;
    Float_t         HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge;
+   Float_t         HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge;
    Float_t         HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge;
    Float_t         HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge;
    Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
-   Float_t         HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   Float_t         HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;    
    Float_t         HLT_BIT_HLT_PFHT200_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT250_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT300_v_Edge;
@@ -241,6 +244,8 @@ public :
    TBranch        *b_lumi_Edge;   //!
    TBranch        *b_nVert_Edge;   //!
    TBranch        *b_nLepTight_Edge;   //!
+   TBranch        *b_nPFHad10_Edge;   //!
+   TBranch        *b_nPFLep5_Edge;   //!
    TBranch        *b_Flag_HBHENoiseFilter_Edge;
    TBranch        *b_Flag_HBHENoiseIsoFilter_Edge;
    TBranch        *b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge;
@@ -390,22 +395,26 @@ public :
    TBranch        *b_weight_FSlepSF_MuDn_Edge;   //!
    TBranch        *b_weight_FSlepSF_ElUp_Edge;   //!
    TBranch        *b_weight_FSlepSF_ElDn_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu27_TkMu8_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu30_TkMu11_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge;   //!
+   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu27_TkMu8_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu30_TkMu11_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
+   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;    
    TBranch        *b_HLT_BIT_HLT_PFHT200_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT250_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT300_v_Edge;   //!
@@ -416,9 +425,6 @@ public :
    TBranch        *b_HLT_BIT_HLT_PFHT650_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT800_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT300_PFMET110_v_Edge;   //!
-   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
-   TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
-   TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    TBranch        *b_GenSusyMScan1_Edge;   //!
    TBranch        *b_GenSusyMScan2_Edge;   //!
    TBranch        *b_GenSusyMScan3_Edge;   //!
@@ -539,6 +545,8 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    fChain->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    fChain->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
+   fChain->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
+   fChain->SetBranchAddress("nPFLep5_Edge", &nPFLep5_Edge, &b_nPFLep5_Edge);
    fChain->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
    fChain->SetBranchAddress("nJetSel_jecUp_Edge", &nJetSel_jecUp_Edge, &b_nJetSel_jecUp_Edge);
    fChain->SetBranchAddress("nJetSel_jecDn_Edge", &nJetSel_jecDn_Edge, &b_nJetSel_jecDn_Edge);
@@ -692,8 +700,12 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu30_TkMu11_v_Edge", &HLT_BIT_HLT_Mu30_TkMu11_v_Edge, &b_HLT_BIT_HLT_Mu30_TkMu11_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge", &HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge, &b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   fChain->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT200_v_Edge", &HLT_BIT_HLT_PFHT200_v_Edge, &b_HLT_BIT_HLT_PFHT200_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT250_v_Edge", &HLT_BIT_HLT_PFHT250_v_Edge, &b_HLT_BIT_HLT_PFHT250_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT300_v_Edge", &HLT_BIT_HLT_PFHT300_v_Edge, &b_HLT_BIT_HLT_PFHT300_v_Edge);
@@ -752,6 +764,8 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    outputtree->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    outputtree->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
+   outputtree->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
+   outputtree->SetBranchAddress("nPFLep5_Edge", &nPFLep5_Edge, &b_nPFLep5_Edge);
    outputtree->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
    outputtree->SetBranchAddress("nJetSel_jecUp_Edge", &nJetSel_jecUp_Edge, &b_nJetSel_jecUp_Edge);
    outputtree->SetBranchAddress("nJetSel_jecDn_Edge", &nJetSel_jecDn_Edge, &b_nJetSel_jecDn_Edge);
@@ -905,8 +919,12 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu30_TkMu11_v_Edge", &HLT_BIT_HLT_Mu30_TkMu11_v_Edge, &b_HLT_BIT_HLT_Mu30_TkMu11_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge", &HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge, &b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge", &HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge, &b_HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   outputtree->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT200_v_Edge", &HLT_BIT_HLT_PFHT200_v_Edge, &b_HLT_BIT_HLT_PFHT200_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT250_v_Edge", &HLT_BIT_HLT_PFHT250_v_Edge, &b_HLT_BIT_HLT_PFHT250_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT300_v_Edge", &HLT_BIT_HLT_PFHT300_v_Edge, &b_HLT_BIT_HLT_PFHT300_v_Edge);

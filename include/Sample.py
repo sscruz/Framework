@@ -90,11 +90,12 @@ class Sample:
       #    cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
-         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
       else: 
-         cut = cut + "* ( " + extraWeight + ")"
-
+         addDataFilters = "&&( (Flag_eeBadScFilter_Edge == 1 && Flag_badMuonFilter  == 1 ))"
+         cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
+         #cut = cut + "* (" + extraWeight +")"
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
