@@ -39,7 +39,11 @@ public :
    Int_t           Flag_globalTightHalo2016Filter_Edge;
    Int_t           Flag_CSCTightHalo2016Filter_Edge;                      
    Float_t         Flag_badMuonFilter_Edge;                      
-   Int_t           Flag_badChargedHadronFilter_Edge;                      
+   Float_t           Flag_badChargedHadronFilter_Edge;                      
+   Int_t           Flag_badCloneMuonMoriond2017_Edge;                      
+   Int_t           Flag_badMuonMoriond2017_Edge;                      
+   Float_t         badCloneMuonMoriond2017_maxPt_Edge;                      
+   Float_t         badNotCloneMuonMoriond2017_maxPt_Edge;                      
    Int_t           nLepTight_Edge;
    Int_t           nLepLoose_Edge;
    Int_t           nJetSel_Edge;
@@ -256,6 +260,10 @@ public :
    TBranch        *b_Flag_CSCTightHalo2016Filter_Edge;             
    TBranch        *b_Flag_badMuonFilter_Edge;                                    
    TBranch        *b_Flag_badChargedHadronFilter_Edge;                                    
+   TBranch        *b_Flag_badCloneMuonMoriond2017_Edge;                                    
+   TBranch        *b_Flag_badMuonMoriond2017_Edge;                                    
+   TBranch        *b_badCloneMuonMoriond2017_maxPt_Edge;                                    
+   TBranch        *b_badNotCloneMuonMoriond2017_maxPt_Edge;                                    
    TBranch        *b_nLepLoose_Edge;   //!
    TBranch        *b_nJetSel_Edge;   //!
    TBranch        *b_nJetSel_jecUp_Edge;   //!
@@ -546,6 +554,10 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Flag_CSCTightHalo2016Filter_Edge", &Flag_CSCTightHalo2016Filter_Edge, &b_Flag_CSCTightHalo2016Filter_Edge);
    fChain->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    fChain->SetBranchAddress("Flag_badChargedHadronFilter_Edge", &Flag_badChargedHadronFilter_Edge, &b_Flag_badChargedHadronFilter_Edge);                                                       
+   fChain->SetBranchAddress("Flag_badCloneMuonMoriond2017_Edge", &Flag_badCloneMuonMoriond2017_Edge, &b_Flag_badCloneMuonMoriond2017_Edge);                                                       
+   fChain->SetBranchAddress("Flag_badMuonMoriond2017_Edge", &Flag_badMuonMoriond2017_Edge, &b_Flag_badMuonMoriond2017_Edge);                                                       
+   fChain->SetBranchAddress("badCloneMuonMoriond2017_maxPt_Edge", &badCloneMuonMoriond2017_maxPt_Edge, &b_badCloneMuonMoriond2017_maxPt_Edge);                                                       
+   fChain->SetBranchAddress("badNotCloneMuonMoriond2017_maxPt_Edge", &badNotCloneMuonMoriond2017_maxPt_Edge, &b_badNotCloneMuonMoriond2017_maxPt_Edge);                                            
    fChain->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    fChain->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
    fChain->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
@@ -766,6 +778,10 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Flag_CSCTightHalo2016Filter_Edge", &Flag_CSCTightHalo2016Filter_Edge, &b_Flag_CSCTightHalo2016Filter_Edge);
    outputtree->SetBranchAddress("Flag_badMuonFilter_Edge", &Flag_badMuonFilter_Edge, &b_Flag_badMuonFilter_Edge);                                                                  
    outputtree->SetBranchAddress("Flag_badChargedHadronFilter_Edge", &Flag_badChargedHadronFilter_Edge, &b_Flag_badChargedHadronFilter_Edge);                                              
+   outputtree->SetBranchAddress("Flag_badCloneMuonMoriond2017_Edge", &Flag_badCloneMuonMoriond2017_Edge, &b_Flag_badCloneMuonMoriond2017_Edge);                  
+   outputtree->SetBranchAddress("Flag_badMuonMoriond2017_Edge", &Flag_badMuonMoriond2017_Edge, &b_Flag_badMuonMoriond2017_Edge);                                 
+   outputtree->SetBranchAddress("badCloneMuonMoriond2017_maxPt_Edge", &badCloneMuonMoriond2017_maxPt_Edge, &b_badCloneMuonMoriond2017_maxPt_Edge);               
+   outputtree->SetBranchAddress("badNotCloneMuonMoriond2017_maxPt_Edge", &badNotCloneMuonMoriond2017_maxPt_Edge, &b_badNotCloneMuonMoriond2017_maxPt_Edge);      
    outputtree->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    outputtree->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
    outputtree->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
