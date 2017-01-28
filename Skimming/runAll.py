@@ -12,7 +12,7 @@ from multiprocessing import Pool
 def runDataset(ins):
     os.system('root -l -b -q runSkim.C+\(\\\"{sample}\\\",\\\"{path}\\\"\);'.format(sample=ins[0],path=ins[1]))
 
-pathList = ['/mnt/t3nfs01/data01/shome/pablom/trees-Nov-28/']
+pathList = ['/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27/']
 
 tasks = []
 for path in pathList:
@@ -22,5 +22,5 @@ for path in pathList:
         if not 'evVarFriend_' in fil: continue
         dataset = fil.replace('evVarFriend_','').replace('.root','')
         tasks.append([dataset,path])
-pool = Pool(4)
+pool = Pool(8)
 pool.map(runDataset, tasks)

@@ -19,7 +19,7 @@ class vParams:
 def loadNLLStuff():
     ROOT.RooMsgService.instance().setGlobalKillBelow(ROOT.RooFit.WARNING) ;
     ROOT.gROOT.LoadMacro('include/nll.C+')
-    f_pdfs = ROOT.TFile.Open("/afs/cern.ch/user/p/pablom/public/pdfs_forMoriond_ver2.root","READ");
+    f_pdfs = ROOT.TFile.Open("/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/pdfs_forMoriond_ver3.root","READ");
     w = f_pdfs.Get('w')
     ROOT.SetW(w)
     for var in 'zpt mlb met ldp'.split():
