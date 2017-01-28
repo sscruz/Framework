@@ -22,5 +22,5 @@ for path in pathList:
         if not 'evVarFriend_' in fil: continue
         dataset = fil.replace('evVarFriend_','').replace('.root','')
         tasks.append([dataset,path])
-pool = Pool(4)
+pool = Pool(8)
 pool.map(runDataset, tasks)
