@@ -17,18 +17,19 @@ class CutManager:
       self.leptonDR = "lepsDR_Edge > 0.1"       
       self.ECALCrack = "abs(abs(Lep1_eta_Edge) - 1.5) > 0.1 && abs(abs(Lep2_eta_Edge) - 1.5) > 0.1"
       self.leptonsMll = "lepsMll_Edge > 20"
-      self.goodLepton = "("+self.twoLeptons + "&&" + self.dilepPt + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll +  ")"
       self.ee = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121)"
       self.mm = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)"
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
-      self.trigMMNEW = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || 'HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v' ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
+      self.trigMMNEW = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
       self.trigEENEW = "(HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge==1)"
       self.trigEMNEW = "(HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
       self.trigger = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
       self.triggerForCR = "((" + self.trigMMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 169) || (" + self.trigEENEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 121 ) || (" + self.trigEMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 143))"
-      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10 == 0 && nPFLep5 <= 2)'
+      self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.dilepPt + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll +  ")"
+      self.goodLeptonNoTrigger = "("+self.twoLeptons + "&&" + self.dilepPt + "&&" + self.leptonPt + "&&" + self.leptonDR + "&&" + self.ECALCrack + "&&" + self.leptonsMll +  ")"
+      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
       self.tightIso = 'max(Lep1_miniRelIso_Edge, Lep2_miniRelIso_Edge) < 0.05'
       self.threeTightLeptons = 'nLepTight_Edge == 3'
       self.fourTightLeptons = 'nLepTight_Edge == 4'
@@ -168,8 +169,8 @@ class CutManager:
       ########################################################################
       self.HT = "(htJet35j_Edge > 200) "
       self.triggerHT = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5 || HLT_BIT_HLT_PFHT300_PFMET110_v_Edge > 0.5 )" 
-      self.numerator =   self.AddList([self.goodLepton, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT, self.trigger])
-      self.denominator = self.AddList([self.goodLepton, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT])  
+      self.numerator =   self.AddList([self.goodLeptonNoTrigger, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT, self.trigger])
+      self.denominator = self.AddList([self.goodLeptonNoTrigger, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT])  
 
 
 
