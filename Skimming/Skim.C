@@ -29,7 +29,7 @@ UInt_t run, lumi;
 
 ULong64_t evt;
 
-Int_t nLepTight_Edge, nPairLep_Edge, Lep1_pdgId_Edge, Lep2_pdgId_Edge, nJetSel_Edge, Flag_hbheFilterIso_Edge, Flag_hbheFilterNew25ns_Edge, Flag_HBHENoiseFilter_Edge,Flag_HBHENoiseIsoFilter_Edge, Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, Flag_goodVertices_Edge, Flag_eeBadScFilter_Edge, Flag_globalTightHalo2016Filter_Edge, Flag_CSCTightHalo2016Filter_Edge;
+Int_t nLepTight_Edge, nPairLep_Edge, Lep1_pdgId_Edge, Lep2_pdgId_Edge, nJetSel_Edge, nPFHad10_Egde, nPFLep5_Edge, Flag_hbheFilterIso_Edge, Flag_hbheFilterNew25ns_Edge, Flag_HBHENoiseFilter_Edge,Flag_HBHENoiseIsoFilter_Edge, Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, Flag_goodVertices_Edge, Flag_eeBadScFilter_Edge, Flag_globalTightHalo2016Filter_Edge, Flag_CSCTightHalo2016Filter_Edge;
 
 Float_t Flag_eeBadScFilter, HLT_mu17mu8_dz, HLT_mu27tkmu8, HLT_mu17tkmu8_dz, HLT_el17el12_dz, HLT_ele33ele33, HLT_mu8el17, HLT_mu17el12, HLT_mu30ele30, HLT_DoubleMu, Flag_badMuonFilter;
 
@@ -135,6 +135,8 @@ void setSourceBranches() {
     tree->SetBranchAddress("isData",&isData);
     tree->SetBranchAddress("nPairLep_Edge",&nPairLep_Edge);
     tree->SetBranchAddress("nLepTight_Edge",&nLepTight_Edge);
+    tree->SetBranchAddress("nPFHad10_Edge",&nPFHad10_Edge);
+    tree->SetBranchAddress("nPFLep5_Edge",&nPFLep5_Edge);
     tree->SetBranchAddress("Lep1_phi_Edge",&Lep1_phi_Edge);
     tree->SetBranchAddress("Lep2_phi_Edge",&Lep2_phi_Edge);
     tree->SetBranchAddress("Lep1_pdgId_Edge",&Lep1_pdgId_Edge);
@@ -212,6 +214,8 @@ void setOutputBranches() {
     SkimTree->Branch("isData",&isData);
     SkimFriendTree->Branch("nPairLep_Edge",&nPairLep_Edge);
     SkimFriendTree->Branch("nLepTight_Edge",&nLepTight_Edge);
+    SkimFriendTree->Branch("nPFHad10_Edge",&nPFHad10_Edge);
+    SkimFriendTree->Branch("nPFLep5_Edge",&nPFLep5_Edge);
     SkimFriendTree->Branch("Lep1_phi_Edge",&Lep1_phi_Edge);
     SkimFriendTree->Branch("Lep2_phi_Edge",&Lep2_phi_Edge);
     SkimFriendTree->Branch("Lep1_pdgId_Edge",&Lep1_pdgId_Edge);
