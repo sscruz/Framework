@@ -39,28 +39,26 @@ class Canvas:
    def banner(self, isData, lumi):
     
       latex = TLatex()
-      latex.SetNDC();
-      latex.SetTextAngle(0);
-      latex.SetTextColor(r.kBlack);
-      latex.SetTextFont(61);
-      #latex.SetTextAlign(31);
-      latex.SetTextSize(0.08);
-      latex.SetLineWidth(2);
-      latex.DrawLatex(0.15, 0.85, "#bf{CMS}")
-
-      latexb = TLatex()
+      latex.SetNDC();                         
+      latex.SetTextAngle(0);                  
+      latex.SetTextColor(r.kBlack);           
+      latex.SetTextFont(42);                  
+      latex.SetTextAlign(31);                 
+      latex.SetTextSize(0.06);                
+      latex.DrawLatex(0.25, 0.93, "#bf{CMS}") 
+               
+      latexb = TLatex()                      
       latexb.SetNDC();
       latexb.SetTextAngle(0);
       latexb.SetTextColor(r.kBlack);
-      latexb.SetTextFont(52);
-      #latexb.SetTextAlign(31);
-      latexb.SetLineWidth(2);
-      latexb.SetTextSize(0.06);
- 
+      latexb.SetTextFont(42);
+      latexb.SetTextAlign(31);
+      latexb.SetTextSize(0.04);            
+
       if(isData):
-        latexb.DrawLatex(0.15, 0.81, "#it{Preliminary}")
+        latexb.DrawLatex(0.4, 0.93, "#it{Preliminary}")
       else:
-        latexb.DrawLatex(0.15, 0.81, "#it{Simulation}")
+        latexb.DrawLatex(0.4, 0.93, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
@@ -89,7 +87,7 @@ class Canvas:
       latexb.SetTextColor(r.kBlack);
       latexb.SetTextFont(42);
       latexb.SetTextAlign(31);
-      latexb.SetTextSize(0.04);
+      latexb.SetTextSize(0.04);            
  
       if(isData):
         latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
@@ -365,7 +363,7 @@ class Canvas:
           self.makeLegend()
           self.myLegend.Draw()
 
-      self.banner2(isData, lumi)
+      self.banner(isData, lumi)
       for plotName in self.plotNames:
           path = 'plots/'+plotName
           self.ensurePath(path)
