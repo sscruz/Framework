@@ -56,9 +56,9 @@ class Canvas:
       latexb.SetTextSize(0.04);            
 
       if(isData):
-        latexb.DrawLatex(0.4, 0.93, "#it{Preliminary}")
+        latexb.DrawLatex(0.47, 0.93, "#it{Preliminary}")
       else:
-        latexb.DrawLatex(0.4, 0.93, "#it{Simulation}")
+        latexb.DrawLatex(0.47, 0.93, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
