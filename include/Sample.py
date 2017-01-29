@@ -1,7 +1,7 @@
 import ROOT as r
 from array import array
 from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
-
+import include.pu
 
 class Sample:
    'Common base class for all Samples'
@@ -32,9 +32,9 @@ class Sample:
 
       if not self.isData:
         self.lumWeight = self.xSection / self.count
-        self.puWeight    = "PileupW_Edge"
+        self.puWeight    = "PUWeight(PileupW_Edge)"
         self.btagWeight  = "weight_btagsf_Edge"
-        self.SFWeight    = "weight_LepSF_Edge"
+#        self.SFWeight    = "weight_LepSF_Edge"
         self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
