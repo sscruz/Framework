@@ -160,12 +160,12 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         treevar = 'lepsMll_Edge'
         xlabel = 'm_{ll} [GeV]'                    
         nbins = [20, 60, 86, 96, 150, 200, 300, 400]
-    if isBlinded:
-        lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
-        pred  = 46.5; pred_e =14.92 
-    else:
-        lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-        pred = 96.5; pred_e =38.24
+   # if isBlinded:
+   #     lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
+   #     pred  = 46.5; pred_e =14.92 
+   # else:
+    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    pred = 96.5; pred_e =38.24
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
     rinout1_stat = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[1]
@@ -254,7 +254,7 @@ def makeResultsTable(da, fs, dy, ra, mc, nll = ''):
     print line10                                                                                                                                                      
     print line11                                                                                                                                                      
 
-def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
+def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
@@ -275,7 +275,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     else: 
         treevar = var
         xlabel = ''
-    
+    scan = Scans.Scan(analysis) 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rsfof_mc = helper.readFromFileRsfofD("ingredients.dat", "MC")   
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -285,9 +285,41 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","coeffB", "DATA")
     rmue_b_mc = helper.readFromFileRmueCoeff("ingredients.dat","coeffB", "MC")
 
+    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.OF, cuts.Zveto]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    print '(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0])
+    for i in range(1, da_OF.GetNbinsX()+1):
+        if not  da_OF.GetBinContent(i): continue
+    da_OF_direct = copy.deepcopy(da_OF)
+    da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
+    da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
+    da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
+    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                   
+    ### 
+    da_prediction = copy.deepcopy( da_OF )
+    da_OF.SetBinErrorOption( TH1.kPoisson)
+    for i in range(1, da_prediction.GetNbinsX()+1):
+        da_prediction.SetBinError(i,0.)
+    da_prediction.Multiply(result[2])                       
+                                                                                                                                
+    for bin, label in scan.SRLabels.items():
+        bin = da_prediction.FindBin(bin)
+        # to get asymmetric errors (i dont know why it doesnt work another way)
+        dummyHisto = r.TH1F()
+        dummyHisto.SetBinErrorOption(TH1.kPoisson)
+        for i in range(1, int(da_OF.GetBinContent(bin))+1):
+            dummyHisto.Fill(0.5)
+        dummyHisto.GetBinContent(1), '+/-', dummyHisto.GetBinErrorUp(1), dummyHisto.GetBinErrorLow(1)
+        syst = '  {value:4.1f}^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(value = da_prediction.GetBinContent(bin),
+                                                                             errUp = da_prediction.GetBinErrorUp(bin),
+                                                                             errDn = da_prediction.GetBinErrorLow(bin))
+        stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
+                                                               errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
+        del dummyHisto                                                                                                                                                                                                                                                                                                                                               
 
     ## ## mll distributions
-    da_OF = treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion,cuts.trigger,  cuts.Zveto, cuts.OF]), '', xlabel)
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion,cuts.trigger,  cuts.Zveto, cuts.SF]), '', xlabel)
     mc_OF = treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.OF]), '', xlabel)
     mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.SF]), '', xlabel)
@@ -309,7 +341,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_OF_rsfofScaled = result[3] 
     mc_OF_rsfofScaled_err = copy.deepcopy( mc_OF_rsfofScaled ) 
     mc_OF_rsfofScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    mc_OF_rsfofScaled_err.SetFillStyle(3004); mc_OF_rsfofScaled_err.SetMarkerSize(0.)
+    mc_OF_rsfofScaled_err.SetFillStyle(3004); mc_OF_rsfofScaled_err.SetMarkerSize(0.)          
 
 
     mc_SF.GetYaxis().SetRangeUser(0., 1.3*mc_SF.GetMaximum())
@@ -326,6 +358,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPredmcObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
     plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
+    plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'DA_OF'       , 'L', r.kBlack , 1, -1)
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
@@ -334,6 +367,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     if False:
         plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPreddaObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
         plot_closure.addHisto(da_SF                , 'PE'       , 'data-SF', 'PL', r.kRed+1  , 1,  0)
+        plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'DA_OF'       , 'L', r.kBlack , 1, -1)
         plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
         plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
         plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
@@ -460,12 +494,14 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     if 'printIntegral' in _options: print 'found option %s'%'printIntegral' ;printIntegral = True
     if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins = [20, 60, 86, 96, 150, 200, 300, 400]; xmin =1 ; xmax = 1; xlabel = 'm_{ll} [GeV]'
     if not specialcut:
-        specialcut = specialcut + '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+        specialcut = specialcut 
+        #specialcut = specialcut + '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     else:
-        specialcut = specialcut + '&&((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+        #specialcut = specialcut + '&&((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+        specialcut = specialcut 
     scan = Scans.Scan(analysis)
     mc_stack = r.THStack() 
-    newLumiString = '18.1invfb'
+    newLumiString = '36.4invfb'
     ##get the ingredients
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -504,7 +540,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
                                                                              errDn = prediction.GetBinErrorLow(bin))
         stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
                                                                errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
-        del dummyHisto                                                                                                                           
+        del dummyHisto                                                                                                                                                                                                                                                                                                                                                                                                                                                       
     
     # get the dy shape, data and rares
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
@@ -584,108 +620,80 @@ if __name__ == '__main__':
 
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Q', 'ZZTo2L2Nu']
+    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
-    ttzDatasets = ['TTZToLLNuNu', 'TTZToQQ']
-    raDatasets = ['TTTT', 'tZq_ll', 'TWZ','WWZ','WZZ', 'ZZZ',  'TTHnobb_pow', 'VHToNonbb']
-    fsDatasets = ['TTJets_DiLepton_ext', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'T_tWch', 'TBar_tWch' ,'TToLeptons_sch','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg',  'WJetsToLNu_LO']
+    ttzDatasets = ['TTZToLLNuNu']
+    raDatasets = ['TTTT', 'tZq_ll','WWZ', 'ZZZ']
+    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
-    daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5',
-                  'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6',
-                  'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
-                  'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
-                  'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
-                  'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                  'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
-                  'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
-                  'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
-                  'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
-                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']
-
+    
+    daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',        
+                'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
+                'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376',      
+                'JetHT_Run2016C_23Sep2016_v1_runs_271036_284044',                
+                'JetHT_Run2016D_23Sep2016_v1_runs_271036_284044',               
+                'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044',             
+                'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',                 
+                'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',                    
+                'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                    
+                'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                   
+                'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                   
+                'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
+                'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
+                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
+                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
+                'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
+                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
+                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
+                'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',       
+                'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
+                'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',       
+                'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016H-PromptReco-v2_runs_281207_284035']              
+    
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
     treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0)
@@ -703,7 +711,8 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
+    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    #lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================
@@ -720,15 +729,15 @@ if __name__ == '__main__':
         resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
 
     makeRSOFTable('Edge_Moriond2017')
-    makeClosureTests('nll','', 'inclusive', True)
-    makeClosureTests('nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
-    makeClosureTests('nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
-    makeClosureTests('nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
-    makeClosureTests('nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
-    makeClosureTests('nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
-    makeClosureTests('nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
-    makeClosureTests('nll','lepsMll_Edge > 400', 'mll400', True)
-    makeClosureTests('mll','', 'inclusive', True)
-    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
-    makeClosureTests('mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
+    makeClosureTests('Edge_Moriond2017','nll','', 'inclusive', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
+    makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge > 400', 'mll400', True)
+    makeClosureTests('Edge_Moriond2017','mll','', 'inclusive', True)
+    makeClosureTests('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
+    makeClosureTests('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
     

@@ -34,7 +34,7 @@ class Sample:
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PUWeight(PileupW_Edge)"
         self.btagWeight  = "weight_btagsf_Edge"
-#        self.SFWeight    = "weight_LepSF_Edge"
+        self.SFWeight    = "weight_LepSF_Edge"
         self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
@@ -90,10 +90,11 @@ class Sample:
       #    cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + "*" + extraWeight + " )" 
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
       else: 
-         addDataFilters = "&&( (Flag_eeBadScFilter_Edge == 1  ))"
+         #addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
+         addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
          #cut = cut + "* (" + extraWeight +")"
       self.ttree.Project(h.GetName(), var, cut, options) 

@@ -56,7 +56,7 @@ def makeTable(DATAnumeratoree, DATAnumeratormm, DATAnumeratorOF, DATAdenominator
                                                                                                                                                                                      
     helper.ensureDirectory('plots/rt/%s/'%lumi_str)
     helper.ensureDirectory('plots/rt/%s/tables/'%lumi_str)
-    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rt"),'w')
+    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rt"),'w')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
     compTableFile.write(line2+'\n')                                                                                             
@@ -76,8 +76,6 @@ def getRT(eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
     if(eff_em == 0 ):
         print "Division by zero"
         return [0, 0, 0]
-    if (eff_mm == 0):
-        eff_mm = 0.0001
     RT = math.sqrt(eff_ee*eff_mm)/eff_em
     uncRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(unc_ee/math.sqrt(eff_ee)) 
     uncRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(unc_mm/math.sqrt(eff_mm)) 
@@ -156,22 +154,24 @@ def RT(ref, eff_ee, eff_mm, eff_em):
     return RTratio
 
 
-def getTriggerEffs(num, den):
-
+def getTriggerEffs(num, den, dataMC):
     trig = den.Clone("trig_" + den.GetName())
     trig.Reset()
-
-
-
-    errs = TGraphAsymmErrors(num, den, 'v')
-    #x = errs.GetX()
-    #y = errs.GetY()
-    #eyh = errs.GetEYhigh()
-    #eyl = errs.GetEYlow()
-    #for i in range(1, num.GetNbinsX()+1):
-    #    if(x[i] != 0 or y[i] != 0):
-    #        trig.SetBinContent(i, y[i])
-    #        trig.SetBinError(i, max(eyh[i], eyl[i]))
+    
+    if dataMC == "data":
+        option = 'v'
+    if dataMC == 'MC':
+        option = 'cl'
+            
+    errs = TGraphAsymmErrors(num, den, option)
+   # x = errs.GetX()
+   # y = errs.GetY()
+   # eyh = errs.GetEYhigh()
+   # eyl = errs.GetEYlow()
+   # for i in range(1, num.GetNbinsX()+1):
+   #     if(x[i] != 0 or y[i] != 0):
+   #         trig.SetBinContent(i, y[i])
+   #         trig.SetBinError(i, max(eyh[i], eyl[i]))
 
     return errs
 
@@ -206,10 +206,11 @@ if __name__ == '__main__':
     (opts, args) = parser.parse_args()
 
     theFile = opts.ingredientsFile
-    print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
+    print bcolors.HEADER + '[RTAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
     
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton']
+    #mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
     
     daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',             
                 'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
@@ -379,7 +380,9 @@ if __name__ == '__main__':
     DATAnumeratormt2OF =     treeDA.getTH1F(lumi, "DATAnumeratorOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labelmt2)                
 
     MCdenominatorMllee = treeMC.getTH1F(lumi, "MCdenominatoree", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    print "MCdenominatorMllee", MCdenominatorMllee.Integral()
     MCnumeratorMllee =   treeMC.getTH1F(lumi, "MCnumeratoree", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.ee]), '', labelx)
+    print "MCnumeratorMllee", MCnumeratorMllee.Integral()
     MCdenominatorMllmm = treeMC.getTH1F(lumi, "MCdenominatormm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
     MCnumeratorMllmm =   treeMC.getTH1F(lumi, "MCnumeratormm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.mm]), '', labelx)
     MCdenominatorMllSF = treeMC.getTH1F(lumi, "MCdenominatorSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
@@ -423,14 +426,18 @@ if __name__ == '__main__':
     MCdenominatoreta2OF = treeMC.getTH1F(lumi, "MCdenominatoreta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labeleta2)
     MCnumeratoreta2OF =   treeMC.getTH1F(lumi, "MCnumeratoreta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labeleta2)
                                                                                                                                                                                                  
-    MCdenominatorMlleevalue =   treeMC.getTH1F(lumi, "MCdenominatoreevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
-    MCnumeratorMlleevalue =     treeMC.getTH1F(lumi, "MCnumeratoreevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.ee]), '', labelx)
-    MCdenominatorMllmmvalue =   treeMC.getTH1F(lumi, "MCdenominatormmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
-    MCnumeratorMllmmvalue =     treeMC.getTH1F(lumi, "MCnumeratormmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.mm]), '', labelx)
-    MCdenominatorMllSFvalue =   treeMC.getTH1F(lumi, "MCdenominatorSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
-    MCnumeratorMllSFvalue =     treeMC.getTH1F(lumi, "MCnumeratorSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.SF]), '', labelx)
-    MCdenominatorMllOFvalue =   treeMC.getTH1F(lumi, "MCdenominatorOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelx)
-    MCnumeratorMllOFvalue =     treeMC.getTH1F(lumi, "MCnumeratorOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labelx)
+    MCdenominatorMlleevalue =   treeMC.getTH1F(lumi, "MCdenominatoreevalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelx)
+    print "MCdenominatorMlleevalue ",MCdenominatorMlleevalue.Integral() 
+    MCnumeratorMlleevalue =     treeMC.getTH1F(lumi, "MCnumeratoreevalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.ee]), '', labelx)
+    print "MCnumeratorMlleevalue ",MCnumeratorMlleevalue.Integral() 
+    MCdenominatorMllmmvalue =   treeMC.getTH1F(lumi, "MCdenominatormmvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.denominator, cuts.mm]), '', labelx)
+    print "MCdenominatorMllmmvalue ",MCdenominatorMllmmvalue.Integral() 
+    MCnumeratorMllmmvalue =     treeMC.getTH1F(lumi, "MCnumeratormmvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.mm]), '', labelx)
+    print "MCnumeratorMllmmvalue ",MCnumeratorMllmmvalue.Integral() 
+    MCdenominatorMllSFvalue =   treeMC.getTH1F(lumi, "MCdenominatorSFvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.denominator, cuts.SF]), '', labelx)
+    MCnumeratorMllSFvalue =     treeMC.getTH1F(lumi, "MCnumeratorSFvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.SF]), '', labelx)
+    MCdenominatorMllOFvalue =   treeMC.getTH1F(lumi, "MCdenominatorOFvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelx)
+    MCnumeratorMllOFvalue =     treeMC.getTH1F(lumi, "MCnumeratorOFvalue", "lepsMll_Edge", 1, 20, 1000, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labelx)
     
     MCdenominatorMETee =   treeMC.getTH1F(lumi, "MCdenominatoreevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.ee]), '', labelmet)
     MCnumeratorMETee =     treeMC.getTH1F(lumi, "MCnumeratoreevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.ee]), '', labelmet)
@@ -449,14 +456,18 @@ if __name__ == '__main__':
     MCnumeratormt2SF =     treeMC.getTH1F(lumi, "MCnumeratorSFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.SF]), '', labelmt2)
     MCdenominatormt2OF =   treeMC.getTH1F(lumi, "MCdenominatorOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelmt2)
     MCnumeratormt2OF =     treeMC.getTH1F(lumi, "MCnumeratorOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labelmt2)                ######################## Calculation of total values #############################
-    effMlleevalueDATA = getTriggerEffs(DATAnumeratorMlleevalue, DATAdenominatorMlleevalue)
-    effMllmmvalueDATA = getTriggerEffs(DATAnumeratorMllmmvalue, DATAdenominatorMllmmvalue)
-    effMllSFvalueDATA = getTriggerEffs(DATAnumeratorMllSFvalue, DATAdenominatorMllSFvalue)
-    effMllOFvalueDATA = getTriggerEffs(DATAnumeratorMllOFvalue, DATAdenominatorMllOFvalue)
-    effMlleevalueMC   = getTriggerEffs(MCnumeratorMlleevalue, MCdenominatorMlleevalue)
-    effMllmmvalueMC   = getTriggerEffs(MCnumeratorMllmmvalue, MCdenominatorMllmmvalue)
-    effMllSFvalueMC   = getTriggerEffs(MCnumeratorMllSFvalue, MCdenominatorMllSFvalue)
-    effMllOFvalueMC   = getTriggerEffs(MCnumeratorMllOFvalue, MCdenominatorMllOFvalue)
+    effMlleevalueDATA = getTriggerEffs(DATAnumeratorMlleevalue, DATAdenominatorMlleevalue, "data")
+    effMllmmvalueDATA = getTriggerEffs(DATAnumeratorMllmmvalue, DATAdenominatorMllmmvalue, "data")
+    effMllSFvalueDATA = getTriggerEffs(DATAnumeratorMllSFvalue, DATAdenominatorMllSFvalue, "data")
+    effMllOFvalueDATA = getTriggerEffs(DATAnumeratorMllOFvalue, DATAdenominatorMllOFvalue, "data")
+    effMlleevalueMC   = getTriggerEffs(MCnumeratorMlleevalue, MCdenominatorMlleevalue, "MC")
+    print "effMlleevalueMC ", effMlleevalueMC.GetY()[0]
+    effMllmmvalueMC   = getTriggerEffs(MCnumeratorMllmmvalue, MCdenominatorMllmmvalue, "MC")
+    print "effMllmmvalueMC ", effMllmmvalueMC.GetY()[0]
+    effMllSFvalueMC   = getTriggerEffs(MCnumeratorMllSFvalue, MCdenominatorMllSFvalue, "MC")
+    print "effMllSFvalueMC ", effMllSFvalueMC.GetY()[0]
+    effMllOFvalueMC   = getTriggerEffs(MCnumeratorMllOFvalue, MCdenominatorMllOFvalue, "MC")
+    print "effMllOFvalueMC ", effMllOFvalueMC.GetY()[0]
 
     eevalda_ = effMlleevalueDATA.GetY()
     eevaldaeh_ = effMlleevalueDATA.GetEYhigh()
@@ -475,15 +486,19 @@ if __name__ == '__main__':
     emvaldae = max(emvaldaeh_[0], emvaldael_[0])
 
     eevalmc_ = effMlleevalueMC.GetY()
+    print "eevalmc_ ", eevalmc_
     eevalmceh_ = effMlleevalueMC.GetEYhigh()
     eevalmcel_ = effMlleevalueMC.GetEYlow()
     eevalmc = eevalmc_[0]
     eevalmce = max(eevalmceh_[0], eevalmcel_[0])
+    print "eevalmc ", eevalmc
     mmvalmc_ = effMllmmvalueMC.GetY()
+    print "mmvalmc_ ", mmvalmc_
     mmvalmceh_ = effMllmmvalueMC.GetEYhigh()
     mmvalmcel_ = effMllmmvalueMC.GetEYlow()
     mmvalmc = mmvalmc_[0]
     mmvalmce = max(mmvalmceh_[0], mmvalmcel_[0])
+    print "mmvalmc ", mmvalmc
     emvalmc_ = effMllOFvalueMC.GetY()
     emvalmceh_ = effMllOFvalueMC.GetEYhigh()
     emvalmcel_ = effMllOFvalueMC.GetEYlow()
@@ -492,74 +507,76 @@ if __name__ == '__main__':
 
     [dart, dauncrt, dasystrt] = getRT(eevalda, eevaldae, mmvalda, mmvaldae, emvalda, emvaldae)
     [mcrt, mcuncrt, mcsystrt] = getRT(eevalmc, eevalmce, mmvalmc, mmvalmce, emvalmc, emvalmce)
-
+    print "with filters" 
+    print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
+    print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
     makeTable(DATAnumeratorMlleevalue, DATAnumeratorMllmmvalue, DATAnumeratorMllOFvalue, DATAdenominatorMlleevalue, DATAdenominatorMllmmvalue, DATAdenominatorMllOFvalue, eevalda, mmvalda, emvalda, eevaldae, mmvaldae, emvaldae, "DATA")
     makeTable(MCnumeratorMlleevalue, MCnumeratorMllmmvalue, MCnumeratorMllOFvalue, MCdenominatorMlleevalue, MCdenominatorMllmmvalue, MCdenominatorMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, "MC")
     ######################## Calculation of total values #############################
 
-    DATAeffMETee =  getTriggerEffs(DATAnumeratorMETee, DATAdenominatorMETee)
-    DATAeffMETmm =  getTriggerEffs(DATAnumeratorMETmm, DATAdenominatorMETmm)    
-    DATAeffMETSF =  getTriggerEffs(DATAnumeratorMETSF, DATAdenominatorMETSF)    
-    DATAeffMETOF =  getTriggerEffs(DATAnumeratorMETOF, DATAdenominatorMETOF)
+    DATAeffMETee =  getTriggerEffs(DATAnumeratorMETee, DATAdenominatorMETee, "data")
+    DATAeffMETmm =  getTriggerEffs(DATAnumeratorMETmm, DATAdenominatorMETmm, "data")    
+    DATAeffMETSF =  getTriggerEffs(DATAnumeratorMETSF, DATAdenominatorMETSF, "data")    
+    DATAeffMETOF =  getTriggerEffs(DATAnumeratorMETOF, DATAdenominatorMETOF, "data")
    
-    DATAeffmt2ee =  getTriggerEffs(DATAnumeratormt2ee, DATAdenominatormt2ee)
-    DATAeffmt2mm =  getTriggerEffs(DATAnumeratormt2mm, DATAdenominatormt2mm)
-    DATAeffmt2SF =  getTriggerEffs(DATAnumeratormt2SF, DATAdenominatormt2SF)
-    DATAeffmt2OF =  getTriggerEffs(DATAnumeratormt2OF, DATAdenominatormt2OF)
+    DATAeffmt2ee =  getTriggerEffs(DATAnumeratormt2ee, DATAdenominatormt2ee, "data")
+    DATAeffmt2mm =  getTriggerEffs(DATAnumeratormt2mm, DATAdenominatormt2mm, "data")
+    DATAeffmt2SF =  getTriggerEffs(DATAnumeratormt2SF, DATAdenominatormt2SF, "data")
+    DATAeffmt2OF =  getTriggerEffs(DATAnumeratormt2OF, DATAdenominatormt2OF, "data")
 
-    DATAeffMllee =  getTriggerEffs(DATAnumeratorMllee, DATAdenominatorMllee)
-    DATAeffMllmm =  getTriggerEffs(DATAnumeratorMllmm, DATAdenominatorMllmm)
-    DATAeffMllSF =  getTriggerEffs(DATAnumeratorMllSF, DATAdenominatorMllSF)
-    DATAeffMllOF =  getTriggerEffs(DATAnumeratorMllOF, DATAdenominatorMllOF)
+    DATAeffMllee =  getTriggerEffs(DATAnumeratorMllee, DATAdenominatorMllee, "data")
+    DATAeffMllmm =  getTriggerEffs(DATAnumeratorMllmm, DATAdenominatorMllmm, "data")
+    DATAeffMllSF =  getTriggerEffs(DATAnumeratorMllSF, DATAdenominatorMllSF, "data")
+    DATAeffMllOF =  getTriggerEffs(DATAnumeratorMllOF, DATAdenominatorMllOF, "data")
     
-    DATAeffpt1ee =  getTriggerEffs(DATAnumeratorpt1ee, DATAdenominatorpt1ee)
-    DATAeffpt1mm =  getTriggerEffs(DATAnumeratorpt1mm, DATAdenominatorpt1mm)
-    DATAeffpt1SF =  getTriggerEffs(DATAnumeratorpt1SF, DATAdenominatorpt1SF)
-    DATAeffpt1OF =  getTriggerEffs(DATAnumeratorpt1OF, DATAdenominatorpt1OF)
+    DATAeffpt1ee =  getTriggerEffs(DATAnumeratorpt1ee, DATAdenominatorpt1ee, "data")
+    DATAeffpt1mm =  getTriggerEffs(DATAnumeratorpt1mm, DATAdenominatorpt1mm, "data")
+    DATAeffpt1SF =  getTriggerEffs(DATAnumeratorpt1SF, DATAdenominatorpt1SF, "data")
+    DATAeffpt1OF =  getTriggerEffs(DATAnumeratorpt1OF, DATAdenominatorpt1OF, "data")
     
-    DATAeffpt2ee =  getTriggerEffs(DATAnumeratorpt2ee, DATAdenominatorpt2ee)
-    DATAeffpt2mm =  getTriggerEffs(DATAnumeratorpt2mm, DATAdenominatorpt2mm)
-    DATAeffpt2SF =  getTriggerEffs(DATAnumeratorpt2SF, DATAdenominatorpt2SF)
-    DATAeffpt2OF =  getTriggerEffs(DATAnumeratorpt2OF, DATAdenominatorpt2OF)
+    DATAeffpt2ee =  getTriggerEffs(DATAnumeratorpt2ee, DATAdenominatorpt2ee, "data")
+    DATAeffpt2mm =  getTriggerEffs(DATAnumeratorpt2mm, DATAdenominatorpt2mm, "data")
+    DATAeffpt2SF =  getTriggerEffs(DATAnumeratorpt2SF, DATAdenominatorpt2SF, "data")
+    DATAeffpt2OF =  getTriggerEffs(DATAnumeratorpt2OF, DATAdenominatorpt2OF, "data")
     
-    DATAeffeta1ee = getTriggerEffs(DATAnumeratoreta1ee, DATAdenominatoreta1ee)
-    DATAeffeta1mm = getTriggerEffs(DATAnumeratoreta1mm, DATAdenominatoreta1mm)
-    DATAeffeta1SF = getTriggerEffs(DATAnumeratoreta1SF, DATAdenominatoreta1SF)
-    DATAeffeta1OF = getTriggerEffs(DATAnumeratoreta1OF, DATAdenominatoreta1OF)
+    DATAeffeta1ee = getTriggerEffs(DATAnumeratoreta1ee, DATAdenominatoreta1ee, "data")
+    DATAeffeta1mm = getTriggerEffs(DATAnumeratoreta1mm, DATAdenominatoreta1mm, "data")
+    DATAeffeta1SF = getTriggerEffs(DATAnumeratoreta1SF, DATAdenominatoreta1SF, "data")
+    DATAeffeta1OF = getTriggerEffs(DATAnumeratoreta1OF, DATAdenominatoreta1OF, "data")
     
-    DATAeffeta2ee = getTriggerEffs(DATAnumeratoreta2ee, DATAdenominatoreta2ee)
-    DATAeffeta2mm = getTriggerEffs(DATAnumeratoreta2mm, DATAdenominatoreta2mm)
-    DATAeffeta2SF = getTriggerEffs(DATAnumeratoreta2SF, DATAdenominatoreta2SF)
-    DATAeffeta2OF = getTriggerEffs(DATAnumeratoreta2OF, DATAdenominatoreta2OF)
+    DATAeffeta2ee = getTriggerEffs(DATAnumeratoreta2ee, DATAdenominatoreta2ee, "data")
+    DATAeffeta2mm = getTriggerEffs(DATAnumeratoreta2mm, DATAdenominatoreta2mm, "data")
+    DATAeffeta2SF = getTriggerEffs(DATAnumeratoreta2SF, DATAdenominatoreta2SF, "data")
+    DATAeffeta2OF = getTriggerEffs(DATAnumeratoreta2OF, DATAdenominatoreta2OF, "data")
 
-    MCeffMETee =  getTriggerEffs(MCnumeratorMETee, MCdenominatorMETee)
-    MCeffMETmm =  getTriggerEffs(MCnumeratorMETmm, MCdenominatorMETmm)  
-    MCeffMETSF =  getTriggerEffs(MCnumeratorMETSF, MCdenominatorMETSF)  
-    MCeffMETOF =  getTriggerEffs(MCnumeratorMETOF, MCdenominatorMETOF)
-    MCeffmt2ee =  getTriggerEffs(MCnumeratormt2ee, MCdenominatormt2ee)
-    MCeffmt2mm =  getTriggerEffs(MCnumeratormt2mm, MCdenominatormt2mm)
-    MCeffmt2SF =  getTriggerEffs(MCnumeratormt2SF, MCdenominatormt2SF)
-    MCeffmt2OF =  getTriggerEffs(MCnumeratormt2OF, MCdenominatormt2OF)
-    MCeffMllee =  getTriggerEffs(MCnumeratorMllee, MCdenominatorMllee)
-    MCeffMllmm =  getTriggerEffs(MCnumeratorMllmm, MCdenominatorMllmm)
-    MCeffMllSF =  getTriggerEffs(MCnumeratorMllSF, MCdenominatorMllSF)
-    MCeffMllOF =  getTriggerEffs(MCnumeratorMllOF, MCdenominatorMllOF)
-    MCeffpt1ee =  getTriggerEffs(MCnumeratorpt1ee, MCdenominatorpt1ee)
-    MCeffpt1mm =  getTriggerEffs(MCnumeratorpt1mm, MCdenominatorpt1mm)
-    MCeffpt1SF =  getTriggerEffs(MCnumeratorpt1SF, MCdenominatorpt1SF)
-    MCeffpt1OF =  getTriggerEffs(MCnumeratorpt1OF, MCdenominatorpt1OF)
-    MCeffpt2ee =  getTriggerEffs(MCnumeratorpt2ee, MCdenominatorpt2ee)
-    MCeffpt2mm =  getTriggerEffs(MCnumeratorpt2mm, MCdenominatorpt2mm)
-    MCeffpt2SF =  getTriggerEffs(MCnumeratorpt2SF, MCdenominatorpt2SF)
-    MCeffpt2OF =  getTriggerEffs(MCnumeratorpt2OF, MCdenominatorpt2OF)
-    MCeffeta1ee = getTriggerEffs(MCnumeratoreta1ee, MCdenominatoreta1ee)
-    MCeffeta1mm = getTriggerEffs(MCnumeratoreta1mm, MCdenominatoreta1mm)
-    MCeffeta1SF = getTriggerEffs(MCnumeratoreta1SF, MCdenominatoreta1SF)
-    MCeffeta1OF = getTriggerEffs(MCnumeratoreta1OF, MCdenominatoreta1OF)
-    MCeffeta2ee = getTriggerEffs(MCnumeratoreta2ee, MCdenominatoreta2ee)
-    MCeffeta2mm = getTriggerEffs(MCnumeratoreta2mm, MCdenominatoreta2mm)
-    MCeffeta2SF = getTriggerEffs(MCnumeratoreta2SF, MCdenominatoreta2SF)
-    MCeffeta2OF = getTriggerEffs(MCnumeratoreta2OF, MCdenominatoreta2OF)
+    MCeffMETee =  getTriggerEffs(MCnumeratorMETee, MCdenominatorMETee, "MC")
+    MCeffMETmm =  getTriggerEffs(MCnumeratorMETmm, MCdenominatorMETmm, "MC")  
+    MCeffMETSF =  getTriggerEffs(MCnumeratorMETSF, MCdenominatorMETSF, "MC")  
+    MCeffMETOF =  getTriggerEffs(MCnumeratorMETOF, MCdenominatorMETOF, "MC")
+    MCeffmt2ee =  getTriggerEffs(MCnumeratormt2ee, MCdenominatormt2ee, "MC")
+    MCeffmt2mm =  getTriggerEffs(MCnumeratormt2mm, MCdenominatormt2mm, "MC")
+    MCeffmt2SF =  getTriggerEffs(MCnumeratormt2SF, MCdenominatormt2SF, "MC")
+    MCeffmt2OF =  getTriggerEffs(MCnumeratormt2OF, MCdenominatormt2OF, "MC")
+    MCeffMllee =  getTriggerEffs(MCnumeratorMllee, MCdenominatorMllee, "MC")
+    MCeffMllmm =  getTriggerEffs(MCnumeratorMllmm, MCdenominatorMllmm, "MC")
+    MCeffMllSF =  getTriggerEffs(MCnumeratorMllSF, MCdenominatorMllSF, "MC")
+    MCeffMllOF =  getTriggerEffs(MCnumeratorMllOF, MCdenominatorMllOF, "MC")
+    MCeffpt1ee =  getTriggerEffs(MCnumeratorpt1ee, MCdenominatorpt1ee, "MC")
+    MCeffpt1mm =  getTriggerEffs(MCnumeratorpt1mm, MCdenominatorpt1mm, "MC")
+    MCeffpt1SF =  getTriggerEffs(MCnumeratorpt1SF, MCdenominatorpt1SF, "MC")
+    MCeffpt1OF =  getTriggerEffs(MCnumeratorpt1OF, MCdenominatorpt1OF, "MC")
+    MCeffpt2ee =  getTriggerEffs(MCnumeratorpt2ee, MCdenominatorpt2ee, "MC")
+    MCeffpt2mm =  getTriggerEffs(MCnumeratorpt2mm, MCdenominatorpt2mm, "MC")
+    MCeffpt2SF =  getTriggerEffs(MCnumeratorpt2SF, MCdenominatorpt2SF, "MC")
+    MCeffpt2OF =  getTriggerEffs(MCnumeratorpt2OF, MCdenominatorpt2OF, "MC")
+    MCeffeta1ee = getTriggerEffs(MCnumeratoreta1ee, MCdenominatoreta1ee, "MC")
+    MCeffeta1mm = getTriggerEffs(MCnumeratoreta1mm, MCdenominatoreta1mm, "MC")
+    MCeffeta1SF = getTriggerEffs(MCnumeratoreta1SF, MCdenominatoreta1SF, "MC")
+    MCeffeta1OF = getTriggerEffs(MCnumeratoreta1OF, MCdenominatoreta1OF, "MC")
+    MCeffeta2ee = getTriggerEffs(MCnumeratoreta2ee, MCdenominatoreta2ee, "MC")
+    MCeffeta2mm = getTriggerEffs(MCnumeratoreta2mm, MCdenominatoreta2mm, "MC")
+    MCeffeta2SF = getTriggerEffs(MCnumeratoreta2SF, MCdenominatoreta2SF, "MC")
+    MCeffeta2OF = getTriggerEffs(MCnumeratoreta2OF, MCdenominatoreta2OF, "MC")
 
     DATARTMET  = RT(DATAnumeratorMETSF, DATAeffMETee, DATAeffMETmm, DATAeffMETOF)
     DATARTmt2  = RT(DATAnumeratormt2SF, DATAeffmt2ee, DATAeffmt2mm, DATAeffmt2OF)
@@ -577,7 +594,7 @@ if __name__ == '__main__':
     MCRTeta1 = RT(MCnumeratoreta1SF, MCeffeta1ee, MCeffeta1mm, MCeffeta1OF)
     MCRTeta2 = RT(MCnumeratoreta2SF, MCeffeta2ee, MCeffeta2mm, MCeffeta2OF)
 
-    effRTMll = Canvas.Canvas('rt/%s/plot_rt_mll'%(lumi_str), 'png,pdf',  0.6, 0.3, 0.8, 0.5)
+    effRTMll = Canvas.Canvas('rt/%s/plot_rt_mll_woFilters'%(lumi_str), 'png,pdf',  0.6, 0.3, 0.8, 0.5)
     h_auxrtMll = r.TH1F("h_auxRTMll", "", 1, 0, 250)
     h_auxrtMll.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtMll.GetXaxis().SetRangeUser(0, 250)
@@ -591,7 +608,7 @@ if __name__ == '__main__':
     effRTMll.addLatex (0.55, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
     effRTMll.save(1, 1, 0, lumi, 0.8, 1.2)                                                            
     
-    effRTMET = Canvas.Canvas('rt/%s/plot_rt_met'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTMET = Canvas.Canvas('rt/%s/plot_rt_met_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtMET = r.TH1F("h_auxRTMET", "", 1, 0, 200)
     h_auxrtMET.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtMET.GetXaxis().SetRangeUser(0, 150)
@@ -606,7 +623,7 @@ if __name__ == '__main__':
     effRTMET.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                  
 
     
-    effRTmt2 = Canvas.Canvas('rt/%s/plot_rt_mt2'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTmt2 = Canvas.Canvas('rt/%s/plot_rt_mt2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtmt2 = r.TH1F("h_auxRTMET", "", 1, 0, 160)
     h_auxrtmt2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtmt2.GetXaxis().SetRangeUser(0, 160)
@@ -620,7 +637,7 @@ if __name__ == '__main__':
     effRTmt2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTmt2.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                 
 
-    effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtpt1 = r.TH1F("h_auxRTpt1", "", 1, 20, 150)
     h_auxrtpt1.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtpt1.GetXaxis().SetRangeUser(20, 150)
@@ -634,7 +651,7 @@ if __name__ == '__main__':
     effRTpt1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTpt1.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtpt2 = r.TH1F("h_auxRTpt2", "", 1, 20, 150)
     h_auxrtpt2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtpt2.GetXaxis().SetRangeUser(20, 150)
@@ -648,7 +665,7 @@ if __name__ == '__main__':
     effRTpt2.addLatex (0.6, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
     effRTpt2.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrteta1 = r.TH1F("h_auxRTeta1", "", 1, -2.4, 2.4)
     h_auxrteta1.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrteta1.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -662,7 +679,7 @@ if __name__ == '__main__':
     effRTeta1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTeta1.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrteta2 = r.TH1F("h_auxRTeta2", "", 1, -2.4, 2.4)
     h_auxrteta2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrteta2.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -675,7 +692,7 @@ if __name__ == '__main__':
     effRTeta2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTeta2.save(1, 1, 0, lumi, 0.8, 1.2)
    
-    effMll = Canvas.Canvas('rt/%s/plot_eff_mll'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effMll = Canvas.Canvas('rt/%s/plot_eff_mll_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxMll = r.TH1F("h_auxMll", "", 1, 0, 250)
     h_auxMll.GetYaxis().SetRangeUser(0, 2)
     h_auxMll.GetXaxis().SetRangeUser(0, 250)
@@ -687,7 +704,7 @@ if __name__ == '__main__':
     effMll.addHisto(DATAeffMllOF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effMll.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
 
-    effmt2 = Canvas.Canvas('rt/%s/plot_eff_mt2'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effmt2 = Canvas.Canvas('rt/%s/plot_eff_mt2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxmt2 = r.TH1F("h_auxmt2", "", 1, 0, 160)
     h_auxmt2.GetYaxis().SetRangeUser(0, 2)
     h_auxmt2.GetXaxis().SetRangeUser(0, 160)
@@ -699,7 +716,7 @@ if __name__ == '__main__':
     effmt2.addHisto(DATAeffmt2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effmt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
 
-    effpt1 = Canvas.Canvas('rt/%s/plot_eff_pt1'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effpt1 = Canvas.Canvas('rt/%s/plot_eff_pt1_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxpt1 = r.TH1F("h_auxpt1", "", 1, 0, 150)
     h_auxpt1.GetYaxis().SetRangeUser(0, 2)
     h_auxpt1.GetXaxis().SetRangeUser(0, 150)
@@ -711,7 +728,7 @@ if __name__ == '__main__':
     effpt1.addHisto(DATAeffpt1OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effpt1.save(1, 1, 0, lumi, 0.2, 1.8)
 
-    effpt2 = Canvas.Canvas('rt/%s/plot_eff_pt2'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effpt2 = Canvas.Canvas('rt/%s/plot_eff_pt2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxpt2 = r.TH1F("h_auxpt2", "", 1, 0, 150)
     h_auxpt2.GetYaxis().SetRangeUser(0, 2)
     h_auxpt2.GetXaxis().SetRangeUser(0, 150)
@@ -723,7 +740,7 @@ if __name__ == '__main__':
     effpt2.addHisto(DATAeffpt2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effpt2.save(1, 1, 0, lumi, 0.2, 1.8)
  
-    effeta1 = Canvas.Canvas('rt/%s/plot_eff_eta1'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effeta1 = Canvas.Canvas('rt/%s/plot_eff_eta1_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxeta1 = r.TH1F("h_auxeta1", "", 1, -2.4, 2.4)
     h_auxeta1.GetYaxis().SetRangeUser(0, 2)
     h_auxeta1.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -735,7 +752,7 @@ if __name__ == '__main__':
     effeta1.addHisto(DATAeffeta1OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effeta1.save(1, 1, 0, lumi, 0.2, 1.8)
 
-    effeta2 = Canvas.Canvas('rt/%s/plot_eff_eta2'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effeta2 = Canvas.Canvas('rt/%s/plot_eff_eta2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxeta2 = r.TH1F("h_auxeta2", "", 1, -2.4, 2.4)
     h_auxeta2.GetYaxis().SetRangeUser(0, 2)
     h_auxeta2.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -747,8 +764,9 @@ if __name__ == '__main__':
     effeta2.addHisto(DATAeffeta2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effeta2.save(1, 1, 0, lumi, 0.2, 1.8)
  
- 
+    print "without filters"
     print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
+    print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
     saveInFile(theFile, 0, 0, 0, dart, dauncrt, dasystrt, "DATA")
     saveInFile(theFile, 0, 0, 0, mcrt, mcuncrt, mcsystrt, "MC")
 
