@@ -2,6 +2,19 @@ import math, sys, os, copy, re
 import ROOT as r
 from   ROOT import TGraphErrors, gROOT, TCanvas, TFile
 
+
+
+
+
+def ensurePath( _path):
+    d = os.path.dirname(_path)
+    if not os.path.exists(d):
+        os.makedirs(d)             
+
+
+
+
+
 def ratioError(num, num_e, den, den_e, opt=''):
     tmp_n = r.TH1F('n', 'n', 1,0,1)
     tmp_d = r.TH1F('d', 'd', 1,0,1)

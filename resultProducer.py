@@ -197,12 +197,11 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     rinout7_e = math.sqrt(rinout7_stat**2 + rinout7_syst**2)                            
 
 
-    dy_shape=treeDY.getTH1F(lint,"mll_shape",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList([cuts.goodLepton, cuts.SignalRegion, cuts.Zmass, cuts.SF]), '',xlabel)
-    dy_loNll=treeDY.getTH1F(lint,"mll_loNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)  <= 21.", cuts.goodLepton, cuts.SignalRegion, cuts.Zmass, cuts.SF]), '',xlabel)
-    dy_hiNll=treeDY.getTH1F(lint,"mll_hiNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >  21.", cuts.goodLepton, cuts.SignalRegion, cuts.Zmass, cuts.SF]), '',xlabel)
+    dy_shape=treeDY.getTH1F(lint,"mll_shape",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList([cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
+    dy_loNll=treeDY.getTH1F(lint,"mll_loNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
+    dy_hiNll=treeDY.getTH1F(lint,"mll_hiNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >  21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
     if scutstring == "nllAbove21":
         pred = pred * (dy_hiNll.Integral()/dy_shape.Integral()) 
-    
     if scutstring == "nllBelow21":
         pred = pred * (dy_loNll.Integral()/dy_shape.Integral())
     dy_shape.SetBinContent(1, pred*rinout1); dy_shape.SetBinError(1, pred*rinout1*math.sqrt((pred_e/pred)**2 + (rinout1_e/rinout1)**2))
@@ -216,8 +215,6 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     plot_dy_shape = Canvas.Canvas('results/18.1invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
     plot_dy_shape.addHisto(dy_shape  , 'HIST'       , 'Templates', 'PL', r.kBlack  , 1,  0)
     plot_dy_shape.save(1, 0, 0, lint)                            
-    
-    
     return  dy_shape                                                                                                                                  
 
 
@@ -350,7 +347,7 @@ def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulati
     plot_closure_noRSFOF.addHisto(mc_SF    , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure_noRSFOF.addHisto(mc_OF_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
     plot_closure_noRSFOF.addHisto(mc_OF    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure_noRSFOF.addHisto(dy_SF    , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
+    #plot_closure_noRSFOF.addHisto(dy_SF    , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure_noRSFOF.addLatex (0.61, 0.82, 'no R_{SFOF} scaling')
     plot_closure_noRSFOF.saveRatio(1, 0, 1, lint, mc_SF, mc_OF, 0.2, 1.8)
 
@@ -358,19 +355,19 @@ def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulati
     plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPredmcObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
     plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'DA_OF'       , 'L', r.kBlack , 1, -1)
+    plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'data - OF'       , 'L', r.kBlack , 1, 1)
     plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
+    #plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
     plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)                                                                                              
     return result
     if False:
         plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPreddaObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-        plot_closure.addHisto(da_SF                , 'PE'       , 'data-SF', 'PL', r.kRed+1  , 1,  0)
-        plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'DA_OF'       , 'L', r.kBlack , 1, -1)
+        plot_closure.addHisto(da_SF                , 'PE'       , 'data - SF', 'PL', r.kRed+1  , 1,  0)
+        plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'data - OF'       , 'L', r.kBlack , 1, 1)
         plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
         plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-        plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
+        #plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
         plot_closure.addLatex(0.61, 0.82, 'R_{SFOF} scaled')
         plot_closure.saveRatio(1, 0, 0, lint , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
                                                                                                                                                                              
@@ -476,9 +473,9 @@ def makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins
     
     return result                                                                                                                                                             
 
-def makeRSOFTable(analysis):
+def makeRSOFTable(analysis, var):
     scan = Scans.Scan(analysis)
-    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, prediction_final_mc = makeClosureTests(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
+    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, prediction_final_mc = makeClosureTests(scan.srID, var, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
     rsfof_factor_da, rsfof_direct_da, rsfof_final_da, prediction_final_da = makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5)
     print '                  Data                                                        MC'
     print '                  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ &  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ \\\\'
@@ -487,11 +484,7 @@ def makeRSOFTable(analysis):
 
 
 def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', _options = ''):
-    returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
-    if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
-    if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
-    if 'makeTable'     in _options: print 'found option %s'%'makeTable'     ;makeTable     = True
-    if 'printIntegral' in _options: print 'found option %s'%'printIntegral' ;printIntegral = True
+    returnplot, addRares, splitFlavor, makeTable, printIntegral = True, True, False, False, False
     if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins = [20, 60, 86, 96, 150, 200, 300, 400]; xmin =1 ; xmax = 1; xlabel = 'm_{ll} [GeV]'
     if not specialcut:
         specialcut = specialcut 
@@ -543,7 +536,6 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         del dummyHisto                                                                                                                                                                                                                                                                                                                                                                                                                                                       
     
     # get the dy shape, data and rares
-    dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.SF, cuts.Zveto]), '', xlabel)
     ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
     ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
@@ -553,6 +545,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
+    dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     # aesthetics
     ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)                                                                                 
     ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack);ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)    
@@ -622,9 +615,9 @@ if __name__ == '__main__':
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
-    ttzDatasets = ['TTZToLLNuNu']
-    raDatasets = ['TTTT', 'tZq_ll','WWZ', 'ZZZ']
-    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10', 'TTZToQQ']
+    raDatasets = ['TTTT', 'tZq_ll','WWZ', 'WZZ', 'ZZZ', 'TTHnobb_pow', 'VHToNonbb', 'TWZ']
+    fsDatasets = ['TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu',  'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
     
     daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',        
@@ -723,12 +716,12 @@ if __name__ == '__main__':
     rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc =  makeFactorsTable()
 #    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     ## result plots in different variables:
-    for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
-        makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
-        resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
-        resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
+   # for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
+   #     makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
+   #     resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
+   #     resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
 
-    makeRSOFTable('Edge_Moriond2017')
+    #makeRSOFTable('Edge_Moriond2017', 'mll')
     makeClosureTests('Edge_Moriond2017','nll','', 'inclusive', True)
     makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
     makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)

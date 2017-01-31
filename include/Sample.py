@@ -32,7 +32,8 @@ class Sample:
 
       if not self.isData:
         self.lumWeight = self.xSection / self.count
-        self.puWeight    = "PUWeight(PileupW_Edge)"
+        self.puWeight    = "PileupW_Edge"
+        #self.puWeight    = "PUWeight(PileupW_Edge)"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight    = "weight_LepSF_Edge"
         self.triggWeight = "weight_trigger_Edge"

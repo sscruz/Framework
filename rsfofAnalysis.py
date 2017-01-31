@@ -115,7 +115,7 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
 
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
-    bins = [20,70,81,101,111,200,300, 400] 
+    bins = [20,60,70,110,150,200,300,400] 
     MCControlSF =      treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
     MCControlee =      treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx)
     MCControlmm =      treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx)
@@ -150,6 +150,8 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     measuredValueMC =         MCControlvalue.GetBinContent(1)
     measuredValueUncMC =      MCControlvalue.GetBinError(1)
     measuredValueData =       DataControlvalue.GetBinContent(1)
+    if(measuredValueUncMC < measuredValueData*0.04):
+        measuredValueUncMC = measuredValueData*0.04
     measuredValueUncData =    DataControlvalue.GetBinError(1)
     measuredValueUncTotData = math.sqrt(measuredValueUncData**2 + measuredValueUncMC**2)
     
@@ -164,7 +166,7 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     #plot_rsfof.addHisto(DataControlvalue, 'PE,SAME', 'ttjets measurement - DATA', 'PL', r.kGreen , 1, 0)
     plot_rsfof.addBand (MCControl.GetXaxis().GetXmin(), measuredValueData-measuredValueUncTotData, MCControl.GetXaxis().GetXmax(), measuredValueData+measuredValueUncTotData, r.kGreen, 0.2)
     plot_rsfof.addLine (MCControl.GetXaxis().GetXmin(), measuredValueData, MCControl.GetXaxis().GetXmax(), measuredValueData, r.kBlack)
-    plot_rsfof.save(1, 1, 0, lumi, 0.8, 1.8)
+    plot_rsfof.save(1, 1, 0, lumi, 0.5, 1.8)
     
     if save==True:  
         "saved!!!"
@@ -180,10 +182,10 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     DASignalSFJet =treeDA.getTH1F(lumi,"DASignalSFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet)
     MCSignalOFJet =treeMC.getTH1F(lumi,"MCSignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
     DASignalOFJet =treeDA.getTH1F(lumi,"DASignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet)
-    MCSignalSFmt2 =treeMC.getTH1F(lumi,"MCSignalSFmt2","mt2_Edge",[0,10,20,30,40,50,60,70,80,100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
-    DASignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge",[0,10,20,30,40,50,60,70,80,100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
-    MCSignalOFmt2 =treeMC.getTH1F(lumi,"MCSignalOFmt2","mt2_Edge",[0,10,20,30,40,50,60,70,80,100], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
-    DASignalOFmt2 =treeDA.getTH1F(lumi,"DASignalOFmt2","mt2_Edge",[0,10,20,30,40,50,60,70,80,100], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
+    MCSignalSFmt2 =treeMC.getTH1F(lumi,"MCSignalSFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
+    DASignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2)
+    MCSignalOFmt2 =treeMC.getTH1F(lumi,"MCSignalOFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
+    DASignalOFmt2 =treeDA.getTH1F(lumi,"DASignalOFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.trigger, cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2)
 
     MCSignalMET   =make_rsfof(MCSignalSFMET, MCSignalOFMET, "MC")
     DASignalMET   =make_rsfof(DASignalSFMET, DASignalOFMET, "DATA")
@@ -197,21 +199,21 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     plot_rsfofmet.addHisto(DASignalMET, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmet.addBand(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofmet.addLine(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC, r.kBlack)
-    plot_rsfofmet.save(1, 1, 0, lumi, 0.8, 1.8)
+    plot_rsfofmet.save(1, 1, 0, lumi, 0.5, 1.8)
 
     plot_rsfofjet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_jet'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
     plot_rsfofjet.addHisto(MCSignalJet, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
-    plot_rsfofjet.addHisto(DASignalJet, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
+    #plot_rsfofjet.addHisto(DASignalJet, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofjet.addBand(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofjet.addLine(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC, r.kBlack)
-    plot_rsfofjet.save(1, 1, 0, lumi, 0.8, 1.8)                                                                                                                                           
+    plot_rsfofjet.save(1, 1, 0, lumi, 0.5, 1.8)                                                                                                                                           
     
     plot_rsfofmt2 = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_mt2'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
     plot_rsfofmt2.addHisto(MCSignalmt2, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
-    plot_rsfofmt2.addHisto(DASignalmt2, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
+    #plot_rsfofmt2.addHisto(DASignalmt2, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmt2.addBand(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofmt2.addLine(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC, r.kBlack)
-    plot_rsfofmt2.save(1, 1, 0, lumi, 0.8, 1.8)                                                                                                                                           
+    plot_rsfofmt2.save(1, 1, 0, lumi, 0.5, 1.8)                                                                                                                                           
 
 
 ##Main body of the analysis
@@ -229,78 +231,58 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
+    DYDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
+    ttDatasets = ['TTJets_DiLepton']
+    mcDatasets = [ 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets += ttDatasets
+    mcDatasets += DYDatasets
 
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                   'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
 
-    daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',         
-                'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
-                'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376',      
-                'JetHT_Run2016C_23Sep2016_v1_runs_271036_284044',                
-                'JetHT_Run2016D_23Sep2016_v1_runs_271036_284044',               
-                'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044',             
-                'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',                 
-                'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                   
-                'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                   
-                'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',       
-                'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',       
-                'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v2_runs_281207_284035']               
+    daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
+                   'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsD = ['DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                   'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsE = ['DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                   'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1']
+
+    daDatasetsF = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',
+                   'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsG = ['DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsH = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',
+                   'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',
+                   'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',
+                   'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',
+                   'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
+                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']
 
 
-    
+
+    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH
+
+
     
     
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
@@ -309,7 +291,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     maxrun = 999999
-    lumi = 36.2 ; maxrun = 999999; lumi_str = '36.2invfb'
+    lumi = 36.2 ; maxrun = 999999; lumi_str = '36.2invfbnofilter'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 

@@ -205,7 +205,7 @@ class Canvas:
    def ensurePath(self, _path):
       d = os.path.dirname(_path)
       if not os.path.exists(d):
-         os.makedirs(d)
+         os.makedirs(d)                 
 
    def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2):
 

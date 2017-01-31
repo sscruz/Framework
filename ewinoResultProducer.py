@@ -275,10 +275,14 @@ def makeTheFactors():
     mll_mc=treeMC.getTH1F(lint,"mll_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.OF]), '',mll)
     mll_ext_da=treeDA.getTH1F(lint,"mll_ext_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF,  cuts.trigger]), '',mll)
     mll_ext_mc=treeMC.getTH1F(lint,"mll_ext_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF]), '',mll)     
-    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoNeuNeu, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
-    mll_ZH_mc=treeMC.getTH1F(lint,"mll_ZH_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoNeuNeu, cuts.OF,cuts.METg100]), '',mll)     
-    mll_ZH_ext_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoNeuNeuExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
-    mll_ZH_ext_mc=treeMC.getTH1F(lint,"mll_ZH_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoNeuNeuExtMll, cuts.OF, cuts.METg100]), '',mll)     
+    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_ZH_mc=treeMC.getTH1F(lint,"mll_ZH_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF,cuts.METg100]), '',mll)     
+    mll_ZH_ext_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_ZH_ext_mc=treeMC.getTH1F(lint,"mll_ZH_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)                    
+    mll_WZ_da=treeDA.getTH1F(lint,"mll_WZ_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_WZ_mc=treeMC.getTH1F(lint,"mll_WZ_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF,cuts.METg100]), '',mll)     
+    mll_WZ_ext_da=treeDA.getTH1F(lint,"mll_WZ_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_WZ_ext_mc=treeMC.getTH1F(lint,"mll_WZ_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)                   
     mll_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100,cuts.Zmass, cuts.OF, cuts.trigger]), '',mll)
     mll_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 ,cuts.Zmass,  cuts.OF]), '',mll)     
     mll_onZ_b_ext_da=treeDA.getTH1F(lint,"mll_onZ_b_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll, cuts.trigger)
@@ -312,14 +316,22 @@ def makeTheFactors():
     mll_ext_met250_mc_int = mll_ext_mc.GetBinContent(3); mll_ext_met250_mc_e = mll_ext_mc.GetBinError(3);
     print "Off Z MC baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
     print "Off Z DA baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
-    mll_ZH_da_int     = 1; mll_ZH_da_e = mll_ZH_da.GetBinError(1);
-    mll_ZH_mc_int     = 1; mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
+    mll_ZH_da_int     = mll_ZH_da.GetBinContent(1); mll_ZH_da_e = mll_ZH_da.GetBinError(1);
+    mll_ZH_mc_int     = mll_ZH_mc.GetBinContent(1); mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
     print "ZH da             : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
     print "ZH mc             : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
     mll_ext_ZH_da_int = mll_ZH_ext_da.GetBinContent(1); mll_ext_ZH_da_e = mll_ZH_ext_da.GetBinError(1);
     mll_ext_ZH_mc_int = mll_ZH_ext_mc.GetBinContent(1); mll_ext_ZH_mc_e = mll_ZH_ext_mc.GetBinError(1);
     print "ZH da    extmll   : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
-    print "ZH mc    extmll   : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e 
+    print "ZH mc    extmll   : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
+    mll_WZ_da_int     = mll_WZ_da.GetBinContent(1); mll_WZ_da_e = mll_WZ_da.GetBinError(1);
+    mll_WZ_mc_int     = mll_WZ_mc.GetBinContent(1); mll_WZ_mc_e = mll_WZ_mc.GetBinError(1);
+    print "WZ da             : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
+    print "WZ mc             : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
+    mll_ext_WZ_da_int = mll_WZ_ext_da.GetBinContent(1); mll_ext_WZ_da_e = mll_WZ_ext_da.GetBinError(1);
+    mll_ext_WZ_mc_int = mll_WZ_ext_mc.GetBinContent(1); mll_ext_WZ_mc_e = mll_WZ_ext_mc.GetBinError(1);
+    print "WZ da    extmll   : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
+    print "WZ mc    extmll   : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
     mll_onZ_b_da_int     = mll_onZ_b_da.GetBinContent(1); mll_onZ_b_da_e = mll_onZ_b_da.GetBinError(1);
     mll_onZ_b_mc_int     = mll_onZ_b_mc.GetBinContent(1); mll_onZ_b_mc_e = mll_onZ_b_mc.GetBinError(1);
     print "On  Z MC Strong with b: ",mll_onZ_b_mc_int, " +- ", mll_onZ_b_mc_e 
@@ -345,6 +357,8 @@ def makeTheFactors():
     kappa_met250_da,  kappa_met250_da_e = getFraction(mll_met250_da_int, mll_met250_da_e, mll_ext_met250_da_int, mll_ext_met250_da_e)
     kappa_ZH_da,  kappa_ZH_da_e = getFraction(mll_ZH_da_int, mll_ZH_da_e, mll_ext_ZH_da_int, mll_ext_ZH_da_e)
     kappa_ZH_mc,  kappa_ZH_mc_e = getFraction(mll_ZH_mc_int, mll_ZH_mc_e, mll_ext_ZH_mc_int, mll_ext_ZH_mc_e)
+    kappa_WZ_da,  kappa_WZ_da_e = getFraction(mll_WZ_da_int, mll_WZ_da_e, mll_ext_WZ_da_int, mll_ext_WZ_da_e)
+    kappa_WZ_mc,  kappa_WZ_mc_e = getFraction(mll_WZ_mc_int, mll_WZ_mc_e, mll_ext_WZ_mc_int, mll_ext_WZ_mc_e)
     kappa_onZ_b_da,  kappa_onZ_b_da_e = getFraction(mll_onZ_b_da_int, mll_onZ_b_da_e, mll_ext_onZ_b_da_int, mll_ext_onZ_b_da_e)
     kappa_onZ_b_mc,  kappa_onZ_b_mc_e = getFraction(mll_onZ_b_mc_int, mll_onZ_b_mc_e, mll_ext_onZ_b_mc_int, mll_ext_onZ_b_mc_e)
     kappa_onZ_bveto_da,  kappa_onZ_bveto_da_e = getFraction(mll_onZ_bveto_da_int, mll_onZ_bveto_da_e, mll_ext_onZ_bveto_da_int, mll_ext_onZ_bveto_da_e)
@@ -352,13 +366,14 @@ def makeTheFactors():
 
     c1 = r.TCanvas()
     l1 = r.TLegend(0.75,0.8,0.9,0.9)
-    fmll = r.TH1F('kappa_mc','f_{mll}',6,0,6)
+    fmll = r.TH1F('kappa_mc','f_{mll}',7,0,7)
     fmll.SetBinContent(1, kappa_met100_150_mc);fmll.SetBinError(1,kappa_met100_150_mc_e);fmll.GetXaxis().SetBinLabel(1, 'Baseline E_{T}^{miss} 100-150 GeV');
     fmll.SetBinContent(2, kappa_met150_250_mc);fmll.SetBinError(2,kappa_met150_250_mc_e);fmll.GetXaxis().SetBinLabel(2, 'Baseline E_{T}^{miss} 150-250 GeV');
     fmll.SetBinContent(3, kappa_met250_mc);fmll.SetBinError(3,kappa_met250_mc_e);fmll.GetXaxis().SetBinLabel(3, 'Baseline E_{T}^{miss} > 250 GeV');
     fmll.SetBinContent(4, kappa_onZ_bveto_mc);fmll.SetBinError(4,kappa_onZ_bveto_mc_e);fmll.GetXaxis().SetBinLabel(4, 'OnZ bveto ');
     fmll.SetBinContent(5, kappa_onZ_b_mc);fmll.SetBinError(5,kappa_onZ_b_mc_e);fmll.GetXaxis().SetBinLabel(5, 'OnZ with b ');
     fmll.SetBinContent(6, kappa_ZH_mc);fmll.SetBinError(6,kappa_ZH_mc_e);fmll.GetXaxis().SetBinLabel(6, 'TChiZH ');
+    fmll.SetBinContent(7, kappa_WZ_mc);fmll.SetBinError(7,kappa_WZ_mc_e);fmll.GetXaxis().SetBinLabel(7, 'TChiWZ ');
     fmll.SetMarkerColor(r.kTeal-5)
     fmll.SetLineColor  (r.kTeal-5)
     fmll.SetLineWidth  (2)
@@ -373,6 +388,7 @@ def makeTheFactors():
     fmll_da.SetBinContent(4, kappa_onZ_bveto_da);fmll_da.SetBinError(4,kappa_onZ_bveto_da_e);fmll_da.GetXaxis().SetBinLabel(4, 'OnZ bveto');
     fmll_da.SetBinContent(5, kappa_onZ_b_da);fmll_da.SetBinError(5,kappa_onZ_b_da_e);fmll_da.GetXaxis().SetBinLabel(5, 'OnZ with b');
     fmll_da.SetBinContent(6, kappa_ZH_da);fmll_da.SetBinError(6,kappa_ZH_da_e);fmll_da.GetXaxis().SetBinLabel(6, 'TChiZH');
+    fmll_da.SetBinContent(7, kappa_WZ_da);fmll_da.SetBinError(7,kappa_WZ_da_e);fmll_da.GetXaxis().SetBinLabel(7, 'TChiWZ');
     fmll_da.GetYaxis().SetRangeUser(0.0,0.2);
     fmll_da.GetYaxis().SetTitle('f_{mll}')
     fmll_da.SetMarkerStyle(22)
@@ -392,7 +408,9 @@ def makeTheFactors():
     l1.Draw('same')
     lat1 = r.TLatex(); lat1.SetNDC(); lat1.SetTextFont(fmll.GetYaxis().GetTitleFont()); lat1.SetTextSize(fmll.GetYaxis().GetTitleSize())
     lat1.DrawLatex(0.76, 0.93, '%.2f fb^{-1}'%(lint))
-    c1.SaveAs('plots/ewino/factors/fmll.png')                                                                                                                                  
+    path = 'plots/ewino/fmll.png'
+    helper.ensurePath(path)
+    c1.SaveAs(path)                                                                                                                                  
     
     
     return kappa_met150_250_da, kappa_met150_250_da_e, kappa_met150_250_mc, kappa_met150_250_mc_e
@@ -402,22 +420,22 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
-    if isBlinded:
-        if region == "TChiWZ":
-            bin1  = 282.8; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
-            metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
-            metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
-            nbin = 5
-        if region == "TChiZH":
-            bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
-            metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
-            metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
-            nbin = 4
-        lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
-        specialcut = '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
-    else:
-        lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-    dy = r.TH1F('dy','dy', nbin, metbins_)
+    if region == "TChiWZ":
+        bin1  = 282.8; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
+        bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;bin5  = bin5*2; bin5_e = bin5_e*2;
+        metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
+        metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
+        nbin = 5
+    if region == "TChiZH":
+        bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
+        bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;
+        metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
+        metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
+        nbin = 4
+    #lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
+    #specialcut = '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
     dy.SetBinContent(3, bin3);dy.SetBinError(3,bin3_e);
@@ -428,7 +446,8 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
     plot = Canvas.Canvas('ewino/%s/templates_%s'%(lint_str, region), 'png,pdf,root', 0.65, 0.6, 0.85, 0.9)
     plot.addHisto(dy, "HIST, SAME", "templates", "L", r.kBlack,  1, 0)
     plot.save(1, 1, 1, lint)                                                                              
-    return dy                                                                                                                                                                   
+    return dy                             
+    del dy, plot
     
     
 def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, region = ''):
@@ -439,15 +458,15 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
-    lint = 18.1  ; maxrun = 999999 ; lint_str = '18.1invfb'
-    specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+    lint = 36.4  ; maxrun = 999999 ; lint_str = '36.4invfb'
+    #specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     if region == "TChiWZ":
-        regioncut =  cuts.ewinoExtMll
+        regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
     if region == "TChiZH":
-        regioncut =  cuts.ewinoNeuNeuExtMll
+        regioncut =  cuts.ewinoZHExtMll
         bins = [50.0, 100.0, 150.0, 250.0]
-    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     ## mll distributions
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
@@ -484,7 +503,6 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_OF_factorDn = treeFS.getTH1F(lint, var+"mc_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
     print 'trivial check'
     for i in range(1, mc_OF.GetNbinsX()+1):
-        print "bin " , da_OF.GetBinContent(i)
         if not  mc_OF.GetBinContent(i): continue
                                                                                                  
     mc_OF_direct = copy.deepcopy(mc_OF)
@@ -518,7 +536,6 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
 
     for i in range(1, mc_OF.GetNbinsX()+1):
-        print "bin " , da_OF_fmllScaled.GetBinContent(i)
         if not  mc_OF.GetBinContent(i): continue
 
 
@@ -536,7 +553,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
 
 def makeResultData(analysis, var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
-    lint = 18.1
+    lint = 36.4
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
@@ -551,13 +568,14 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 18.1, specialcut = '',
     if var == 'met'      : treevar = 'met_Edge'     ; xlabel = 'E_{T}^{miss.} [GeV]'
     if region == "TChiWZ":
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
-        regioncut = cuts.ewinoExtMll
+        regioncut = cuts.ewinoWZExtMll
     if region == "TChiZH":
         bins = [50.0, 100.0, 150.0, 250.0]
-        regioncut = cuts.ewinoNeuNeuExtMll
+        regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '18.1invfb'
-    specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
+    newLumiString = '36.4invfb'
+    #newLumiString = '18.1invfb'
+    #specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -690,108 +708,79 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTJets_DiLepton_ext', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'T_tWch', 'TBar_tWch' ,'TToLeptons_sch','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'TToLeptons_tch_powheg', 'TBarToLeptons_tch_powheg',  'WJetsToLNu_LO']
-    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Q', 'ZZTo2L2Nu']
+    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg',  'WJetsToLNu_LO']
+    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
-    ttzDatasets = ['TTZToLLNuNu', 'TTZToQQ']
+    ttzDatasets = ['TTZToLLNuNu', 'TTZToQQ', 'TTLLJets_m1to10']
     raDatasets = ['TTTT', 'tZq_ll', 'TWZ','WWZ','WZZ', 'ZZZ',  'TTHnobb_pow', 'VHToNonbb']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
     
-    daDatasets = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044_part5',
-                  'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part10',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part11',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part5',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part7',
-                 'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part1',
-                 'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part4',
-                 'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part5',
-                 'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part6',
-                 'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part1',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part10',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part3',
-                 'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part4',
-                 'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part5',
-                 'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part7',
-                 'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part8',
-                 'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part9',
-                 'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
-                 'MuonEG_Run2016H-PromptReco-v2_runs_281613_284035',
-                 'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part3',
-                 'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376_part4',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part8',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part9',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part2',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part6',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part7',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part6',
-                  'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',
-                  'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',
-                  'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                  'DoubleMuon_Run2016H-PromptReco-v2_runs_281613_284035_part2',
-                  'DoubleEG_Run2016H-PromptReco-v2_runs_281613_284035_part3',
-                  'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part6',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part4',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part5',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part6',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part7',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part8',
-                  'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part9',
-                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                  'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2']           
+    daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',      
+                'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
+                'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376',      
+                'JetHT_Run2016C_23Sep2016_v1_runs_271036_284044',                
+                'JetHT_Run2016D_23Sep2016_v1_runs_271036_284044',               
+                'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044',             
+                'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',               
+                'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',                  
+                'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                  
+                'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                 
+                'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                 
+                'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
+                'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
+                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
+                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
+                'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'SingleElectron_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',       
+                'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
+                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
+                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',       
+                'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',      
+                'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',      
+                'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
+                'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',      
+                'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
+                'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035',       
+                'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                'SingleMuon_Run2016H-PromptReco-v2_runs_281207_284035']            
 
 
 
