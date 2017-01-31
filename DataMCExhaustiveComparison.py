@@ -125,11 +125,11 @@ if __name__ == "__main__":
                    'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',
                    'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
                    'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
-                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']
+                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
 
 
 
-    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH
+    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH        
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0, isScan = 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1, isScan = 0)

@@ -324,76 +324,52 @@ if __name__ == "__main__":
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
     mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ',  'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+ 
 
-    daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',        
-                'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
-                'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376',      
-                'JetHT_Run2016C_23Sep2016_v1_runs_271036_284044',                
-                'JetHT_Run2016D_23Sep2016_v1_runs_271036_284044',               
-                'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044',             
-                'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',                 
-                'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                   
-                'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                   
-                'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',       
-                'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',       
-                'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v2_runs_281207_284035']              
+    daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                   'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
+                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
+
+    daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
+                   'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsD = ['DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
+                   'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsE = ['DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
+                   'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1']
+
+    daDatasetsF = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',
+                   'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsG = ['DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
+                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
+                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044']
+
+    daDatasetsH = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',
+                   'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',
+                   'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',
+                   'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',
+                   'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
+                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
+                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
 
 
 
+    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH       
 
 
                  
