@@ -79,7 +79,7 @@ class Scan(object):
             self.ybins = binning(200,900,25)
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.EdgeBaseline])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.EdgeBaseline, cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0') ## remove the filters, ugly.
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -125,7 +125,7 @@ class Scan(object):
             self.ybins = binning(200,900,25)
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoCharNeu])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoCharNeu,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -152,7 +152,7 @@ class Scan(object):
             self.ybins =  binning(200,900,25) # ### to do the proper binning
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoNeuNeu])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoNeuNeu,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -176,7 +176,7 @@ class Scan(object):
             self.ybins = binning(200,900,25) # ### to do the proper binning 
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF,cuts.strongOnZBase])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF,cuts.strongOnZBase,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
