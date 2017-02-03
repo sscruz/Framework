@@ -102,20 +102,20 @@ class Scan(object):
                                 11: 'highmll2_highnll',
                                 12: 'highmll3_highnll',
                                 13: 'highmll4_highnll'}
-            self.SRLabels = { 0: 'Low Z / t#bar{t}-like ',
-                              1: 'Below Z / t#bar{t}-like',
-                              2: 'Above Z / t#bar{t}-like',
-                              3: 'High m_{ll} / t#bar{t}-like',
-                              4: 'Very high m_{ll} / t#bar{t}-like',
-                              5: 'Even higher m_{ll} / t#bar{t}-like',
-                              6: 'Huge m_{ll} / t#bar{t}-like',
-                              7: 'Low Z / Non t#bar{t}-like ',
-                              8: 'Below Z / Non t#bar{t}-like',
-                              9: 'Above Z / Non t#bar{t}-like',
-                             10: 'High m_{ll} / Non t#bar{t}-like',
-                             11: 'Very high m_{ll} / Non t#bar{t}-like',
-                             12: 'Even higher m_{ll} / Non t#bar{t}-like',
-                             13: 'Huge m_{ll} / Non t#bar{t}-like'}
+            self.SRLabels = { 0: '20-60 / t#bar{t}-like ',
+                              1: '60-86 / t#bar{t}-like',
+                              2: '96-150 / t#bar{t}-like',
+                              3: '150-200/ t#bar{t}-like',
+                              4: '200-300/ t#bar{t}-like',
+                              5: '300-400/ t#bar{t}-like',
+                              6: '400+/ t#bar{t}-like',
+                              7: '20-60/ Non t#bar{t}-like ',
+                              8: '60-86/ Non t#bar{t}-like',
+                              9: '96-150 / Non t#bar{t}-like',
+                             10: '150-200 / Non t#bar{t}-like',
+                             11: '200-300 / Non t#bar{t}-like',
+                             12: '300-400 / Non t#bar{t}-like',
+                             13: '400+ / Non t#bar{t}-like'}
 
         if self.name == 'CharNeu_Moriond2017':
             self.makeMCDatacards = True
