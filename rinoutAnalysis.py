@@ -45,8 +45,8 @@ def makeResultsTable(mc, da, rinout_20_60_mc, rinout_60_86_mc,rinout_96_150_mc, 
     line6  = '300-400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(7), da.GetBinError(7), rinout_300_400_da[0], rinout_300_400_da[1], mc.GetBinContent(7), mc.GetBinError(7), rinout_300_400_mc[0], rinout_300_400_mc[1]) 
     line7  = '+400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(8), da.GetBinError(8), rinout_400_da[0], rinout_400_da[1], mc.GetBinContent(8), mc.GetBinError(8), rinout_400_mc[0], rinout_400_mc[1]) 
     
-    helper.ensurePath('plots/rinout/%s/tables/resultTable_%s%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"))
-    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
+    helper.ensurePath('plots/rinout/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"))
+    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
     compTableFile.write(line00+'\n')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')

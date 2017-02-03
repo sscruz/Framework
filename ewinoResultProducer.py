@@ -551,7 +551,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 18.1, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
     lint = 36.4
     print "Doing region: ", region
@@ -760,31 +760,6 @@ if __name__ == '__main__':
     
     
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

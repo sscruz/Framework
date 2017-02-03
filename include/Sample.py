@@ -91,8 +91,8 @@ class Sample:
       #    cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + "*" + extraWeight + " )" 
-         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
+         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +  " * " + self.btagWeight + " * " + extraWeight + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
          #addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
          addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
