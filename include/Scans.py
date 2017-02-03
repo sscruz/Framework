@@ -102,20 +102,20 @@ class Scan(object):
                                 11: 'highmll2_highnll',
                                 12: 'highmll3_highnll',
                                 13: 'highmll4_highnll'}
-            self.SRLabels = { 0: '20-60 / t#bar{t}-like ',
-                              1: '60-86 / t#bar{t}-like',
-                              2: '96-150 / t#bar{t}-like',
-                              3: '150-200/ t#bar{t}-like',
-                              4: '200-300/ t#bar{t}-like',
-                              5: '300-400/ t#bar{t}-like',
-                              6: '400+/ t#bar{t}-like',
-                              7: '20-60/ Non t#bar{t}-like ',
-                              8: '60-86/ Non t#bar{t}-like',
-                              9: '96-150 / Non t#bar{t}-like',
-                             10: '150-200 / Non t#bar{t}-like',
-                             11: '200-300 / Non t#bar{t}-like',
-                             12: '300-400 / Non t#bar{t}-like',
-                             13: '400+ / Non t#bar{t}-like'}
+            self.SRLabels = { 0: '20-60  / ttbar ',
+                              1: '60-86  / ttbar ',
+                              2: '96-150 / ttbar ',
+                              3: '150-200/ ttbar ',
+                              4: '200-300/ ttbar',
+                              5: '300-400/ ttbar',
+                              6: '400+   / ttbar',
+                              7: '20-60  / Non ttbar ',
+                              8: '60-86  / Non ttbar ',
+                              9: '96-150 / Non ttbar ',
+                             10: '150-200/ Non ttbar ',
+                             11: '200-300/ Non ttbar ',
+                             12: '300-400/ Non ttbar ',
+                             13: '400+   / Non ttbar'}
 
         if self.name == 'CharNeu_Moriond2017':
             self.makeMCDatacards = True

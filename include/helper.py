@@ -60,7 +60,7 @@ def readFromFileRsfofD(theFile, dataMC):
                 arr.append(rsfof)
                 arr.append(stat)
                 arr.append(syst)
-                print "using these direct rsfofs: ", arr
+                print "using these direct rsfofs ", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rsfof!!!", arr
                 return map(float, arr)                                                          
@@ -80,7 +80,7 @@ def readFromFileRinout(theFile, dataMC, reg):
                 arr.append(rinout)
                 arr.append(stat)
                 arr.append(syst)
-                print "using these rinouts: ", arr
+                print "using these rinouts ", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rinout!!!", arr
                 return map(float, arr)                                           
@@ -98,7 +98,7 @@ def readFromFileRmueCoeff(theFile, coeff, dataMC):
                 arr.append(rmue)
                 arr.append(stat)
                 arr.append(0.0000)
-                print "using these rmues: ", arr
+                print "using these rmues ", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rmue!!!", arr
                 return map(float, arr)                                        
@@ -118,7 +118,7 @@ def readFromFileRmue(theFile, dataMC):
                 arr.append(rmue)
                 arr.append(stat)
                 arr.append('0.0000')
-                print "using these rmues: ", arr
+                print "using these rmues ", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rmue!!!", arr
                 return map(float, arr)                                               
@@ -138,7 +138,7 @@ def readFromFileRT(theFile, dataMC):
                 arr.append(rt)
                 arr.append(stat)
                 arr.append(syst)
-                print "using these rts: ", arr
+                print "using these rts ", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rt!!!", arr
                 return map(float, arr)                                       

@@ -251,11 +251,59 @@ def makeResultsTable(da, fs, dy, ra, mc, nll = ''):
     print line10                                                                                                                                                      
     print line11                                                                                                                                                      
 
-def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
+def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
 
     if var == 'mll':
         treevar = 'lepsMll_Edge'
-        nbins, xmin, xmax = 28, 20, 300
+        nbins, xmin, xmax = 29, 16, 306
+        xlabel = 'm_{ll} (GeV)'
+    elif var == 'nll':
+        treevar = 'nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMC':
+        treevar = 'nll_mc_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    elif var == 'nllMCSF':
+        treevar = 'nll_mc_sf_Edge'
+        nbins, xmin, xmax = 26, 10, 36
+        xlabel = 'NLL'
+    else: 
+        treevar = var
+        xlabel = ''
+    
+    rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
+    rsfof_mc = helper.readFromFileRsfofD("ingredients.dat", "MC")   
+    rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
+    rt_mc = helper.readFromFileRT("ingredients.dat", "MC")  
+    rmue_a_da = helper.readFromFileRmueCoeff("ingredients.dat","coeffA", "DATA")
+    rmue_a_mc = helper.readFromFileRmueCoeff("ingredients.dat","coeffA", "MC")
+    rmue_b_da = helper.readFromFileRmueCoeff("ingredients.dat","coeffB", "DATA")
+    rmue_b_mc = helper.readFromFileRmueCoeff("ingredients.dat","coeffB", "MC")
+
+                                                                                                                                
+    mc_OF = treeFS.getTH1F(lint, var+"mc_OF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.OF]), '', xlabel)
+    mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.SF]), '', xlabel)
+    dy_SF = treeDY.getTH1F(lint, var+"dy_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.SF]), '', xlabel)
+    mc_OF_factor = treeFS.getTH1F(lint, var+"mc_OF_factor"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion,cuts.Zveto, cuts.OF]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    mc_OF_factorUp = treeFS.getTH1F(lint, var+"mc_OF_factorUp"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion,cuts.Zveto, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+    mc_OF_factorDn = treeFS.getTH1F(lint, var+"mc_OF_factorDn"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion,cuts.Zveto, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_mc[0],b=rmue_b_mc[0]))
+
+    mc_OF_err = copy.deepcopy(mc_OF)
+    mc_OF_direct = copy.deepcopy(mc_OF) 
+    mc_OF_direct = scaleByRSFOF(mc_OF_direct, rsfof_mc[0], rsfof_mc[1])
+    mc_OF_factor = getRMueError(mc_OF_factor, mc_OF_factorUp, mc_OF_factorDn)
+    mc_OF_factor = scaleByRSFOF(mc_OF_factor, rt_mc[0], getFinalError(rt_mc[1],rt_mc[2]))
+    result = weightedAverage( mc_OF_factor, mc_OF_direct, mc_OF)
+    return result
+
+
+
+def makeClosureTestPlots(analysis, var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
+
+    if var == 'mll':
+        treevar = 'lepsMll_Edge'
         xlabel = 'm_{ll} (GeV)'
     elif var == 'nll':
         treevar = 'nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)'
@@ -293,13 +341,13 @@ def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulati
     da_OF_direct = scaleByRSFOF(da_OF_direct, rsfof_da[0], rsfof_da[1])
     da_OF_factor = getRMueError(da_OF_factor, da_OF_factorUp, da_OF_factorDn)
     da_OF_factor = scaleByRSFOF(da_OF_factor, rt_da[0], getFinalError(rt_da[1],rt_da[2]))
-    result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                   
+    da_result = weightedAverage( da_OF_factor, da_OF_direct, da_OF)                                   
     ### 
     da_prediction = copy.deepcopy( da_OF )
     da_OF.SetBinErrorOption( TH1.kPoisson)
     for i in range(1, da_prediction.GetNbinsX()+1):
         da_prediction.SetBinError(i,0.)
-    da_prediction.Multiply(result[2])                       
+    da_prediction.Multiply(da_result[2])                       
                                                                                                                                 
     for bin, label in scan.SRLabels.items():
         bin = da_prediction.FindBin(bin)
@@ -312,8 +360,8 @@ def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulati
         syst = '  {value:4.1f}^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(value = da_prediction.GetBinContent(bin),
                                                                              errUp = da_prediction.GetBinErrorUp(bin),
                                                                              errDn = da_prediction.GetBinErrorLow(bin))
-        stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
-                                                               errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
+        stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * da_result[2].GetBinContent(bin),
+                                                               errDn = dummyHisto.GetBinErrorLow(1) * da_result[2].GetBinContent(bin))
         del dummyHisto                                                                                                                                                                                                                                                                                                                                               
 
     ## ## mll distributions
@@ -360,16 +408,6 @@ def makeClosureTests(analysis, var, specialcut = '', scutstring = '', doCumulati
     #plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
     plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)                                                                                              
-    return result
-    if False:
-        plot_closure = Canvas.Canvas('closure/%s/plot_closure_mll_mcPreddaObs%s'%(lint_str,  '' if not scutstring else '_'+scutstring), 'png,pdf', 0.6, 0.6, 0.75, 0.8)
-        plot_closure.addHisto(da_SF                , 'PE'       , 'data - SF', 'PL', r.kRed+1  , 1,  0)
-        plot_closure.addHisto(da_prediction, 'hist,SAME'  , 'data - OF'       , 'L', r.kBlack , 1, 1)
-        plot_closure.addHisto(mc_OF_rsfofScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-        plot_closure.addHisto(mc_OF_rsfofScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-        #plot_closure.addHisto(dy_SF                , 'hist,SAME', 'DY - SF', 'FL', r.kGreen+2, 1,  2)
-        plot_closure.addLatex(0.61, 0.82, 'R_{SFOF} scaled')
-        plot_closure.saveRatio(1, 0, 0, lint , mc_SF, mc_OF_rsfofScaled, 0.2, 1.8)
                                                                                                                                                                              
 def getRMueError(norm, up, dn):
     final = copy.deepcopy(norm)
@@ -473,14 +511,20 @@ def makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins
     
     return result                                                                                                                                                             
 
-def makeRSOFTable(analysis, var):
+def makeRSOFTable(analysis):
     scan = Scans.Scan(analysis)
-    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, prediction_final_mc = makeClosureTests(scan.srID, var, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
+    rsfof_factor_mc, rsfof_direct_mc, rsfof_final_mc, nof_final_mc = makeClosureTests(scan.srID, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5,save=False)
     rsfof_factor_da, rsfof_direct_da, rsfof_final_da, prediction_final_da = makePred(scan, specialcut = '', scutstring = '', doCumulative = False, nbins=scan.srIDMax+1, xmin=-0.5, xmax=scan.srIDMax+0.5)
-    print '                  Data                                                        MC'
-    print '                  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ &  $r_{SF/OF}^{fact}$  & $r_{SF/OF}^{dict}$  &  $r_{SF/OF}$ \\\\'
+    print '                &  Data       & & & MC  & \\\ \\hline'
+    print '     m_{ll}  &    $\mathrm{r_{SF/OF}^{fact}}$  & $\mathrm{r_{SF/OF}^{dict}}$  &  $\mathrm{r_{SF/OF}}$ &  $\mathrm{r_{SF/OF}^{fact}}$  & $\mathrm{r_{SF/OF}^{dict}}$  &  $\mathrm{r_{SF/OF}}$ \\\ \\hline'
     for bin, label in scan.SRLabels.items():
-        print '%s       %4.3f $\pm$ %4.3f   & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f \\\\'%(label, rsfof_factor_da.GetBinContent(rsfof_factor_da.FindBin(bin)), rsfof_factor_da.GetBinError(rsfof_factor_da.FindBin(bin)), rsfof_direct_da.GetBinContent(rsfof_direct_da.FindBin(bin)), rsfof_direct_da.GetBinError(rsfof_direct_da.FindBin(bin)), rsfof_final_da.GetBinContent(rsfof_final_da.FindBin(bin)), rsfof_final_da.GetBinError(rsfof_final_da.FindBin(bin)), rsfof_factor_mc.GetBinContent(rsfof_factor_mc.FindBin(bin)), rsfof_factor_mc.GetBinError(rsfof_factor_mc.FindBin(bin)), rsfof_direct_mc.GetBinContent(rsfof_direct_mc.FindBin(bin)), rsfof_direct_mc.GetBinError(rsfof_direct_mc.FindBin(bin)), rsfof_final_mc.GetBinContent(rsfof_final_mc.FindBin(bin)), rsfof_final_mc.GetBinError(rsfof_final_mc.FindBin(bin)))
+        print ' %s &      %4.3f $\pm$ %4.3f   & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f & %4.3f $\pm$ %4.3f \\\\'%(label, 
+                rsfof_factor_da.GetBinContent(rsfof_factor_da.FindBin(bin)), rsfof_factor_da.GetBinError(rsfof_factor_da.FindBin(bin)), 
+                rsfof_direct_da.GetBinContent(rsfof_direct_da.FindBin(bin)), rsfof_direct_da.GetBinError(rsfof_direct_da.FindBin(bin)), 
+                rsfof_final_da.GetBinContent(  rsfof_final_da.FindBin(bin)), rsfof_final_da.GetBinError(rsfof_final_da.FindBin(bin)), 
+                rsfof_factor_mc.GetBinContent(rsfof_factor_mc.FindBin(bin)), rsfof_factor_mc.GetBinError(rsfof_factor_mc.FindBin(bin)), 
+                rsfof_direct_mc.GetBinContent(rsfof_direct_mc.FindBin(bin)), rsfof_direct_mc.GetBinError(rsfof_direct_mc.FindBin(bin)), 
+                rsfof_final_mc.GetBinContent(  rsfof_final_mc.FindBin(bin)), rsfof_final_mc.GetBinError(rsfof_final_mc.FindBin(bin)))
 
 
 def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', _options = ''):
@@ -533,7 +577,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
                                                                              errDn = prediction.GetBinErrorLow(bin))
         stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * result[2].GetBinContent(bin),
                                                                errDn = dummyHisto.GetBinErrorLow(1) * result[2].GetBinContent(bin))
-        del dummyHisto                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+        del dummyHisto                                                                                                                                     
     
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.trigger, cuts.SF, cuts.Zveto]), '', xlabel)
@@ -700,16 +744,16 @@ if __name__ == '__main__':
    #     resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
    #     resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
 
-    makeRSOFTable('Edge_Moriond2017', 'mll')
-   # makeClosureTests('Edge_Moriond2017','nll','', 'inclusive', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
-   # makeClosureTests('Edge_Moriond2017','nll','lepsMll_Edge > 400', 'mll400', True)
-   # makeClosureTests('Edge_Moriond2017','mll','', 'inclusive', True)
-   # makeClosureTests('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
-   # makeClosureTests('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
+    makeRSOFTable('Edge_Moriond2017')
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','', 'inclusive', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge > 400', 'mll400', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','mll','', 'inclusive', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
+  #  makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
     
