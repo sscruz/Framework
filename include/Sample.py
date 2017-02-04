@@ -35,8 +35,9 @@ class Sample:
         self.puWeight    = "PileupW_Edge"
         #self.puWeight    = "PUWeight(PileupW_Edge)"
         self.btagWeight  = "weight_btagsf_Edge"
-        self.SFWeight    = "weight_LepSF_Edge"
-        self.triggWeight = "weight_trigger_Edge"
+        #self.SFWeight    = "weight_LepSF_Edge"
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
+        #self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan:
         self.lumWeight  =  1.0
