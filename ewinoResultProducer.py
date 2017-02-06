@@ -18,6 +18,7 @@ from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle, TH1,   SetOwn
 import math, sys, optparse, copy, re, array, subprocess
 from array import array
 
+import include.LeptonSF
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -271,25 +272,25 @@ def makeTheFactors():
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
 
-    mll_da=treeDA.getTH1F(lint,"mll_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.OF, cuts.trigger]), '',mll)
-    mll_mc=treeMC.getTH1F(lint,"mll_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.OF]), '',mll)
-    mll_ext_da=treeDA.getTH1F(lint,"mll_ext_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF,  cuts.trigger]), '',mll)
-    mll_ext_mc=treeMC.getTH1F(lint,"mll_ext_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF]), '',mll)     
-    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_da=treeDA.getTH1F(lint,"mll_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.ThirdLeptonVeto, cuts.OF]), '',mll)
+    mll_mc=treeMC.getTH1F(lint,"mll_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)
+    mll_ext_da=treeDA.getTH1F(lint,"mll_ext_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)
+    mll_ext_mc=treeMC.getTH1F(lint,"mll_ext_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)     
+    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF,cuts.METg100]), '',mll)
     mll_ZH_mc=treeMC.getTH1F(lint,"mll_ZH_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF,cuts.METg100]), '',mll)     
-    mll_ZH_ext_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_ZH_ext_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)
     mll_ZH_ext_mc=treeMC.getTH1F(lint,"mll_ZH_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)                    
-    mll_WZ_da=treeDA.getTH1F(lint,"mll_WZ_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_WZ_da=treeDA.getTH1F(lint,"mll_WZ_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF,cuts.METg100]), '',mll)
     mll_WZ_mc=treeMC.getTH1F(lint,"mll_WZ_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF,cuts.METg100]), '',mll)     
-    mll_WZ_ext_da=treeDA.getTH1F(lint,"mll_WZ_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_WZ_ext_da=treeDA.getTH1F(lint,"mll_WZ_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)
     mll_WZ_ext_mc=treeMC.getTH1F(lint,"mll_WZ_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)                   
-    mll_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100,cuts.Zmass, cuts.OF, cuts.trigger]), '',mll)
-    mll_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 ,cuts.Zmass,  cuts.OF]), '',mll)     
-    mll_onZ_b_ext_da=treeDA.getTH1F(lint,"mll_onZ_b_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll, cuts.trigger)
+    mll_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100, cuts.Zmass,  cuts.OF]), '',mll)
+    mll_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100, cuts.Zmass,  cuts.OF]), '',mll)     
+    mll_onZ_b_ext_da=treeDA.getTH1F(lint,"mll_onZ_b_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll)
     mll_onZ_b_ext_mc=treeMC.getTH1F(lint,"mll_onZ_b_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll)     
-    mll_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF, cuts.trigger]), '',mll)
+    mll_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF]), '',mll)
     mll_onZ_bveto_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF]), '',mll)     
-    mll_onZ_bveto_ext_da=treeDA.getTH1F(lint,"mll_onZ_bveto_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF, cuts.trigger]), '',mll)
+    mll_onZ_bveto_ext_da=treeDA.getTH1F(lint,"mll_onZ_bveto_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)
     mll_onZ_bveto_ext_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)   
 
     mll_met100_150_da_int = mll_da.GetBinContent(1); mll_met100_150_da_e = mll_da.GetBinError(1);
@@ -314,24 +315,24 @@ def makeTheFactors():
     print "On  Z DA baseline >   250: ",mll_met250_da_int, " +- ", mll_met250_da_e 
     mll_ext_met250_da_int = mll_ext_da.GetBinContent(3); mll_ext_met250_da_e = mll_ext_da.GetBinError(3);
     mll_ext_met250_mc_int = mll_ext_mc.GetBinContent(3); mll_ext_met250_mc_e = mll_ext_mc.GetBinError(3);
-    print "Off Z MC baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
+    print "Off Z MC baseline >   250: ",mll_ext_met250_mc_int, " +- ", mll_ext_met250_mc_e 
     print "Off Z DA baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
     mll_ZH_da_int     = mll_ZH_da.GetBinContent(1); mll_ZH_da_e = mll_ZH_da.GetBinError(1);
     mll_ZH_mc_int     = mll_ZH_mc.GetBinContent(1); mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
-    print "ZH da             : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
-    print "ZH mc             : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
+    print "On Z ZH da           : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
+    print "On Z ZH mc           : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
     mll_ext_ZH_da_int = mll_ZH_ext_da.GetBinContent(1); mll_ext_ZH_da_e = mll_ZH_ext_da.GetBinError(1);
     mll_ext_ZH_mc_int = mll_ZH_ext_mc.GetBinContent(1); mll_ext_ZH_mc_e = mll_ZH_ext_mc.GetBinError(1);
-    print "ZH da    extmll   : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
-    print "ZH mc    extmll   : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
+    print "Off Z ZH da          : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
+    print "Off Z ZH mc          : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
     mll_WZ_da_int     = mll_WZ_da.GetBinContent(1); mll_WZ_da_e = mll_WZ_da.GetBinError(1);
     mll_WZ_mc_int     = mll_WZ_mc.GetBinContent(1); mll_WZ_mc_e = mll_WZ_mc.GetBinError(1);
-    print "WZ da             : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
-    print "WZ mc             : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
+    print "On Z WZ da           : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
+    print "On Z WZ mc           : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
     mll_ext_WZ_da_int = mll_WZ_ext_da.GetBinContent(1); mll_ext_WZ_da_e = mll_WZ_ext_da.GetBinError(1);
     mll_ext_WZ_mc_int = mll_WZ_ext_mc.GetBinContent(1); mll_ext_WZ_mc_e = mll_WZ_ext_mc.GetBinError(1);
-    print "WZ da    extmll   : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
-    print "WZ mc    extmll   : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
+    print "Off Z WZ da          : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
+    print "Off Z WZ mc          : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
     mll_onZ_b_da_int     = mll_onZ_b_da.GetBinContent(1); mll_onZ_b_da_e = mll_onZ_b_da.GetBinError(1);
     mll_onZ_b_mc_int     = mll_onZ_b_mc.GetBinContent(1); mll_onZ_b_mc_e = mll_onZ_b_mc.GetBinError(1);
     print "On  Z MC Strong with b: ",mll_onZ_b_mc_int, " +- ", mll_onZ_b_mc_e 
@@ -347,7 +348,7 @@ def makeTheFactors():
     mll_ext_onZ_bveto_da_int = mll_onZ_bveto_ext_da.GetBinContent(1); mll_ext_onZ_bveto_da_e = mll_onZ_bveto_ext_da.GetBinError(1);
     mll_ext_onZ_bveto_mc_int = mll_onZ_bveto_ext_mc.GetBinContent(1); mll_ext_onZ_bveto_mc_e = mll_onZ_bveto_ext_mc.GetBinError(1);
     print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
-    print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
+    print "Off Z DA  Strong bveto: ",mll_ext_onZ_bveto_da_int, " +- ", mll_ext_onZ_bveto_da_e 
 
     kappa_met100_150_mc,  kappa_met100_150_mc_e = getFraction(mll_met100_150_mc_int, mll_met100_150_mc_e, mll_ext_met100_150_mc_int, mll_ext_met100_150_mc_e)
     kappa_met100_150_da,  kappa_met100_150_da_e = getFraction(mll_met100_150_da_int, mll_met100_150_da_e, mll_ext_met100_150_da_int, mll_ext_met100_150_da_e)
@@ -546,7 +547,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(da_OF_fmllScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_fmllScaled, 0.2, 1.8)
+    plot_closure.saveRatio(1, 0, 0, lint, da_OF_fmllScaled, mc_OF_fmllScaled, 0.2, 1.8)
     #makeClosureTable(mc_SF, mc_OF_fmllScaled, da_OF_fmllScaled)
     return da_OF_fmllScaled                                                                                                                              
 
@@ -555,10 +556,11 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     scan = Scans.Scan(analysis)
     lint = 36.4
     print "Doing region: ", region
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
-    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
     if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
     if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True

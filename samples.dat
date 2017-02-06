@@ -109,7 +109,7 @@ VV2l      r.kCyan+3      WZTo2L2Q                       VV2l        /afs/cern.ch
 VV2l      r.kCyan+3      ZZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/      3220.0   0
 VV2l      r.kCyan+3      ZZTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/      564.0    0
 ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/      1212.0   0
-ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/       13.08   0
+ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/       13.08   0
 WZ3l      r.kGreen-8     WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/     4429.65   0
 rares     r.kGreen-5     WWW                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/       208.6   0
 rares     r.kGreen-5     WWZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/       165.1   0
