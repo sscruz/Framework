@@ -92,7 +92,8 @@ class Sample:
            
       if(self.isData == 0):
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +  " * " + self.btagWeight + " * " + extraWeight + " )" 
-         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
+         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * "  + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
+         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
          addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
