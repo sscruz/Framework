@@ -110,12 +110,14 @@ class CutManager:
       ########################################################################
       self.JETMETBaseline = self.AddList([self.METg150, self.nj2, self.mT2_80])
       self.JETMETBaselineNoMT2 = self.AddList([self.METg150, self.nj2])
+      self.JETMETBaselineNoMT2SF_86_96 = self.AddList([self.METg150, self.nj2, self.SF, self.mll86_96])
       self.SignalRegionNoDPhi = self.AddList([self.goodLepton, self.JETMETBaseline]) 
       self.SignalRegion = self.AddList([self.goodLepton, self.JETMETBaseline, self.dPhiJETMET]) 
       self.SignalRegionNoMT2 = self.AddList([self.goodLepton, self.JETMETBaselineNoMT2, self.dPhiJETMET]) 
       self.SignalRegionNLL = self.AddList([self.goodLepton, self.JETMETBaseline, self.dPhiJETMET, self.NLL]) 
 
       self.RSFOFDirectControlRegion = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110)])
+      self.RSFOFDirectControlRegionOF = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110), self.OF])
       self.RSFOFDirectControlRegionNoJet = self.AddList([self.goodLepton, self.METg100, self.METl150, self.donot(self.mll70_110)])
       self.RSFOFDirectControlRegionNoMll = self.AddList([self.goodLepton,  self.METg100, self.METl150, self.njExact2])
       self.RSFOFDirectControlRegionNoMET = self.AddList([self.goodLepton,  self.njExact2, self.donot(self.mll70_110)])
@@ -146,9 +148,9 @@ class CutManager:
       ########################################################################
       ######EWK signal regions ###############################################
       ########################################################################
-      self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto])
-      self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET, self.mZ2g20])
-      self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30])
+      self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj2])
+      self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])
+      self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
 
       ########################################################################
       ######EWK signal regions ###############################################
@@ -170,9 +172,8 @@ class CutManager:
       ########################################################################
       self.HT = "(htJet35j_Edge > 200) "
       self.triggerHT = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5  )" 
-      #self.triggerHT = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5 || HLT_BIT_HLT_PFHT300_PFMET110_v_Edge > 0.5 )" 
-      self.numerator =   self.AddList([self.goodLeptonNoTrigger, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT, self.trigger])
-      self.denominator = self.AddList([self.goodLeptonNoTrigger, self.donot(self.JETMETBaseline), self.donot(self.RSFOFDirectControlRegion), self.HT, self.triggerHT])  
+      self.numerator =   self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT, self.trigger])
+      self.denominator = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT])  
 
 
 
