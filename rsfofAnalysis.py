@@ -17,6 +17,7 @@ import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse, copy, subprocess
 
+import include.LeptonSF
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -291,7 +292,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     maxrun = 999999
-    lumi = 36.2 ; maxrun = 999999; lumi_str = '36.2invfbnofilter'
+    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 

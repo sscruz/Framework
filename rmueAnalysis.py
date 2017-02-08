@@ -17,6 +17,7 @@ import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TGraphErrors
 import math, sys, optparse, array, copy, subprocess
 
+import include.LeptonSF
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -46,7 +47,7 @@ def makeTable(MCmm, MCee, DATAmm, DATAee, MCrmue, MCrmueUnc, MCrmueUncSyst, DATA
 
     helper.ensureDirectory('plots/rmue/%s/'%lumi_str)
     helper.ensureDirectory('plots/rmue/%s/tables/'%lumi_str)
-    compTableFile = open('plots/rmue/%s/tables/resultTable_%s%s.tex'%(lumi_str, str(lumi).replace('.','p'), "rmue"),'w')
+    compTableFile = open('plots/rmue/%s/tables/resultTable_%s%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rmue"),'w')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
     compTableFile.write(line2+'\n')                                                                                             
@@ -379,7 +380,7 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 36.2 ; maxrun = 276811; lumi_str = '36.2invfb'
+    lumi = 36.4 ; maxrun = 276811; lumi_str = '36.4invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()

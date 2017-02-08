@@ -21,7 +21,7 @@ import math,sys,optparse, copy, subprocess
 import math
 
 
-
+import include.LeptonSF
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -56,7 +56,7 @@ def makeTable(DATAnumeratoree, DATAnumeratormm, DATAnumeratorOF, DATAdenominator
                                                                                                                                                                                      
     helper.ensureDirectory('plots/rt/%s/'%lumi_str)
     helper.ensureDirectory('plots/rt/%s/tables/'%lumi_str)
-    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rt"),'w')
+    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s_.txt'%(lumi_str, str(lumi).replace('.','p'), "rt"),'w')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
     compTableFile.write(line2+'\n')                                                                                             
@@ -210,7 +210,7 @@ if __name__ == '__main__':
 
     
     mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton']
-    #mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    #mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ','WWTo2L2Nu', 'ZZTo2L2Nu',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
     
     daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',             
                 'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
@@ -285,7 +285,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     
-    lumi = 36.2 ; maxrun = 999999; lumi_str = '36.2invfb'
+    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -594,7 +594,7 @@ if __name__ == '__main__':
     MCRTeta1 = RT(MCnumeratoreta1SF, MCeffeta1ee, MCeffeta1mm, MCeffeta1OF)
     MCRTeta2 = RT(MCnumeratoreta2SF, MCeffeta2ee, MCeffeta2mm, MCeffeta2OF)
 
-    effRTMll = Canvas.Canvas('rt/%s/plot_rt_mll_woFilters'%(lumi_str), 'png,pdf',  0.6, 0.3, 0.8, 0.5)
+    effRTMll = Canvas.Canvas('rt/%s/plot_rt_mll_'%(lumi_str), 'png,pdf',  0.6, 0.3, 0.8, 0.5)
     h_auxrtMll = r.TH1F("h_auxRTMll", "", 1, 0, 250)
     h_auxrtMll.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtMll.GetXaxis().SetRangeUser(0, 250)
@@ -608,7 +608,7 @@ if __name__ == '__main__':
     effRTMll.addLatex (0.55, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
     effRTMll.save(1, 1, 0, lumi, 0.8, 1.2)                                                            
     
-    effRTMET = Canvas.Canvas('rt/%s/plot_rt_met_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTMET = Canvas.Canvas('rt/%s/plot_rt_met_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtMET = r.TH1F("h_auxRTMET", "", 1, 0, 200)
     h_auxrtMET.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtMET.GetXaxis().SetRangeUser(0, 150)
@@ -623,7 +623,7 @@ if __name__ == '__main__':
     effRTMET.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                  
 
     
-    effRTmt2 = Canvas.Canvas('rt/%s/plot_rt_mt2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTmt2 = Canvas.Canvas('rt/%s/plot_rt_mt2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtmt2 = r.TH1F("h_auxRTMET", "", 1, 0, 160)
     h_auxrtmt2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtmt2.GetXaxis().SetRangeUser(0, 160)
@@ -637,7 +637,7 @@ if __name__ == '__main__':
     effRTmt2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTmt2.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                 
 
-    effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtpt1 = r.TH1F("h_auxRTpt1", "", 1, 20, 150)
     h_auxrtpt1.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtpt1.GetXaxis().SetRangeUser(20, 150)
@@ -651,7 +651,7 @@ if __name__ == '__main__':
     effRTpt1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTpt1.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrtpt2 = r.TH1F("h_auxRTpt2", "", 1, 20, 150)
     h_auxrtpt2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrtpt2.GetXaxis().SetRangeUser(20, 150)
@@ -665,7 +665,7 @@ if __name__ == '__main__':
     effRTpt2.addLatex (0.6, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
     effRTpt2.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrteta1 = r.TH1F("h_auxRTeta1", "", 1, -2.4, 2.4)
     h_auxrteta1.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrteta1.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -679,20 +679,21 @@ if __name__ == '__main__':
     effRTeta1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTeta1.save(1, 1, 0, lumi, 0.8, 1.2)
 
-    effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2_woFilters'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
+    effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
     h_auxrteta2 = r.TH1F("h_auxRTeta2", "", 1, -2.4, 2.4)
     h_auxrteta2.GetYaxis().SetRangeUser(0.8, 1.2)
     h_auxrteta2.GetXaxis().SetRangeUser(-2.4, 2.4)
     h_auxrteta2.GetXaxis().SetTitle(labeleta2)
     effRTeta2.addLine(h_auxrteta2.GetXaxis().GetXmin(), dart, h_auxrteta2.GetXaxis().GetXmax(), dart ,r.kBlue)
     effRTeta2.addHisto(h_auxrteta2, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-    effRTeta2.addHisto(DATARTeta2, 'PE,SAME', 'RT', 'PL', r.kBlack , 1, 0)
+    effRTeta2.addHisto(DATARTeta2, 'PE,SAME', 'RT data' , 'PL', r.kBlack , 1, 0)
+    effRTeta2.addHisto(MCRTeta2, 'PE,SAME', 'RT MC', 'PL', r.kGreen , 1, 0)
     effRTeta2.addBand(h_auxrteta2.GetXaxis().GetXmin(), dart-dasystrt, h_auxrteta2.GetXaxis().GetXmax(), dart+dasystrt, r.kOrange+6, 0.2)
     effRTeta2.addLatex (0.6, 0.25, 'Mean R_{T} data: %.3f '%(dart))
     effRTeta2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
     effRTeta2.save(1, 1, 0, lumi, 0.8, 1.2)
    
-    effMll = Canvas.Canvas('rt/%s/plot_eff_mll_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effMll = Canvas.Canvas('rt/%s/plot_eff_mll_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxMll = r.TH1F("h_auxMll", "", 1, 0, 250)
     h_auxMll.GetYaxis().SetRangeUser(0, 2)
     h_auxMll.GetXaxis().SetRangeUser(0, 250)
@@ -704,7 +705,7 @@ if __name__ == '__main__':
     effMll.addHisto(DATAeffMllOF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effMll.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
 
-    effmt2 = Canvas.Canvas('rt/%s/plot_eff_mt2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effmt2 = Canvas.Canvas('rt/%s/plot_eff_mt2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxmt2 = r.TH1F("h_auxmt2", "", 1, 0, 160)
     h_auxmt2.GetYaxis().SetRangeUser(0, 2)
     h_auxmt2.GetXaxis().SetRangeUser(0, 160)
@@ -716,7 +717,7 @@ if __name__ == '__main__':
     effmt2.addHisto(DATAeffmt2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effmt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
 
-    effpt1 = Canvas.Canvas('rt/%s/plot_eff_pt1_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effpt1 = Canvas.Canvas('rt/%s/plot_eff_pt1_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxpt1 = r.TH1F("h_auxpt1", "", 1, 0, 150)
     h_auxpt1.GetYaxis().SetRangeUser(0, 2)
     h_auxpt1.GetXaxis().SetRangeUser(0, 150)
@@ -728,7 +729,7 @@ if __name__ == '__main__':
     effpt1.addHisto(DATAeffpt1OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effpt1.save(1, 1, 0, lumi, 0.2, 1.8)
 
-    effpt2 = Canvas.Canvas('rt/%s/plot_eff_pt2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effpt2 = Canvas.Canvas('rt/%s/plot_eff_pt2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxpt2 = r.TH1F("h_auxpt2", "", 1, 0, 150)
     h_auxpt2.GetYaxis().SetRangeUser(0, 2)
     h_auxpt2.GetXaxis().SetRangeUser(0, 150)
@@ -740,7 +741,7 @@ if __name__ == '__main__':
     effpt2.addHisto(DATAeffpt2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effpt2.save(1, 1, 0, lumi, 0.2, 1.8)
  
-    effeta1 = Canvas.Canvas('rt/%s/plot_eff_eta1_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effeta1 = Canvas.Canvas('rt/%s/plot_eff_eta1_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxeta1 = r.TH1F("h_auxeta1", "", 1, -2.4, 2.4)
     h_auxeta1.GetYaxis().SetRangeUser(0, 2)
     h_auxeta1.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -752,7 +753,7 @@ if __name__ == '__main__':
     effeta1.addHisto(DATAeffeta1OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effeta1.save(1, 1, 0, lumi, 0.2, 1.8)
 
-    effeta2 = Canvas.Canvas('rt/%s/plot_eff_eta2_woFilters'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
+    effeta2 = Canvas.Canvas('rt/%s/plot_eff_eta2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
     h_auxeta2 = r.TH1F("h_auxeta2", "", 1, -2.4, 2.4)
     h_auxeta2.GetYaxis().SetRangeUser(0, 2)
     h_auxeta2.GetXaxis().SetRangeUser(-2.4, 2.4)
@@ -764,7 +765,6 @@ if __name__ == '__main__':
     effeta2.addHisto(DATAeffeta2OF, 'PE,SAME', 'Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
     effeta2.save(1, 1, 0, lumi, 0.2, 1.8)
  
-    print "without filters"
     print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
     print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
     saveInFile(theFile, 0, 0, 0, dart, dauncrt, dasystrt, "DATA")

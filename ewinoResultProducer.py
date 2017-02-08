@@ -18,6 +18,7 @@ from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats, TStyle, TH1,   SetOwn
 import math, sys, optparse, copy, re, array, subprocess
 from array import array
 
+import include.LeptonSF
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -116,15 +117,6 @@ def getFactor(x,  xstat, xsyst, y, ystat, ysyst):
     z = x*y
     err = z* math.sqrt((xstat/x)**2 + (xsyst/x)**2 + (ystat/y)**2 + (ysyst/y)**2)
     return z, err
-
-def getFraction(x,  xstat, y, ystat):
-    if y > 0:
-        z = x/y
-        err = z* math.sqrt((xstat/x)**2 + (ystat/y)**2)
-        return z, err  
-    else: 
-        print "denominator < 0!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-        return x, xstat
 
 
 def getRMueError(norm, up, dn):
@@ -271,109 +263,114 @@ def makeTheFactors():
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
 
-    mll_da=treeDA.getTH1F(lint,"mll_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.OF, cuts.trigger]), '',mll)
-    mll_mc=treeMC.getTH1F(lint,"mll_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.OF]), '',mll)
-    mll_ext_da=treeDA.getTH1F(lint,"mll_ext_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF,  cuts.trigger]), '',mll)
-    mll_ext_mc=treeMC.getTH1F(lint,"mll_ext_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.OF]), '',mll)     
-    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_da=treeDA.getTH1F(lint,"mll_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.ThirdLeptonVeto, cuts.OF]), '',mll)
+    mll_mc=treeMC.getTH1F(lint,"mll_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline,cuts.Zmass, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)
+    mll_ext_da=treeDA.getTH1F(lint,"mll_ext_da",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)
+    mll_ext_mc=treeMC.getTH1F(lint,"mll_ext_mc",'met_Edge', bins, 1, 1,  cuts.AddList([cuts.goodLepton,cuts.baseline, cuts.ThirdLeptonVeto,cuts.OF]), '',mll)     
+    mll_ZH_da=treeDA.getTH1F(lint,"mll_ZH_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF,cuts.METg100]), '',mll)
     mll_ZH_mc=treeMC.getTH1F(lint,"mll_ZH_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZH, cuts.OF,cuts.METg100]), '',mll)     
-    mll_ZH_ext_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
-    mll_ZH_ext_mc=treeMC.getTH1F(lint,"mll_ZH_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)                    
-    mll_WZ_da=treeDA.getTH1F(lint,"mll_WZ_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
+    mll_ext_ZH_da=treeDA.getTH1F(lint,"mll_ZH_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)
+    mll_ext_ZH_mc=treeMC.getTH1F(lint,"mll_ZH_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoZHExtMll, cuts.OF, cuts.METg100]), '',mll)                    
+    mll_WZ_da=treeDA.getTH1F(lint,"mll_WZ_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF,cuts.METg100]), '',mll)
     mll_WZ_mc=treeMC.getTH1F(lint,"mll_WZ_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZ, cuts.OF,cuts.METg100]), '',mll)     
-    mll_WZ_ext_da=treeDA.getTH1F(lint,"mll_WZ_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.trigger, cuts.METg100]), '',mll)
-    mll_WZ_ext_mc=treeMC.getTH1F(lint,"mll_WZ_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)                   
-    mll_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100,cuts.Zmass, cuts.OF, cuts.trigger]), '',mll)
-    mll_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 ,cuts.Zmass,  cuts.OF]), '',mll)     
-    mll_onZ_b_ext_da=treeDA.getTH1F(lint,"mll_onZ_b_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll, cuts.trigger)
-    mll_onZ_b_ext_mc=treeMC.getTH1F(lint,"mll_onZ_b_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll)     
-    mll_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF, cuts.trigger]), '',mll)
+    mll_ext_WZ_da=treeDA.getTH1F(lint,"mll_WZ_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)
+    mll_ext_WZ_mc=treeMC.getTH1F(lint,"mll_WZ_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.ewinoWZExtMll, cuts.OF, cuts.METg100]), '',mll)                   
+    mll_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100, cuts.Zmass,  cuts.OF]), '',mll)
+    mll_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100, cuts.Zmass,  cuts.OF]), '',mll)     
+    mll_ext_onZ_b_da=treeDA.getTH1F(lint,"mll_onZ_b_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll)
+    mll_ext_onZ_b_mc=treeMC.getTH1F(lint,"mll_onZ_b_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZWithB, cuts.METg100 , cuts.OF]), '',mll)     
+    mll_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF]), '',mll)
     mll_onZ_bveto_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.Zmass,cuts.OF]), '',mll)     
-    mll_onZ_bveto_ext_da=treeDA.getTH1F(lint,"mll_onZ_bveto_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF, cuts.trigger]), '',mll)
-    mll_onZ_bveto_ext_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)   
+    mll_ext_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)
+    mll_ext_onZ_bveto_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)   
 
-    mll_met100_150_da_int = mll_da.GetBinContent(1); mll_met100_150_da_e = mll_da.GetBinError(1);
-    mll_met100_150_mc_int = mll_mc.GetBinContent(1); mll_met100_150_mc_e = mll_mc.GetBinError(1);
-    print "On  Z MC baseline 100_150: ",mll_met100_150_mc_int, " +- ", mll_met100_150_mc_e 
-    print "On  Z DA baseline 100_150: ",mll_met100_150_da_int, " +- ", mll_met100_150_da_e 
-    mll_ext_met100_150_da_int = mll_ext_da.GetBinContent(1); mll_ext_met100_150_da_e = mll_ext_da.GetBinError(1);
-    mll_ext_met100_150_mc_int = mll_ext_mc.GetBinContent(1); mll_ext_met100_150_mc_e = mll_ext_mc.GetBinError(1);
-    print "Off Z MC baseline 100_150: ",mll_ext_met100_150_mc_int, " +- ", mll_ext_met100_150_mc_e 
-    print "Off Z DA baseline 100_150: ",mll_ext_met100_150_da_int, " +- ", mll_ext_met100_150_da_e 
-    mll_met150_250_da_int     = mll_da.GetBinContent(2); mll_met150_250_da_e = mll_da.GetBinError(2);
-    mll_met150_250_mc_int     = mll_mc.GetBinContent(2); mll_met150_250_mc_e = mll_mc.GetBinError(2);
-    print "On  Z MC baseline 150_250: ",mll_met150_250_mc_int, " +- ", mll_met150_250_mc_e 
-    print "On  Z DA baseline 150_250: ",mll_met150_250_da_int, " +- ", mll_met150_250_da_e 
-    mll_ext_met150_250_da_int = mll_ext_da.GetBinContent(2); mll_ext_met150_250_da_e = mll_ext_da.GetBinError(2);
-    mll_ext_met150_250_mc_int = mll_ext_mc.GetBinContent(2); mll_ext_met150_250_mc_e = mll_ext_mc.GetBinError(2);
-    print "Off Z MC baseline 150_250: ",mll_ext_met150_250_mc_int, " +- ", mll_ext_met150_250_mc_e 
-    print "Off Z DA baseline 150_250: ",mll_ext_met150_250_da_int, " +- ", mll_ext_met150_250_da_e 
-    mll_met250_da_int     = mll_da.GetBinContent(3); mll_met250_da_e = mll_da.GetBinError(3);
-    mll_met250_mc_int     = mll_mc.GetBinContent(3); mll_met250_mc_e = mll_mc.GetBinError(3);
-    print "On  Z MC baseline >   250: ",mll_met250_mc_int, " +- ", mll_met250_mc_e 
-    print "On  Z DA baseline >   250: ",mll_met250_da_int, " +- ", mll_met250_da_e 
-    mll_ext_met250_da_int = mll_ext_da.GetBinContent(3); mll_ext_met250_da_e = mll_ext_da.GetBinError(3);
-    mll_ext_met250_mc_int = mll_ext_mc.GetBinContent(3); mll_ext_met250_mc_e = mll_ext_mc.GetBinError(3);
-    print "Off Z MC baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
-    print "Off Z DA baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
-    mll_ZH_da_int     = mll_ZH_da.GetBinContent(1); mll_ZH_da_e = mll_ZH_da.GetBinError(1);
-    mll_ZH_mc_int     = mll_ZH_mc.GetBinContent(1); mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
-    print "ZH da             : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
-    print "ZH mc             : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
-    mll_ext_ZH_da_int = mll_ZH_ext_da.GetBinContent(1); mll_ext_ZH_da_e = mll_ZH_ext_da.GetBinError(1);
-    mll_ext_ZH_mc_int = mll_ZH_ext_mc.GetBinContent(1); mll_ext_ZH_mc_e = mll_ZH_ext_mc.GetBinError(1);
-    print "ZH da    extmll   : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
-    print "ZH mc    extmll   : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
-    mll_WZ_da_int     = mll_WZ_da.GetBinContent(1); mll_WZ_da_e = mll_WZ_da.GetBinError(1);
-    mll_WZ_mc_int     = mll_WZ_mc.GetBinContent(1); mll_WZ_mc_e = mll_WZ_mc.GetBinError(1);
-    print "WZ da             : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
-    print "WZ mc             : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
-    mll_ext_WZ_da_int = mll_WZ_ext_da.GetBinContent(1); mll_ext_WZ_da_e = mll_WZ_ext_da.GetBinError(1);
-    mll_ext_WZ_mc_int = mll_WZ_ext_mc.GetBinContent(1); mll_ext_WZ_mc_e = mll_WZ_ext_mc.GetBinError(1);
-    print "WZ da    extmll   : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
-    print "WZ mc    extmll   : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
-    mll_onZ_b_da_int     = mll_onZ_b_da.GetBinContent(1); mll_onZ_b_da_e = mll_onZ_b_da.GetBinError(1);
-    mll_onZ_b_mc_int     = mll_onZ_b_mc.GetBinContent(1); mll_onZ_b_mc_e = mll_onZ_b_mc.GetBinError(1);
-    print "On  Z MC Strong with b: ",mll_onZ_b_mc_int, " +- ", mll_onZ_b_mc_e 
-    print "On  Z DA Strong with b: ",mll_onZ_b_da_int, " +- ", mll_onZ_b_da_e 
-    mll_ext_onZ_b_da_int = mll_onZ_b_ext_da.GetBinContent(1); mll_ext_onZ_b_da_e = mll_onZ_b_ext_da.GetBinError(1);
-    mll_ext_onZ_b_mc_int = mll_onZ_b_ext_mc.GetBinContent(1); mll_ext_onZ_b_mc_e = mll_onZ_b_ext_mc.GetBinError(1);
-    print "Off Z MC Strong with b: ",mll_ext_onZ_b_mc_int, " +- ", mll_ext_onZ_b_mc_e 
-    print "Off Z DA Strong with b: ",mll_ext_onZ_b_da_int, " +- ", mll_ext_onZ_b_da_e 
-    mll_onZ_bveto_da_int     = mll_onZ_bveto_da.GetBinContent(1); mll_onZ_bveto_da_e = mll_onZ_bveto_da.GetBinError(1);
-    mll_onZ_bveto_mc_int     = mll_onZ_bveto_mc.GetBinContent(1); mll_onZ_bveto_mc_e = mll_onZ_bveto_mc.GetBinError(1);
-    print "On  Z MC  Strong bveto: ",mll_onZ_bveto_mc_int, " +- ", mll_onZ_bveto_mc_e 
-    print "On  Z DA  Strong bveto: ",mll_onZ_bveto_da_int, " +- ", mll_onZ_bveto_da_e 
-    mll_ext_onZ_bveto_da_int = mll_onZ_bveto_ext_da.GetBinContent(1); mll_ext_onZ_bveto_da_e = mll_onZ_bveto_ext_da.GetBinError(1);
-    mll_ext_onZ_bveto_mc_int = mll_onZ_bveto_ext_mc.GetBinContent(1); mll_ext_onZ_bveto_mc_e = mll_onZ_bveto_ext_mc.GetBinError(1);
-    print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
-    print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
-
-    kappa_met100_150_mc,  kappa_met100_150_mc_e = getFraction(mll_met100_150_mc_int, mll_met100_150_mc_e, mll_ext_met100_150_mc_int, mll_ext_met100_150_mc_e)
-    kappa_met100_150_da,  kappa_met100_150_da_e = getFraction(mll_met100_150_da_int, mll_met100_150_da_e, mll_ext_met100_150_da_int, mll_ext_met100_150_da_e)
-    kappa_met150_250_mc,  kappa_met150_250_mc_e = getFraction(mll_met150_250_mc_int, mll_met150_250_mc_e, mll_ext_met150_250_mc_int, mll_ext_met150_250_mc_e)
-    kappa_met150_250_da,  kappa_met150_250_da_e = getFraction(mll_met150_250_da_int, mll_met150_250_da_e, mll_ext_met150_250_da_int, mll_ext_met150_250_da_e)
-    kappa_met250_mc,  kappa_met250_mc_e = getFraction(mll_met250_mc_int, mll_met250_mc_e, mll_ext_met250_mc_int, mll_ext_met250_mc_e)
-    kappa_met250_da,  kappa_met250_da_e = getFraction(mll_met250_da_int, mll_met250_da_e, mll_ext_met250_da_int, mll_ext_met250_da_e)
-    kappa_ZH_da,  kappa_ZH_da_e = getFraction(mll_ZH_da_int, mll_ZH_da_e, mll_ext_ZH_da_int, mll_ext_ZH_da_e)
-    kappa_ZH_mc,  kappa_ZH_mc_e = getFraction(mll_ZH_mc_int, mll_ZH_mc_e, mll_ext_ZH_mc_int, mll_ext_ZH_mc_e)
-    kappa_WZ_da,  kappa_WZ_da_e = getFraction(mll_WZ_da_int, mll_WZ_da_e, mll_ext_WZ_da_int, mll_ext_WZ_da_e)
-    kappa_WZ_mc,  kappa_WZ_mc_e = getFraction(mll_WZ_mc_int, mll_WZ_mc_e, mll_ext_WZ_mc_int, mll_ext_WZ_mc_e)
-    kappa_onZ_b_da,  kappa_onZ_b_da_e = getFraction(mll_onZ_b_da_int, mll_onZ_b_da_e, mll_ext_onZ_b_da_int, mll_ext_onZ_b_da_e)
-    kappa_onZ_b_mc,  kappa_onZ_b_mc_e = getFraction(mll_onZ_b_mc_int, mll_onZ_b_mc_e, mll_ext_onZ_b_mc_int, mll_ext_onZ_b_mc_e)
-    kappa_onZ_bveto_da,  kappa_onZ_bveto_da_e = getFraction(mll_onZ_bveto_da_int, mll_onZ_bveto_da_e, mll_ext_onZ_bveto_da_int, mll_ext_onZ_bveto_da_e)
-    kappa_onZ_bveto_mc,  kappa_onZ_bveto_mc_e = getFraction(mll_onZ_bveto_mc_int, mll_onZ_bveto_mc_e, mll_ext_onZ_bveto_mc_int, mll_ext_onZ_bveto_mc_e)
+  #  mll_met100_150_da_int = mll_da.GetBinContent(1); mll_met100_150_da_e = mll_da.GetBinError(1);
+  #  mll_met100_150_mc_int = mll_mc.GetBinContent(1); mll_met100_150_mc_e = mll_mc.GetBinError(1);
+  #  print "On  Z MC baseline 100_150: ",mll_met100_150_mc_int, " +- ", mll_met100_150_mc_e 
+  #  print "On  Z DA baseline 100_150: ",mll_met100_150_da_int, " +- ", mll_met100_150_da_e 
+  #  mll_ext_met100_150_da_int = mll_ext_da.GetBinContent(1); mll_ext_met100_150_da_e = mll_ext_da.GetBinError(1);
+  #  mll_ext_met100_150_mc_int = mll_ext_mc.GetBinContent(1); mll_ext_met100_150_mc_e = mll_ext_mc.GetBinError(1);
+  #  print "Off Z MC baseline 100_150: ",mll_ext_met100_150_mc_int, " +- ", mll_ext_met100_150_mc_e 
+  #  print "Off Z DA baseline 100_150: ",mll_ext_met100_150_da_int, " +- ", mll_ext_met100_150_da_e 
+  #  mll_met150_250_da_int     = mll_da.GetBinContent(2); mll_met150_250_da_e = mll_da.GetBinError(2);
+  #  mll_met150_250_mc_int     = mll_mc.GetBinContent(2); mll_met150_250_mc_e = mll_mc.GetBinError(2);
+  #  print "On  Z MC baseline 150_250: ",mll_met150_250_mc_int, " +- ", mll_met150_250_mc_e 
+  #  print "On  Z DA baseline 150_250: ",mll_met150_250_da_int, " +- ", mll_met150_250_da_e 
+  #  mll_ext_met150_250_da_int = mll_ext_da.GetBinContent(2); mll_ext_met150_250_da_e = mll_ext_da.GetBinError(2);
+  #  mll_ext_met150_250_mc_int = mll_ext_mc.GetBinContent(2); mll_ext_met150_250_mc_e = mll_ext_mc.GetBinError(2);
+  #  print "Off Z MC baseline 150_250: ",mll_ext_met150_250_mc_int, " +- ", mll_ext_met150_250_mc_e 
+  #  print "Off Z DA baseline 150_250: ",mll_ext_met150_250_da_int, " +- ", mll_ext_met150_250_da_e 
+  #  mll_met250_da_int     = mll_da.GetBinContent(3); mll_met250_da_e = mll_da.GetBinError(3);
+  #  mll_met250_mc_int     = mll_mc.GetBinContent(3); mll_met250_mc_e = mll_mc.GetBinError(3);
+  #  print "On  Z MC baseline >   250: ",mll_met250_mc_int, " +- ", mll_met250_mc_e 
+  #  print "On  Z DA baseline >   250: ",mll_met250_da_int, " +- ", mll_met250_da_e 
+  #  mll_ext_met250_da_int = mll_ext_da.GetBinContent(3); mll_ext_met250_da_e = mll_ext_da.GetBinError(3);
+  #  mll_ext_met250_mc_int = mll_ext_mc.GetBinContent(3); mll_ext_met250_mc_e = mll_ext_mc.GetBinError(3);
+  #  print "Off Z MC baseline >   250: ",mll_ext_met250_mc_int, " +- ", mll_ext_met250_mc_e 
+  #  print "Off Z DA baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
+  #  mll_ZH_da_int     = mll_ZH_da.GetBinContent(1); mll_ZH_da_e = mll_ZH_da.GetBinError(1);
+  #  mll_ZH_mc_int     = mll_ZH_mc.GetBinContent(1); mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
+  #  print "On Z ZH da           : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
+  #  print "On Z ZH mc           : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
+  #  mll_ext_ZH_da_int = mll_ext_ZH_da.GetBinContent(1); mll_ext_ZH_da_e = mll_ext_ZH_da.GetBinError(1);
+  #  mll_ext_ZH_mc_int = mll_ext_ZH_mc.GetBinContent(1); mll_ext_ZH_mc_e = mll_ext_ZH_mc.GetBinError(1);
+  #  print "Off Z ZH da          : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
+  #  print "Off Z ZH mc          : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
+  #  mll_WZ_da_int     = mll_WZ_da.GetBinContent(1); mll_WZ_da_e = mll_WZ_da.GetBinError(1);
+  #  mll_WZ_mc_int     = mll_WZ_mc.GetBinContent(1); mll_WZ_mc_e = mll_WZ_mc.GetBinError(1);
+  #  print "On Z WZ da           : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
+  #  print "On Z WZ mc           : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
+  #  mll_ext_WZ_da_int = mll_WZ_ext_da.GetBinContent(1); mll_ext_WZ_da_e = mll_WZ_ext_da.GetBinError(1);
+  #  mll_ext_WZ_mc_int = mll_WZ_ext_mc.GetBinContent(1); mll_ext_WZ_mc_e = mll_WZ_ext_mc.GetBinError(1);
+  #  print "Off Z WZ da          : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
+  #  print "Off Z WZ mc          : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
+  #  mll_onZ_b_da_int     = mll_onZ_b_da.GetBinContent(1); mll_onZ_b_da_e = mll_onZ_b_da.GetBinError(1);
+  #  mll_onZ_b_mc_int     = mll_onZ_b_mc.GetBinContent(1); mll_onZ_b_mc_e = mll_onZ_b_mc.GetBinError(1);
+  #  print "On  Z MC Strong with b: ",mll_onZ_b_mc_int, " +- ", mll_onZ_b_mc_e 
+  #  print "On  Z DA Strong with b: ",mll_onZ_b_da_int, " +- ", mll_onZ_b_da_e 
+  #  mll_ext_onZ_b_da_int = mll_onZ_b_ext_da.GetBinContent(1); mll_ext_onZ_b_da_e = mll_onZ_b_ext_da.GetBinError(1);
+  #  mll_ext_onZ_b_mc_int = mll_onZ_b_ext_mc.GetBinContent(1); mll_ext_onZ_b_mc_e = mll_onZ_b_ext_mc.GetBinError(1);
+  #  print "Off Z MC Strong with b: ",mll_ext_onZ_b_mc_int, " +- ", mll_ext_onZ_b_mc_e 
+  #  print "Off Z DA Strong with b: ",mll_ext_onZ_b_da_int, " +- ", mll_ext_onZ_b_da_e 
+  #  mll_onZ_bveto_da_int     = mll_onZ_bveto_da.GetBinContent(1); mll_onZ_bveto_da_e = mll_onZ_bveto_da.GetBinError(1);
+  #  mll_onZ_bveto_mc_int     = mll_onZ_bveto_mc.GetBinContent(1); mll_onZ_bveto_mc_e = mll_onZ_bveto_mc.GetBinError(1);
+  #  print "On  Z MC  Strong bveto: ",mll_onZ_bveto_mc_int, " +- ", mll_onZ_bveto_mc_e 
+  #  print "On  Z DA  Strong bveto: ",mll_onZ_bveto_da_int, " +- ", mll_onZ_bveto_da_e 
+  #  mll_ext_onZ_bveto_da_int = mll_onZ_bveto_ext_da.GetBinContent(1); mll_ext_onZ_bveto_da_e = mll_onZ_bveto_ext_da.GetBinError(1);
+  #  mll_ext_onZ_bveto_mc_int = mll_onZ_bveto_ext_mc.GetBinContent(1); mll_ext_onZ_bveto_mc_e = mll_onZ_bveto_ext_mc.GetBinError(1);
+  #  print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
+  #  print "Off Z DA  Strong bveto: ",mll_ext_onZ_bveto_da_int, " +- ", mll_ext_onZ_bveto_da_e 
+    
+    k_base_mc = mll_mc.Clone("mll_mc");k_base_mc.Divide(mll_mc, mll_ext_mc, 1, 1, "B") ; 
+    k_base_da = mll_da.Clone("mll_da");k_base_da.Divide(mll_da, mll_ext_da, 1, 1, "B") ; 
+    k_met100_150_mc = k_base_mc.GetBinContent(1); k_met100_150_mc_e = k_base_mc.GetBinError(1);
+    k_met100_150_da = k_base_da.GetBinContent(1); k_met100_150_da_e = k_base_da.GetBinError(1);
+    k_met150_250_mc = k_base_mc.GetBinContent(2); k_met150_250_mc_e = k_base_mc.GetBinError(2);
+    k_met150_250_da = k_base_da.GetBinContent(2); k_met150_250_da_e = k_base_da.GetBinError(2);
+    k_met250_mc = k_base_mc.GetBinContent(3); k_met250_mc_e = k_base_mc.GetBinError(3);             
+    k_met250_da = k_base_da.GetBinContent(3); k_met250_da_e = k_base_da.GetBinError(3);             
+    print "k_met100_150_mc ", k_met100_150_mc
+    print "k_met150_250_mc ", k_met150_250_mc
+    print "k_met250_mc ", k_met250_mc
+    ZH_mc = mll_ZH_mc.Clone("mll_ZH_mc");ZH_mc.Divide(mll_ZH_mc, mll_ext_ZH_mc, 1, 1, "B");k_ZH_mc = ZH_mc.GetBinContent(1); k_ZH_mc_e = ZH_mc.GetBinError(1); 
+    ZH_da = mll_ZH_da.Clone("mll_ZH_da");ZH_da.Divide(mll_ZH_da, mll_ext_ZH_da, 1, 1, "B");k_ZH_da = ZH_da.GetBinContent(1); k_ZH_da_e = ZH_da.GetBinError(1);   
+    WZ_mc = mll_WZ_mc.Clone("mll_WZ_mc");WZ_mc.Divide(mll_WZ_mc, mll_ext_WZ_mc, 1, 1, "B");k_WZ_mc = WZ_mc.GetBinContent(1); k_WZ_mc_e = WZ_mc.GetBinError(1); 
+    WZ_da = mll_WZ_da.Clone("mll_WZ_da");WZ_da.Divide(mll_WZ_da, mll_ext_WZ_da, 1, 1, "B");k_WZ_da = WZ_da.GetBinContent(1); k_WZ_da_e = WZ_da.GetBinError(1);   
+    onZ_b_mc = mll_onZ_b_mc.Clone("mll_onZ_b_mc");onZ_b_mc.Divide(mll_onZ_b_mc, mll_ext_onZ_b_mc, 1, 1, "B");k_onZ_b_mc = onZ_b_mc.GetBinContent(1); k_onZ_b_mc_e = onZ_b_mc.GetBinError(1); 
+    onZ_b_da = mll_onZ_b_da.Clone("mll_onZ_b_da");onZ_b_da.Divide(mll_onZ_b_da, mll_ext_onZ_b_da, 1, 1, "B");k_onZ_b_da = onZ_b_da.GetBinContent(1); k_onZ_b_da_e = onZ_b_da.GetBinError(1); 
+    onZ_bveto_mc = mll_onZ_bveto_mc.Clone("mll_onZ_bveto_mc");onZ_bveto_mc.Divide(mll_onZ_bveto_mc, mll_ext_onZ_bveto_mc, 1, 1, "B");k_onZ_bveto_mc = onZ_bveto_mc.GetBinContent(1); k_onZ_bveto_mc_e = onZ_bveto_mc.GetBinError(1); 
+    onZ_bveto_da = mll_onZ_bveto_da.Clone("mll_onZ_bveto_da");onZ_bveto_da.Divide(mll_onZ_bveto_da, mll_ext_onZ_bveto_da, 1, 1, "B");k_onZ_bveto_da = onZ_bveto_da.GetBinContent(1); k_onZ_bveto_da_e = onZ_bveto_da.GetBinError(1); 
 
     c1 = r.TCanvas()
     l1 = r.TLegend(0.75,0.8,0.9,0.9)
-    fmll = r.TH1F('kappa_mc','f_{mll}',7,0,7)
-    fmll.SetBinContent(1, kappa_met100_150_mc);fmll.SetBinError(1,kappa_met100_150_mc_e);fmll.GetXaxis().SetBinLabel(1, 'Baseline E_{T}^{miss} 100-150 GeV');
-    fmll.SetBinContent(2, kappa_met150_250_mc);fmll.SetBinError(2,kappa_met150_250_mc_e);fmll.GetXaxis().SetBinLabel(2, 'Baseline E_{T}^{miss} 150-250 GeV');
-    fmll.SetBinContent(3, kappa_met250_mc);fmll.SetBinError(3,kappa_met250_mc_e);fmll.GetXaxis().SetBinLabel(3, 'Baseline E_{T}^{miss} > 250 GeV');
-    fmll.SetBinContent(4, kappa_onZ_bveto_mc);fmll.SetBinError(4,kappa_onZ_bveto_mc_e);fmll.GetXaxis().SetBinLabel(4, 'OnZ bveto ');
-    fmll.SetBinContent(5, kappa_onZ_b_mc);fmll.SetBinError(5,kappa_onZ_b_mc_e);fmll.GetXaxis().SetBinLabel(5, 'OnZ with b ');
-    fmll.SetBinContent(6, kappa_ZH_mc);fmll.SetBinError(6,kappa_ZH_mc_e);fmll.GetXaxis().SetBinLabel(6, 'TChiZH ');
-    fmll.SetBinContent(7, kappa_WZ_mc);fmll.SetBinError(7,kappa_WZ_mc_e);fmll.GetXaxis().SetBinLabel(7, 'TChiWZ ');
+    fmll = r.TH1F('k_mc','f_{mll}',7,0,7)
+    fmll.SetBinContent(1, k_met100_150_mc);fmll.SetBinError(1,k_met100_150_mc_e);fmll.GetXaxis().SetBinLabel(1, 'Baseline E_{T}^{miss} 100-150 GeV');
+    fmll.SetBinContent(2, k_met150_250_mc);fmll.SetBinError(2,k_met150_250_mc_e);fmll.GetXaxis().SetBinLabel(2, 'Baseline E_{T}^{miss} 150-250 GeV');
+    fmll.SetBinContent(3, k_met250_mc);fmll.SetBinError(3,k_met250_mc_e);fmll.GetXaxis().SetBinLabel(3, 'Baseline E_{T}^{miss} > 250 GeV');
+    fmll.SetBinContent(4, k_onZ_bveto_mc);fmll.SetBinError(4,k_onZ_bveto_mc_e);fmll.GetXaxis().SetBinLabel(4, 'OnZ bveto ');
+    fmll.SetBinContent(5, k_onZ_b_mc);fmll.SetBinError(5,k_onZ_b_mc_e);fmll.GetXaxis().SetBinLabel(5, 'OnZ with b ');
+    fmll.SetBinContent(6, k_ZH_mc);fmll.SetBinError(6,k_ZH_mc_e);fmll.GetXaxis().SetBinLabel(6, 'TChiZH ');
+    fmll.SetBinContent(7, k_WZ_mc);fmll.SetBinError(7,k_WZ_mc_e);fmll.GetXaxis().SetBinLabel(7, 'TChiWZ ');
     fmll.SetMarkerColor(r.kTeal-5)
     fmll.SetLineColor  (r.kTeal-5)
     fmll.SetLineWidth  (2)
@@ -382,13 +379,13 @@ def makeTheFactors():
     fmll.Draw('text00 same')
     fmll_da = fmll.Clone('data fracs')
     l1.AddEntry(fmll, 'MC', 'pl')
-    fmll_da.SetBinContent(1, kappa_met100_150_da);fmll_da.SetBinError(1,kappa_met100_150_da_e);fmll_da.GetXaxis().SetBinLabel(1, 'Baseline E_{T}^{miss} 100-150 GeV');
-    fmll_da.SetBinContent(2, kappa_met150_250_da);fmll_da.SetBinError(2,kappa_met150_250_da_e);fmll_da.GetXaxis().SetBinLabel(2, 'Baseline E_{T}^{miss} 150-250 GeV');
-    fmll_da.SetBinContent(3, kappa_met250_da);fmll_da.SetBinError(3,kappa_met250_da_e);fmll_da.GetXaxis().SetBinLabel(3, 'Baseline E_{T}^{miss} >250 GeV');
-    fmll_da.SetBinContent(4, kappa_onZ_bveto_da);fmll_da.SetBinError(4,kappa_onZ_bveto_da_e);fmll_da.GetXaxis().SetBinLabel(4, 'OnZ bveto');
-    fmll_da.SetBinContent(5, kappa_onZ_b_da);fmll_da.SetBinError(5,kappa_onZ_b_da_e);fmll_da.GetXaxis().SetBinLabel(5, 'OnZ with b');
-    fmll_da.SetBinContent(6, kappa_ZH_da);fmll_da.SetBinError(6,kappa_ZH_da_e);fmll_da.GetXaxis().SetBinLabel(6, 'TChiZH');
-    fmll_da.SetBinContent(7, kappa_WZ_da);fmll_da.SetBinError(7,kappa_WZ_da_e);fmll_da.GetXaxis().SetBinLabel(7, 'TChiWZ');
+    fmll_da.SetBinContent(1, k_met100_150_da);fmll_da.SetBinError(1,k_met100_150_da_e);fmll_da.GetXaxis().SetBinLabel(1, 'Baseline E_{T}^{miss} 100-150 GeV');
+    fmll_da.SetBinContent(2, k_met150_250_da);fmll_da.SetBinError(2,k_met150_250_da_e);fmll_da.GetXaxis().SetBinLabel(2, 'Baseline E_{T}^{miss} 150-250 GeV');
+    fmll_da.SetBinContent(3, k_met250_da);fmll_da.SetBinError(3,k_met250_da_e);fmll_da.GetXaxis().SetBinLabel(3, 'Baseline E_{T}^{miss} >250 GeV');
+    fmll_da.SetBinContent(4, k_onZ_bveto_da);fmll_da.SetBinError(4,k_onZ_bveto_da_e);fmll_da.GetXaxis().SetBinLabel(4, 'OnZ bveto');
+    fmll_da.SetBinContent(5, k_onZ_b_da);fmll_da.SetBinError(5,k_onZ_b_da_e);fmll_da.GetXaxis().SetBinLabel(5, 'OnZ with b');
+    fmll_da.SetBinContent(6, k_ZH_da);fmll_da.SetBinError(6,k_ZH_da_e);fmll_da.GetXaxis().SetBinLabel(6, 'TChiZH');
+    fmll_da.SetBinContent(7, k_WZ_da);fmll_da.SetBinError(7,k_WZ_da_e);fmll_da.GetXaxis().SetBinLabel(7, 'TChiWZ');
     fmll_da.GetYaxis().SetRangeUser(0.0,0.2);
     fmll_da.GetYaxis().SetTitle('f_{mll}')
     fmll_da.SetMarkerStyle(22)
@@ -413,7 +410,7 @@ def makeTheFactors():
     c1.SaveAs(path)                                                                                                                                  
     
     
-    return kappa_met150_250_da, kappa_met150_250_da_e, kappa_met150_250_mc, kappa_met150_250_mc_e
+    return k_met150_250_da, k_met150_250_da_e, k_met150_250_mc, k_met150_250_mc_e
 
 def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, region = ''):
     if var == 'met':
@@ -546,7 +543,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
     plot_closure.addHisto(da_OF_fmllScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
     plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_fmllScaled, 0.2, 1.8)
+    plot_closure.saveRatio(1, 0, 0, lint, da_OF_fmllScaled, mc_OF_fmllScaled, 0.2, 1.8)
     #makeClosureTable(mc_SF, mc_OF_fmllScaled, da_OF_fmllScaled)
     return da_OF_fmllScaled                                                                                                                              
 
@@ -555,10 +552,11 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     scan = Scans.Scan(analysis)
     lint = 36.4
     print "Doing region: ", region
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
-    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
     if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
     if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
@@ -760,9 +758,6 @@ if __name__ == '__main__':
     
     
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH    
-
-
-
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
