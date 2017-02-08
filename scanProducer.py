@@ -10,8 +10,9 @@ import include.CutManager as CutManager
 import include.Sample     as Sample
 import include.Tables     as Tables
 import include.Scans      as Scans
+import include.LeptonSF 
 
-import include.nll
+#import include.nll
 
 from multiprocessing import Pool
 
@@ -22,10 +23,10 @@ _r = r.TRandom3(42)
 def makeMCDatacards():
     print 'producing mc datacards'
     ttDatasets = ['TTJets_DiLepton']
-    dyDatasets = ['DYJetsToLL_M50_HT100to200_ext', 'DYJetsToLL_M50_HT200to400_ext',
-                  'DYJetsToLL_M50_HT400to600_ext', 'DYJetsToLL_M50_HT600toInf_ext']
+    dyDatasets = ['DYJetsToLL_M50']
     print 'getting trees'
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
+    print dyDatasets
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY', 0, isScan = 0)
     print 'getting yields'
     print cuts.AddList([scan.cuts_norm,cuts.goodLepton])
@@ -36,7 +37,7 @@ def makeMCDatacards():
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
             datacard = '''imax 1 number of bins
-jmax 2 number of processes minus 1
+jmax 3 number of processes minus 1
 kmax *  number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          {label}
@@ -180,7 +181,10 @@ def getEffMapsSys(sys):
                                scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '',
                                scan.xtitle, scan.ytitle, scan.ztitle, 
                                extraWeightsForSys[sys])
+    print effMap.GetBinContent(effMap.FindBin(125.,25.,0.))
+    print scan.ngen_3d.GetBinContent(scan.ngen_3d.FindBin(125.,25.,0.))
     effMap.Divide(scan.ngen_3d)
+    print effMap.GetBinContent(effMap.FindBin(125.,25.,0.))
     return effMap
 
 def getSREffMaps():
@@ -222,7 +226,6 @@ def PutHistosIntoRootFiles():
                 sysHistos[sys] = out
             if sysHistos[''].Integral() == 0: continue # if no sensitivity
 
-
             helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,
                                                                                       mass=massString))
             for SR, label in scan.shortLabels.items():
@@ -263,7 +266,7 @@ def PutHistosIntoRootFiles():
                         var = (nom+var) / 2 
                     template = template.replace('XX'+sys+'XX', '%4.4f'%(var/nom))
                 mcStat = sysHistos[''].GetBinError(sysHistos[''].FindBin(SR)) / sysHistos[''].GetBinContent(sysHistos[''].FindBin(SR))
-
+                print sysHistos[''].GetBinError(sysHistos[''].FindBin(SR)), sysHistos[''].GetBinContent(sysHistos[''].FindBin(SR))
                 template = template.replace('XXmcStatXX', '%f'%(1 + mcStat))
                 card = open('datacards/datacards_{scan}/{scan}/{mass}/datacard_{mass}_{label}.txt'.format(scan=scan.name,
                                                                                                           mass=massString,
@@ -357,14 +360,14 @@ if __name__ == "__main__":
                           'bHeDown'   : 'weight_btagsf_heavy_DN_Edge / weight_btagsf_Edge',
                           'bLiUp'     : 'weight_btagsf_light_UP_Edge / weight_btagsf_Edge',
                           'bLiDown'   : 'weight_btagsf_light_DN_Edge / weight_btagsf_Edge',
-                          'ElUp'      : 'weight_LepSF_ElUp_Edge / weight_LepSF_Edge',
-                          'ElDown'    : 'weight_LepSF_ElDn_Edge / weight_LepSF_Edge',
+                          'ElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'ElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimElUp'  : 'weight_FSlepSF_ElUp_Edge / weight_FSlepSF_Edge',
                           'FastSimElDown': 'weight_FSlepSF_ElDn_Edge / weight_FSlepSF_Edge',
                           'FastSimMuUp'  : 'weight_FSlepSF_MuUp_Edge / weight_FSlepSF_Edge',
                           'FastSimMuDown': 'weight_FSlepSF_MuDn_Edge / weight_FSlepSF_Edge',
-                          'MuUp'      : 'weight_LepSF_MuUp_Edge / weight_LepSF_Edge',
-                          'MuDown'    : 'weight_LepSF_MuDn_Edge / weight_LepSF_Edge',
+                          'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,"MuUp") / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'MuDown'      : 'LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge,"MuDn")*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,"MuDn") / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
                           'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
                           'genMet'    : '1'}
@@ -387,9 +390,6 @@ if __name__ == "__main__":
             print 'preparing datacards from MC'
             a = makeMCDatacards()
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
-
-
-
         ## Load the number of generated events to produce efficiency maps per systematic
         scan.dummy = scan.tree.getTH3F(1., 'dummy', '1:1:1',
                                        scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
@@ -407,14 +407,19 @@ if __name__ == "__main__":
         else:
             scan.make3DGen()
 
+        for i in range(1, scan.ngen.GetXaxis().GetNbins()+1):
+            for j in range(1, scan.ngen.GetYaxis().GetNbins()+1):
+                for k in range(1, scan.ngen.GetZaxis().GetNbins()+1):
+                    scan.ngen.SetBinError(scan.ngen.GetBin(i,j,k),0.)
+
         print 'this is the type of scan.ngen before', type(scan.ngen)
         newbinning   = adaptBinning(scan.dummy, scan.ngen)
         scan.ngen_2d = newbinning[0]
         scan.ngen_3d = newbinning[1] ## this one has ngen in every single bin. for every SR. and it's 3D, so that's cool
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
-
-        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU'
+        print 'fix this'
+        scan.SysStringUpDown = 'El'# Mu jec bHe bLi FastSimEl FastSimMu PU'
         scan.SysString = 'genMet'
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
@@ -424,10 +429,11 @@ if __name__ == "__main__":
 
         scan.maps = {}
         scan.maps['']   = getEffMapsSys('')
+        print 'nominal is ', scan.maps[''].Integral()
         print 'normali systematics'
         for sys in scan.SysString.split():
             scan.maps[sys] = getEffMapsSys(sys)
-
+            print 'integral is', scan.maps[sys].Integral()
         print 'up/down systematics'
         for sys in scan.SysStringUpDown.split():
             scan.maps[sys+'Up']   = getEffMapsSys(sys+'Up')

@@ -1,5 +1,5 @@
 #gotten from https://twiki.cern.ch/twiki/bin/view/LHCPhysics/SUSYCrossSections13TeVn2x1wino#Envelope_of_CTEQ6_6_and_MSTW2008
-##  this dictionary has mass as the key, cross-section in pb(!) as first value and error in % (!) as second value   
+##  this dictionary has mass as the key, cross-section in fb(!) as first value and error in fb (!) as second value   
 {
     100 :	[22670.1    ,	973.967   ],
     125 :	[10034.8    ,	457.604	  ],

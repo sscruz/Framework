@@ -114,6 +114,7 @@ Double_t _getTracking(Double_t eta, Int_t pdgId)
 
 }
 
+
 Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
 {
   // sys can be 
@@ -122,16 +123,36 @@ Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
   // "ElDn": obvious
   // "MuUp": obvious
   // "MuDn": obvious
+  // cout << "[LepSF]" << pt << " " << eta << " " << pdgId << " " << sys << endl;
 
   Double_t sf = _getIDoverRECO(pt,eta,pdgId,sys)*_getIPoverID(pt,eta,pdgId,sys)*_getISOoverIP(pt,eta,pdgId,sys);
   if (TMath::Abs(pdgId) == 13){
-    if (sys.Contains("MuUp")) return sf*1.03;
-    else if (sys.Contains("MuDn")) return sf*0.97;
-    else return sf;
+    if (sys.Contains("MuUp")){return TMath::Max(1e-100,sf*1.03);}
+    else if (sys.Contains("MuDn")){return TMath::Max(1e-100,sf*0.97);}
+    else return TMath::Max(1e-100,sf);
   }
-  return sf;
+  return TMath::Max(1e-100,sf);
 
 }
+
+
+Double_t LepSFElUp(Double_t pt, Double_t eta, Int_t pdgId)
+{
+  return LepSF(pt, eta, pdgId, "ElUp");
+}
+Double_t LepSFElDn(Double_t pt, Double_t eta, Int_t pdgId)
+{
+  return LepSF(pt, eta, pdgId, "ElDn");
+}
+Double_t LepSFMuUp(Double_t pt, Double_t eta, Int_t pdgId)
+{
+  return LepSF(pt, eta, pdgId, "MuUp");
+}
+Double_t LepSFMuDn(Double_t pt, Double_t eta, Int_t pdgId)
+{
+  return LepSF(pt, eta, pdgId, "MuDn");
+}
+
 
 
 // Hasta aqui era fullsim/data

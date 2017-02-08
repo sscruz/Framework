@@ -32,18 +32,21 @@ class Sample:
 
       if not self.isData:
         self.lumWeight = self.xSection / self.count
-        self.puWeight    = "PileupW_Edge"
-        #self.puWeight    = "PUWeight(PileupW_Edge)"
+#        self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
-        self.SFWeight    = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
-        self.triggWeight = "weight_trigger_Edge"
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
+        #self.triggWeight = "weight_trigger_Edge"
+        # this is old
+        #self.puWeight    = "PUWeight(PileupW_Edge)"
+        #self.SFWeight    = "weight_LepSF_Edge"
 
       if self.isScan:
         self.lumWeight  =  1.0
-        self.puWeight   = "PileupW_Edge"
-        self.btagWeight = "weight_btagsf_Edge"
-        self.SFWeight    = "weight_LepSF_Edge*weight_FSlepSF_Edge"
-        self.triggWeight = "weight_trigger_Edge"
+        print 'full sim scale factors are missing'
+#        self.puWeight    = "PileupW_Edge"
+        self.btagWeight  = "weight_btagsf_Edge"
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
+#        self.triggWeight = "weight_trigger_Edge"
         self.smsCount =  self.ftfile.Get('CountSMS')
    def printSample(self):
       print "#################################"
@@ -95,9 +98,16 @@ class Sample:
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * "  + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
+<<<<<<< HEAD
+         #addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
+         #addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
+         #cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
+         cut = cut + "* (" + extraWeight +")"
+=======
          addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
          #cut = cut + "* (" + extraWeight +")"
+>>>>>>> 2898b998bf31f8aa9c796ff89a7b849161d71928
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -143,7 +153,7 @@ class Sample:
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
      else: 
         cut = cut + "* ( " + extraWeight + ")"
-
+     print cut
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -178,6 +188,7 @@ class Block:
      for _is,s in enumerate(self.samples):
        AuxName = "auxT1_sample" + s.name
        haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin, extraWeight)
+       print AuxName, haux.GetBinContent(1)
        if not _is:
           h = haux.Clone(name+'_blockHisto')
        else:
@@ -239,6 +250,7 @@ class Tree:
    'Common base class for a physics meaningful tree'
 
    def __init__(self, fileName, name, isdata, isScan = False):
+      print fileName
       self.name  = name
       self.isData = isdata
       self.blocks = []
@@ -250,7 +262,6 @@ class Tree:
       f = open(fileName)
 
       for l in f.readlines():
-
         if (l[0] == "#" or len(l) < 2):
           continue
 

@@ -60,9 +60,13 @@ def LoadLeptonSF():
 LoadLeptonSF()
 
 if __name__ == "__main__":
-    print 'El', ROOT.LepSF(35,-2.3,11,'')
-    print 'El', ROOT.LepSF(35, 2.3,11,'')
-    print 'El', ROOT.LepSF(500, 2.3,11,'')
-    print 'Mu', ROOT.LepSF(35,-2.3,13,'')
-    print 'Mu', ROOT.LepSF(35, 2.3,13,'')
-    print 'Mu', ROOT.LepSF(500, 2.3,13,'') 
+    print 'El', ROOT.LepSF(35,-2.3,11 ,'ElUp')
+    print 'El', ROOT.LepSF(35, 2.3,11 ,'ElUp')
+    print 'El', ROOT.LepSF(500, 2.3,11,'ElUp')
+    print 'Mu', ROOT.LepSF(35,-2.3,13 ,'ElUp')
+    print 'Mu', ROOT.LepSF(35,-2.3,13 ,'ElDn')
+    print 'Mu', ROOT.LepSF(35,-2.3,13 ,'')
+    print 'Mu', ROOT.LepSF(35,-2.3,11 ,'MuUp')
+    print 'Mu', ROOT.LepSF(35,-2.3,11 ,'MuDn')
+    print 'Mu', ROOT.LepSF(35,-2.3,11 ,'')
+
