@@ -159,7 +159,7 @@ def weightedAverage( factor, direct, unwght):
     return [rsfof_factor, rsfof_direct, rsfof_final, nof_final]                                                                              
 
 
-def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
+def makeResultsTable(da, fs, dy, zz, wz, ttz, others, vvv, region):
     line00 = '\\begin{tabular}{r l c c c c}  '
     if region == "TChiWZ":
         line0 = 'TChiWZ  & 50-100 & 100-150 & 150-250 & 250-350 & 350+\\\\ \\hline  '
@@ -171,10 +171,11 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
     line3 = '  ZZ  & ' 
     line4 = '  WZ  & ' 
     line5 = '  ttZ  & ' 
-    line6 = '  others  & ' 
-    line7 = '  total     & ' 
-    line8 = '  obs.      & ' 
-    line9 = '  \end{tabular}  ' 
+    line6 = '  VVV  & ' 
+    line7 = '  others  & ' 
+    line8 = '  total     & ' 
+    line9 = '  obs.      & ' 
+    line10 = '  \end{tabular}  ' 
 
     my_range = range(1,da.GetNbinsX()+1)
     for i in my_range:
@@ -183,18 +184,22 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
         tmp_zz   = zz.GetBinContent(i)  ; tmp_zz_e   = zz.GetBinError(i)
         tmp_wz   = wz.GetBinContent(i)  ; tmp_wz_e   = wz.GetBinError(i)
         tmp_ttz  = ttz.GetBinContent(i) ; tmp_ttz_e = ttz.GetBinError(i)
+        tmp_vvv  = vvv.GetBinContent(i) ; tmp_vvv_e = vvv.GetBinError(i)
         tmp_others  = others.GetBinContent(i) ; tmp_others_e = others.GetBinError(i)
         tmp_da   = da.GetBinContent(i)  ; tmp_da_e   = da.GetBinError(i)
         tmp_full = tmp_dy + tmp_fs + tmp_zz + tmp_wz + tmp_ttz + tmp_others  ; tmp_full_e = math.sqrt(tmp_dy_e**2 + tmp_fs_e**2+ tmp_zz_e**2+ tmp_wz_e**2+ tmp_ttz_e**2+ tmp_others_e**2)
+        #tmp_full = tmp_dy + tmp_fs ; tmp_full_e = math.sqrt(tmp_dy_e**2 + tmp_fs_e**2)
         line1 += '  %.2f $\\pm$ %.2f      %s' %(tmp_dy  , tmp_dy_e  , ' & ' if i != max(my_range) else '\\\\')
         line2 += '  %.2f $\\pm$ %.2f      %s' %(tmp_fs  , tmp_fs_e  , ' & ' if i != max(my_range) else '\\\\')
         line3 += '  %.2f $\\pm$ %.2f      %s' %(tmp_zz  , tmp_zz_e  , ' & ' if i != max(my_range) else '\\\\')
         line4 += '  %.2f $\\pm$ %.2f      %s' %(tmp_wz  , tmp_wz_e  , ' & ' if i != max(my_range) else '\\\\')
         line5 += '  %.2f $\\pm$ %.2f      %s' %(tmp_ttz , tmp_ttz_e , ' & ' if i != max(my_range) else '\\\\')
-        line6 += '  %.2f $\\pm$ %.2f      %s' %(tmp_others , tmp_others_e , ' & ' if i != max(my_range) else '\\\\')
-        line7 += '  %.2f $\\pm$ %.2f      %s' %(tmp_full, tmp_full_e, ' & ' if i != max(my_range) else '\\\\')
-        line8 += '  %.2f       %s' %(tmp_da , ' & ' if i != max(my_range) else '\\\\')
-    line6 += '\\hline'; line8 += '\\hline'
+        line6 += '  %.2f $\\pm$ %.2f      %s' %(tmp_vvv , tmp_vvv_e , ' & ' if i != max(my_range) else '\\\\')
+        line7 += '  %.2f $\\pm$ %.2f      %s' %(tmp_others , tmp_others_e , ' & ' if i != max(my_range) else '\\\\')
+        line8 += '  %.2f $\\pm$ %.2f      %s' %(tmp_full, tmp_full_e, ' & ' if i != max(my_range) else '\\\\')
+        line9 += '  %.2f       %s' %(tmp_da , ' & ' if i != max(my_range) else '\\\\')
+    line7 += '\\hline'; line9 += '\\hline'
+    #line8 += '\\hline'
 
     print line00
     print line0
@@ -207,6 +212,7 @@ def makeResultsTable(da, fs, dy, zz, wz, ttz, others , region):
     print line7
     print line8
     print line9
+    print line10
     
 
 def makeFactorsTable(): ## for this to make sense the region should be properly binned!!
@@ -418,14 +424,16 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
     if region == "TChiWZ":
-        bin1  = 282.8; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
-        bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;bin5  = bin5*2; bin5_e = bin5_e*2;
+        bin1  =796.39 ; bin1_e = 32.58;bin2  = 33.5; bin2_e = 5.3;bin3  = 3.75; bin3_e = 2.57;bin4  = 0.46; bin4_e = 0.91;bin5  = 0.07; bin5_e = 0.5;
+        #bin1  = 282.2; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
+        #bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;bin5  = bin5*2; bin5_e = bin5_e*2;
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
         nbin = 5
     if region == "TChiZH":
-        bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
-        bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;
+        bin1  = 77.97; bin1_e = 9.48;bin2  = 2.61; bin2_e =1.92;bin3  = 0.13; bin3_e = 0.28;bin4  = 0.11; bin4_e = 0.13
+        #bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
+        #bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
@@ -463,7 +471,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     if region == "TChiZH":
         regioncut =  cuts.ewinoZHExtMll
         bins = [50.0, 100.0, 150.0, 250.0]
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     ## mll distributions
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
@@ -552,11 +560,12 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     scan = Scans.Scan(analysis)
     lint = 36.4
     print "Doing region: ", region
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     returnplot, addRares, splitFlavor, makeTable, printIntegral = False, True, False, False, False
     if 'returnplot'    in _options: print 'found option %s'%'returnplot'    ;returnplot    = True
     if 'splitFlavor'   in _options: print 'found option %s'%'splitFlavor'   ;splitFlavor   = True
@@ -625,12 +634,15 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
     ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
+    vvv_SF = treeVVV.getTH1F(lint, var+"vvv_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    vvv_OF = treeVVV.getTH1F(lint, var+"vvv_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
     zz_OF = treeZZ.getTH1F(lint, var+"zz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
     wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
     wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)                                                                                 
+    ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)    ;vvv_SF.Add(vvv_OF, -1.)                                                                               
     da_SF.SetTitle("data SF")
+    vvv_SF.SetFillColorAlpha(r.kGreen-3, 0.8);vvv_SF.SetTitle("VVV");vvv_SF.SetLineColor(r.kBlack)
     ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack)
     ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)                                                             
     zz_SF.SetFillColorAlpha(r.kCyan+2 , 0.8);zz_SF.SetTitle("ZZ");zz_SF.SetLineColor(r.kBlack)                                                             
@@ -639,12 +651,13 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     da_OF_fmllScaled.SetFillColorAlpha(r.kRed-9, 0.8);da_OF_fmllScaled.SetTitle("FS")                                  
     
     mc_full = copy.deepcopy(zz_SF)
+    mc_stack.Add(vvv_SF); mc_full.Add(vvv_SF, 1.) 
     mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.) 
     mc_stack.Add(da_OF_fmllScaled); mc_full.Add(da_OF_fmllScaled, 1.) 
     mc_stack.Add(zz_SF); 
-    mc_stack.Add(dy_shape); mc_full.Add(dy_shape, 1.) 
+    mc_stack.Add(dy_shape); mc_full.Add(dy_shape);
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
     mc_full_e = copy.deepcopy(mc_full)
@@ -652,21 +665,22 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     
     maxCont = max(da_OF_fmllScaled.GetMaximum(), da_SF.GetMaximum())
     da_SF.GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
-
+    mc_stack.SetMaximum(1.3*maxCont)
     SetOwnership(mc_stack, 0 );SetOwnership(da_SF, 0 )                                                                                                                       
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    plot_result = Canvas.Canvas('ewino/%s/plot_result_%s_%s_%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
+    plot_result = Canvas.Canvas('ewino/%s/plot_result_%s_%s_%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.64, 0.59, 0.91, 0.85)
     plot_result.addStack(mc_stack, "HIST" , 1, 1)
     plot_result.addHisto(mc_full_e, 'e2,same'  , '', 'PL', r.kBlack , 1, -1)
     plot_result.addHisto(da_SF, 'E1, SAME', 'data SF' , 'P', r.kBlack , 1, 0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
-    makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, region )
+    #makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, region )
+    makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, vvv_SF, region )
     if makeTable:
         makeSimpleTable(plot_result, addRares)
     if returnplot:
         return plot_result
-    del da_SF, ra_SF, ra_OF, ttz_OF, ttz_SF, zz_SF, zz_OF, wz_SF, wz_OF, dy_shape
+    del da_SF, ra_SF, ra_OF, ttz_OF, ttz_SF, zz_SF, zz_OF, wz_SF, wz_OF, dy_shape, vvv_SF
 
 def makePlotsCombinedSR(srlist):
     for i,sR in enumerate(srlist):
@@ -706,12 +720,13 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg',  'WJetsToLNu_LO']
+    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'VHToNonbb',  'TTHnobb_pow',  'TTJets_SingleLeptonFromTbar','TTTT',  'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg',  'WJetsToLNu_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
-    wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
-    ttzDatasets = ['TTZToLLNuNu', 'TTZToQQ', 'TTLLJets_m1to10']
-    raDatasets = ['TTTT', 'tZq_ll', 'TWZ','WWZ','WZZ', 'ZZZ',  'TTHnobb_pow', 'VHToNonbb']
-    mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
+    wzDatasets = ['WZTo3LNu']
+    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
+    vvvDatasets = ['WWZ','WZZ', 'ZZZ']
+    raDatasets = ['tZq_ll', 'TWZ']
+    mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
     
     
     daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
@@ -762,6 +777,7 @@ if __name__ == '__main__':
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
     treeRA = Sample.Tree(helper.selectSamples(opts.sampleFile, raDatasets, 'RA'), 'RA'  , 0)
+    treeVVV = Sample.Tree(helper.selectSamples(opts.sampleFile, vvvDatasets, 'VVV'), 'VVV'  , 0)
     treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0)
     treeWZ = Sample.Tree(helper.selectSamples(opts.sampleFile, wzDatasets, 'WZ'), 'WZ'  , 0)
     treeZZ = Sample.Tree(helper.selectSamples(opts.sampleFile, zzDatasets, 'ZZ'), 'ZZ'  , 0)
@@ -801,6 +817,6 @@ if __name__ == '__main__':
     #makeClosureTests('met','', 'inclusive', True)
     #makeDYMETShape('met','', 'inclusive', True)
     
-    makeResultData('Edge_Moriond2017', 'met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiZH')
     makeResultData('Edge_Moriond2017', 'met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiWZ')
+    makeResultData('Edge_Moriond2017', 'met', maxrun, lint, specialcut = "" , scutstring = '', region = 'TChiZH')
 
