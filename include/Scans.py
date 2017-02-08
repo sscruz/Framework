@@ -118,14 +118,16 @@ class Scan(object):
                              13: '400+   / Non ttbar'}
 
         if self.name == 'CharNeu_Moriond2017':
-            self.makeMCDatacards = True
+            self.makeMCDatacards = False#True
             self.paper = 'SUS16034'
-            self.datasets = ['work in progress :) ']
-            self.xbins = binning(400,950,25)
-            self.ybins = binning(200,900,25)
+            self.datasets = ['TChiWZ']
+            self.xbins = binning(100,700,25)
+            self.ybins = binning(0,300,25)
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoWZ,cuts.FSCentralJetCleaning])
+            print 'volver a meter el central jets cleaning!!!!!!'
+            print 20*'#######################'
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -247,8 +249,11 @@ class Scan(object):
         self.xsec_histo = r.TH1F('x-sections in fb for %s'%self.name,'xsec_histo', len(keys), min(keys), max(keys) )
         self.xsec_histo.Sumw2()
         for key, value in self.xsecs.items():
-            self.xsecs[key][0] = self.xsecs[key][0]*1000.
-            self.xsecs[key][1] = self.xsecs[key][0]*0.01*self.xsecs[key][1]
+            if 'Edge' in self.name:
+                # at least chichi -> wz  is in fb
+                self.xsecs[key][0] = self.xsecs[key][0]*1000.
+                self.xsecs[key][1] = self.xsecs[key][0]*0.01*self.xsecs[key][1]
+
             self.xsec_histo.SetBinContent(self.xsec_histo.FindBin(key), value[0])
             self.xsec_histo.SetBinError  (self.xsec_histo.FindBin(key), value[1]) ## it's a percent value
 
