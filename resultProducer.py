@@ -166,7 +166,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
    #     pred  = 46.5; pred_e =14.92 
    # else:
     lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-    pred = 96.5; pred_e =38.24
+    pred = 126.1; pred_e =32.8
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
     rinout1_stat = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[1]
@@ -202,8 +202,10 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     dy_loNll=treeDY.getTH1F(lint,"mll_loNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
     dy_hiNll=treeDY.getTH1F(lint,"mll_hiNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >  21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
     if scutstring == "nllAbove21":
+        print "nll above 21 ", (dy_hiNll.Integral()/dy_shape.Integral()) 
         pred = pred * (dy_hiNll.Integral()/dy_shape.Integral()) 
     if scutstring == "nllBelow21":
+        print "nll below 21 ", (dy_loNll.Integral()/dy_shape.Integral())
         pred = pred * (dy_loNll.Integral()/dy_shape.Integral())
     dy_shape.SetBinContent(1, pred*rinout1); dy_shape.SetBinError(1, pred*rinout1*math.sqrt((pred_e/pred)**2 + (rinout1_e/rinout1)**2))
     dy_shape.SetBinContent(2, pred*rinout2); dy_shape.SetBinError(2, pred*rinout2*math.sqrt((pred_e/pred)**2 + (rinout2_e/rinout1)**2))
@@ -219,10 +221,11 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     return  dy_shape                                                                                                                                  
 
 
-def makeResultsTable(da, fs, dy, ra, mc, nll = ''):
+def makeResultsTable(da, fs, dy, mc, nll = ''):
     
-    line0 = '\\begin{tabular}{c c c c c c }  '                                                               
-    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Rares & Total & Data \\\\ \hline  '                                                               
+    line0 = '\\begin{tabular}{c c c c c }  '                                                               
+    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Total & Data \\\\ \hline  '                                                               
+    #line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Rares & Total & Data \\\\ \hline  '                                                               
     print "making table ", nll
     if nll == "nllAbove21":
         line1 =  '&& ttbar-like  &&& \\\\ \hline'
@@ -230,13 +233,13 @@ def makeResultsTable(da, fs, dy, ra, mc, nll = ''):
         line1 =  '&& non ttbar-like  &&& \\\\ \hline'
     if nll == "":
         line1 =  '&& Total (inclusive in nll)  &&& \\\\ \hline'
-    line3 = '20-60  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(1),fs.GetBinError(1),dy.GetBinContent(1),dy.GetBinError(1),ra.GetBinContent(1),ra.GetBinError(1), mc.GetBinContent(1),mc.GetBinError(1) , da.GetBinContent(1))
-    line4 = '60-86  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(2),fs.GetBinError(2),dy.GetBinContent(2),dy.GetBinError(2),ra.GetBinContent(2),ra.GetBinError(2), mc.GetBinContent(2),mc.GetBinError(2) , da.GetBinContent(2))
-    line5 = '96-150  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(4),fs.GetBinError(4),dy.GetBinContent(4),dy.GetBinError(4),ra.GetBinContent(4),ra.GetBinError(4), mc.GetBinContent(4),mc.GetBinError(4) , da.GetBinContent(4))
-    line6 = '150-200  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(5),fs.GetBinError(5),dy.GetBinContent(5),dy.GetBinError(5),ra.GetBinContent(5),ra.GetBinError(5), mc.GetBinContent(5),mc.GetBinError(5) , da.GetBinContent(5))
-    line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6),ra.GetBinContent(6),ra.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
-    line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7),ra.GetBinContent(7),ra.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
-    line9 = ' + 400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),ra.GetBinContent(8),ra.GetBinError(8), mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
+    line3 = '20-60  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(1),fs.GetBinError(1),dy.GetBinContent(1),dy.GetBinError(1), mc.GetBinContent(1),mc.GetBinError(1) , da.GetBinContent(1))
+    line4 = '60-86  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(2),fs.GetBinError(2),dy.GetBinContent(2),dy.GetBinError(2), mc.GetBinContent(2),mc.GetBinError(2) , da.GetBinContent(2))
+    line5 = '96-150   & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(4),fs.GetBinError(4),dy.GetBinContent(4),dy.GetBinError(4),  mc.GetBinContent(4),mc.GetBinError(4) , da.GetBinContent(4))
+    line6 = '150-200  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(5),fs.GetBinError(5),dy.GetBinContent(5),dy.GetBinError(5), mc.GetBinContent(5),mc.GetBinError(5) , da.GetBinContent(5))
+    line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
+    line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
+    line9 = ' + 400  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),  mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
     line10 = '\\hline'
     line11 = '\end{tabular}'
     print line0                                                                                                                                                      
@@ -547,7 +550,8 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         #specialcut = specialcut + '&&((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
         specialcut = specialcut 
     scan = Scans.Scan(analysis)
-    mc_stack = r.THStack() 
+    mc_stack = r.THStack()
+    mc_stack_perGeV = r.THStack() 
     newLumiString = '36.4invfb'
     ##get the ingredients
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
@@ -591,53 +595,56 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
-    ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    zz_OF = treeZZ.getTH1F(lint, var+"zz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
-    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
-    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.OF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     # aesthetics
-    ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)                                                                                 
-    ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack);ttz_SF.SetFillColorAlpha(r.kBlue-7 , 0.8);ttz_SF.SetTitle("ttZ");ttz_SF.SetLineColor(r.kBlack)    
-    zz_SF.SetFillColorAlpha(r.kCyan+2 , 0.8);zz_SF.SetTitle("ZZ");zz_SF.SetLineColor(r.kBlack);wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)       
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");da_SF.SetTitle("data SF")       
     # add different samples to stack and full mc histo 
-    others = copy.deepcopy(ra_SF);mc_full = copy.deepcopy(zz_SF)
-    others.Add(ttz_SF);others.Add(zz_SF);others.Add(wz_SF);
-    mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
-    mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
-    mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.) 
-    mc_stack.Add(zz_SF); 
-    mc_stack.Add(dy_shape); mc_full.Add(dy_shape, 1.) 
-    mc_stack.Add(prediction); mc_full.Add(prediction, 1.) 
+    da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);
+    for ib in range(1,da_SF.GetNbinsX()+1):
+        da_perGeV.SetBinContent(ib,  da_SF.GetBinContent(ib)/(da_SF.GetBinLowEdge(ib+1)-da_SF.GetBinLowEdge(ib)))
+        dy_perGeV.SetBinContent(ib,  dy_shape.GetBinContent(ib)/(dy_shape.GetBinLowEdge(ib+1)-dy_shape.GetBinLowEdge(ib)))
+        fs_perGeV.SetBinContent(ib,  prediction.GetBinContent(ib)/(prediction.GetBinLowEdge(ib+1)-prediction.GetBinLowEdge(ib)))
+    
+    mc_full = copy.deepcopy(dy_shape);mc_full_perGeV =  copy.deepcopy(dy_perGeV)
+    mc_stack.Add(dy_shape)
+    mc_stack_perGeV.Add(dy_perGeV) 
+    mc_stack.Add(prediction); mc_full.Add(prediction, 1.)
+    mc_stack_perGeV.Add(fs_perGeV); mc_full_perGeV.Add(fs_perGeV, 1.) 
     mc_stack.Draw()
-    mc_stack.GetXaxis().SetTitle(xlabel)
-    mc_full_e = copy.deepcopy(mc_full)
-    mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.)
+    mc_stack_perGeV.Draw()
+    #mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');
+    mc_stack_perGeV.GetXaxis().SetTitle(xlabel)
+    mc_full_e = copy.deepcopy(mc_full);mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV)
+    mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.);mc_full_perGeV_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_perGeV_e.SetFillStyle(3017); mc_full_perGeV_e.SetMarkerSize(0.)
     maxrat = 0.5
     for ib in range(1,da_SF.GetNbinsX()+1):
         tmp_rat = da_SF.GetBinContent(ib)/( mc_full.GetBinContent(ib) if mc_full.GetBinContent(ib) > 0 else 1. )
         if tmp_rat > maxrat:
-            maxrat = tmp_rat                                                                                          
-    
+            maxrat = tmp_rat                                                                            
+        
     maxCont = max(da_SF.GetMaximum(), mc_full.GetMaximum())
+    maxCont_perGeV = max(da_perGeV.GetMaximum(), mc_full_perGeV.GetMaximum())
     da_SF.GetYaxis().SetRangeUser(0.1, 1.30*maxCont)
+    da_perGeV.GetYaxis().SetRangeUser(0.1, 1.30*maxCont_perGeV)
     mc_stack.SetMaximum(1.3*maxCont)
-    SetOwnership(mc_stack, 0 );SetOwnership(da_SF, 0 )                                                                                                                            
+    mc_stack_perGeV.SetMaximum(1.3*maxCont_perGeV)
+    SetOwnership(mc_stack, 0 );SetOwnership(da_SF, 0 );SetOwnership(mc_stack_perGeV, 0 );SetOwnership(da_perGeV, 0 )                                                                            
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
-    sstring = '' if not addRares else ''
-    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString+sstring, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
+    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack, "HIST" , 1, 1)
     plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
     plot_result.addHisto(da_SF                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
-    if maxrun < 999999: plot_result.addLatex (0.2, 0.85, 'max. run %s'%("run <=276811) ||  (278820 < run && run < 279931)"))
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
-    makeResultsTable(da_SF, prediction, dy_shape, others, mc_full, scutstring)
+    makeResultsTable(da_SF, prediction, dy_shape, mc_full, scutstring)
+    #makeResultsTable(da_SF, prediction, dy_shape, others, mc_full, scutstring)                                                                                                             
+    plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s_perGeV'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
+    plot_result.addStack(mc_stack_perGeV, "HIST" , 1, 1)
+    plot_result.addHisto(mc_full_perGeV_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
+    plot_result.addHisto(da_perGeV                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
+    plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
+    
+    
     if returnplot:
         return plot_result                                                                                                                                                                         
 
@@ -668,10 +675,10 @@ if __name__ == '__main__':
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
-    wzDatasets = ['WZTo3LNu', 'WZTo2L2Q']
-    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10', 'TTZToQQ']
-    raDatasets = ['TTTT', 'tZq_ll','WWZ', 'WZZ', 'ZZZ', 'TTHnobb_pow', 'VHToNonbb', 'TWZ']
-    fsDatasets = ['TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu',  'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    wzDatasets = ['WZTo3LNu']
+    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
+    raDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu',  'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
     
                                                                                                                         
@@ -749,21 +756,21 @@ if __name__ == '__main__':
     rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc =  makeFactorsTable()
 #    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     ## result plots in different variables:
-   # for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
-   #     makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
-   #     resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
-   #     resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
+    for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
+        makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
+        resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
+        resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
 
    # makeRSOFTable('Edge_Moriond2017')
-    makeClosureTestPlots('Edge_Moriond2017','nll','', 'inclusive', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
-    makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge > 400', 'mll400', True)
-    makeClosureTestPlots('Edge_Moriond2017','mll','', 'inclusive', True)
-    makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
-    makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','', 'inclusive', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 60. && lepsMll_Edge > 20', 'mll20-60', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 86. && lepsMll_Edge > 60', 'mll60-86', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 150. && lepsMll_Edge > 96', 'mll96-150', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 200. && lepsMll_Edge > 150', 'mll150-200', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 300. && lepsMll_Edge > 200', 'mll200-300', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge <= 400. && lepsMll_Edge > 300', 'mll300-400', True)
+   # makeClosureTestPlots('Edge_Moriond2017','nll','lepsMll_Edge > 400', 'mll400', True)
+   # makeClosureTestPlots('Edge_Moriond2017','mll','', 'inclusive', True)
+   # makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , 'nllAbove21', True)
+   # makeClosureTestPlots('Edge_Moriond2017','mll','nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , 'nllBelow21', True)
     

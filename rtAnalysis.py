@@ -176,14 +176,16 @@ def getTriggerEffs(num, den, dataMC):
     return errs
 
 
-def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueSystMC, measuredValueData, measuredValueUncData, measuredValueSystData, dataMC):
+def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueSystMC, measuredValueData, measuredValueUncData, measuredValueSystData):
 
 
     foutput = open(theFile + "_aux", 'w')
     for line in open(theFile).readlines():
         if line.find("rt") != -1:
-            if line.find(dataMC) != -1:
-                foutput.write('rt          region          %s        %.4f      %0.4f       %.4f\n'%(dataMC, measuredValueData, measuredValueUncData, measuredValueSystData))
+            if line.find("DATA") != -1:
+                foutput.write('rt          region          DATA        %.4f      %0.4f       %.4f\n'%(measuredValueData, measuredValueUncData, measuredValueSystData))
+            if line.find("MC") != -1:
+                foutput.write('rt          region          MC          %.4f      %0.4f       %.4f\n'%(measuredValueMC, measuredValueUncMC, measuredValueSystMC))
         else:
             foutput.write(line)
 
@@ -223,15 +225,15 @@ if __name__ == '__main__':
                 'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                    
                 'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                   
                 'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                   
-                'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
+                #'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
+                #'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
+                #'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
+                #'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
+                #'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
                 'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
+                #'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
+                #'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
+                #'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
                 'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
                 'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
                 'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
@@ -507,9 +509,9 @@ if __name__ == '__main__':
 
     [dart, dauncrt, dasystrt] = getRT(eevalda, eevaldae, mmvalda, mmvaldae, emvalda, emvaldae)
     [mcrt, mcuncrt, mcsystrt] = getRT(eevalmc, eevalmce, mmvalmc, mmvalmce, emvalmc, emvalmce)
-    print "with filters" 
     print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
     print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
+    saveInFile(theFile, mcrt, mcuncrt, mcsystrt, dart, dauncrt, dasystrt)
     makeTable(DATAnumeratorMlleevalue, DATAnumeratorMllmmvalue, DATAnumeratorMllOFvalue, DATAdenominatorMlleevalue, DATAdenominatorMllmmvalue, DATAdenominatorMllOFvalue, eevalda, mmvalda, emvalda, eevaldae, mmvaldae, emvaldae, "DATA")
     makeTable(MCnumeratorMlleevalue, MCnumeratorMllmmvalue, MCnumeratorMllOFvalue, MCdenominatorMlleevalue, MCdenominatorMllmmvalue, MCdenominatorMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, "MC")
     ######################## Calculation of total values #############################
@@ -767,6 +769,4 @@ if __name__ == '__main__':
  
     print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
     print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
-    saveInFile(theFile, 0, 0, 0, dart, dauncrt, dasystrt, "DATA")
-    saveInFile(theFile, 0, 0, 0, mcrt, mcuncrt, mcsystrt, "MC")
 
