@@ -79,7 +79,6 @@ SingleMuon      r.kBlack      SingleMuon_Run2016H-PromptReco-v2_runs_281207_2840
 #-----------------------------------------------------------
 # BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-TChiWZ  r.kBlack+2          SMS_TChiWZ_ZToLL                                       SMS_TChiWZ_ZToLL     /afs/cern.ch/work/p/pablom/public/trees-Nov-28-skim/   1     0
 DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO          DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/  18610000.0   0
 DYJets    r.kYellow-9    DYJetsToLL_M50_LO              DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/   6024000.0   0
 DYJets    r.kYellow-9    DYJetsToLL_M50_HT100to200      DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/    181302.0   0
@@ -120,3 +119,5 @@ rares     r.kGreen-5     VHToNonbb                      rares       /afs/cern.ch
 rares     r.kGreen-5     tZq_ll                         rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/        75.8   0
 rares     r.kGreen-5     TTTT                           rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/       9.103   0
 rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC/nLepnJetSkim/  61526700.0   0
+#
+TChiWZ  r.kBlack+2   TChiWZ    TChiWZ     /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/mergedSignals/slimmed/   1     0

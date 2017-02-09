@@ -106,7 +106,56 @@ lumi   lnN             1.2            -               -
     # tt.Write(); dy.Write(); data.Write();
     # shapes.Close()
     
-    
+def makeDataCardsFromRootFile():
+    rootfile = TFile.Open('datacards/forDatacards_%s.root'%scan.name)
+    da_SF    = rootfile.Get('da_SF'   )
+    da_OF    = rootfile.Get('da_OF'   )
+    tf_CR_SR = rootfile.Get('tf_CR_SR')
+    dy_shape = rootfile.Get('dy_shape')
+    mc_full  = rootfile.Get('mc_full' )
+
+    for SR, label in scan.shortLabels.items():
+        if scan.hasOther:
+            datacard = '''imax 1 number of bins
+jmax 3 number of processes minus 1
+kmax *  number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}
+observation  {obs}   
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}      {label}        {label}      {label}
+process      XXSIGNALXX     FSbkg          DY         Other
+process      0             1              2           3
+rate         XXSIGRATEXX    {fs}           {DY}       {other}
+----------------------------------------------------------------------------------------------------------------------------------
+fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
+fs_unc lnN             -            {tf_e}             -          -
+jec   lnN           XXjecXX            -             -          -
+El    lnN           XXElXX             -             -          -
+Mu    lnN           XXMuXX             -             -          -
+FastSimEl   lnN     XXFastSimElXX      -             -          -
+FastSimMu   lnN     XXFastSimMuXX      -             -          -
+SigTrig  lnN          1.05             -             -          -
+bHe   lnN           XXbHeXX            -             -          -
+bLi   lnN           XXbLiXX            -             -          -
+genMet lnU              XXgenMetXX     -             -          - 
+signalMCstats_{label} lnN    XXmcStatXX  -           -          -
+dySys  lnN           -                  -            {dy_e}        - 
+otherSys lnN         -                  -            -          1.3
+lumi   lnN             1.062              -            -          - 
+'''.format(label = label, 
+           obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+           fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
+           DY = dy_shape.GetBinContent(SR+2),
+           other = mc_full.GetBinContent(SR+2),
+           fs_int = int(da_OF.GetBinContent(SR+2)),
+           tf = tf_CR_SR.GetBinContent(SR+2),
+           tf_e = tf_CR_SR.GetBinError(SR+2),
+           dy_e = 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinError(SR+1))
+        outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
+        outputFile.write(datacard)
+        outputFile.close()
+
 
 def runCmd(cmd):
     print cmd[2]
@@ -230,7 +279,10 @@ def PutHistosIntoRootFiles():
                                                                                       mass=massString))
             for SR, label in scan.shortLabels.items():
                 itsOk = True
-                template = open('datacards/datacards_{scan}/{scan}/template_{sr}.txt'.format(scan=scan.name,sr=label),'r').read()
+                if scan.makeMCDatacards:
+                    template = open('datacards/datacards_{scan}/{scan}/template_{sr}.txt'.format(scan=scan.name,sr=label),'r').read()
+                else:
+                    template = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'r').read()   
                 template = template.replace('XXSIGNALXX',massString)
                 # central value is the average of nominal and genMET -.-
                 nom = sysHistos['']        .GetBinContent(sysHistos['']        .FindBin(SR))
@@ -308,7 +360,7 @@ if __name__ == "__main__":
     global lumi, scan
 
     cuts = CutManager.CutManager()
-    lumi = 36.2
+    lumi = 36.8
 
     global replaceCutsForSys, extraWeightsForSys
     replaceCutsForSys = {'':      [],
@@ -366,8 +418,8 @@ if __name__ == "__main__":
                           'FastSimElDown': 'weight_FSlepSF_ElDn_Edge / weight_FSlepSF_Edge',
                           'FastSimMuUp'  : 'weight_FSlepSF_MuUp_Edge / weight_FSlepSF_Edge',
                           'FastSimMuDown': 'weight_FSlepSF_MuDn_Edge / weight_FSlepSF_Edge',
-                          'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,"MuUp") / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'MuDown'      : 'LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge,"MuDn")*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,"MuDn") / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'MuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
                           'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
                           'genMet'    : '1'}
@@ -387,8 +439,10 @@ if __name__ == "__main__":
         ## everything that takes long should be done here!
         scan = Scans.Scan(opts.scanName)
         if scan.makeMCDatacards:
-            print 'preparing datacards from MC'
-            a = makeMCDatacards()
+            makeMCDatacards()
+        else:
+            makeDataCardsFromRootFile()
+
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         ## Load the number of generated events to produce efficiency maps per systematic
         scan.dummy = scan.tree.getTH3F(1., 'dummy', '1:1:1',
@@ -419,7 +473,7 @@ if __name__ == "__main__":
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
         print 'fix this'
-        scan.SysStringUpDown = 'El'# Mu jec bHe bLi FastSimEl FastSimMu PU'
+        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU'
         scan.SysString = 'genMet'
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}

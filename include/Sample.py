@@ -98,16 +98,11 @@ class Sample:
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * "  + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
-<<<<<<< HEAD
          #addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
          #addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
          #cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
          cut = cut + "* (" + extraWeight +")"
-=======
-         addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
-         cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
-         #cut = cut + "* (" + extraWeight +")"
->>>>>>> 2898b998bf31f8aa9c796ff89a7b849161d71928
+
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -153,7 +148,6 @@ class Sample:
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
      else: 
         cut = cut + "* ( " + extraWeight + ")"
-     print cut
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -188,7 +182,6 @@ class Block:
      for _is,s in enumerate(self.samples):
        AuxName = "auxT1_sample" + s.name
        haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin, extraWeight)
-       print AuxName, haux.GetBinContent(1)
        if not _is:
           h = haux.Clone(name+'_blockHisto')
        else:
