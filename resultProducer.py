@@ -615,7 +615,8 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     #mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');
     mc_stack_perGeV.GetXaxis().SetTitle(xlabel)
     mc_full_e = copy.deepcopy(mc_full);mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV)
-    mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.);mc_full_perGeV_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_perGeV_e.SetFillStyle(3017); mc_full_perGeV_e.SetMarkerSize(0.)
+    mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.);
+    mc_full_perGeV_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_perGeV_e.SetFillStyle(3017); mc_full_perGeV_e.SetMarkerSize(0.);
     maxrat = 0.5
     for ib in range(1,da_SF.GetNbinsX()+1):
         tmp_rat = da_SF.GetBinContent(ib)/( mc_full.GetBinContent(ib) if mc_full.GetBinContent(ib) > 0 else 1. )
