@@ -147,7 +147,6 @@ class Sample:
         cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " +  self.triggWeight  + "*" + extraWeight + " )" 
      else: 
         cut = cut + "* ( " + extraWeight + ")"
-     print cut
      self.ttree.Project(name, var, cut, options) 
      return h
 
@@ -182,7 +181,6 @@ class Block:
      for _is,s in enumerate(self.samples):
        AuxName = "auxT1_sample" + s.name
        haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, ofBin, extraWeight)
-       print AuxName, haux.GetBinContent(1)
        if not _is:
           h = haux.Clone(name+'_blockHisto')
        else:

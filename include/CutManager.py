@@ -161,8 +161,8 @@ class CutManager:
       ########################################################################
       ######EWK signal regions ###############################################
       ########################################################################
-#      self.Baseline = self.AddList([self.nj2, self.METg100,self.dPhiJETMET,self.goodLepton])
-#      self.BaselineNoTrigger = self.AddList([self.nj2,self.METg100,self.dPhiJETMET,self.goodLepton])
+      self.Baseline = self.AddList([self.nj2, self.METg100,self.dPhiJETMET,self.goodLepton])
+      self.BaselineNoTrigger = self.AddList([self.nj2,self.METg100,self.dPhiJETMET,self.goodLepton])
       self.EdgeBaseline = self.AddList( [self.baseline,self.METg150, self.mT2_80])
       self.EdgeBaselineNoTrigger = self.AddList( [self.baselineNoTrigger,self.METg150, self.mT2_80])
       self.ewinoWZ      = self.AddList([self.baseline, self.bveto, self.mjj110, self.ThirdLeptonVeto, self.Zmass])

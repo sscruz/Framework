@@ -127,7 +127,7 @@ class Scan(object):
             self.yvar = 'GenSusyMScan2_Edge'
             print 'volver a meter el central jets cleaning!!!!!!'
             print 20*'#######################'
-            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30

@@ -676,6 +676,19 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
     #makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, region )
     makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, vvv_SF, region )
+
+    #### for the datacards
+    sergiosLabel = 'CharNeu_Moriond2017' if region == 'TChiWZ' else 'NeuNeu_Moriond2017'
+    forDataCards = TFile.Open('datacards/forDatacards_%s.root'%sergiosLabel,'recreate')
+    tf_CR_SR = scaleByEWKFactors(result[2], kappa_da, kappa_da_e)
+    da_SF   .SetName('da_SF'   );     da_SF    .Write();      
+    da_OF   .SetName('da_OF'   );     da_OF    .Write();  
+    tf_CR_SR.SetName('tf_CR_SR');     tf_CR_SR .Write(); 
+    dy_shape.SetName('dy_shape');     dy_shape .Write(); 
+    mc_full .SetName('mc_full' );     mc_full  .Write(); 
+    forDataCards.Close()
+
+
     if makeTable:
         makeSimpleTable(plot_result, addRares)
     if returnplot:

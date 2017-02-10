@@ -221,11 +221,11 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     return  dy_shape                                                                                                                                  
 
 
-def makeResultsTable(da, fs, dy, mc, nll = ''):
+def makeResultsTable(da, fs, dy,rare, mc, nll = ''):
     
     line0 = '\\begin{tabular}{c c c c c }  '                                                               
-    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Total & Data \\\\ \hline  '                                                               
-    #line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Rares & Total & Data \\\\ \hline  '                                                               
+#    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Total & Data \\\\ \hline  '                                                               
+    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Rares & Total & Data \\\\ \hline  '                                                               
     print "making table ", nll
     if nll == "nllAbove21":
         line1 =  '&& ttbar-like  &&& \\\\ \hline'
@@ -233,27 +233,34 @@ def makeResultsTable(da, fs, dy, mc, nll = ''):
         line1 =  '&& non ttbar-like  &&& \\\\ \hline'
     if nll == "":
         line1 =  '&& Total (inclusive in nll)  &&& \\\\ \hline'
-    line3 = '20-60  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(1),fs.GetBinError(1),dy.GetBinContent(1),dy.GetBinError(1), mc.GetBinContent(1),mc.GetBinError(1) , da.GetBinContent(1))
-    line4 = '60-86  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(2),fs.GetBinError(2),dy.GetBinContent(2),dy.GetBinError(2), mc.GetBinContent(2),mc.GetBinError(2) , da.GetBinContent(2))
-    line5 = '96-150   & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(4),fs.GetBinError(4),dy.GetBinContent(4),dy.GetBinError(4),  mc.GetBinContent(4),mc.GetBinError(4) , da.GetBinContent(4))
-    line6 = '150-200  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(5),fs.GetBinError(5),dy.GetBinContent(5),dy.GetBinError(5), mc.GetBinContent(5),mc.GetBinError(5) , da.GetBinContent(5))
-    line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
-    line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
-    line9 = ' + 400  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),  mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
-    line10 = '\\hline'
-    line11 = '\end{tabular}'
+    # line3 = '20-60  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(1),fs.GetBinError(1),dy.GetBinContent(1),dy.GetBinError(1), mc.GetBinContent(1),mc.GetBinError(1) , da.GetBinContent(1))
+    # line4 = '60-86  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(2),fs.GetBinError(2),dy.GetBinContent(2),dy.GetBinError(2), mc.GetBinContent(2),mc.GetBinError(2) , da.GetBinContent(2))
+    # line5 = '96-150   & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(4),fs.GetBinError(4),dy.GetBinContent(4),dy.GetBinError(4),  mc.GetBinContent(4),mc.GetBinError(4) , da.GetBinContent(4))
+    # line6 = '150-200  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(5),fs.GetBinError(5),dy.GetBinContent(5),dy.GetBinError(5), mc.GetBinContent(5),mc.GetBinError(5) , da.GetBinContent(5))
+    # line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
+    # line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
+    # line9 = ' + 400  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),  mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
+    mllLabels = ['20-60 ', '60-86 ','onz', '96-150 ', '150-200','200-300','300-400']
+    lines = []
     print line0                                                                                                                                                      
     print line1                                                                                                                                                      
-    print line2                                                                                                                                                      
-    print line3                                                                                                                                                      
-    print line4                                                                                                                                                      
-    print line5                                                                                                                                                      
-    print line6                                                                                                                                                      
-    print line7                                                                                                                                                      
-    print line8                                                                                                                                                      
-    print line9                                                                                                                                                      
-    print line10                                                                                                                                                      
-    print line11                                                                                                                                                      
+    for bin,mllLabel in enumerate(mllLabels):
+        if mllLabel == 'onz': continue
+        print '%s &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(mllLabel,
+                                                                                                                      fs.GetBinContent(bin+1),
+                                                                                                                      fs.GetBinError(bin+1),
+                                                                                                                      dy.GetBinContent(bin+1),
+                                                                                                                      dy.GetBinError(bin+1),
+                                                                                                                      rare.GetBinContent(bin+1),
+                                                                                                                      rare.GetBinError(bin+1),
+                                                                                                                      mc.GetBinContent(bin+1),
+                                                                                                                      mc.GetBinError(bin+1) ,
+                                                                                                                      da.GetBinContent(bin+1))
+
+    print '\\hline'
+    print '\end{tabular}'
+
+
 
 def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
 
@@ -596,18 +603,23 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
+    rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     # aesthetics
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");da_SF.SetTitle("data SF")       
     # add different samples to stack and full mc histo 
     da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);
+    rare_perGev = copy.deepcopy(rare)
     for ib in range(1,da_SF.GetNbinsX()+1):
         da_perGeV.SetBinContent(ib,  da_SF.GetBinContent(ib)/(da_SF.GetBinLowEdge(ib+1)-da_SF.GetBinLowEdge(ib)))
         dy_perGeV.SetBinContent(ib,  dy_shape.GetBinContent(ib)/(dy_shape.GetBinLowEdge(ib+1)-dy_shape.GetBinLowEdge(ib)))
         fs_perGeV.SetBinContent(ib,  prediction.GetBinContent(ib)/(prediction.GetBinLowEdge(ib+1)-prediction.GetBinLowEdge(ib)))
-    
+        rare_perGev.SetBinContent(ib, rare.GetBinContent(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))
+
+
+    mc_stack.Add(dy_shape);     mc_stack_perGeV.Add(dy_perGeV) 
     mc_full = copy.deepcopy(dy_shape);mc_full_perGeV =  copy.deepcopy(dy_perGeV)
-    mc_stack.Add(dy_shape)
-    mc_stack_perGeV.Add(dy_perGeV) 
+    mc_stack.Add(rare);         mc_stack_perGeV.Add(rare_perGev)
+    mc_full.Add(rare);          mc_full_perGeV.Add(rare_perGev)
     mc_stack.Add(prediction); mc_full.Add(prediction, 1.)
     mc_stack_perGeV.Add(fs_perGeV); mc_full_perGeV.Add(fs_perGeV, 1.) 
     mc_stack.Draw()
@@ -637,7 +649,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
     plot_result.addHisto(da_SF                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
-    makeResultsTable(da_SF, prediction, dy_shape, mc_full, scutstring)
+    makeResultsTable(da_SF, prediction, dy_shape, rare, mc_full, scutstring)
     #makeResultsTable(da_SF, prediction, dy_shape, others, mc_full, scutstring)                                                                                                             
     plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s_perGeV'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack_perGeV, "HIST" , 1, 1)
@@ -664,7 +676,7 @@ if __name__ == '__main__':
     parser.add_option('-m', '--minRun', action='store', type=int, dest='minRun', default=-1    , help='min run to use for analysis (run not included)')
     ## make the options globa.. also the lumi
     global opts, lumi, lumi_str, dy_shapes, nbstring
-    global ingMC, ingDA, onZ, treeDA, treeMC, treeDY, treeTT
+    global ingMC, ingDA, onZ, treeDA, treeMC, treeDY, treeTT, treeRA
     (opts, args) = parser.parse_args()
 
     ingredientsFile = opts.ingredientsFile
@@ -724,7 +736,9 @@ if __name__ == '__main__':
                    'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
                    'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
  
- 
+
+    raDatasets = ['tZq_ll', 'TWZ','WZTo3LNu','ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu',
+                  'TTZToLLNuNu', 'TTLLJets_m1to10','WWZ','WZZ', 'ZZZ']
  
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH      
 
