@@ -11,7 +11,6 @@ class CutManager:
       ######Basic Lepton Cuts ################################################
       ########################################################################
       self.twoLeptons = "nPairLep_Edge > 0 &&Flag_badCloneMuonMoriond2017_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1   && Flag_eeBadScFilter_Edge == 1    && Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_CSCTightHalo2016Filter_Edge ==1 "
-      self.twoLeptonsNoBadMuon = "nPairLep_Edge > 0  && Flag_eeBadScFilter_Edge == 1    && Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_CSCTightHalo2016Filter_Edge ==1 "
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
       self.leptonDR = "lepsDR_Edge > 0.1"       
@@ -104,8 +103,7 @@ class CutManager:
       self.ZmassExtended = "lepsMll_Edge >= 61 && lepsMll_Edge < 121"
       self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
-      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLeptonNoBadMuon])
-      #self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton, self.METg100])
+      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
       self.baselineNoTrigger = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLeptonNoTrigger, self.METg100])
       self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton])
       self.baselineNoMT2NoTrigger = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLeptonNoTrigger])
@@ -152,13 +150,9 @@ class CutManager:
 
       ########################################################################
       ######EWK signal regions ###############################################
-      ########################################################################
-      #self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj0])
       self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj2])
-      #self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET, self.mZ2g20,  self.nj0])
       self.region4l = self.AddList([self.fourTightLeptons, self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])
       self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
-      self.regionttZExercise = self.AddList([self.threeTightLeptons, self.nbj2, self.METg30, self.nj2, " ( Lep1_pt_Edge  > 40 ) && JetSel_Edge_pt[0] > 40 && JetSel_Edge_pt[0] > 40 && JetSel_Edge_pt[1] > 40 && JetSel_Edge_pt[2] > 40 && JetSel_Edge_pt[3] > 40"])
 
       ########################################################################
       ######EWK signal regions ###############################################
