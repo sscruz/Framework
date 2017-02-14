@@ -149,21 +149,6 @@ public :
    Float_t         mt2_Edge;
    Float_t         mt2_jecUp_Edge;
    Float_t         mt2_jecDn_Edge;
-   Float_t         lh_ana_zpt_data_Edge;
-   Float_t         lh_ana_met_data_Edge;
-   Float_t         lh_ana_genMet_data_Edge;
-   Float_t         lh_ana_mlb_data_Edge;
-   Float_t         lh_ana_mlbUp_data_Edge;
-   Float_t         lh_ana_mlbDn_data_Edge;
-   Float_t         lh_ana_ldp_data_Edge;
-   Float_t         nll_Edge;
-   Float_t         nll_jecUp_Edge;
-   Float_t         nll_jecDn_Edge;
-   Float_t         nll_genMet_Edge;
-   Float_t         nll_mc_Edge;
-   Float_t         nll_mc_jecUp_Edge;
-   Float_t         nll_mc_jecDn_Edge;
-   Float_t         nll_mc_sf_Edge;
    Float_t         weight_trigger_Edge;
    Float_t         weight_btagsf_Edge;
    Float_t         weight_btagsf_heavy_UP_Edge;
@@ -174,18 +159,7 @@ public :
    Float_t         parPt_Edge;
    Float_t         ortPt_Edge;
    Float_t         dTheta_Edge;
-   Int_t           passesFilters_Edge;
    Float_t         genWeight_Edge;
-   Float_t         weight_LepSF_Edge;
-   Float_t         weight_LepSF_MuUp_Edge;
-   Float_t         weight_LepSF_MuDn_Edge;
-   Float_t         weight_LepSF_ElUp_Edge;
-   Float_t         weight_LepSF_ElDn_Edge;
-   Float_t         weight_FSlepSF_Edge;
-   Float_t         weight_FSlepSF_MuUp_Edge;
-   Float_t         weight_FSlepSF_MuDn_Edge;
-   Float_t         weight_FSlepSF_ElUp_Edge;
-   Float_t         weight_FSlepSF_ElDn_Edge;
    Float_t         HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge;
    Float_t         HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge;
    Float_t         HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge;
@@ -368,21 +342,6 @@ public :
    TBranch        *b_mt2_Edge;   //!
    TBranch        *b_mt2_jecUp_Edge;   //!
    TBranch        *b_mt2_jecDn_Edge;   //!
-   TBranch        *b_lh_ana_zpt_data_Edge;   //!
-   TBranch        *b_lh_ana_met_data_Edge;   //!
-   TBranch        *b_lh_ana_genMet_data_Edge;   //!
-   TBranch        *b_lh_ana_mlb_data_Edge;   //!
-   TBranch        *b_lh_ana_mlbUp_data_Edge;   //!
-   TBranch        *b_lh_ana_mlbDn_data_Edge;   //!
-   TBranch        *b_lh_ana_ldp_data_Edge;   //!
-   TBranch        *b_nll_Edge;   //!
-   TBranch        *b_nll_jecUp_Edge;   //!
-   TBranch        *b_nll_jecDn_Edge;   //!
-   TBranch        *b_nll_genMet_Edge;   //!
-   TBranch        *b_nll_mc_Edge;   //!
-   TBranch        *b_nll_mc_jecUp_Edge;   //!
-   TBranch        *b_nll_mc_jecDn_Edge;   //!
-   TBranch        *b_nll_mc_sf_Edge;   //!
    TBranch        *b_weight_trigger_Edge;   //!
    TBranch        *b_weight_btagsf_Edge;   //!
    TBranch        *b_weight_btagsf_heavy_UP_Edge;   //!
@@ -393,18 +352,7 @@ public :
    TBranch        *b_parPt_Edge;   //!
    TBranch        *b_ortPt_Edge;   //!
    TBranch        *b_dTheta_Edge;   //!
-   TBranch        *b_passesFilters_Edge;   //!
    TBranch        *b_genWeight_Edge;   //!
-   TBranch        *b_weight_LepSF_Edge;   //!
-   TBranch        *b_weight_LepSF_MuUp_Edge;   //!
-   TBranch        *b_weight_LepSF_MuDn_Edge;   //!
-   TBranch        *b_weight_LepSF_ElUp_Edge;   //!
-   TBranch        *b_weight_LepSF_ElDn_Edge;   //!
-   TBranch        *b_weight_FSlepSF_Edge;   //!
-   TBranch        *b_weight_FSlepSF_MuUp_Edge;   //!
-   TBranch        *b_weight_FSlepSF_MuDn_Edge;   //!
-   TBranch        *b_weight_FSlepSF_ElUp_Edge;   //!
-   TBranch        *b_weight_FSlepSF_ElDn_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge;
    TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge;
    TBranch        *b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge;
@@ -664,21 +612,6 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    fChain->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
    fChain->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
-   fChain->SetBranchAddress("lh_ana_zpt_data_Edge", &lh_ana_zpt_data_Edge, &b_lh_ana_zpt_data_Edge);
-   fChain->SetBranchAddress("lh_ana_met_data_Edge", &lh_ana_met_data_Edge, &b_lh_ana_met_data_Edge);
-   fChain->SetBranchAddress("lh_ana_genMet_data_Edge", &lh_ana_genMet_data_Edge, &b_lh_ana_genMet_data_Edge);
-   fChain->SetBranchAddress("lh_ana_mlb_data_Edge", &lh_ana_mlb_data_Edge, &b_lh_ana_mlb_data_Edge);
-   fChain->SetBranchAddress("lh_ana_mlbUp_data_Edge", &lh_ana_mlbUp_data_Edge, &b_lh_ana_mlbUp_data_Edge);
-   fChain->SetBranchAddress("lh_ana_mlbDn_data_Edge", &lh_ana_mlbDn_data_Edge, &b_lh_ana_mlbDn_data_Edge);
-   fChain->SetBranchAddress("lh_ana_ldp_data_Edge", &lh_ana_ldp_data_Edge, &b_lh_ana_ldp_data_Edge);
-   fChain->SetBranchAddress("nll_Edge", &nll_Edge, &b_nll_Edge);
-   fChain->SetBranchAddress("nll_jecUp_Edge", &nll_jecUp_Edge, &b_nll_jecUp_Edge);
-   fChain->SetBranchAddress("nll_jecDn_Edge", &nll_jecDn_Edge, &b_nll_jecDn_Edge);
-   fChain->SetBranchAddress("nll_genMet_Edge", &nll_genMet_Edge, &b_nll_genMet_Edge);
-   fChain->SetBranchAddress("nll_mc_Edge", &nll_mc_Edge, &b_nll_mc_Edge);
-   fChain->SetBranchAddress("nll_mc_jecUp_Edge", &nll_mc_jecUp_Edge, &b_nll_mc_jecUp_Edge);
-   fChain->SetBranchAddress("nll_mc_jecDn_Edge", &nll_mc_jecDn_Edge, &b_nll_mc_jecDn_Edge);
-   fChain->SetBranchAddress("nll_mc_sf_Edge", &nll_mc_sf_Edge, &b_nll_mc_sf_Edge);
    fChain->SetBranchAddress("weight_trigger_Edge", &weight_trigger_Edge, &b_weight_trigger_Edge);
    fChain->SetBranchAddress("weight_btagsf_Edge", &weight_btagsf_Edge, &b_weight_btagsf_Edge);
    fChain->SetBranchAddress("weight_btagsf_heavy_UP_Edge", &weight_btagsf_heavy_UP_Edge, &b_weight_btagsf_heavy_UP_Edge);
@@ -689,18 +622,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("parPt_Edge", &parPt_Edge, &b_parPt_Edge);
    fChain->SetBranchAddress("ortPt_Edge", &ortPt_Edge, &b_ortPt_Edge);
    fChain->SetBranchAddress("dTheta_Edge", &dTheta_Edge, &b_dTheta_Edge);
-   fChain->SetBranchAddress("passesFilters_Edge", &passesFilters_Edge, &b_passesFilters_Edge);
    fChain->SetBranchAddress("genWeight_Edge", &genWeight_Edge, &b_genWeight_Edge);
-   fChain->SetBranchAddress("weight_LepSF_Edge", &weight_LepSF_Edge, &b_weight_LepSF_Edge);
-   fChain->SetBranchAddress("weight_LepSF_MuUp_Edge", &weight_LepSF_MuUp_Edge, &b_weight_LepSF_MuUp_Edge);
-   fChain->SetBranchAddress("weight_LepSF_MuDn_Edge", &weight_LepSF_MuDn_Edge, &b_weight_LepSF_MuDn_Edge);
-   fChain->SetBranchAddress("weight_LepSF_ElUp_Edge", &weight_LepSF_ElUp_Edge, &b_weight_LepSF_ElUp_Edge);
-   fChain->SetBranchAddress("weight_LepSF_ElDn_Edge", &weight_LepSF_ElDn_Edge, &b_weight_LepSF_ElDn_Edge);
-   fChain->SetBranchAddress("weight_FSlepSF_Edge", &weight_FSlepSF_Edge, &b_weight_FSlepSF_Edge);
-   fChain->SetBranchAddress("weight_FSlepSF_MuUp_Edge", &weight_FSlepSF_MuUp_Edge, &b_weight_FSlepSF_MuUp_Edge);
-   fChain->SetBranchAddress("weight_FSlepSF_MuDn_Edge", &weight_FSlepSF_MuDn_Edge, &b_weight_FSlepSF_MuDn_Edge);
-   fChain->SetBranchAddress("weight_FSlepSF_ElUp_Edge", &weight_FSlepSF_ElUp_Edge, &b_weight_FSlepSF_ElUp_Edge);
-   fChain->SetBranchAddress("weight_FSlepSF_ElDn_Edge", &weight_FSlepSF_ElDn_Edge, &b_weight_FSlepSF_ElDn_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge);
@@ -889,20 +811,6 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    outputtree->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
    outputtree->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
-   outputtree->SetBranchAddress("lh_ana_met_data_Edge", &lh_ana_met_data_Edge, &b_lh_ana_met_data_Edge);
-   outputtree->SetBranchAddress("lh_ana_genMet_data_Edge", &lh_ana_genMet_data_Edge, &b_lh_ana_genMet_data_Edge);
-   outputtree->SetBranchAddress("lh_ana_mlb_data_Edge", &lh_ana_mlb_data_Edge, &b_lh_ana_mlb_data_Edge);
-   outputtree->SetBranchAddress("lh_ana_mlbUp_data_Edge", &lh_ana_mlbUp_data_Edge, &b_lh_ana_mlbUp_data_Edge);
-   outputtree->SetBranchAddress("lh_ana_mlbDn_data_Edge", &lh_ana_mlbDn_data_Edge, &b_lh_ana_mlbDn_data_Edge);
-   outputtree->SetBranchAddress("lh_ana_ldp_data_Edge", &lh_ana_ldp_data_Edge, &b_lh_ana_ldp_data_Edge);
-   outputtree->SetBranchAddress("nll_Edge", &nll_Edge, &b_nll_Edge);
-   outputtree->SetBranchAddress("nll_jecUp_Edge", &nll_jecUp_Edge, &b_nll_jecUp_Edge);
-   outputtree->SetBranchAddress("nll_jecDn_Edge", &nll_jecDn_Edge, &b_nll_jecDn_Edge);
-   outputtree->SetBranchAddress("nll_genMet_Edge", &nll_genMet_Edge, &b_nll_genMet_Edge);
-   outputtree->SetBranchAddress("nll_mc_Edge", &nll_mc_Edge, &b_nll_mc_Edge);
-   outputtree->SetBranchAddress("nll_mc_jecUp_Edge", &nll_mc_jecUp_Edge, &b_nll_mc_jecUp_Edge);
-   outputtree->SetBranchAddress("nll_mc_jecDn_Edge", &nll_mc_jecDn_Edge, &b_nll_mc_jecDn_Edge);
-   outputtree->SetBranchAddress("nll_mc_sf_Edge", &nll_mc_sf_Edge, &b_nll_mc_sf_Edge);
    outputtree->SetBranchAddress("weight_trigger_Edge", &weight_trigger_Edge, &b_weight_trigger_Edge);
    outputtree->SetBranchAddress("weight_btagsf_Edge", &weight_btagsf_Edge, &b_weight_btagsf_Edge);
    outputtree->SetBranchAddress("weight_btagsf_heavy_UP_Edge", &weight_btagsf_heavy_UP_Edge, &b_weight_btagsf_heavy_UP_Edge);
@@ -913,18 +821,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("parPt_Edge", &parPt_Edge, &b_parPt_Edge);
    outputtree->SetBranchAddress("ortPt_Edge", &ortPt_Edge, &b_ortPt_Edge);
    outputtree->SetBranchAddress("dTheta_Edge", &dTheta_Edge, &b_dTheta_Edge);
-   outputtree->SetBranchAddress("passesFilters_Edge", &passesFilters_Edge, &b_passesFilters_Edge);
    outputtree->SetBranchAddress("genWeight_Edge", &genWeight_Edge, &b_genWeight_Edge);
-   outputtree->SetBranchAddress("weight_LepSF_Edge", &weight_LepSF_Edge, &b_weight_LepSF_Edge);
-   outputtree->SetBranchAddress("weight_LepSF_MuUp_Edge", &weight_LepSF_MuUp_Edge, &b_weight_LepSF_MuUp_Edge);
-   outputtree->SetBranchAddress("weight_LepSF_MuDn_Edge", &weight_LepSF_MuDn_Edge, &b_weight_LepSF_MuDn_Edge);
-   outputtree->SetBranchAddress("weight_LepSF_ElUp_Edge", &weight_LepSF_ElUp_Edge, &b_weight_LepSF_ElUp_Edge);
-   outputtree->SetBranchAddress("weight_LepSF_ElDn_Edge", &weight_LepSF_ElDn_Edge, &b_weight_LepSF_ElDn_Edge);
-   outputtree->SetBranchAddress("weight_FSlepSF_Edge", &weight_FSlepSF_Edge, &b_weight_FSlepSF_Edge);
-   outputtree->SetBranchAddress("weight_FSlepSF_MuUp_Edge", &weight_FSlepSF_MuUp_Edge, &b_weight_FSlepSF_MuUp_Edge);
-   outputtree->SetBranchAddress("weight_FSlepSF_MuDn_Edge", &weight_FSlepSF_MuDn_Edge, &b_weight_FSlepSF_MuDn_Edge);
-   outputtree->SetBranchAddress("weight_FSlepSF_ElUp_Edge", &weight_FSlepSF_ElUp_Edge, &b_weight_FSlepSF_ElUp_Edge);
-   outputtree->SetBranchAddress("weight_FSlepSF_ElDn_Edge", &weight_FSlepSF_ElDn_Edge, &b_weight_FSlepSF_ElDn_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge", &HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge, &b_HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge);

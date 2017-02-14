@@ -699,7 +699,9 @@ if __name__ == '__main__':
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376', 
+                   'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
   
     daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
