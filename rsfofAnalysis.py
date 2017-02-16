@@ -133,14 +133,6 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     DataControlOF=treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.trigger,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
     DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx)
     DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.trigger, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx)
-    print "ee ", DataControlee.Integral() 
-    print "mm ", DataControlmm.Integral() 
-    print "SF ", DataControlSF.Integral() 
-    print "OF ", DataControlOF.Integral() 
-    print " MC ee ", MCControlee.Integral() 
-    print " MC mm ", MCControlmm.Integral() 
-    print " MC SF ", MCControlSF.Integral() 
-    print " MC OF ", MCControlOF.Integral() 
     MCControl =          make_rsfof(MCControlSF, MCControlOF, "MC")
     MCSignal =           make_rsfof(MCSignalSF, MCSignalOF, "MC")
     MCControlvalue =     make_rsfof(MCControlSFvalue, MCControlOFvalue, "MC")
@@ -234,7 +226,7 @@ if __name__ == '__main__':
 
     DYDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     ttDatasets = ['TTJets_DiLepton']
-    mcDatasets = [ 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
     mcDatasets += ttDatasets
     mcDatasets += DYDatasets
 
@@ -242,7 +234,7 @@ if __name__ == '__main__':
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376', 
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
                    'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
 

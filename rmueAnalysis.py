@@ -36,13 +36,13 @@ class bcolors:
     UNDERLINE = '\033[4m' 
 
 
-def makeTable(MCmm, MCee, DATAmm, DATAee, MCrmue, MCrmueUnc, MCrmueUncSyst, DATArmue, DATArmueUnc, DATArmueUncSyst):
+def makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b, mc_b_e, data_b, data_b_e):
     line0 = '  \hline'
     line1 = '  Data &' 
     line2 = '  MC   &' 
-    line0 += ' & $\mathrm{N_{\mu\mu}}$  & $\mathrm{N_{ee}}$ & $\mathrm{r_{\mu e } \pm \sigma_{stat} \pm \sigma_{syst}}$ \\\\'
-    line1 += ' %.f & %.f &    %.2f $\\pm$ %.2f $\\pm$ %.2f      %s' %(DATAmm.Integral(), DATAee.Integral(), DATArmue  , DATArmueUnc  , DATArmueUncSyst,  '\\\\')
-    line2 += ' %.f & %.f &    %.2f $\\pm$ %.2f $\\pm$ %.2f      %s' %(MCmm.Integral(), MCee.Integral(), MCrmue  , MCrmueUnc  , MCrmueUncSyst,  '\\\\')
+    line0 += ' & A & B & '
+    line1 += ' %.4f $\\pm$ %.4f& %.4f $\\pm$ %.4f   %s' %(data_a, data_a_e, data_b, data_b_e , '\\\\')
+    line2 += ' %.4f $\\pm$ %.4f& %.4f $\\pm$ %.4f   %s' %(mc_a, mc_a_e, mc_b, mc_b_e ,  '\\\\')
     line0 += '\\hline'; line2 += '\\hline';
 
     helper.ensureDirectory('plots/rmue/%s/'%lumi_str)
@@ -208,7 +208,7 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     da_string = 'Fit on data: (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(data_a,data_a_e, data_b, data_b_e)
     mc_string = 'Fit on MC:   (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(mc_a,mc_a_e, mc_b, mc_b_e)
 
-    plot_rmue_pt2 = Canvas.Canvas('rmue/%s_%s/plot_rmue_pT2'%(lumi_str, tag), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
+    plot_rmue_pt2 = Canvas.Canvas('rmue/%s_%s/plot_rmue_pT2_old'%(lumi_str, tag), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
     plot_rmue_pt2.addHisto(MCDYControlPT2, 'PE', 'MC', 'PL', r.kRed+1, 1, 0)
     plot_rmue_pt2.addHisto(DATADYControlPT2, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 1)
     plot_rmue_pt2.addHisto(fun_da, 'L,SAME', 'Fit - Data', 'L', r.kBlack, 1,2)
@@ -256,11 +256,11 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
         saveInFile(ingredientsFile, factorMCrmuemeasured, factorMCrmuemeasuredUnc, factorMCrmuemeasuredUncSyst, factorDATArmuemeasured, factorDATArmuemeasuredUnc, factorDATArmuemeasuredUncSyst, 'factor')
         saveInFile(ingredientsFile, mc_a, 0., mc_a_e, data_a, 0., data_a_e,  'coeffA')
         saveInFile(ingredientsFile, mc_b, 0., mc_b_e, data_b, 0., data_b_e,  'coeffB')
+        makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b,mc_b_e, data_b, data_b_e)
     MCDYControlPT2.Fit('fun_mc','rQ')
     mc_a = fun_mc.GetParameter(0); mc_a_e = fun_mc.GetParError(0)
     mc_b = fun_mc.GetParameter(1); mc_b_e = fun_mc.GetParError(1)
       
-    makeTable(MCDYControlMllmm, MCDYControlMllee, DATADYControlMllmm, DATADYControlMllee, MCrmuemeasured, MCrmuemeasuredUnc, MCrmuemeasuredUncSyst, DATArmuemeasured, DATArmuemeasuredUnc, DATArmuemeasuredUncSyst)
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing plots...' + bcolors.ENDC
     plot_rmue_mll = Canvas.Canvas('rmue/%s_%s/plot_rmue_mll'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rmue_mll.addHisto(MCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
@@ -308,7 +308,7 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     plot_factor_mt2.addHisto(factorDATADYControlmt2, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
     plot_factor_mt2.addBand(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDATArmuemeasured-factorDATArmuemeasuredUncTot, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDATArmuemeasured+factorDATArmuemeasuredUncTot, r.kGreen, 0.2)
     plot_factor_mt2.addLine(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDATArmuemeasured, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDATArmuemeasured,r.kGreen)
-    plot_factor_mt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                                                                                 
+    plot_factor_mt2.save(1, 1, 0, lumi, 0.2, 1.8)                   
 
 if __name__ == "__main__":
 
@@ -318,20 +318,20 @@ if __name__ == "__main__":
     print '#######################################################################' + bcolors.ENDC
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samplesOLD.dat', help='the samples file. default \'samples.dat\'')
     parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ',  'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
  
 
     daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376', 
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
                    'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
 

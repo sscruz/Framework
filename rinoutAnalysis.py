@@ -46,8 +46,8 @@ def makeResultsTable(mc, da, rinout_20_60_mc, rinout_60_86_mc,rinout_96_150_mc, 
     line6  = '300-400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(7), da.GetBinError(7), rinout_300_400_da[0], rinout_300_400_da[1], mc.GetBinContent(7), mc.GetBinError(7), rinout_300_400_mc[0], rinout_300_400_mc[1]) 
     line7  = '+400& %.0f $\\pm$ %.0f &  %.3f $\\pm$ %.3f & %.0f $\\pm$ %.0f & %.3f $\\pm$ %.3f   \\\\'%(da.GetBinContent(8), da.GetBinError(8), rinout_400_da[0], rinout_400_da[1], mc.GetBinContent(8), mc.GetBinError(8), rinout_400_mc[0], rinout_400_mc[1]) 
     
-    helper.ensurePath('plots/rinout/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"))
-    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s_woFilters.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
+    helper.ensurePath('plots/rinout/%s/tables/resultTable_%s%s_OLD.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"))
+    compTableFile = open('plots/rinout/%s/tables/resultTable_%s%s_OLD.txt'%(lumi_str, str(lumi).replace('.','p'), "rinout"),'w')
     compTableFile.write(line00+'\n')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
@@ -473,7 +473,6 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     plot_nj_rinout_400.addLatex (0.6, 0.6, "<r_{inout}> %.3f in m_{ll} 300-400"%(rinout_400_da[0]) )
     plot_nj_rinout_400.saveRatio(1, 1, 0, lumi, nj_rinout_400_da, nj_rinout_400_mc)                                                                                                  
 
-
 if __name__ == '__main__':
 
     print bcolors.HEADER 
@@ -490,8 +489,7 @@ if __name__ == '__main__':
 
     DYDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     ttDatasets = ['TTJets_DiLepton']
-    mcDatasets = ['ZZTo4L', 'GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
-    #mcDatasets = ['ZZTo4L', 'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
     mcDatasets += ttDatasets
     mcDatasets += DYDatasets
 

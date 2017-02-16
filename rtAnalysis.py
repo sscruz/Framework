@@ -43,32 +43,35 @@ class bcolors:
 
 
 
-def makeTable(DATAnumeratoree, DATAnumeratormm, DATAnumeratorOF, DATAdenominatoree, DATAdenominatormm, DATAdenominatorOF, effMlleevalue, effMllmmvalue , effMllOFvalue, eevale, mmvale, emvale, dataMC):
+def makeTable(DATAnumeratoree, DATAnumeratormm, DATAnumeratorOF, DATAdenominatoree, DATAdenominatormm, DATAdenominatorOF, effMlleevalue, effMllmmvalue , effMllOFvalue, eevale, mmvale, emvale,  rt, rtUnc, rtSyst, dataMC):
     line0 = '  \hline'
     line1 = '  ee &' 
     line2 = '  \mu\mu   &' 
     line3 = '  e\mu   &' 
-    line0 += ' & nominator  & denominator & $\epsilon_{\mathrm{trigger}}$ $\pm \sigma_{stat}}$ \\\\'
+    line4 = '  && RT   '
+    if dataMC == 'DATA':
+        line0 += ' Data & nominator  & denominator & $\epsilon_{\mathrm{trigger}}$ $\pm \sigma_{stat}}$ \\\\'
+    else:
+        line0 += ' MC & nominator  & denominator & $\epsilon_{\mathrm{trigger}}$ $\pm \sigma_{stat}}$ \\\\'
     line1 += ' %.f & %.f &    %.3f $\\pm$ %.3f       %s' %(DATAnumeratoree.Integral(), DATAdenominatoree.Integral(), effMlleevalue  , eevale  ,   '\\\\')
     line2 += ' %.f & %.f &    %.3f $\\pm$ %.3f       %s' %(DATAnumeratormm.Integral(), DATAdenominatormm.Integral(), effMllmmvalue  , mmvale  ,   '\\\\')
     line3 += ' %.f & %.f &    %.3f $\\pm$ %.3f       %s' %(DATAnumeratorOF.Integral(), DATAdenominatorOF.Integral(), effMllOFvalue  , emvale  ,   '\\\\')
-    line0 += '\\hline'; line3 += '\\hline';
+    line4 += ' %.3f $\\pm$ %.3f  $\\pm$ %.3f     %s' %(rt, rtUnc, rtSyst  ,   '\\\\')
+    line0 += '\\hline'; line4 += '\\hline';
                                                                                                                                                                                      
     helper.ensureDirectory('plots/rt/%s/'%lumi_str)
     helper.ensureDirectory('plots/rt/%s/tables/'%lumi_str)
-    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s_.txt'%(lumi_str, str(lumi).replace('.','p'), "rt"),'w')
+    compTableFile = open('plots/rt/%s/tables/resultTable_%s%s_%s.txt'%(lumi_str, str(lumi).replace('.','p'), "rt", dataMC),'w')
     compTableFile.write(line0+'\n')
     compTableFile.write(line1+'\n')
     compTableFile.write(line2+'\n')                                                                                             
     compTableFile.write(line3+'\n')                                                                                             
-    if dataMC == 'DATA':
-        print "RT for Data"
-    else:
-        print "RT for MC"
+    compTableFile.write(line4+'\n')                                                                                             
     print line0
     print line1
     print line2                                                                                                                                                                      
-    print line3                                                                                                                                                                                         
+    print line3                                                                                                                                
+    print line4                                                                                                                                                                                        
 
 
 ############################################################
@@ -211,8 +214,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RTAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
     
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton']
-    #mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ','WWTo2L2Nu', 'ZZTo2L2Nu',  'TTWToQQ', 'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
     
     daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',             
                 'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
@@ -514,8 +516,8 @@ if __name__ == '__main__':
     print 'Measured RT value data ', dart, ' +/- ', dauncrt, ' +/- ', dasystrt
     print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
     saveInFile(theFile, mcrt, mcuncrt, mcsystrt, dart, dauncrt, dasystrt)
-    makeTable(DATAnumeratorMlleevalue, DATAnumeratorMllmmvalue, DATAnumeratorMllOFvalue, DATAdenominatorMlleevalue, DATAdenominatorMllmmvalue, DATAdenominatorMllOFvalue, eevalda, mmvalda, emvalda, eevaldae, mmvaldae, emvaldae, "DATA")
-    makeTable(MCnumeratorMlleevalue, MCnumeratorMllmmvalue, MCnumeratorMllOFvalue, MCdenominatorMlleevalue, MCdenominatorMllmmvalue, MCdenominatorMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, "MC")
+    makeTable(DATAnumeratorMlleevalue, DATAnumeratorMllmmvalue, DATAnumeratorMllOFvalue, DATAdenominatorMlleevalue, DATAdenominatorMllmmvalue, DATAdenominatorMllOFvalue, eevalda, mmvalda, emvalda, eevaldae, mmvaldae, emvaldae, dart, dauncrt, dasystrt, "DATA")
+    makeTable(MCnumeratorMlleevalue, MCnumeratorMllmmvalue, MCnumeratorMllOFvalue, MCdenominatorMlleevalue, MCdenominatorMllmmvalue, MCdenominatorMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, mcrt, mcuncrt, mcsystrt, "MC")
     ######################## Calculation of total values #############################
 
     DATAeffMETee =  getTriggerEffs(DATAnumeratorMETee, DATAdenominatorMETee, "data")

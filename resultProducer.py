@@ -161,12 +161,8 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         treevar = 'lepsMll_Edge'
         xlabel = 'm_{ll} [GeV]'                    
         nbins = [20, 60, 86, 96, 150, 200, 300, 400]
-   # if isBlinded:
-   #     lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
-   #     pred  = 46.5; pred_e =14.92 
-   # else:
     lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-    pred = 126.1; pred_e =32.8
+    pred = 22.6; pred_e =13.1
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
     rinout1_stat = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[1]
@@ -215,7 +211,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     dy_shape.SetBinContent(6, pred*rinout5); dy_shape.SetBinError(6, pred*rinout5*math.sqrt((pred_e/pred)**2 + (rinout5_e/rinout1)**2))
     dy_shape.SetBinContent(7, pred*rinout6); dy_shape.SetBinError(7, pred*rinout6*math.sqrt((pred_e/pred)**2 + (rinout6_e/rinout1)**2))
     dy_shape.SetBinContent(8, pred*rinout7); dy_shape.SetBinError(8, pred*rinout7*math.sqrt((pred_e/pred)**2 + (rinout7_e/rinout1)**2))
-    plot_dy_shape = Canvas.Canvas('results/18.1invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
+    plot_dy_shape = Canvas.Canvas('results/36.4invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
     plot_dy_shape.addHisto(dy_shape  , 'HIST'       , 'Templates', 'PL', r.kBlack  , 1,  0)
     plot_dy_shape.save(1, 0, 0, lint)                            
     return  dy_shape                                                                                                                                  
@@ -223,8 +219,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
 
 def makeResultsTable(da, fs, dy,rare, mc, nll = ''):
     
-    line0 = '\\begin{tabular}{c c c c c }  '                                                               
-#    line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Total & Data \\\\ \hline  '                                                               
+    line0 = '\\begin{tabular}{c c c c c c}  '                                                               
     line2 = ' M_{ll} & Flavour symmetric & Drell-Yan & Rares & Total & Data \\\\ \hline  '                                                               
     print "making table ", nll
     if nll == "nllAbove21":
@@ -240,10 +235,11 @@ def makeResultsTable(da, fs, dy,rare, mc, nll = ''):
     # line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
     # line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
     # line9 = ' + 400  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),  mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
-    mllLabels = ['20-60 ', '60-86 ','onz', '96-150 ', '150-200','200-300','300-400']
+    mllLabels = ['20-60 ', '60-86 ','onz', '96-150 ', '150-200','200-300','300-400', '+400']
     lines = []
     print line0                                                                                                                                                      
     print line1                                                                                                                                                      
+    print line2                                                                                                                                                      
     for bin,mllLabel in enumerate(mllLabels):
         if mllLabel == 'onz': continue
         print '%s &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(mllLabel,
@@ -552,9 +548,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins = [20, 60, 86, 96, 150, 200, 300, 400]; xmin =1 ; xmax = 1; xlabel = 'm_{ll} [GeV]'
     if not specialcut:
         specialcut = specialcut 
-        #specialcut = specialcut + '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     else:
-        #specialcut = specialcut + '&&((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
         specialcut = specialcut 
     scan = Scans.Scan(analysis)
     mc_stack = r.THStack()
@@ -602,11 +596,13 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
+    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     # aesthetics
+    
+    rare.SetFillColorAlpha(r.kCyan+2, 0.8);rare.SetTitle("rares")
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");da_SF.SetTitle("data SF")       
-    # add different samples to stack and full mc histo 
     da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);
     rare_perGev = copy.deepcopy(rare)
     for ib in range(1,da_SF.GetNbinsX()+1):
@@ -625,8 +621,8 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     mc_stack.Draw()
     mc_stack_perGeV.Draw()
     #mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');
-    mc_stack_perGeV.GetXaxis().SetTitle(xlabel)
-    mc_full_e = copy.deepcopy(mc_full);mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV)
+    mc_stack_perGeV.GetXaxis().SetTitle('m_{ll} [GeV]');
+    mc_full_e = copy.deepcopy(mc_full);mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV);
     mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.);
     mc_full_perGeV_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_perGeV_e.SetFillStyle(3017); mc_full_perGeV_e.SetMarkerSize(0.);
     maxrat = 0.5
@@ -650,7 +646,6 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     plot_result.addHisto(da_SF                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
     makeResultsTable(da_SF, prediction, dy_shape, rare, mc_full, scutstring)
-    #makeResultsTable(da_SF, prediction, dy_shape, others, mc_full, scutstring)                                                                                                             
     plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s_perGeV'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack_perGeV, "HIST" , 1, 1)
     plot_result.addHisto(mc_full_perGeV_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
@@ -691,7 +686,7 @@ if __name__ == '__main__':
     wzDatasets = ['WZTo3LNu']
     ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
     raDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu',  'WWW', 'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'ZZTo2L2Q', 'WZTo2L2Q', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
     
                                                                                                                         
@@ -768,10 +763,7 @@ if __name__ == '__main__':
     ## ============================================================
     ## ========== set RSFOF globally ==============================
     ## ============================================================
-#    global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
-#    global rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc =  makeFactorsTable()
-#    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e, rmue_a_da, rmue_a_mc, rmue_b_da, rmue_b_mc
     ## result plots in different variables:
     for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
         makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
