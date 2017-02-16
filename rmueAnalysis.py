@@ -208,7 +208,7 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     da_string = 'Fit on data: (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(data_a,data_a_e, data_b, data_b_e)
     mc_string = 'Fit on MC:   (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(mc_a,mc_a_e, mc_b, mc_b_e)
 
-    plot_rmue_pt2 = Canvas.Canvas('rmue/%s_%s/plot_rmue_pT2_old'%(lumi_str, tag), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
+    plot_rmue_pt2 = Canvas.Canvas('rmue/%s_%s/plot_rmue_pT2'%(lumi_str, tag), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
     plot_rmue_pt2.addHisto(MCDYControlPT2, 'PE', 'MC', 'PL', r.kRed+1, 1, 0)
     plot_rmue_pt2.addHisto(DATADYControlPT2, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 1)
     plot_rmue_pt2.addHisto(fun_da, 'L,SAME', 'Fit - Data', 'L', r.kBlack, 1,2)
@@ -318,7 +318,7 @@ if __name__ == "__main__":
     print '#######################################################################' + bcolors.ENDC
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samplesOLD.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
     parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     (opts, args) = parser.parse_args()
 

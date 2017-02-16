@@ -596,33 +596,34 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
-    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
-    rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
+    rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto, cuts.lepsFromZ]), '', xlabel)
     # aesthetics
-    
-    rare.SetFillColorAlpha(r.kCyan+2, 0.8);rare.SetTitle("rares")
-    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");da_SF.SetTitle("data SF")       
-    da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);
-    rare_perGev = copy.deepcopy(rare)
+    rare.SetFillColorAlpha(r.kCyan+2, 0.8);rare.SetTitle("rares");
+    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");
+    prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");
+    da_SF.SetTitle("data SF")       
+    da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);rare_perGeV = copy.deepcopy(rare)
     for ib in range(1,da_SF.GetNbinsX()+1):
         da_perGeV.SetBinContent(ib,  da_SF.GetBinContent(ib)/(da_SF.GetBinLowEdge(ib+1)-da_SF.GetBinLowEdge(ib)))
         dy_perGeV.SetBinContent(ib,  dy_shape.GetBinContent(ib)/(dy_shape.GetBinLowEdge(ib+1)-dy_shape.GetBinLowEdge(ib)))
         fs_perGeV.SetBinContent(ib,  prediction.GetBinContent(ib)/(prediction.GetBinLowEdge(ib+1)-prediction.GetBinLowEdge(ib)))
-        rare_perGev.SetBinContent(ib, rare.GetBinContent(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))
+        rare_perGeV.SetBinContent(ib, rare.GetBinContent(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))                            
+        da_perGeV.SetBinError(ib,  da_SF.GetBinError(ib)/(da_SF.GetBinLowEdge(ib+1)-da_SF.GetBinLowEdge(ib)))
+        dy_perGeV.SetBinError(ib,  dy_shape.GetBinError(ib)/(dy_shape.GetBinLowEdge(ib+1)-dy_shape.GetBinLowEdge(ib)))
+        fs_perGeV.SetBinError(ib,  prediction.GetBinError(ib)/(prediction.GetBinLowEdge(ib+1)-prediction.GetBinLowEdge(ib)))
+        rare_perGeV.SetBinError(ib,  rare.GetBinError(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))
 
 
-    mc_stack.Add(dy_shape);     mc_stack_perGeV.Add(dy_perGeV) 
-    mc_full = copy.deepcopy(dy_shape);mc_full_perGeV =  copy.deepcopy(dy_perGeV)
-    mc_stack.Add(rare);         mc_stack_perGeV.Add(rare_perGev)
-    mc_full.Add(rare);          mc_full_perGeV.Add(rare_perGev)
-    mc_stack.Add(prediction); mc_full.Add(prediction, 1.)
-    mc_stack_perGeV.Add(fs_perGeV); mc_full_perGeV.Add(fs_perGeV, 1.) 
-    mc_stack.Draw()
-    mc_stack_perGeV.Draw()
-    #mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');
-    mc_stack_perGeV.GetXaxis().SetTitle('m_{ll} [GeV]');
-    mc_full_e = copy.deepcopy(mc_full);mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV);
+    mc_stack.Add(dy_shape);                        mc_stack_perGeV.Add(dy_perGeV); 
+    mc_stack.Add(rare);                            mc_stack_perGeV.Add(rare_perGeV);
+    mc_stack.Add(prediction);                      mc_stack_perGeV.Add(fs_perGeV); 
+    mc_stack.Draw();                               mc_stack_perGeV.Draw("SAME");
+    mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');  mc_stack_perGeV.GetXaxis().SetTitle('m_{ll} [GeV]');
+    mc_full = copy.deepcopy(dy_shape);             mc_full_perGeV =  copy.deepcopy(dy_perGeV);
+    mc_full.Add(prediction, 1.);                   mc_full_perGeV.Add(fs_perGeV, 1.); 
+    mc_full.Add(rare, 1.);                         mc_full_perGeV.Add(rare_perGeV, 1.); 
+    mc_full_e = copy.deepcopy(mc_full);            mc_full_perGeV_e = copy.deepcopy(mc_full_perGeV);
     mc_full_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_e.SetFillStyle(3017); mc_full_e.SetMarkerSize(0.);
     mc_full_perGeV_e.SetFillColorAlpha(r.kBlue+1, 0.8);mc_full_perGeV_e.SetFillStyle(3017); mc_full_perGeV_e.SetMarkerSize(0.);
     maxrat = 0.5
@@ -637,24 +638,24 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     da_perGeV.GetYaxis().SetRangeUser(0.1, 1.30*maxCont_perGeV)
     mc_stack.SetMaximum(1.3*maxCont)
     mc_stack_perGeV.SetMaximum(1.3*maxCont_perGeV)
-    SetOwnership(mc_stack, 0 );SetOwnership(da_SF, 0 );SetOwnership(mc_stack_perGeV, 0 );SetOwnership(da_perGeV, 0 )                                                                            
+    SetOwnership(mc_stack, 0);SetOwnership(da_SF, 0);SetOwnership(mc_stack_perGeV, 0);SetOwnership(da_perGeV, 0);SetOwnership(mc_full, 0); SetOwnership(mc_full_perGeV, 0);              
 
     print helper.bcolors.HEADER + '[result scaled by RSFOF for DATA] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack, "HIST" , 1, 1)
-    plot_result.addHisto(mc_full_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
-    plot_result.addHisto(da_SF                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
+    plot_result.addHisto(mc_full_e, 'E2,SAME'  , '' , 'PL', r.kBlack , 1, -1)
+    plot_result.addHisto(da_SF    , 'E1,SAME'  , 'observed data', 'PL', r.kBlack  , 1,  0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
     makeResultsTable(da_SF, prediction, dy_shape, rare, mc_full, scutstring)
     plot_result = Canvas.Canvas('results/%s/plot_result_%s_daPreddaObs%s_perGeV'%(newLumiString, var, '' if not scutstring else '_'+scutstring), 'png,pdf', 0.67, 0.59, 0.90, 0.85)
     plot_result.addStack(mc_stack_perGeV, "HIST" , 1, 1)
-    plot_result.addHisto(mc_full_perGeV_e, 'e2,same'  , ''         , 'PL', r.kBlack , 1, -1)
-    plot_result.addHisto(da_perGeV                , 'E1,SAME'    , 'observed data', 'PL', r.kBlack  , 1,  0)
-    plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full, 0. , int(maxrat+1.0)) 
-    
+    plot_result.addHisto(mc_full_perGeV_e, 'E2,SAME'  , ''  , 'PL', r.kBlack , 1, -1)
+    plot_result.addHisto(da_perGeV       , 'E1,SAME'  , 'observed data', 'PL', r.kBlack  , 1,  0)
+    plot_result.saveRatio(1, 1, 0, lint, da_perGeV, mc_full_perGeV, 0. , int(maxrat+1.0)) 
     
     if returnplot:
         return plot_result                                                                                                                                                                         
+        del mc_stack;da_SF;mc_stack_perGeV;da_perGeV;mc_full; mc_full_perGeV; 
 
 
 if __name__ == '__main__':
@@ -685,9 +686,12 @@ if __name__ == '__main__':
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
     ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
-    raDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
+    vvvDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
     fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'ZZTo2L2Q', 'WZTo2L2Q', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
-    mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets
+    
+    raDatasets = ['tZq_ll', 'TWZ','WZTo3LNu','ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu', 'TTZToLLNuNu', 'TTLLJets_m1to10','WWZ','WZZ', 'ZZZ']
+    
+    mcDatasets = fsDatasets+dyDatasets + vvvDatasets + zzDatasets + wzDatasets + ttzDatasets
     
                                                                                                                         
     daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
@@ -744,6 +748,7 @@ if __name__ == '__main__':
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
     treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0)
     treeRA = Sample.Tree(helper.selectSamples(opts.sampleFile, raDatasets, 'RA'), 'RA'  , 0)
+    treeVVV = Sample.Tree(helper.selectSamples(opts.sampleFile, vvvDatasets, 'VVV'), 'VVV'  , 0)
     treeWZ = Sample.Tree(helper.selectSamples(opts.sampleFile, wzDatasets, 'WZ'), 'WZ'  , 0)
     treeZZ = Sample.Tree(helper.selectSamples(opts.sampleFile, zzDatasets, 'ZZ'), 'ZZ'  , 0)
     treeTTZ = Sample.Tree(helper.selectSamples(opts.sampleFile, ttzDatasets, 'TTZ'), 'TTZ'  , 0)
