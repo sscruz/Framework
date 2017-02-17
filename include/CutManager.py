@@ -99,7 +99,7 @@ class CutManager:
       self.mll200_300= "lepsMll_Edge < 300. && lepsMll_Edge >= 200 "
       self.mll300_400= "lepsMll_Edge < 400. && lepsMll_Edge >= 300 "
       self.mll400= "lepsMll_Edge >= 400 "
-      self.ZmassExtended = "lepsMll_Edge >= 61 && lepsMll_Edge < 121"
+      self.ZmassExtended = "lepsMll_Edge >= 60 && lepsMll_Edge < 120"
       self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
       self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
@@ -127,10 +127,10 @@ class CutManager:
  
       self.DYControlRegion = self.AddList([self.goodLepton, self.METl50, self.nj2, self.ZmassExtended])
       self.DYControlRegionNoJet = self.AddList([self.goodLepton, self.METl50, self.ZmassExtended])
-      self.DYControlRegionNoMllNoNJet = self.AddList([self.goodLepton, self.METl50, self.mT2_80])
-      self.DYControlRegionNoMll = self.AddList([self.goodLepton, self.METl50, self.nj2, self.mT2_80])
+      self.DYControlRegionNoMllNoNJet = self.AddList([self.goodLepton, self.METl50])
+      self.DYControlRegionNoMll = self.AddList([self.goodLepton, self.METl50, self.nj2])
       self.DYControlRegionNoMET = self.AddList([self.goodLepton, self.nj2, self.ZmassExtended])
-      self.DYControlRegionNoMllNoMET = self.AddList([self.goodLepton, self.nj2, self.mT2_80])
+      self.DYControlRegionNoMllNoMET = self.AddList([self.goodLepton, self.nj2])
 
       self.Edge20Mll60   = '(lepsMll_Edge < 60)'                                              
       self.Edge60Mll86   = '(lepsMll_Edge > 60 ) && (lepsMll_Edge < 86 )'

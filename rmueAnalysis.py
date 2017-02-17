@@ -152,31 +152,31 @@ def getFactor(rmue, rmue_err, rmue_err_syst):
 
 def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
-    MCDYControlMllee =         treeMC.getTH1F(lumi, "MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
-    MCDYControlMllmm =         treeMC.getTH1F(lumi, "MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
-    DATADYControlMllee =       treeDA.getTH1F(lumi, "DATADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
-    DATADYControlMllmm =       treeDA.getTH1F(lumi, "DATADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
-    MCDYControlMlleevalue =    treeMC.getTH1F(lumi, "MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
-    MCDYControlMllmmvalue =    treeMC.getTH1F(lumi, "MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
-    DATADYControlMlleevalue =  treeDA.getTH1F(lumi, "DATADYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
-    DATADYControlMllmmvalue =  treeDA.getTH1F(lumi, "DATADYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
-    MCDYControlMETee =         treeMC.getTH1F(lumi, "MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
-    MCDYControlMETmm =         treeMC.getTH1F(lumi, "MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
-    DATADYControlMETee =       treeDA.getTH1F(lumi, "DATADYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
-    DATADYControlMETmm =       treeDA.getTH1F(lumi, "DATADYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
-    MCDYControlJetee =         treeMC.getTH1F(lumi, "MCDYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
-    MCDYControlJetmm =         treeMC.getTH1F(lumi, "MCDYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
-    DATADYControlJetee =       treeDA.getTH1F(lumi, "DATADYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
-    DATADYControlJetmm =       treeDA.getTH1F(lumi, "DATADYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
-    MCDYControlmt2ee =         treeMC.getTH1F(lumi, "MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
-    MCDYControlmt2mm =         treeMC.getTH1F(lumi, "MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
-    DATADYControlmt2ee =       treeDA.getTH1F(lumi, "DATADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
-    DATADYControlmt2mm =       treeDA.getTH1F(lumi, "DATADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
+    MCDYControlMllee =       treeMC.getTH1F(lumi,"MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    MCDYControlMllmm =       treeMC.getTH1F(lumi,"MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    DATADYControlMllee =     treeDA.getTH1F(lumi,"DATADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    DATADYControlMllmm =     treeDA.getTH1F(lumi,"DATADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    MCDYControlMlleevalue =  treeMC.getTH1F(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion, cuts.ee]), '', labelx)
+    MCDYControlMllmmvalue =  treeMC.getTH1F(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion, cuts.mm]), '', labelx)
+    DATADYControlMlleevalue =treeDA.getTH1F(lumi,"DATADYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.ee]), '', labelx)
+    DATADYControlMllmmvalue =treeDA.getTH1F(lumi,"DATADYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.mm]), '', labelx)
+    MCDYControlMETee =       treeMC.getTH1F(lumi,"MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    MCDYControlMETmm =       treeMC.getTH1F(lumi,"MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    DATADYControlMETee =     treeDA.getTH1F(lumi,"DATADYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    DATADYControlMETmm =     treeDA.getTH1F(lumi,"DATADYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    MCDYControlJetee =       treeMC.getTH1F(lumi,"MCDYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    MCDYControlJetmm =       treeMC.getTH1F(lumi,"MCDYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+    DATADYControlJetee =     treeDA.getTH1F(lumi,"DATADYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    DATADYControlJetmm =     treeDA.getTH1F(lumi,"DATADYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+    MCDYControlmt2ee =       treeMC.getTH1F(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
+    MCDYControlmt2mm =       treeMC.getTH1F(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
+    DATADYControlmt2ee =     treeDA.getTH1F(lumi,"DATADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
+    DATADYControlmt2mm =     treeDA.getTH1F(lumi,"DATADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
 
     MCDYControlPT2ee =    treeMC.getTH1F(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.ee]), '', labelpt2)
     MCDYControlPT2mm =    treeMC.getTH1F(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.mm]), '', labelpt2)
-    DATADYControlPT2ee =  treeDA.getTH1F(lumi, "DATADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.DYControlRegion, cuts.ee]), '', labelpt2)
-    DATADYControlPT2mm =  treeDA.getTH1F(lumi, "DATADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.DYControlRegion, cuts.mm]), '', labelpt2)
+    DATADYControlPT2ee =  treeDA.getTH1F(lumi, "DATADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.ee]), '', labelpt2)
+    DATADYControlPT2mm =  treeDA.getTH1F(lumi, "DATADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.mm]), '', labelpt2)
 
     
     print "got all TH1Fs" 
@@ -191,8 +191,8 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     MCDYControlmt2 =           make_rmue(MCDYControlmt2mm, MCDYControlmt2ee)
     DATADYControlmt2 =         make_rmue(DATADYControlmt2mm, DATADYControlmt2ee)
 
-    DATADYControlPT2   =         make_rmue(DATADYControlPT2mm, DATADYControlPT2ee)
-    MCDYControlPT2 =         make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
+    DATADYControlPT2   =       make_rmue(DATADYControlPT2mm, DATADYControlPT2ee)
+    MCDYControlPT2 =           make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
 
 
     print 'fits to pt2'
