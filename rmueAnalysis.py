@@ -36,13 +36,13 @@ class bcolors:
     UNDERLINE = '\033[4m' 
 
 
-def makeTable(MCmm, MCee, DATAmm, DATAee, MCrmue, MCrmueUnc, MCrmueUncSyst, DATArmue, DATArmueUnc, DATArmueUncSyst):
+def makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b, mc_b_e, data_b, data_b_e):
     line0 = '  \hline'
     line1 = '  Data &' 
     line2 = '  MC   &' 
-    line0 += ' & $\mathrm{N_{\mu\mu}}$  & $\mathrm{N_{ee}}$ & $\mathrm{r_{\mu e } \pm \sigma_{stat} \pm \sigma_{syst}}$ \\\\'
-    line1 += ' %.f & %.f &    %.2f $\\pm$ %.2f $\\pm$ %.2f      %s' %(DATAmm.Integral(), DATAee.Integral(), DATArmue  , DATArmueUnc  , DATArmueUncSyst,  '\\\\')
-    line2 += ' %.f & %.f &    %.2f $\\pm$ %.2f $\\pm$ %.2f      %s' %(MCmm.Integral(), MCee.Integral(), MCrmue  , MCrmueUnc  , MCrmueUncSyst,  '\\\\')
+    line0 += ' & A & B & '
+    line1 += ' %.4f $\\pm$ %.4f& %.4f $\\pm$ %.4f   %s' %(data_a, data_a_e, data_b, data_b_e , '\\\\')
+    line2 += ' %.4f $\\pm$ %.4f& %.4f $\\pm$ %.4f   %s' %(mc_a, mc_a_e, mc_b, mc_b_e ,  '\\\\')
     line0 += '\\hline'; line2 += '\\hline';
 
     helper.ensureDirectory('plots/rmue/%s/'%lumi_str)
@@ -152,31 +152,31 @@ def getFactor(rmue, rmue_err, rmue_err_syst):
 
 def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
-    MCDYControlMllee =         treeMC.getTH1F(lumi, "MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
-    MCDYControlMllmm =         treeMC.getTH1F(lumi, "MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
-    DATADYControlMllee =       treeDA.getTH1F(lumi, "DATADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
-    DATADYControlMllmm =       treeDA.getTH1F(lumi, "DATADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
-    MCDYControlMlleevalue =    treeMC.getTH1F(lumi, "MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
-    MCDYControlMllmmvalue =    treeMC.getTH1F(lumi, "MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
-    DATADYControlMlleevalue =  treeDA.getTH1F(lumi, "DATADYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegion, cuts.ee]), '', labelx)
-    DATADYControlMllmmvalue =  treeDA.getTH1F(lumi, "DATADYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegion, cuts.mm]), '', labelx)
-    MCDYControlMETee =         treeMC.getTH1F(lumi, "MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
-    MCDYControlMETmm =         treeMC.getTH1F(lumi, "MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
-    DATADYControlMETee =       treeDA.getTH1F(lumi, "DATADYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
-    DATADYControlMETmm =       treeDA.getTH1F(lumi, "DATADYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
-    MCDYControlJetee =         treeMC.getTH1F(lumi, "MCDYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
-    MCDYControlJetmm =         treeMC.getTH1F(lumi, "MCDYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
-    DATADYControlJetee =       treeDA.getTH1F(lumi, "DATADYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
-    DATADYControlJetmm =       treeDA.getTH1F(lumi, "DATADYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
-    MCDYControlmt2ee =         treeMC.getTH1F(lumi, "MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
-    MCDYControlmt2mm =         treeMC.getTH1F(lumi, "MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
-    DATADYControlmt2ee =       treeDA.getTH1F(lumi, "DATADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
-    DATADYControlmt2mm =       treeDA.getTH1F(lumi, "DATADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.trigger, cuts.goodLepton, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
+    MCDYControlMllee =       treeMC.getTH1F(lumi,"MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    MCDYControlMllmm =       treeMC.getTH1F(lumi,"MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    DATADYControlMllee =     treeDA.getTH1F(lumi,"DATADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.ee]), '', labelx)
+    DATADYControlMllmm =     treeDA.getTH1F(lumi,"DATADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll, cuts.mm]), '', labelx)
+    MCDYControlMlleevalue =  treeMC.getTH1F(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion, cuts.ee]), '', labelx)
+    MCDYControlMllmmvalue =  treeMC.getTH1F(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion, cuts.mm]), '', labelx)
+    DATADYControlMlleevalue =treeDA.getTH1F(lumi,"DATADYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.ee]), '', labelx)
+    DATADYControlMllmmvalue =treeDA.getTH1F(lumi,"DATADYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.mm]), '', labelx)
+    MCDYControlMETee =       treeMC.getTH1F(lumi,"MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    MCDYControlMETmm =       treeMC.getTH1F(lumi,"MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    DATADYControlMETee =     treeDA.getTH1F(lumi,"DATADYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.ee]), '', labelmet)
+    DATADYControlMETmm =     treeDA.getTH1F(lumi,"DATADYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET, cuts.mm]), '', labelmet)
+    MCDYControlJetee =       treeMC.getTH1F(lumi,"MCDYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    MCDYControlJetmm =       treeMC.getTH1F(lumi,"MCDYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+    DATADYControlJetee =     treeDA.getTH1F(lumi,"DATADYControlJetee", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelnjet)
+    DATADYControlJetmm =     treeDA.getTH1F(lumi,"DATADYControlJetmm", "nJetSel_Edge", 10, 0, 10, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelnjet)
+    MCDYControlmt2ee =       treeMC.getTH1F(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
+    MCDYControlmt2mm =       treeMC.getTH1F(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
+    DATADYControlmt2ee =     treeDA.getTH1F(lumi,"DATADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
+    DATADYControlmt2mm =     treeDA.getTH1F(lumi,"DATADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
 
     MCDYControlPT2ee =    treeMC.getTH1F(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.ee]), '', labelpt2)
     MCDYControlPT2mm =    treeMC.getTH1F(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.mm]), '', labelpt2)
-    DATADYControlPT2ee =  treeDA.getTH1F(lumi, "DATADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.DYControlRegion, cuts.ee]), '', labelpt2)
-    DATADYControlPT2mm =  treeDA.getTH1F(lumi, "DATADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.trigger, cuts.DYControlRegion, cuts.mm]), '', labelpt2)
+    DATADYControlPT2ee =  treeDA.getTH1F(lumi, "DATADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.ee]), '', labelpt2)
+    DATADYControlPT2mm =  treeDA.getTH1F(lumi, "DATADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.mm]), '', labelpt2)
 
     
     print "got all TH1Fs" 
@@ -191,8 +191,8 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     MCDYControlmt2 =           make_rmue(MCDYControlmt2mm, MCDYControlmt2ee)
     DATADYControlmt2 =         make_rmue(DATADYControlmt2mm, DATADYControlmt2ee)
 
-    DATADYControlPT2   =         make_rmue(DATADYControlPT2mm, DATADYControlPT2ee)
-    MCDYControlPT2 =         make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
+    DATADYControlPT2   =       make_rmue(DATADYControlPT2mm, DATADYControlPT2ee)
+    MCDYControlPT2 =           make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
 
 
     print 'fits to pt2'
@@ -256,11 +256,11 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
         saveInFile(ingredientsFile, factorMCrmuemeasured, factorMCrmuemeasuredUnc, factorMCrmuemeasuredUncSyst, factorDATArmuemeasured, factorDATArmuemeasuredUnc, factorDATArmuemeasuredUncSyst, 'factor')
         saveInFile(ingredientsFile, mc_a, 0., mc_a_e, data_a, 0., data_a_e,  'coeffA')
         saveInFile(ingredientsFile, mc_b, 0., mc_b_e, data_b, 0., data_b_e,  'coeffB')
+        makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b,mc_b_e, data_b, data_b_e)
     MCDYControlPT2.Fit('fun_mc','rQ')
     mc_a = fun_mc.GetParameter(0); mc_a_e = fun_mc.GetParError(0)
     mc_b = fun_mc.GetParameter(1); mc_b_e = fun_mc.GetParError(1)
       
-    makeTable(MCDYControlMllmm, MCDYControlMllee, DATADYControlMllmm, DATADYControlMllee, MCrmuemeasured, MCrmuemeasuredUnc, MCrmuemeasuredUncSyst, DATArmuemeasured, DATArmuemeasuredUnc, DATArmuemeasuredUncSyst)
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing plots...' + bcolors.ENDC
     plot_rmue_mll = Canvas.Canvas('rmue/%s_%s/plot_rmue_mll'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
     plot_rmue_mll.addHisto(MCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
@@ -308,7 +308,7 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     plot_factor_mt2.addHisto(factorDATADYControlmt2, 'PE,SAME', 'DATA', 'PL', r.kBlack , 1, 0)
     plot_factor_mt2.addBand(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDATArmuemeasured-factorDATArmuemeasuredUncTot, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDATArmuemeasured+factorDATArmuemeasuredUncTot, r.kGreen, 0.2)
     plot_factor_mt2.addLine(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDATArmuemeasured, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDATArmuemeasured,r.kGreen)
-    plot_factor_mt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                                                                                                                                                 
+    plot_factor_mt2.save(1, 1, 0, lumi, 0.2, 1.8)                   
 
 if __name__ == "__main__":
 
@@ -324,14 +324,16 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ','ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'WZTo2L2Q','TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTWToQQ',  'TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
+    mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
  
 
     daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',
+                   'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
 
     daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',

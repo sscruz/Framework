@@ -104,7 +104,6 @@ class Sample:
          #addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
          #cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
          cut = cut + "* (" + extraWeight +")"
-
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):

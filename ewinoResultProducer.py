@@ -471,7 +471,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     if region == "TChiZH":
         regioncut =  cuts.ewinoZHExtMll
         bins = [50.0, 100.0, 150.0, 250.0]
-    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
+    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     ## mll distributions
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
@@ -560,8 +560,6 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     scan = Scans.Scan(analysis)
     lint = 36.4
     print "Doing region: ", region
-    #kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = makeTheFactors()
-    kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
     kappa_da, kappa_da_e, kappa_mc, kappa_mc_e = 0.065, 0.01, 0.065, 0.01
@@ -629,18 +627,12 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)       
     
     
-    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF, cuts.trigger]), '', xlabel)
-    ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
-    ra_OF = treeRA.getTH1F(lint, var+"ra_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
-    ttz_OF = treeTTZ.getTH1F(lint, var+"ttz_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    vvv_SF = treeVVV.getTH1F(lint, var+"vvv_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
-    vvv_OF = treeVVV.getTH1F(lint, var+"vvv_OF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
-    zz_OF = treeZZ.getTH1F(lint, var+"zz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
-    wz_OF = treeWZ.getTH1F(lint, var+"wz_OF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
-    ra_SF.Add(ra_OF, -1.) ;zz_SF.Add(zz_OF, -1.) ;wz_SF.Add(wz_OF, -1.) ;ttz_SF.Add(ttz_OF, -1.)    ;vvv_SF.Add(vvv_OF, -1.)                                                                               
+    da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    ra_SF = treeRA.getTH1F(lint, var+"ra_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.lepsFromZ, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.lepsFromZ, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    vvv_SF = treeVVV.getTH1F(lint, var+"vvv_SF"+scutstring, treevar, bins, 1,1, cuts.AddList([specialcut, cuts.lepsFromZ, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.lepsFromZ, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
+    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    bins, 1,1, cuts.AddList([specialcut, cuts.lepsFromZ, cuts.Zmass, cuts.goodLepton, regioncut, cuts.SF]), '', xlabel)
     da_SF.SetTitle("data SF")
     vvv_SF.SetFillColorAlpha(r.kGreen-3, 0.8);vvv_SF.SetTitle("VVV");vvv_SF.SetLineColor(r.kBlack)
     ra_SF.SetFillColorAlpha(r.kGreen-5, 0.8);ra_SF.SetTitle("rares");ra_SF.SetLineColor(r.kBlack)
@@ -674,7 +666,6 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     plot_result.addHisto(mc_full_e, 'e2,same'  , '', 'PL', r.kBlack , 1, -1)
     plot_result.addHisto(da_SF, 'E1, SAME', 'data SF' , 'P', r.kBlack , 1, 0)
     plot_result.saveRatio(1, 1, 0, lint, da_SF, mc_full) 
-    #makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, region )
     makeResultsTable(da_SF, da_OF_fmllScaled, dy_shape, zz_SF, wz_SF, ttz_SF, ra_SF, vvv_SF, region )
 
     #### for the datacards
@@ -693,7 +684,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         makeSimpleTable(plot_result, addRares)
     if returnplot:
         return plot_result
-    del da_SF, ra_SF, ra_OF, ttz_OF, ttz_SF, zz_SF, zz_OF, wz_SF, wz_OF, dy_shape, vvv_SF
+    del da_SF, ra_SF, ttz_SF, zz_SF, wz_SF, dy_shape, vvv_SF
 
 def makePlotsCombinedSR(srlist):
     for i,sR in enumerate(srlist):
@@ -733,12 +724,12 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTJets_DiLepton', 'WWTo2L2Nu', 'WWW', 'TTWToQQ', 'VHToNonbb',  'TTHnobb_pow',  'TTJets_SingleLeptonFromTbar','TTTT',  'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg',  'WJetsToLNu_LO']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'ZZTo2L2Q', 'WZTo2L2Q', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
     ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
+    raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
-    raDatasets = ['tZq_ll', 'TWZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
     
     
@@ -746,7 +737,9 @@ if __name__ == '__main__':
                    'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
                    'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',
+                   'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
+                   'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
     
     daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
