@@ -599,9 +599,9 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
     rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto, cuts.lepsFromZ]), '', xlabel)
     # aesthetics
-    rare.SetFillColorAlpha(r.kCyan+2, 0.8);rare.SetTitle("rares");
-    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates");
-    prediction.SetFillColorAlpha(r.kRed-9, 0.8);prediction.SetTitle("FS");
+    rare.SetFillColorAlpha(r.kCyan+2, 0.7);rare.SetTitle("rares");rare.SetLineColor(r.kBlack)
+    dy_shape.SetFillColorAlpha(r.kYellow-9, 0.7);dy_shape.SetTitle("E_{T}^{miss} templates");
+    prediction.SetFillColorAlpha(r.kRed-9, 0.7);prediction.SetTitle("FS");
     da_SF.SetTitle("data SF")       
     da_perGeV = copy.deepcopy(da_SF); dy_perGeV = copy.deepcopy(dy_shape);fs_perGeV = copy.deepcopy(prediction);rare_perGeV = copy.deepcopy(rare)
     for ib in range(1,da_SF.GetNbinsX()+1):
