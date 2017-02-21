@@ -11,6 +11,7 @@ class sms():
         if modelname.find("T5ttttDM175") != -1: self.T5ttttDM175()
         if modelname.find("T1bbbb") != -1: self.T1bbbb()
         if modelname.find("T1qqqq") != -1: self.T1qqqq()
+        if modelname.find("TChiWZ") != -1: self.TChiWZ()
 
 
     def T6bbslepton(self):
@@ -35,6 +36,31 @@ class sms():
         self.diagOn = True
         self.diagX = array('d',[400,600,900])
         self.diagY = array('d',[212.5,412.5,712.5])
+
+    def TChiWZ(self):
+        # model name
+        self.modelname = "TChiWZ"
+        # decay chain
+        #lsp_s = "#lower[-0.12]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}"
+        self.label= "pp #rightarrow #tilde{#chi}^{#pm}_{1}#tilde{#chi}^{0}_{2}; #tilde{#chi}^{2}_{0} #rightarrow Z + #tilde{#chi}^{1}_{0}, #tilde{#chi}^{#pm}_{1} #rightarrow W^{#pm} + #tilde{#chi}^{0}_{1}"
+        self.label2= ""
+        # scan range to plot
+        self.Xmin = 100.
+        self.Xmax = 700.
+        self.Ymin = 25.
+        self.Ymax = 300.
+        self.Zmin = 0.01
+        self.Zmax = 0.5
+        # produce sparticle
+        self.sParticle = "m(#tilde{#chi}_{2}^{0}) = m(#tilde{#chi}_{1}^{#pm}) [GeV]"
+        # LSP
+        self.LSP = "m(#tilde{#chi}^{0}_{1}) [GeV]"
+        # turn off diagonal lines
+        self.diagOn = False
+        self.diagX = array('d',[400,600,900])
+        self.diagY = array('d',[212.5,412.5,712.5])
+
+
 
     def T6bbsleptonMET150(self):
         # model name

@@ -78,7 +78,7 @@ class smsPlotABS(object):
         graphWhite.SetLineWidth(3)
         graphWhite.SetPoint(0,self.model.Xmin, self.model.Ymax)
         graphWhite.SetPoint(1,self.model.Xmax, self.model.Ymax)
-        if(self.model.label2 == ""):
+        if(self.model.label2 == "" and self.model.modelname != "TChiWZ"):
             graphWhite.SetPoint(2,self.model.Xmax, self.model.Ymax*0.75)
             graphWhite.SetPoint(3,self.model.Xmin, self.model.Ymax*0.75)
         else:
@@ -104,8 +104,8 @@ class smsPlotABS(object):
         textCMS.Draw()
         self.c.textCMS = textCMS
         # MODEL LABEL
-        if(self.model.label2 == ""):
-            textModelLabel= rt.TLatex(0.15,0.90,"%s   NLO+NLL exclusion" %self.model.label)
+        if(self.model.label2 == "" and self.model.modelname != "TChiWZ"):
+            textModelLabel= rt.TLatex(0.15,0.90,"%s NLO+NLL exclusion" %self.model.label)
             textModelLabel.SetNDC()
             textModelLabel.SetTextAlign(13)
             textModelLabel.SetTextFont(42)
@@ -120,7 +120,10 @@ class smsPlotABS(object):
             textModelLabel.SetTextSize(0.035)
             textModelLabel.Draw()
             self.c.textModelLabel = textModelLabel
-            textModelLabel2= rt.TLatex(0.15,0.845,"%s    NLO+NLL exclusion" %self.model.label2)
+            if self.model.modelname == "TChiWZ":
+                textModelLabel2= rt.TLatex(0.15,0.845,"%sNLO+NLL exclusion" %self.model.label2)
+            else:
+                textModelLabel2= rt.TLatex(0.15,0.845,"%s  NLO+NLL exclusion" %self.model.label2)
             textModelLabel2.SetNDC()
             textModelLabel2.SetTextAlign(13)
             textModelLabel2.SetTextFont(42)
@@ -128,7 +131,7 @@ class smsPlotABS(object):
             textModelLabel2.Draw()
             self.c.textModelLabel2 = textModelLabel2
         # NLO NLL XSEC
-        textNLONLL= rt.TLatex(0.16,0.32,"NLO-NLL exclusion")
+        textNLONLL= rt.TLatex(0.14,0.32,"NLO-NLL exclusion")
         textNLONLL.SetNDC()
         textNLONLL.SetTextAlign(13)
         textNLONLL.SetTextFont(42)
@@ -141,10 +144,10 @@ class smsPlotABS(object):
         self.c.SaveAs("%s.pdf" %label)
         
     def DrawLegend(self):
-        if(self.model.label2 == ""):
+        if(self.model.label2 == "" and self.model.modelname != "TChiWZ"):
             offset = 0
         else:
-            offset = -50
+            offset = -20
         xRange = self.model.Xmax-self.model.Xmin
         yRange = self.model.Ymax-self.model.Ymin
         

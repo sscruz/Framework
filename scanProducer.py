@@ -1,8 +1,8 @@
 import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse, copy, re, array, os, pickle
+import random, string
 
-import include.nll
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -12,7 +12,9 @@ import include.Tables     as Tables
 import include.Scans      as Scans
 import include.LeptonSF 
 
-#import include.nll
+import subprocess
+
+import include.nll
 
 from multiprocessing import Pool
 
@@ -55,6 +57,7 @@ El    lnN           XXElXX             -             -          -
 Mu    lnN           XXMuXX             -             -          -
 FastSimEl   lnN     XXFastSimElXX      -             -          -
 FastSimMu   lnN     XXFastSimMuXX      -             -          -
+PU    lnN           XXPUXX            -             -          - 
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
@@ -62,7 +65,7 @@ genMet lnU              XXgenMetXX     -             -          -
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            1.4        - 
 otherSys lnN         -                  -            -          1.5
-lumi   lnN             1.2              -            -          - 
+lumi   lnN             1.026              -            -          - 
 '''.format(obs = tt.GetBinContent(tt.FindBin(SR)) + dy.GetBinContent(dy.FindBin(SR)), 
            fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), other=0., 
            label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))))
@@ -87,13 +90,14 @@ El    lnN           XXElXX            -               -
 Mu    lnN           XXMuXX            -               -
 FastSimEl   lnN     XXFastSimElXX     -              - 
 FastSimMu   lnN     XXFastSimMuXX     -              -
+PU    lnN           XXPUXX            -             -          - 
 SigTrig  lnN          1.05             -               -
 bHe   lnN           XXbHeXX            -               -
 bLi   lnN           XXbLiXX            -               -
 genMet lnU              XXgenMetXX         -               - 
 signalMCstats_{label} lnN    XXmcStatXX       -                -
 dySys  lnN           -                  -            1.4
-lumi   lnN             1.2            -               -
+lumi   lnN             1.026            -               -
 '''.format(obs = tt.GetBinContent(tt.FindBin(SR)) + dy.GetBinContent(dy.FindBin(SR)), 
            fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), 
            label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))))
@@ -107,6 +111,8 @@ lumi   lnN             1.2            -               -
     # shapes.Close()
     
 def makeDataCardsFromRootFile():
+    print 20*"#"
+    print "Making datacard from rootfile"
     rootfile = TFile.Open('datacards/forDatacards_%s.root'%scan.name)
     da_SF    = rootfile.Get('da_SF'   )
     da_OF    = rootfile.Get('da_OF'   )
@@ -130,19 +136,21 @@ rate         XXSIGRATEXX    {fs}           {DY}       {other}
 ----------------------------------------------------------------------------------------------------------------------------------
 fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
 fs_unc lnN             -            {tf_e}             -          -
-jec   lnN           XXjecXX            -             -          -
+#jec   lnN           XXjecXX            -             -          -
 El    lnN           XXElXX             -             -          -
 Mu    lnN           XXMuXX             -             -          -
-FastSimEl   lnN     XXFastSimElXX      -             -          -
-FastSimMu   lnN     XXFastSimMuXX      -             -          -
+#FastSimEl   lnN     XXFastSimElXX      -             -          -
+#FastSimMu   lnN     XXFastSimMuXX      -             -          -
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
-genMet lnU              XXgenMetXX     -             -          - 
+PU    lnN           XXPUXX            -             -          - 
+genMet lnU              XXgenMetXX     -             -          -
+ISR   lnN              XXISRXX     -             -          - 
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            {dy_e}        - 
 otherSys lnN         -                  -            -          1.3
-lumi   lnN             1.062              -            -          - 
+lumi   lnN             1.026              -            -          - 
 '''.format(label = label, 
            obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
            fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
@@ -150,20 +158,47 @@ lumi   lnN             1.062              -            -          -
            other = mc_full.GetBinContent(SR+2),
            fs_int = int(da_OF.GetBinContent(SR+2)),
            tf = tf_CR_SR.GetBinContent(SR+2),
-           tf_e = tf_CR_SR.GetBinError(SR+2),
+           tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
            dy_e = 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinError(SR+1))
+        print da_SF.GetBinContent(SR+2)
+
         outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
         outputFile.write(datacard)
         outputFile.close()
 
 
+
+# def runCmd(cmd):
+#     print cmd[2]
+#     os.chdir (cmd[2])
+#     print cmd[0]
+#     os.system(cmd[0])
+#     print cmd[1]
+#     os.system(cmd[1])
+#     return True
 def runCmd(cmd):
-    print cmd[2]
-    os.chdir (cmd[2])
-    print cmd[0]
-    os.system(cmd[0])
-    print cmd[1]
-    os.system(cmd[1])
+    command = '''#!/bin/sh                                                                             
+export SCRAM_ARCH=slc6_amd64_gcc530                                                                                 
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch                                                                             
+source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
+export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
+cmsenv                                                                                                              
+cd /afs/cern.ch/work/s/sesanche/private/Edge/produceLimits/CMSSW_7_1_5/src/                                         
+cmsenv\n'''                                                                                            
+    command = command+'cd ' + cmd[2] + '\n'
+    command = command+cmd[0] + '\n'
+    command = command+cmd[1] + '\n'
+    randomHash = ''.join(random.choice(string.ascii_uppercase+string.digits) for _ in range(15))
+    fil = open('command'+randomHash + '.sh','w')
+    fil.write(command)
+    fil.close()
+    # running command
+    cmd2 = '%s/%s'%(os.getcwd(),'command'+randomHash + '.sh')
+    os.chmod(cmd2, 0o755)
+    subprocess.call(cmd2,shell=True)
+    os.system('rm command'+randomHash + '.sh')
+
+
     return True
 
 
@@ -184,7 +219,7 @@ def produceLimits( njobs ):
         dc_name    = '{fd}/datacard_{suffix}.txt'.format(fd=fd,suffix=d)
         runcmd = 'combineCards.py -S {bstr} > {final_dc}'.format(bstr=srCards,final_dc=dc_name)
         combinecmd = 'combine -m {mass} -M Asymptotic {dc_name}'.format(mass=mass,dc_name=dc_name)
-        print runcmd
+#        print runcmd
         tasks.append([runcmd,combinecmd, fd])
     pool.map(runCmd, tasks)
     print 'hadding everything'
@@ -230,10 +265,9 @@ def getEffMapsSys(sys):
                                scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '',
                                scan.xtitle, scan.ytitle, scan.ztitle, 
                                extraWeightsForSys[sys])
-    print effMap.GetBinContent(effMap.FindBin(125.,25.,0.))
-    print scan.ngen_3d.GetBinContent(scan.ngen_3d.FindBin(125.,25.,0.))
+    effMap.GetXaxis().GetBinCenter(1)
+    print effMap.Integral()
     effMap.Divide(scan.ngen_3d)
-    print effMap.GetBinContent(effMap.FindBin(125.,25.,0.))
     return effMap
 
 def getSREffMaps():
@@ -306,7 +340,7 @@ def PutHistosIntoRootFiles():
                         print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
                         itsOk = False
 
-                if not itsOk: continue
+#                if not itsOk: continue
                 for sys in scan.SysString.split():
                     var = sysHistos[sys]  .GetBinContent(sysHistos[sys]  .FindBin(SR))
                     nom= sysHistos['']    .GetBinContent(sysHistos['']   .FindBin(SR))
@@ -402,6 +436,8 @@ if __name__ == "__main__":
                          'MuDown' : [],
                          'PUUp'   : [],
                          'PUDown' : [],
+                         'ISRUp'  : [],
+                         'ISRDown': [],
                          'genMet' : [['met_Edge','genMet_Edge'],
                                      ['nll_Edge','nll_genMet_Edge']]}
     
@@ -422,6 +458,8 @@ if __name__ == "__main__":
                           'MuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
                           'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
+                          'ISRUp'     : 'ISRweight_Up_Edge / ISRweight_Edge',
+                          'ISRDown'   : 'ISRweight_Dn_Edge / ISRweight_Edge',
                           'genMet'    : '1'}
 
 
@@ -473,7 +511,7 @@ if __name__ == "__main__":
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
         print 'fix this'
-        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU'
+        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU ISR'
         scan.SysString = 'genMet'
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
@@ -516,5 +554,5 @@ if __name__ == "__main__":
     scan.makePrettyPlots()
 
     ## save the scan object in a pickle file to save time the second time around.
-    pickle.dump(scan, open('datacards/datacards_{name}/{name}/{name}.pkl'.format(name=scan.name),'w') )
+    #pickle.dump(scan, open('datacards/datacards_{name}/{name}/{name}.pkl'.format(name=scan.name),'w') )
     print 'marc is stupid'

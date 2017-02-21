@@ -123,11 +123,12 @@ class Scan(object):
             self.datasets = ['TChiWZ']
             self.xbins = binning(100,700,25)
             self.ybins = binning(0,300,25)
+            self.br    = 0.102
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
             print 'volver a meter el central jets cleaning!!!!!!'
             print 20*'#######################'
-            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -254,8 +255,8 @@ class Scan(object):
                 self.xsecs[key][0] = self.xsecs[key][0]*1000.
                 self.xsecs[key][1] = self.xsecs[key][0]*0.01*self.xsecs[key][1]
 
-            self.xsec_histo.SetBinContent(self.xsec_histo.FindBin(key), value[0])
-            self.xsec_histo.SetBinError  (self.xsec_histo.FindBin(key), value[1]) ## it's a percent value
+#            self.xsec_histo.SetBinContent(self.xsec_histo.FindBin(key), value[0])
+#            self.xsec_histo.SetBinError  (self.xsec_histo.FindBin(key), value[1]) ## it's a percent value
 
     def makeExclusion(self):
         print 'making the exclusions!!'
@@ -298,6 +299,7 @@ class Scan(object):
         for point in limittree:
             mass      = str(int(point.mh))
             massx     = int(mass[:3]); massy = int(mass[3:])
+            print mass, massx, massy
             if point.quantileExpected == -1:
                 self.ex_obs    .Fill(massx, massy, point.limit)
                 self.ex_obs_p1s.Fill(massx, massy, point.limit*(self.xsecs[massx][0]+self.xsecs[massx][1])/self.xsecs[massx][0])
@@ -377,10 +379,13 @@ class Scan(object):
     def makeULPlot(self):
         print 'making the UL histo with holes filled etc.'
         h_rhisto = copy.deepcopy(self.ex_obs)
-        for i in range(h_rhisto.GetNbinsX()+1):
-            for j in range(h_rhisto.GetNbinsY()+1):
+        #sergio: we dont have the xsection for the underflow bins
+#        for i in range(h_rhisto.GetNbinsX()+1):
+#            for j in range(h_rhisto.GetNbinsY()+1):
+        for i in range(1,h_rhisto.GetNbinsX()+1):
+            for j in range(1,h_rhisto.GetNbinsY()+1):
                 xs = self.xsecs[int(h_rhisto.GetXaxis().GetBinCenter(i))][0]
-                h_rhisto.SetBinContent(i,j,h_rhisto.GetBinContent(i,j)*xs/1000.)
+                h_rhisto.SetBinContent(i,j,h_rhisto.GetBinContent(i,j)*xs/1000.) # upper limit in pb by default
         gr2d = r.TGraph2D(h_rhisto)
         xbinsize = 12.5; ybinsize = 12.5
         gr2d.SetNpx( int((gr2d.GetXmax() - gr2d.GetXmin())/xbinsize) )
