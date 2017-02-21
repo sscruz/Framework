@@ -2,7 +2,7 @@ import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse, copy, re, array, os, pickle
 
-
+import include.nll
 import include.helper     as helper
 import include.Region     as Region
 import include.Canvas     as Canvas
@@ -23,7 +23,7 @@ _r = r.TRandom3(42)
 def makeMCDatacards():
     print 'producing mc datacards'
     ttDatasets = ['TTJets_DiLepton']
-    dyDatasets = ['DYJetsToLL_M50']
+    dyDatasets = ['DYJetsToLL_M50_LO']
     print 'getting trees'
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
     print dyDatasets
