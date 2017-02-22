@@ -125,7 +125,6 @@ def make_rmue(histo_mm, histo_ee):
 
 def convertToFactor(histo, getGraph=False):
     tmp_histo = copy.deepcopy(histo)
-    #tmp_histo.Sumw2()
     for i in range(tmp_histo.GetNbinsX()+1):
         rmue     = tmp_histo.GetBinContent(i)
         rmue_err = tmp_histo.GetBinError  (i)
@@ -172,7 +171,6 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     MCDYControlmt2mm =       treeMC.getTH1F(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
     DATADYControlmt2ee =     treeDA.getTH1F(lumi,"DATADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.ee]), '', labelmt2)
     DATADYControlmt2mm =     treeDA.getTH1F(lumi,"DATADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegionNoJet, cuts.mm]), '', labelmt2)
-
     MCDYControlPT2ee =    treeMC.getTH1F(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.ee]), '', labelpt2)
     MCDYControlPT2mm =    treeMC.getTH1F(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion, cuts.mm]), '', labelpt2)
     DATADYControlPT2ee =  treeDA.getTH1F(lumi, "DATADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion, cuts.ee]), '', labelpt2)
@@ -235,7 +233,6 @@ def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     print "convert all factors" 
     systematicForrmue = 0.1 
     MCrmuemeasured =               MCDYControlMllvalue.GetBinContent(1)
-    print "MC rmue ", MCrmuemeasured 
     MCrmuemeasuredUnc =            MCDYControlMllvalue.GetBinError(1)
     MCrmuemeasuredUncSyst =        MCrmuemeasured * systematicForrmue
     DATArmuemeasured =             DATADYControlMllvalue.GetBinContent(1)

@@ -25,7 +25,7 @@ _r = r.TRandom3(42)
 def makeMCDatacards():
     print 'producing mc datacards'
     ttDatasets = ['TTJets_DiLepton']
-    dyDatasets = ['DYJetsToLL_M50']
+    dyDatasets = ['DYJetsToLL_M50_LO']
     print 'getting trees'
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
     print dyDatasets
