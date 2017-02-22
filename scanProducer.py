@@ -14,7 +14,7 @@ import include.LeptonSF
 
 import subprocess
 
-import include.nll
+#import include.nll
 
 from multiprocessing import Pool
 
@@ -177,7 +177,17 @@ lumi   lnN             1.026              -            -          -
 #     os.system(cmd[1])
 #     return True
 def runCmd(cmd):
-    command = '''#!/bin/sh                                                                             
+    if os.path.exists('/pool/'):
+        command = '''#!/bin/sh                                                                             
+export SCRAM_ARCH=slc6_amd64_gcc530                                                                                 
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch                                                                             
+source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
+export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
+cmsenv                                                                                                              
+cd /nfs/fanae/user/sscruz/TTH/DataCards/CMSSW_7_4_7/src/
+cmsenv\n'''                                                                                            
+    else:
+        command = '''#!/bin/sh                                                                             
 export SCRAM_ARCH=slc6_amd64_gcc530                                                                                 
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch                                                                             
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
@@ -547,7 +557,7 @@ if __name__ == "__main__":
     if opts.reloadLimits:
         print 'reloading limits and datacards'
  #        fillAndSaveDatacards(dobs)
-        produceLimits(1)
+        produceLimits(50)
 
     os.system('mkdir -p mkdir -p makeExclusionPlot/config/%s/'%scan.paper)
     scan.makeExclusion()

@@ -148,9 +148,9 @@ class Scan(object):
 
 
         if self.name == 'NeuNeu_Moriond2017':
-            self.makeMCDatacards = True
+            self.makeMCDatacards = False
             self.paper = 'SUS16034'
-            self.datasets = ['work in progress :) ']
+            self.datasets = ['TChiHZ']
             self.xbins =  binning(400,950,25) # ### to do the proper binning
             self.ybins =  binning(200,900,25) # ### to do the proper binning
             self.xvar = 'GenSusyMScan1_Edge'
