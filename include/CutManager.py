@@ -26,8 +26,7 @@ class CutManager:
       self.trigEMNEW = "(HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
       self.trigger = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
       self.triggerForCR = "((" + self.trigMMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 169) || (" + self.trigEENEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 121 ) || (" + self.trigEMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 143))"
-      self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      #self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonNoTrigger = "(" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
       self.tightIso = 'max(Lep1_miniRelIso_Edge, Lep2_miniRelIso_Edge) < 0.05'
@@ -61,6 +60,7 @@ class CutManager:
       self.METl150 = "(met_Edge < 150)"
       self.METg30 = "(met_Edge > 30)"
       self.METg60 = "(met_Edge > 60)"
+      self.METg50 = "(met_Edge > 50)"
       self.METg80 = "(met_Edge >  80)"
       self.METg100 = "(met_Edge >= 100)"
       self.METg150 = "(met_Edge >= 150)"

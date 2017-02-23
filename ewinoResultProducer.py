@@ -290,63 +290,6 @@ def makeTheFactors():
     mll_ext_onZ_bveto_da=treeDA.getTH1F(lint,"mll_onZ_bveto_ext_da",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)
     mll_ext_onZ_bveto_mc=treeMC.getTH1F(lint,"mll_onZ_bveto_ext_mc",'lepsMll_Edge', 1, 0, 1000,  cuts.AddList([cuts.goodLepton,cuts.strongOnZBVeto, cuts.METg100 , cuts.OF]), '',mll)   
 
-  #  mll_met100_150_da_int = mll_da.GetBinContent(1); mll_met100_150_da_e = mll_da.GetBinError(1);
-  #  mll_met100_150_mc_int = mll_mc.GetBinContent(1); mll_met100_150_mc_e = mll_mc.GetBinError(1);
-  #  print "On  Z MC baseline 100_150: ",mll_met100_150_mc_int, " +- ", mll_met100_150_mc_e 
-  #  print "On  Z DA baseline 100_150: ",mll_met100_150_da_int, " +- ", mll_met100_150_da_e 
-  #  mll_ext_met100_150_da_int = mll_ext_da.GetBinContent(1); mll_ext_met100_150_da_e = mll_ext_da.GetBinError(1);
-  #  mll_ext_met100_150_mc_int = mll_ext_mc.GetBinContent(1); mll_ext_met100_150_mc_e = mll_ext_mc.GetBinError(1);
-  #  print "Off Z MC baseline 100_150: ",mll_ext_met100_150_mc_int, " +- ", mll_ext_met100_150_mc_e 
-  #  print "Off Z DA baseline 100_150: ",mll_ext_met100_150_da_int, " +- ", mll_ext_met100_150_da_e 
-  #  mll_met150_250_da_int     = mll_da.GetBinContent(2); mll_met150_250_da_e = mll_da.GetBinError(2);
-  #  mll_met150_250_mc_int     = mll_mc.GetBinContent(2); mll_met150_250_mc_e = mll_mc.GetBinError(2);
-  #  print "On  Z MC baseline 150_250: ",mll_met150_250_mc_int, " +- ", mll_met150_250_mc_e 
-  #  print "On  Z DA baseline 150_250: ",mll_met150_250_da_int, " +- ", mll_met150_250_da_e 
-  #  mll_ext_met150_250_da_int = mll_ext_da.GetBinContent(2); mll_ext_met150_250_da_e = mll_ext_da.GetBinError(2);
-  #  mll_ext_met150_250_mc_int = mll_ext_mc.GetBinContent(2); mll_ext_met150_250_mc_e = mll_ext_mc.GetBinError(2);
-  #  print "Off Z MC baseline 150_250: ",mll_ext_met150_250_mc_int, " +- ", mll_ext_met150_250_mc_e 
-  #  print "Off Z DA baseline 150_250: ",mll_ext_met150_250_da_int, " +- ", mll_ext_met150_250_da_e 
-  #  mll_met250_da_int     = mll_da.GetBinContent(3); mll_met250_da_e = mll_da.GetBinError(3);
-  #  mll_met250_mc_int     = mll_mc.GetBinContent(3); mll_met250_mc_e = mll_mc.GetBinError(3);
-  #  print "On  Z MC baseline >   250: ",mll_met250_mc_int, " +- ", mll_met250_mc_e 
-  #  print "On  Z DA baseline >   250: ",mll_met250_da_int, " +- ", mll_met250_da_e 
-  #  mll_ext_met250_da_int = mll_ext_da.GetBinContent(3); mll_ext_met250_da_e = mll_ext_da.GetBinError(3);
-  #  mll_ext_met250_mc_int = mll_ext_mc.GetBinContent(3); mll_ext_met250_mc_e = mll_ext_mc.GetBinError(3);
-  #  print "Off Z MC baseline >   250: ",mll_ext_met250_mc_int, " +- ", mll_ext_met250_mc_e 
-  #  print "Off Z DA baseline >   250: ",mll_ext_met250_da_int, " +- ", mll_ext_met250_da_e 
-  #  mll_ZH_da_int     = mll_ZH_da.GetBinContent(1); mll_ZH_da_e = mll_ZH_da.GetBinError(1);
-  #  mll_ZH_mc_int     = mll_ZH_mc.GetBinContent(1); mll_ZH_mc_e = mll_ZH_mc.GetBinError(1);
-  #  print "On Z ZH da           : ",mll_ZH_da_int, " +- ", mll_ZH_da_e 
-  #  print "On Z ZH mc           : ",mll_ZH_mc_int, " +- ", mll_ZH_mc_e 
-  #  mll_ext_ZH_da_int = mll_ext_ZH_da.GetBinContent(1); mll_ext_ZH_da_e = mll_ext_ZH_da.GetBinError(1);
-  #  mll_ext_ZH_mc_int = mll_ext_ZH_mc.GetBinContent(1); mll_ext_ZH_mc_e = mll_ext_ZH_mc.GetBinError(1);
-  #  print "Off Z ZH da          : ",mll_ext_ZH_da_int, " +- ", mll_ext_ZH_da_e 
-  #  print "Off Z ZH mc          : ",mll_ext_ZH_mc_int, " +- ", mll_ext_ZH_mc_e                                         
-  #  mll_WZ_da_int     = mll_WZ_da.GetBinContent(1); mll_WZ_da_e = mll_WZ_da.GetBinError(1);
-  #  mll_WZ_mc_int     = mll_WZ_mc.GetBinContent(1); mll_WZ_mc_e = mll_WZ_mc.GetBinError(1);
-  #  print "On Z WZ da           : ",mll_WZ_da_int, " +- ", mll_WZ_da_e 
-  #  print "On Z WZ mc           : ",mll_WZ_mc_int, " +- ", mll_WZ_mc_e 
-  #  mll_ext_WZ_da_int = mll_WZ_ext_da.GetBinContent(1); mll_ext_WZ_da_e = mll_WZ_ext_da.GetBinError(1);
-  #  mll_ext_WZ_mc_int = mll_WZ_ext_mc.GetBinContent(1); mll_ext_WZ_mc_e = mll_WZ_ext_mc.GetBinError(1);
-  #  print "Off Z WZ da          : ",mll_ext_WZ_da_int, " +- ", mll_ext_WZ_da_e 
-  #  print "Off Z WZ mc          : ",mll_ext_WZ_mc_int, " +- ", mll_ext_WZ_mc_e                                        
-  #  mll_onZ_b_da_int     = mll_onZ_b_da.GetBinContent(1); mll_onZ_b_da_e = mll_onZ_b_da.GetBinError(1);
-  #  mll_onZ_b_mc_int     = mll_onZ_b_mc.GetBinContent(1); mll_onZ_b_mc_e = mll_onZ_b_mc.GetBinError(1);
-  #  print "On  Z MC Strong with b: ",mll_onZ_b_mc_int, " +- ", mll_onZ_b_mc_e 
-  #  print "On  Z DA Strong with b: ",mll_onZ_b_da_int, " +- ", mll_onZ_b_da_e 
-  #  mll_ext_onZ_b_da_int = mll_onZ_b_ext_da.GetBinContent(1); mll_ext_onZ_b_da_e = mll_onZ_b_ext_da.GetBinError(1);
-  #  mll_ext_onZ_b_mc_int = mll_onZ_b_ext_mc.GetBinContent(1); mll_ext_onZ_b_mc_e = mll_onZ_b_ext_mc.GetBinError(1);
-  #  print "Off Z MC Strong with b: ",mll_ext_onZ_b_mc_int, " +- ", mll_ext_onZ_b_mc_e 
-  #  print "Off Z DA Strong with b: ",mll_ext_onZ_b_da_int, " +- ", mll_ext_onZ_b_da_e 
-  #  mll_onZ_bveto_da_int     = mll_onZ_bveto_da.GetBinContent(1); mll_onZ_bveto_da_e = mll_onZ_bveto_da.GetBinError(1);
-  #  mll_onZ_bveto_mc_int     = mll_onZ_bveto_mc.GetBinContent(1); mll_onZ_bveto_mc_e = mll_onZ_bveto_mc.GetBinError(1);
-  #  print "On  Z MC  Strong bveto: ",mll_onZ_bveto_mc_int, " +- ", mll_onZ_bveto_mc_e 
-  #  print "On  Z DA  Strong bveto: ",mll_onZ_bveto_da_int, " +- ", mll_onZ_bveto_da_e 
-  #  mll_ext_onZ_bveto_da_int = mll_onZ_bveto_ext_da.GetBinContent(1); mll_ext_onZ_bveto_da_e = mll_onZ_bveto_ext_da.GetBinError(1);
-  #  mll_ext_onZ_bveto_mc_int = mll_onZ_bveto_ext_mc.GetBinContent(1); mll_ext_onZ_bveto_mc_e = mll_onZ_bveto_ext_mc.GetBinError(1);
-  #  print "Off Z MC  Strong bveto: ",mll_ext_onZ_bveto_mc_int, " +- ", mll_ext_onZ_bveto_mc_e 
-  #  print "Off Z DA  Strong bveto: ",mll_ext_onZ_bveto_da_int, " +- ", mll_ext_onZ_bveto_da_e 
-    
     k_base_mc = mll_mc.Clone("mll_mc");k_base_mc.Divide(mll_mc, mll_ext_mc, 1, 1, "B") ; 
     k_base_da = mll_da.Clone("mll_da");k_base_da.Divide(mll_da, mll_ext_da, 1, 1, "B") ; 
     k_met100_150_mc = k_base_mc.GetBinContent(1); k_met100_150_mc_e = k_base_mc.GetBinError(1);
@@ -355,9 +298,6 @@ def makeTheFactors():
     k_met150_250_da = k_base_da.GetBinContent(2); k_met150_250_da_e = k_base_da.GetBinError(2);
     k_met250_mc = k_base_mc.GetBinContent(3); k_met250_mc_e = k_base_mc.GetBinError(3);             
     k_met250_da = k_base_da.GetBinContent(3); k_met250_da_e = k_base_da.GetBinError(3);             
-    print "k_met100_150_mc ", k_met100_150_mc
-    print "k_met150_250_mc ", k_met150_250_mc
-    print "k_met250_mc ", k_met250_mc
     ZH_mc = mll_ZH_mc.Clone("mll_ZH_mc");ZH_mc.Divide(mll_ZH_mc, mll_ext_ZH_mc, 1, 1, "B");k_ZH_mc = ZH_mc.GetBinContent(1); k_ZH_mc_e = ZH_mc.GetBinError(1); 
     ZH_da = mll_ZH_da.Clone("mll_ZH_da");ZH_da.Divide(mll_ZH_da, mll_ext_ZH_da, 1, 1, "B");k_ZH_da = ZH_da.GetBinContent(1); k_ZH_da_e = ZH_da.GetBinError(1);   
     WZ_mc = mll_WZ_mc.Clone("mll_WZ_mc");WZ_mc.Divide(mll_WZ_mc, mll_ext_WZ_mc, 1, 1, "B");k_WZ_mc = WZ_mc.GetBinContent(1); k_WZ_mc_e = WZ_mc.GetBinError(1); 
@@ -424,21 +364,15 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
     if region == "TChiWZ":
-        bin1  =796.39 ; bin1_e = 32.58;bin2  = 33.5; bin2_e = 5.3;bin3  = 3.75; bin3_e = 2.57;bin4  = 0.46; bin4_e = 0.91;bin5  = 0.07; bin5_e = 0.5;
-        #bin1  = 282.2; bin1_e = 18.7;bin2  = 12.6; bin2_e = 4.4;bin3  = 3.9; bin3_e = 1.5;bin4  = 1.2; bin4_e = 0.6;bin5  = 0.0; bin5_e = 0.6;
-        #bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;bin5  = bin5*2; bin5_e = bin5_e*2;
+        bin1  =795.0 ; bin1_e = 32.6;bin2  = 28.1; bin2_e = 5.5;bin3  = 4.1; bin3_e = 2.8;bin4  = 0.8; bin4_e = 1.0;bin5  = 0.00; bin5_e = 0.5;
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
         nbin = 5
     if region == "TChiZH":
-        bin1  = 77.97; bin1_e = 9.48;bin2  = 2.61; bin2_e =1.92;bin3  = 0.13; bin3_e = 0.28;bin4  = 0.11; bin4_e = 0.13
-        #bin1  = 38.6; bin1_e = 6.5;bin2  = 1.0; bin2_e = 0.7;bin3  = 0.1; bin3_e = 0.3;bin4  = 0.0; bin4_e = 0.1
-        #bin1  = bin1*2; bin1_e = bin1_e*2 ;bin2  = bin2*2; bin2_e = bin2_e*2;bin3  = bin3*2; bin3_e = bin3_e*2 ;bin4  = bin4*2; bin4_e = bin4_e*2;
+        bin1  = 77.8; bin1_e = 9.5;bin2  = 2.9; bin2_e =2.1;bin3  = 0.2; bin3_e = 0.3;bin4  = 0.1; bin4_e = 0.1
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
-    #lint = 18.1  ; maxrun = 999999; lint_str = '18.1invfb'
-    #specialcut = '((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
     dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
@@ -464,7 +398,6 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
     lint = 36.4  ; maxrun = 999999 ; lint_str = '36.4invfb'
-    #specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
     if region == "TChiWZ":
         regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
@@ -483,10 +416,10 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     rmue_a_mc = helper.readFromFileRmueCoeff("ingredients.dat","A","MC")
     rmue_b_mc = helper.readFromFileRmueCoeff("ingredients.dat","B","MC")
 
-    da_OF =        treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel)
-    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
-    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF, cuts.trigger]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF =        treeDA.getTH1F(lint, var+"da_OF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel)
+    da_OF_factor = treeDA.getTH1F(lint, var+"da_OF_factor"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*({a} + {b}/Lep2_pt_Edge + 1/({a} + {b}/Lep2_pt_Edge)))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorUp = treeDA.getTH1F(lint, var+"da_OF_factorUp"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*1.1 + 1/(1.1*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
+    da_OF_factorDn = treeDA.getTH1F(lint, var+"da_OF_factorDn"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut, cuts.OF]), '', xlabel,extraWeight='(0.5*( ({a} + {b}/Lep2_pt_Edge)*0.9 + 1/(0.9*({a} + {b}/Lep2_pt_Edge))))'.format(a=rmue_a_da[0],b=rmue_b_da[0]))
     print 'trivial check'
     for i in range(1, da_OF.GetNbinsX()+1):
         if not  da_OF.GetBinContent(i): continue
@@ -579,8 +512,6 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
     newLumiString = '36.4invfb'
-    #newLumiString = '18.1invfb'
-    #specialcut ='((run_Edge <=276811) ||  (278820<=run_Edge && run_Edge<=279931))'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -641,8 +572,21 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     wz_SF.SetFillColorAlpha(r.kGreen-8 , 0.8);wz_SF.SetTitle("WZ");wz_SF.SetLineColor(r.kBlack)                                                             
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
     da_OF_fmllScaled.SetFillColorAlpha(r.kRed-9, 0.8);da_OF_fmllScaled.SetTitle("FS")                                  
-    
+    #sorry these are the multilepton control region scale factor and they are hard coded for now, it's uglyy
+    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+    for bin, label in scan.SRLabels.items():
+        if ttz_SF.GetBinContent(bin) > 0:
+            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+        else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
+        if zz_SF.GetBinContent(bin) > 0:
+            zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
+        else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
+        if wz_SF.GetBinContent(bin) > 0:
+            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                    
+
     mc_full = copy.deepcopy(zz_SF)
+    
     mc_stack.Add(vvv_SF); mc_full.Add(vvv_SF, 1.) 
     mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
@@ -724,10 +668,10 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'ZZTo2L2Q', 'WZTo2L2Q', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
-    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
+    ttzDatasets = ['TTZToLLNuNu_ext1']
     raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
