@@ -162,7 +162,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         xlabel = 'm_{ll} [GeV]'                    
         nbins = [20, 60, 86, 96, 150, 200, 300, 400]
     lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
-    pred = 22.6; pred_e =13.1
+    pred = 21.6; pred_e =13.1
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
     rinout1_stat = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[1]
@@ -597,8 +597,28 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
-    rare = treeRA.getTH1F(lint, var+"rare"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto, cuts.lepsFromZ]), '', xlabel)
+    # get the individual zz, wz and ttz samples and scale them according to multilepton CR SFs, sorry these are hard coded for now
+    others = treeOTHERS.getTH1F(lint, var+"others"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto, cuts.lepsFromZ]), '', xlabel)
+    ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
+    zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
+    wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
+    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+    for bin, label in scan.SRLabels.items():
+        if ttz_SF.GetBinContent(bin) > 0:
+            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+        else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
+        if zz_SF.GetBinContent(bin) > 0:
+            zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
+        else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
+        if wz_SF.GetBinContent(bin) > 0:
+            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
     # aesthetics
+    
+    rare = copy.deepcopy(others)
+    rare.Add(ttz_SF, 1.)
+    rare.Add(zz_SF, 1.)
+    rare.Add(wz_SF, 1.)
     rare.SetFillColorAlpha(r.kCyan+2, 0.7);rare.SetTitle("rares");rare.SetLineColor(r.kBlack)
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.7);dy_shape.SetTitle("E_{T}^{miss} templates");
     prediction.SetFillColorAlpha(r.kRed-9, 0.7);prediction.SetTitle("FS");
@@ -683,15 +703,13 @@ if __name__ == '__main__':
 
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    zzDatasets = ['ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu']
+    zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu', 'TTLLJets_m1to10']
-    vvvDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'ZZTo2L2Q', 'WZTo2L2Q', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    ttzDatasets = ['TTZToLLNuNu']
+    othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TTLLJets_m1to10', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     
-    raDatasets = ['tZq_ll', 'TWZ','WZTo3LNu','ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu', 'TTZToLLNuNu', 'TTLLJets_m1to10','WWZ','WZZ', 'ZZZ']
-    
-    mcDatasets = fsDatasets+dyDatasets + vvvDatasets + zzDatasets + wzDatasets + ttzDatasets
+    mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets + ttzDatasets
     
                                                                                                                         
     daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
@@ -737,18 +755,13 @@ if __name__ == '__main__':
                    'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
                    'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
  
-
-    raDatasets = ['tZq_ll', 'TWZ','WZTo3LNu','ZZTo4L', 'GGHZZ4L', 'ZZTo2L2Nu',
-                  'TTZToLLNuNu', 'TTLLJets_m1to10','WWZ','WZZ', 'ZZZ']
- 
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH      
 
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0)
     treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0)
-    treeRA = Sample.Tree(helper.selectSamples(opts.sampleFile, raDatasets, 'RA'), 'RA'  , 0)
-    treeVVV = Sample.Tree(helper.selectSamples(opts.sampleFile, vvvDatasets, 'VVV'), 'VVV'  , 0)
+    treeOTHERS = Sample.Tree(helper.selectSamples(opts.sampleFile, othersDatasets, 'OTHERS'), 'OTHERS'  , 0)
     treeWZ = Sample.Tree(helper.selectSamples(opts.sampleFile, wzDatasets, 'WZ'), 'WZ'  , 0)
     treeZZ = Sample.Tree(helper.selectSamples(opts.sampleFile, zzDatasets, 'ZZ'), 'ZZ'  , 0)
     treeTTZ = Sample.Tree(helper.selectSamples(opts.sampleFile, ttzDatasets, 'TTZ'), 'TTZ'  , 0)
