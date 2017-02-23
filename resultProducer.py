@@ -195,8 +195,8 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
 
 
     dy_shape=treeDY.getTH1F(lint,"mll_shape",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList([cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
-    dy_loNll=treeDY.getTH1F(lint,"mll_loNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
-    dy_hiNll=treeDY.getTH1F(lint,"mll_hiNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >  21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
+    dy_loNll=treeDY.getTH1F(lint,"mll_loNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
+    dy_hiNll=treeDY.getTH1F(lint,"mll_hiNll",'lepsMll_Edge', nbins, 1, 1,  cuts.AddList(["nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >=  21.", cuts.goodLepton, cuts.SignalRegionNoDPhi, cuts.Zmass, cuts.SF]), '',xlabel)
     if scutstring == "nllAbove21":
         print "nll above 21 ", (dy_hiNll.Integral()/dy_shape.Integral()) 
         pred = pred * (dy_hiNll.Integral()/dy_shape.Integral()) 
@@ -597,22 +597,21 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     # get the dy shape, data and rares
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto]), '', xlabel)
     dy_shape = makeDYMllShape('mll',specialcut,scutstring )
-    # get the individual zz, wz and ttz samples and scale them according to multilepton CR SFs, sorry these are hard coded for now
     others = treeOTHERS.getTH1F(lint, var+"others"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.SF, cuts.Zveto, cuts.lepsFromZ]), '', xlabel)
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
     zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
     wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
-    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
-    for bin, label in scan.SRLabels.items():
-        if ttz_SF.GetBinContent(bin) > 0:
-            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
-        else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
-        if zz_SF.GetBinContent(bin) > 0:
-            zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
-        else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
-        if wz_SF.GetBinContent(bin) > 0:
-            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
-        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
+   # ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+   # for bin, label in scan.SRLabels.items():
+   #     if ttz_SF.GetBinContent(bin) > 0:
+   #         ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+   #     else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
+   #     if zz_SF.GetBinContent(bin) > 0:
+   #         zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
+   #     else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
+   #     if wz_SF.GetBinContent(bin) > 0:
+   #         wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+   #     else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
     # aesthetics
     
     rare = copy.deepcopy(others)
@@ -785,8 +784,8 @@ if __name__ == '__main__':
     ## result plots in different variables:
     for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
         makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='' , scutstring = '',    _options='returnplot,splitFlavor')
-        resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) <= 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
-        resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
+        resultPlotLoNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21.' , scutstring = 'nllBelow21',    _options='returnplot,splitFlavor')
+        resultPlotHiNll = makeResultData('Edge_Moriond2017', v,maxrun,lint,specialcut='nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) >= 21.' , scutstring = 'nllAbove21',    _options='returnplot,splitFlavor')
 
    # makeRSOFTable('Edge_Moriond2017')
    # makeClosureTestPlots('Edge_Moriond2017','nll','', 'inclusive', True)
