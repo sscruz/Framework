@@ -103,10 +103,10 @@ class CutManager:
       self.ZmassExtended = "lepsMll_Edge >= 60 && lepsMll_Edge < 120"
       self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
-      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
-      self.baselineNoTrigger = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLeptonNoTrigger])
-      self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton])
-      self.baselineNoMT2NoTrigger = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLeptonNoTrigger])
+      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton, self.METg100])
+      self.baselineNoTrigger = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLeptonNoTrigger, self.METg100])
+      self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton, self.METg100])
+      self.baselineNoMT2NoTrigger = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLeptonNoTrigger,self.METg100])
 
       ########################################################################
       ######Edge regions #####################################################
