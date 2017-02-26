@@ -11,6 +11,7 @@ import include.Sample     as Sample
 import include.Tables     as Tables
 import include.Scans      as Scans
 import include.LeptonSF 
+import include.FastSimSF
 
 import subprocess
 
@@ -266,7 +267,11 @@ def getEffMapsSys(sys):
         print 'replacing',rpl[0],rpl[1]
         theCuts = theCuts.replace(rpl[0],rpl[1])
         srId    = srId.replace(rpl[0],rpl[1])
-    print sys, theCuts, srId
+    print '##############'
+    print sys
+    print theCuts
+    print srId
+    print '##############'
     effMap = scan.tree.getTH3F(1., 'nPass_norm'+sys, srId+':'+scan.yvar+':'+scan.xvar,
                                scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
                                scan.xbins._max+scan.xbins.w/2., scan.ybins.n+1,

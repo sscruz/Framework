@@ -5,7 +5,7 @@
 
 using namespace std;
 
-TH2D* hElecID  = 0;
+TH2D* hSFElecID  = 0;
 TH2D* hSFElecIP  = 0;
 TH2D* hSFElecISO = 0;
 TH2D* hSFElecTrk = 0;
