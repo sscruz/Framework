@@ -108,7 +108,7 @@ Double_t _getTracking(Double_t eta, Int_t pdgId)
     return hMuonTrk->Eval(eta);
   }
   else{
-    return hElecTrk->GetBinContent( hElecTrk->FindBin(20.,eta));
+    return hElecTrk->GetBinContent( hElecTrk->FindBin(eta,50.));
   }
 
 }
