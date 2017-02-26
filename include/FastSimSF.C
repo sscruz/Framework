@@ -6,25 +6,25 @@
 using namespace std;
 
 TH2D* hElecID  = 0;
-TH2D* hElecIP  = 0;
-TH2D* hElecISO = 0;
-TH2D* hElecTrk = 0;
-TH2D* hMuonID  = 0;
-TH2D* hMuonIP1  = 0;
-TH2D* hMuonIP2  = 0;
-TH2D* hMuonISO = 0;
-TH2D* hMuonTrk = 0;
+TH2D* hSFElecIP  = 0;
+TH2D* hSFElecISO = 0;
+TH2D* hSFElecTrk = 0;
+TH2D* hSFMuonID  = 0;
+TH2D* hSFMuonIP1  = 0;
+TH2D* hSFMuonIP2  = 0;
+TH2D* hSFMuonISO = 0;
+TH2D* hSFMuonTrk = 0;
 
 
-void SetFSElecID (TH2D* h){ hElecID  = h; }
-void SetFSElecIP (TH2D* h){ hElecIP  = h; }
-void SetFSElecISO(TH2D* h){ hElecISO = h; }
-void SetFSElecTrk(TH2D* h){ hElecTrk = h; }
-void SetFSMuonID (TH2D* h){ hMuonID  = h; }
-void SetFSMuonIP1 (TH2D* h){ hMuonIP1  = h; }
-void SetFSMuonIP2 (TH2D* h){ hMuonIP2  = h; }
-void SetFSMuonISO(TH2D* h){ hMuonISO = h; }
-void SetFSMuonTrk(TH2D* h){ hMuonTrk = h; }
+void SetFSElecID (TH2D* h){ hSFElecID  = h; }
+void SetFSElecIP (TH2D* h){ hSFElecIP  = h; }
+void SetFSElecISO(TH2D* h){ hSFElecISO = h; }
+void SetFSElecTrk(TH2D* h){ hSFElecTrk = h; }
+void SetFSMuonID (TH2D* h){ hSFMuonID  = h; }
+void SetFSMuonIP1 (TH2D* h){ hSFMuonIP1  = h; }
+void SetFSMuonIP2 (TH2D* h){ hSFMuonIP2  = h; }
+void SetFSMuonISO(TH2D* h){ hSFMuonISO = h; }
+
 
 Double_t _getFSIDoverRECO(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
 {
@@ -34,16 +34,16 @@ Double_t _getFSIDoverRECO(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
   Double_t sf_e = 0.;
   if (TMath::Abs(pdgId) == 13){
     if (pt > 200) pt = 199.9;
-    sf   = hMuonID->GetBinContent( hMuonID->FindBin(pt,eta));
+    sf   = hSFMuonID->GetBinContent( hSFMuonID->FindBin(pt,eta));
     sf_e = 0;
   }
   else{
     if (pt > 200) pt = 199.9;
-    sf   = hElecID->GetBinContent( hElecID->FindBin(pt,eta));
+    sf   = hSFElecID->GetBinContent( hSFElecID->FindBin(pt,eta));
     sf_e = 0.;
   }
   // error hardcoded to 2 later on
-  // sf_e = (sys.Contains("Mu")) ? hMuonID->GetBinError  ( hMuonID->FindBin(pt,eta)) : 0.;
+  // sf_e = (sys.Contains("Mu")) ? hSFMuonID->GetBinError  ( hSFMuonID->FindBin(pt,eta)) : 0.;
 
   if (sys.Contains("Up"))     return sf+sf_e;
   else if(sys.Contains("Dn")) return sf-sf_e;
@@ -58,13 +58,13 @@ Double_t _getFSIPoverID(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
   Double_t sf_e = 0.;
   if (TMath::Abs(pdgId) == 13){
     if (pt > 200) pt = 199.9;
-    sf    = hMuonIP1->GetBinContent( hMuonIP1->FindBin(pt,eta));
-    sf   *= hMuonIP2->GetBinContent( hMuonIP2->FindBin(pt,eta));
+    sf    = hSFMuonIP1->GetBinContent( hSFMuonIP1->FindBin(pt,eta));
+    sf   *= hSFMuonIP2->GetBinContent( hSFMuonIP2->FindBin(pt,eta));
     sf_e = 0;
   }
   else{
     if (pt > 200) pt = 199.9;
-    sf   = hElecIP->GetBinContent( hElecIP->FindBin(pt,eta));
+    sf   = hSFElecIP->GetBinContent( hSFElecIP->FindBin(pt,eta));
     sf_e = 0;
   }
   // error hardcoded to 2 later on
@@ -82,12 +82,12 @@ Double_t _getFSISOoverIP(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
   Double_t sf_e = 0.;
   if (TMath::Abs(pdgId) == 13){
     if (pt > 200) pt = 199.9;
-    sf   = hMuonISO->GetBinContent( hMuonISO->FindBin(pt,eta));
+    sf   = hSFMuonISO->GetBinContent( hSFMuonISO->FindBin(pt,eta));
     sf_e = 0;
   }
   else{
     if (pt > 200) pt = 199.9;
-    sf   = hElecISO->GetBinContent( hElecISO->FindBin(pt,eta));
+    sf   = hSFElecISO->GetBinContent( hSFElecISO->FindBin(pt,eta));
     sf_e = 0.;
   }
   // error hardcoded to 3 later on
