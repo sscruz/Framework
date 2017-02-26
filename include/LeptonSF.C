@@ -1,7 +1,7 @@
 #include<iostream>
 #include"TH1.h"
 #include"TH2.h"
-
+#include"TGraphAsymmErrors.h"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ TH2F* hMuonID  = 0;
 TH2F* hMuonIP1  = 0;
 TH2F* hMuonIP2  = 0;
 TH2F* hMuonISO = 0;
-TH2F* hMuonTrk = 0;
+TGraphAsymmErrors* hMuonTrk = 0;
 
 
 void SetElecID (TH2F* h){ hElecID  = h; }
@@ -24,7 +24,7 @@ void SetMuonID (TH2F* h){ hMuonID  = h; }
 void SetMuonIP1 (TH2F* h){ hMuonIP1  = h; }
 void SetMuonIP2 (TH2F* h){ hMuonIP2  = h; }
 void SetMuonISO(TH2F* h){ hMuonISO = h; }
-void SetMuonTrk(TH2F* h){ hMuonTrk = h; }
+void SetMuonTrk(TGraphAsymmErrors* h){ hMuonTrk = h; }
 
 Double_t _getIDoverRECO(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
 {
@@ -105,11 +105,10 @@ Double_t _getISOoverIP(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
 Double_t _getTracking(Double_t eta, Int_t pdgId)
 {
   if (TMath::Abs(pdgId) == 13){
-    return 1.;
-    //  return hMuonTrk->GetBinContent( hMuonTrk->FindBin(20.,eta));
+    return hMuonTrk->Eval(eta);
   }
   else{
-    return hElecTrk->GetBinContent( hElecTrk->FindBin(20.,eta));
+    return hElecTrk->GetBinContent( hElecTrk->FindBin(eta,50.));
   }
 
 }
@@ -125,7 +124,7 @@ Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
   // "MuDn": obvious
   // cout << "[LepSF]" << pt << " " << eta << " " << pdgId << " " << sys << endl;
 
-  Double_t sf = _getIDoverRECO(pt,eta,pdgId,sys)*_getIPoverID(pt,eta,pdgId,sys)*_getISOoverIP(pt,eta,pdgId,sys);
+  Double_t sf = _getIDoverRECO(pt,eta,pdgId,sys)*_getIPoverID(pt,eta,pdgId,sys)*_getISOoverIP(pt,eta,pdgId,sys)*_getTracking(eta,pdgId);
   if (TMath::Abs(pdgId) == 13){
     if (sys.Contains("MuUp")){return TMath::Max(1e-100,sf*1.03);}
     else if (sys.Contains("MuDn")){return TMath::Max(1e-100,sf*0.97);}
@@ -154,83 +153,3 @@ Double_t LepSFMuDn(Double_t pt, Double_t eta, Int_t pdgId)
 }
 
 
-
-// Hasta aqui era fullsim/data
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-
-
-// Double_t _getIDoverRECO(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
-// {
-//   Double_t sf   = 0.;
-//   Double_t sf_e = 0.;
-//   if (TMath::Abs(pdgId) == 13){
-//     sf   = hMuonID->GetBinContent( hMuonID->FindBin(pt,eta));
-//     sf_e = (sys.Contains("Mu")) ? hMuonID->GetBinError  ( hMuonID->FindBin(pt,eta)) : 0.;
-//   }
-//   else{
-//     sf   = hElecID->GetBinContent( hElecID->FindBin(pt,eta));
-//     sf_e = hElecID->GetBinError  ( hElecID->FindBin(pt,eta));
-//     sf_e = (sys.Contains("El")) ? hMuonID->GetBinError  ( hMuonID->FindBin(pt,eta)) : 0.;
-//   }
-//   if (sys.Contains("Up"))     return sf+sf_e;
-//   else if(sys.Contains("Dn")) return sf-sf_e;
-//   else return sf;
-// }
-
-
-// Double_t _getIPoverID(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
-// {
-//   Double_t sf   = 0.;
-//   Double_t sf_e = 0.;
-//   if (TMath::Abs(pdgId) == 13){
-//     sf   = hMuonIP->GetBinContent( hMuonIP->FindBin(pt,eta));
-//     sf_e = (sys.Contains("Mu")) ? hMuonIP->GetBinError  ( hMuonIP->FindBin(pt,eta)) : 0.;
-//   }
-//   else{
-//     sf   = hElecIP->GetBinContent( hElecIP->FindBin(pt,eta));
-//     sf_e = hElecIP->GetBinError  ( hElecIP->FindBin(pt,eta));
-//     sf_e = (sys.Contains("El")) ? hMuonIP->GetBinError  ( hMuonIP->FindBin(pt,eta)) : 0.;
-//   }
-//   if (sys.Contains("Up"))     return sf+sf_e;
-//   else if(sys.Contains("Dn")) return sf-sf_e;
-//   else return sf;
-// }
-
-
-// Double_t _getISOoverIP(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
-// {
-//   Double_t sf   = 0.;
-//   Double_t sf_e = 0.;
-//   if (TMath::Abs(pdgId) == 13){
-//     sf   = hMuonISO->GetBinContent( hMuonISO->FindBin(pt,eta));
-//     sf_e = (sys.Contains("Mu")) ? hMuonISO->GetBinError  ( hMuonISO->FindBin(pt,eta)) : 0.;
-//   }
-//   else{
-//     sf   = hElecISO->GetBinContent( hElecISO->FindBin(pt,eta));
-//     sf_e = hElecISO->GetBinError  ( hElecISO->FindBin(pt,eta));
-//     sf_e = (sys.Contains("El")) ? hMuonISO->GetBinError  ( hMuonISO->FindBin(pt,eta)) : 0.;
-//   }
-//   if (sys.Contains("Up"))     return sf+sf_e;
-//   else if(sys.Contains("Dn")) return sf-sf_e;
-//   else return sf;
-// }
-
-
-
-Double_t FastSIM(Double_t pt, Double_t eta, Int_t pdgId, TString sys)
-{
-  // sys can be 
-  // "": nominal
-  // "ElUp": obviously
-  // "ElDn": obviously
-  // "MuUp": obviously
-  // "MuDn": obviously
-  cout << "Check histo limits" << endl;
-  return -1;
-}

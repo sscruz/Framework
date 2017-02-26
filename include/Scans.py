@@ -122,7 +122,7 @@ class Scan(object):
             self.paper = 'SUS16034'
             self.datasets = ['TChiWZ']
             self.xbins = binning(100,700,25)
-            self.ybins = binning(0,300,25)
+            self.ybins = binning(0,300,1)
             self.br    = 0.102
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
@@ -130,6 +130,7 @@ class Scan(object):
             print 20*'#######################'
             self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
+            print self.cuts_norm
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
             self.xsecFile = ('datacards/charneuXsec.txt')
@@ -148,14 +149,14 @@ class Scan(object):
 
 
         if self.name == 'NeuNeu_Moriond2017':
-            self.makeMCDatacards = True
+            self.makeMCDatacards = False
             self.paper = 'SUS16034'
-            self.datasets = ['work in progress :) ']
-            self.xbins =  binning(400,950,25) # ### to do the proper binning
-            self.ybins =  binning(200,900,25) # ### to do the proper binning
+            self.datasets = ['TChiHZ']
+            self.xbins =  binning(150,1000,50)
+            self.ybins =  binning(0,1,1) 
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
@@ -297,23 +298,24 @@ class Scan(object):
         self.ex_exp_m2s.Reset()
     
         for point in limittree:
+            limit = min(10.,point.limit)
             mass      = str(int(point.mh))
             massx     = int(mass[:3]); massy = int(mass[3:])
             print mass, massx, massy
             if point.quantileExpected == -1:
-                self.ex_obs    .Fill(massx, massy, point.limit)
-                self.ex_obs_p1s.Fill(massx, massy, point.limit*(self.xsecs[massx][0]+self.xsecs[massx][1])/self.xsecs[massx][0])
-                self.ex_obs_m1s.Fill(massx, massy, point.limit*(self.xsecs[massx][0]-self.xsecs[massx][1])/self.xsecs[massx][0])
+                self.ex_obs    .Fill(massx, massy, limit)
+                self.ex_obs_p1s.Fill(massx, massy, limit*(self.xsecs[massx][0]+self.xsecs[massx][1])/self.xsecs[massx][0])
+                self.ex_obs_m1s.Fill(massx, massy, limit*(self.xsecs[massx][0]-self.xsecs[massx][1])/self.xsecs[massx][0])
             elif 0.49 < point.quantileExpected < 0.51:
-                self.ex_exp    .Fill(massx, massy, point.limit)
+                self.ex_exp    .Fill(massx, massy, limit)
             elif 0.15 < point.quantileExpected < 0.17:
-                self.ex_exp_p1s.Fill(massx, massy, point.limit)
+                self.ex_exp_p1s.Fill(massx, massy, limit)
             elif 0.83 < point.quantileExpected < 0.85:
-                self.ex_exp_m1s.Fill(massx, massy, point.limit)
+                self.ex_exp_m1s.Fill(massx, massy, limit)
             elif 0.97 < point.quantileExpected < 0.98:
-                self.ex_exp_m2s.Fill(massx, massy, point.limit)
+                self.ex_exp_m2s.Fill(massx, massy, limit)
             elif 0.02 < point.quantileExpected < 0.03:
-                self.ex_exp_p2s.Fill(massx, massy, point.limit)
+                self.ex_exp_p2s.Fill(massx, massy, limit)
 
         zmax = self.ex_obs.GetMaximum()
         self.ex_obs    .GetZaxis().SetRangeUser(0.,10.)

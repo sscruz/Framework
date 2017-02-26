@@ -12,7 +12,7 @@ from multiprocessing import Pool
 def runDataset(ins):
     os.system('root -l -b -q runSkim.C+\(\\\"{sample}\\\",\\\"{path}\\\"\);'.format(sample=ins[0],path=ins[1]))
 
-pathList = ['/afs/cern.ch/work/p/pablom/public/friends-jan-23/']
+pathList = ['/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Feb22/']
 
 tasks = []
 for path in pathList:

@@ -99,10 +99,10 @@ public :
    Float_t         mZ2_Edge;
    Float_t         mt2bb_Edge;
    Float_t         mt2bb_jecUp_Edge;
-   Float_t         mt2bb_jecDown_Edge;
+   Float_t         mt2bb_jecDn_Edge;
    Float_t         mbb_Edge;
    Float_t         mbb_jecUp_Edge;
-   Float_t         mbb_jecDown_Edge;     
+   Float_t         mbb_jecDn_Edge;     
    Float_t         genMet_Edge;
    Float_t         genMet_phi_Edge;
    Float_t         lepsDPhi_Edge;
@@ -119,6 +119,7 @@ public :
    Float_t         Lep1_tightCharge_Edge;
    Float_t         Lep1_mvaIdSpring15_Edge;
    Float_t         Lep1_mcMatchId_Edge;
+   Float_t         Lep1_mcMatchTau_Edge;
    Float_t         Lep1_minTauDR_Edge;
    Float_t         Lep2_pt_Edge;
    Float_t         Lep2_eta_Edge;
@@ -133,6 +134,7 @@ public :
    Float_t         Lep2_tightCharge_Edge;
    Float_t         Lep2_mvaIdSpring15_Edge;
    Float_t         Lep2_mcMatchId_Edge;
+   Float_t         Lep2_mcMatchTau_Edge;
    Float_t         Lep2_minTauDR_Edge;
    Float_t         PileupW_Edge;
    Float_t         min_mlb1_Edge;
@@ -292,10 +294,10 @@ public :
    TBranch        *b_mZ2_Edge;
    TBranch        *b_mt2bb_Edge;
    TBranch        *b_mt2bb_jecUp_Edge;
-   TBranch        *b_mt2bb_jecDown_Edge;
+   TBranch        *b_mt2bb_jecDn_Edge;
    TBranch        *b_mbb_Edge;
    TBranch        *b_mbb_jecUp_Edge;
-   TBranch        *b_mbb_jecDown_Edge;     
+   TBranch        *b_mbb_jecDn_Edge;     
    TBranch        *b_genMet_Edge;   //!
    TBranch        *b_genMet_phi_Edge;   //!
    TBranch        *b_lepsDPhi_Edge;   //!
@@ -312,6 +314,7 @@ public :
    TBranch        *b_Lep1_tightCharge_Edge;   //!
    TBranch        *b_Lep1_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep1_mcMatchId_Edge;   //!
+   TBranch        *b_Lep1_mcMatchTau_Edge;   //!
    TBranch        *b_Lep1_minTauDR_Edge;   //!
    TBranch        *b_Lep2_pt_Edge;   //!
    TBranch        *b_Lep2_eta_Edge;   //!
@@ -326,6 +329,7 @@ public :
    TBranch        *b_Lep2_tightCharge_Edge;   //!
    TBranch        *b_Lep2_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep2_mcMatchId_Edge;   //!
+   TBranch        *b_Lep2_mcMatchTau_Edge;   //!
    TBranch        *b_Lep2_minTauDR_Edge;   //!
    TBranch        *b_PileupW_Edge;   //!
    TBranch        *b_min_mlb1_Edge;   //!
@@ -575,6 +579,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    fChain->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
+   fChain->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    fChain->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    fChain->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -589,6 +594,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    fChain->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
+   fChain->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    fChain->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
    fChain->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);
@@ -608,10 +614,10 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("mZ2_Edge", &mZ2_Edge, &b_mZ2_Edge);
    fChain->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
    fChain->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
-   fChain->SetBranchAddress("mt2bb_jecDown_Edge", &mt2bb_jecDown_Edge, &b_mt2bb_jecDown_Edge);
+   fChain->SetBranchAddress("mt2bb_jecDn_Edge", &mt2bb_jecDn_Edge, &b_mt2bb_jecDn_Edge);
    fChain->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    fChain->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
-   fChain->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
+   fChain->SetBranchAddress("mbb_jecDn_Edge", &mbb_jecDn_Edge, &b_mbb_jecDn_Edge);          
    fChain->SetBranchAddress("weight_trigger_Edge", &weight_trigger_Edge, &b_weight_trigger_Edge);
    fChain->SetBranchAddress("weight_btagsf_Edge", &weight_btagsf_Edge, &b_weight_btagsf_Edge);
    fChain->SetBranchAddress("weight_btagsf_heavy_UP_Edge", &weight_btagsf_heavy_UP_Edge, &b_weight_btagsf_heavy_UP_Edge);
@@ -773,6 +779,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
+   outputtree->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    outputtree->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    outputtree->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -787,6 +794,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
+   outputtree->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    outputtree->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
    outputtree->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);
@@ -807,10 +815,10 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("mZ2_Edge", &mZ2_Edge, &b_mZ2_Edge);
    outputtree->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
    outputtree->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
-   outputtree->SetBranchAddress("mt2bb_jecDown_Edge", &mt2bb_jecDown_Edge, &b_mt2bb_jecDown_Edge);
+   outputtree->SetBranchAddress("mt2bb_jecDn_Edge", &mt2bb_jecDn_Edge, &b_mt2bb_jecDn_Edge);
    outputtree->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    outputtree->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
-   outputtree->SetBranchAddress("mbb_jecDown_Edge", &mbb_jecDown_Edge, &b_mbb_jecDown_Edge);          
+   outputtree->SetBranchAddress("mbb_jecDn_Edge", &mbb_jecDn_Edge, &b_mbb_jecDn_Edge);          
    outputtree->SetBranchAddress("weight_trigger_Edge", &weight_trigger_Edge, &b_weight_trigger_Edge);
    outputtree->SetBranchAddress("weight_btagsf_Edge", &weight_btagsf_Edge, &b_weight_btagsf_Edge);
    outputtree->SetBranchAddress("weight_btagsf_heavy_UP_Edge", &weight_btagsf_heavy_UP_Edge, &b_weight_btagsf_heavy_UP_Edge);

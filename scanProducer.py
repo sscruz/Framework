@@ -11,10 +11,11 @@ import include.Sample     as Sample
 import include.Tables     as Tables
 import include.Scans      as Scans
 import include.LeptonSF 
+import include.FastSimSF
 
 import subprocess
 
-import include.nll
+#import include.nll
 
 from multiprocessing import Pool
 
@@ -25,7 +26,7 @@ _r = r.TRandom3(42)
 def makeMCDatacards():
     print 'producing mc datacards'
     ttDatasets = ['TTJets_DiLepton']
-    dyDatasets = ['DYJetsToLL_M50']
+    dyDatasets = ['DYJetsToLL_M50_LO']
     print 'getting trees'
     treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
     print dyDatasets
@@ -177,7 +178,17 @@ lumi   lnN             1.026              -            -          -
 #     os.system(cmd[1])
 #     return True
 def runCmd(cmd):
-    command = '''#!/bin/sh                                                                             
+    if os.path.exists('/pool/'):
+        command = '''#!/bin/sh                                                                             
+export SCRAM_ARCH=slc6_amd64_gcc530                                                                                 
+export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch                                                                             
+source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
+export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
+cmsenv                                                                                                              
+cd /nfs/fanae/user/sscruz/TTH/DataCards/CMSSW_7_4_7/src/
+cmsenv\n'''                                                                                            
+    else:
+        command = '''#!/bin/sh                                                                             
 export SCRAM_ARCH=slc6_amd64_gcc530                                                                                 
 export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch                                                                             
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
@@ -256,7 +267,11 @@ def getEffMapsSys(sys):
         print 'replacing',rpl[0],rpl[1]
         theCuts = theCuts.replace(rpl[0],rpl[1])
         srId    = srId.replace(rpl[0],rpl[1])
-    print sys, theCuts, srId
+    print '##############'
+    print sys
+    print theCuts
+    print srId
+    print '##############'
     effMap = scan.tree.getTH3F(1., 'nPass_norm'+sys, srId+':'+scan.yvar+':'+scan.xvar,
                                scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
                                scan.xbins._max+scan.xbins.w/2., scan.ybins.n+1,
@@ -265,6 +280,14 @@ def getEffMapsSys(sys):
                                scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '',
                                scan.xtitle, scan.ytitle, scan.ztitle, 
                                extraWeightsForSys[sys])
+    if sys == '':
+        kk = TFile('map.root','recreate')
+        effMap.Write()
+        scan.ngen_3d.Write()
+        kk.Close()
+        
+    #     print mierda
+        
     effMap.GetXaxis().GetBinCenter(1)
     print effMap.Integral()
     effMap.Divide(scan.ngen_3d)
@@ -294,20 +317,32 @@ def getSREffMaps():
 
 def PutHistosIntoRootFiles():
     print 'everything into datacards'
+    kk = TFile.Open('map2.root','recreate')
+    scan.maps[''].Write()
+    kk.Close()
+
     for i in range(1, scan.norm.GetXaxis().GetNbins()+1):
         for j in range(1, scan.norm.GetYaxis().GetNbins()+1):
             xval = scan.norm.GetXaxis().GetBinCenter(i)
             yval = scan.norm.GetYaxis().GetBinCenter(j)
             if (yval > xval): continue
             massString = 'mSbottom_%.0f_mchi2_%.0f'%(xval, yval)
-            
+            print xval, yval
+           
             sysHistos = {}
             for sys, histo in scan.maps.items():
                 out = histo.ProjectionZ('%4.0f_%4.0f'%(xval,yval), i, i, j, j)
                 out.Scale(scan.br*lumi*scan.xsecs[xval][0])
                 out.SetName(massString + sys)
                 sysHistos[sys] = out
-            if sysHistos[''].Integral() == 0: continue # if no sensitivity
+                if sys == '':
+                    tfile = TFile.Open(massString+'.root','recreate')
+                    out.Write()
+                    tfile.Close()
+
+            if sysHistos[''].Integral() == 0: 
+                print 'no sensitivty for', massString
+                continue # if no sensitivity
 
             helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,
                                                                                       mass=massString))
@@ -450,10 +485,10 @@ if __name__ == "__main__":
                           'bLiDown'   : 'weight_btagsf_light_DN_Edge / weight_btagsf_Edge',
                           'ElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'ElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'FastSimElUp'  : 'weight_FSlepSF_ElUp_Edge / weight_FSlepSF_Edge',
-                          'FastSimElDown': 'weight_FSlepSF_ElDn_Edge / weight_FSlepSF_Edge',
-                          'FastSimMuUp'  : 'weight_FSlepSF_MuUp_Edge / weight_FSlepSF_Edge',
-                          'FastSimMuDown': 'weight_FSlepSF_MuDn_Edge / weight_FSlepSF_Edge',
+                          'FastSimElUp'  : 'LepSFFastSimElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'FastSimElDown': 'LepSFFastSimElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'FastSimMuUp'  : 'LepSFFastSimMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'FastSimMuDown': 'LepSFFastSimMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'MuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
@@ -483,6 +518,7 @@ if __name__ == "__main__":
 
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         ## Load the number of generated events to produce efficiency maps per systematic
+
         scan.dummy = scan.tree.getTH3F(1., 'dummy', '1:1:1',
                                        scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
                                        scan.xbins._max+scan.xbins.w/2., scan.ybins.n+1,
@@ -510,9 +546,11 @@ if __name__ == "__main__":
         scan.ngen_3d = newbinning[1] ## this one has ngen in every single bin. for every SR. and it's 3D, so that's cool
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
-        print 'fix this'
+
         scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU ISR'
         scan.SysString = 'genMet'
+#        scan.SysStringUpDown = ''
+#        scan.SysString = ''
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
         for sys in scan.SysStringUpDown.split()+scan.SysString.split():
@@ -547,7 +585,7 @@ if __name__ == "__main__":
     if opts.reloadLimits:
         print 'reloading limits and datacards'
  #        fillAndSaveDatacards(dobs)
-        produceLimits(1)
+        produceLimits(40 if os.path.exists('/pool/') else 8)
 
     os.system('mkdir -p mkdir -p makeExclusionPlot/config/%s/'%scan.paper)
     scan.makeExclusion()

@@ -47,7 +47,7 @@ class sms():
         # scan range to plot
         self.Xmin = 100.
         self.Xmax = 700.
-        self.Ymin = 25.
+        self.Ymin = 0.
         self.Ymax = 300.
         self.Zmin = 0.01
         self.Zmax = 0.5
