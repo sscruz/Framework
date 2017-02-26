@@ -36,7 +36,7 @@ def LoadLeptonSF():
     # Electrons
     elFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/ELEC/scaleFactors.root')
     ROOT.SetElecID (copy.deepcopy( elFile.Get('GsfElectronToMVATightIDEmuTightIP2DSIP3D4')))
-    ROOT.SetElecIP (copy.deepcopy( elFile.Get('MVAVLooseElectronToMini4'))) 
+    ROOT.SetElecIP (copy.deepcopy( elFile.Get('MVAVLooseElectronToMini'))) 
     ROOT.SetElecISO(copy.deepcopy( elFile.Get('MVATightElectronToConvVetoIHit0')))# its not iso, but who cares
     elFile.Close()
     elFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/ELEC/egammaEffi.txt_EGM2D.root')
@@ -54,6 +54,9 @@ def LoadLeptonSF():
     muFile.Close()
     muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/TnP_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root')
     ROOT.SetMuonIP2( copy.deepcopy(muFile.Get('SF')))
+    muFile.Close()
+    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/Tracking_EfficienciesAndSF_BCDEFGH.root')
+    ROOT.SetMuonTrk( copy.deepcopy(muFile.Get('ratio_eff_aeta_dr030e030_corr')))
     muFile.Close()
     print 'Setup done. Have a nice day'
 
