@@ -122,7 +122,7 @@ class Scan(object):
             self.paper = 'SUS16034'
             self.datasets = ['TChiWZ']
             self.xbins = binning(100,700,25)
-            self.ybins = binning(0,300,25)
+            self.ybins = binning(0,300,1)
             self.br    = 0.102
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
@@ -130,6 +130,7 @@ class Scan(object):
             print 20*'#######################'
             self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
+            print self.cuts_norm
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
             self.xsecFile = ('datacards/charneuXsec.txt')
@@ -151,11 +152,11 @@ class Scan(object):
             self.makeMCDatacards = False
             self.paper = 'SUS16034'
             self.datasets = ['TChiHZ']
-            self.xbins =  binning(400,950,25) # ### to do the proper binning
-            self.ybins =  binning(200,900,25) # ### to do the proper binning
+            self.xbins =  binning(150,1000,50)
+            self.ybins =  binning(0,1,1) 
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
