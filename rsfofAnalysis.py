@@ -271,7 +271,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     maxrun = 999999
-    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4'
+    lumi = 36.8 ; maxrun = 999999; lumi_str = '36.8'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 

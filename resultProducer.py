@@ -161,7 +161,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         treevar = 'lepsMll_Edge'
         xlabel = 'm_{ll} [GeV]'                    
         nbins = [20, 60, 86, 96, 150, 200, 300, 400]
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     pred = 21.6; pred_e =13.1
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
@@ -211,7 +211,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
     dy_shape.SetBinContent(6, pred*rinout5); dy_shape.SetBinError(6, pred*rinout5*math.sqrt((pred_e/pred)**2 + (rinout5_e/rinout1)**2))
     dy_shape.SetBinContent(7, pred*rinout6); dy_shape.SetBinError(7, pred*rinout6*math.sqrt((pred_e/pred)**2 + (rinout6_e/rinout1)**2))
     dy_shape.SetBinContent(8, pred*rinout7); dy_shape.SetBinError(8, pred*rinout7*math.sqrt((pred_e/pred)**2 + (rinout7_e/rinout1)**2))
-    plot_dy_shape = Canvas.Canvas('results/36.4invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
+    plot_dy_shape = Canvas.Canvas('results/36.8invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
     plot_dy_shape.addHisto(dy_shape  , 'HIST'       , 'Templates', 'PL', r.kBlack  , 1,  0)
     plot_dy_shape.save(1, 0, 0, lint)                            
     return  dy_shape                                                                                                                                  
@@ -543,7 +543,7 @@ def makeRSOFTable(analysis):
                 rsfof_final_mc.GetBinContent(  rsfof_final_mc.FindBin(bin)), rsfof_final_mc.GetBinError(rsfof_final_mc.FindBin(bin)))
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '', scutstring = '', _options = ''):
     returnplot, addRares, splitFlavor, makeTable, printIntegral = True, True, False, False, False
     if   var == 'mll'      : treevar = 'lepsMll_Edge'        ; nbins = [20, 60, 86, 96, 150, 200, 300, 400]; xmin =1 ; xmax = 1; xlabel = 'm_{ll} [GeV]'
     if not specialcut:
@@ -553,7 +553,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
     scan = Scans.Scan(analysis)
     mc_stack = r.THStack()
     mc_stack_perGeV = r.THStack() 
-    newLumiString = '36.4invfb'
+    newLumiString = '36.8invfb'
     ##get the ingredients
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -764,7 +764,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================

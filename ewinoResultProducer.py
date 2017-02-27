@@ -264,7 +264,7 @@ def scaleByEWKFactors(histo, kappa, kappa_e):
     return histo                                  
 
 def makeTheFactors():
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
@@ -373,7 +373,7 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
@@ -397,7 +397,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
-    lint = 36.4  ; maxrun = 999999 ; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999 ; lint_str = '36.8invfb'
     if region == "TChiWZ":
         regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
@@ -489,9 +489,9 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
-    lint = 36.4
+    lint = 36.8
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
@@ -511,7 +511,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         bins = [50.0, 100.0, 150.0, 250.0]
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '36.4invfb'
+    newLumiString = '36.8invfb'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -730,7 +730,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================

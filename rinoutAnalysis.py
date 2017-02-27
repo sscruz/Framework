@@ -523,7 +523,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RinoutAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     maxrun = 999999
-    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4invfb'
+    lumi = 36.8 ; maxrun = 999999; lumi_str = '36.8invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle() 

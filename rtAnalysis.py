@@ -160,7 +160,7 @@ def RT(ref, eff_ee, eff_mm, eff_em):
 def getTriggerEffs(num, den, dataMC):
     trig = den.Clone("trig_" + den.GetName())
     trig.Reset()
-    
+    print dataMC, "################################################################################################################################" 
     if dataMC == "data":
         option = 'v'
     if dataMC == 'MC':
@@ -291,7 +291,7 @@ if __name__ == '__main__':
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     
-    lumi = 36.4 ; maxrun = 999999; lumi_str = '36.4invfb'
+    lumi = 36.8 ; maxrun = 999999; lumi_str = '36.8invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -463,9 +463,13 @@ if __name__ == '__main__':
     MCdenominatormt2OF =   treeMC.getTH1F(lumi, "MCdenominatorOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.denominator, cuts.OF]), '', labelmt2)
     MCnumeratormt2OF =     treeMC.getTH1F(lumi, "MCnumeratorOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.numerator, cuts.trigger, cuts.OF]), '', labelmt2)                ######################## Calculation of total values #############################
     effMlleevalueDATA = getTriggerEffs(DATAnumeratorMlleevalue, DATAdenominatorMlleevalue, "data")
+    print "effMlleevalueDATA ", effMlleevalueDATA.GetY()[0]
     effMllmmvalueDATA = getTriggerEffs(DATAnumeratorMllmmvalue, DATAdenominatorMllmmvalue, "data")
+    print "effMllmmvalueDATA ", effMllmmvalueDATA.GetY()[0]
     effMllSFvalueDATA = getTriggerEffs(DATAnumeratorMllSFvalue, DATAdenominatorMllSFvalue, "data")
+    print "effMllSFvalueDATA ", effMllSFvalueDATA.GetY()[0]
     effMllOFvalueDATA = getTriggerEffs(DATAnumeratorMllOFvalue, DATAdenominatorMllOFvalue, "data")
+    print "effMllOFvalueDATA ", effMllOFvalueDATA.GetY()[0]
     effMlleevalueMC   = getTriggerEffs(MCnumeratorMlleevalue, MCdenominatorMlleevalue, "MC")
     print "effMlleevalueMC ", effMlleevalueMC.GetY()[0]
     effMllmmvalueMC   = getTriggerEffs(MCnumeratorMllmmvalue, MCdenominatorMllmmvalue, "MC")
