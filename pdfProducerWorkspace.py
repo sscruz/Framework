@@ -18,10 +18,10 @@ def makeFramesNice(frameSet):
         leg.SetNColumns(2)
         leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
         leg.AddEntry(frame.findObject('ldp_analyticalPDF_DA_Norm[lepsDPhi_Edge]'), 'fit data (OF)', 'L')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (OF)', 'L')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_SF_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (SF)', 'L')
+#        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+#        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (OF)', 'L')
+#        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+#        leg.AddEntry(frame.findObject('ldp_analyticalPDF_MC_SF_Norm[lepsDPhi_Edge]'), 'fit t#bar{t} (SF)', 'L')
         tit  = 'pdf of leptons #Delta#phi'
         atit = '#Delta#phi_{ll}'
     elif 'lepsZPt' in frame.GetName():
@@ -30,10 +30,10 @@ def makeFramesNice(frameSet):
         leg.SetNColumns(2)
         leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
         leg.AddEntry(frame.findObject('zpt_analyticalPDF_DA_Norm[lepsZPt_Edge]'), 'fit data (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-        leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-        leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_SF_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        # leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        # leg.AddEntry(frame.findObject('zpt_analyticalPDF_MC_SF_Norm[lepsZPt_Edge]'), 'fit t#bar{t} (SF)', 'LP')
         tit  = 'pdf of dilepton-p_{T}'
         atit = 'p_{T}^{ll} (GeV)'
     elif 'mlb' in frame.GetName():
@@ -42,10 +42,10 @@ def makeFramesNice(frameSet):
         leg.SetNColumns(2)
         leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
         leg.AddEntry(frame.findObject('mlb_analyticalPDF_DA_Norm[sum_mlb_Edge]'), 'fit data (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-        leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-        leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_SF_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        # leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        # leg.AddEntry(frame.findObject('mlb_analyticalPDF_MC_SF_Norm[sum_mlb_Edge]'), 'fit t#bar{t} (SF)', 'LP')
         tit  = 'pdf of sum-m_{lb}'
         atit = '#Sigma m_{lb} (GeV)'
     elif 'met' in frame.GetName():
@@ -54,10 +54,10 @@ def makeFramesNice(frameSet):
         leg.SetNColumns(2)
         leg.AddEntry(frame.findObject('h_em_data_cuts_of_sr_met150_of'), 'data  (OF) ', 'LP')
         leg.AddEntry(frame.findObject('met_analyticalPDF_DA_Norm[met_Edge]'), 'fit data (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
-        leg.AddEntry(frame.findObject('met_analyticalPDF_MC_Norm[met_Edge]'), 'fit t#bar{t} (OF)', 'LP')
-        leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
-        leg.AddEntry(frame.findObject('met_analyticalPDF_MC_SF_Norm[met_Edge]'), 'fit t#bar{t} (SF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_of_sr_met150_of'  ), 't#bar{t}  (OF) ', 'LP')
+        # leg.AddEntry(frame.findObject('met_analyticalPDF_MC_Norm[met_Edge]'), 'fit t#bar{t} (OF)', 'LP')
+        # leg.AddEntry(frame.findObject('h_tt_mc_cuts_sf_sr_met150_sf'  ), 't#bar{t}  (SF) ', 'LP')
+        # leg.AddEntry(frame.findObject('met_analyticalPDF_MC_SF_Norm[met_Edge]'), 'fit t#bar{t} (SF)', 'LP')
         tit  = 'pdf of E_{T}^{miss}'
         atit = 'E_{T}^{miss} (GeV)'
 
@@ -99,7 +99,7 @@ def makeFramesNice(frameSet):
     lat.DrawLatex(0.16, 0.80, "Preliminary")
 
     lat.SetTextFont(42)
-    lat.DrawLatex(0.63, 0.92, '36.4 fb^{-1} (13 TeV)')
+    lat.DrawLatex(0.63, 0.92, '35.9 fb^{-1} (13 TeV)')
     lat.DrawLatex(legcoords[0],legcoords[1]-0.05,'#chi^{2} / ndof = %1.2f'%frame.chiSquare())
     
     pad2.cd()
@@ -166,7 +166,7 @@ class pdfClass:
         self.nle = ROOT.RooRealVar('nPairLep_Edge'   , 'nle',   -2,    3 , ''   ); self.met = ROOT.RooRealVar('met_Edge'        , 'met',   0., 1000., 'GeV');
         self.mlp = ROOT.RooRealVar('metl1DPhi_Edge'  , 'mlp',   0.,3.142 , ''   ); self.mll = ROOT.RooRealVar('lepsMll_Edge'    , 'mll',  20., 1000., 'GeV');
         self.mlb = ROOT.RooRealVar('sum_mlb_Edge'    , 'mlb',   0., 3000., 'GeV'); self.st  = ROOT.RooRealVar('st_Edge'         , 'st' , 100., 5000., 'GeV');
-        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',   0., 1000., 'GeV'); ## old self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
+        self.zpt = ROOT.RooRealVar('lepsZPt_Edge'    , 'zpt',  25., 1000., 'GeV'); ## old self.evt = ROOT.RooRealVar('evt'             , 'evt',   0.,1e7   , ''   );
         self.a3d = ROOT.RooRealVar('d3D_Edge'        , 'a3d', 0.2 , 3.14 , ''   ); self.dp1 = ROOT.RooRealVar('j1MetDPhi_Edge'  , 'dp1', -3.2, 3.2, '');
         self.ldp = ROOT.RooRealVar('lepsDPhi_Edge'   , 'ldp', 0.  , 3.14 , ''   ); self.dp2 = ROOT.RooRealVar('j2MetDPhi_Edge'  , 'dp2', -3.2, 3.2, '');
         self.nlt = ROOT.RooRealVar('nLepTight_Edge'  , 'nlt',  0 , 4 , ''   );
@@ -191,7 +191,7 @@ class pdfClass:
             setattr(self, 'mlb_min',   0.); setattr(self, 'mlb_max', 3000.); setattr(self, 'mlb_rho', 1.4);
             setattr(self, 'met_min', 150.); setattr(self, 'met_max', 1000.); setattr(self, 'met_rho', 1.5);
             setattr(self, 'ldr_min',  0.3); setattr(self, 'ldr_max',   5.8); setattr(self, 'ldr_rho', 2.0);
-            setattr(self, 'zpt_min',   0.); setattr(self, 'zpt_max', 1000.); setattr(self, 'zpt_rho', 1.4);
+            setattr(self, 'zpt_min',  25.); setattr(self, 'zpt_max', 1000.); setattr(self, 'zpt_rho', 1.4);
             setattr(self, 'a3d_min',  0.2); setattr(self, 'a3d_max',  3.14); setattr(self, 'a3d_rho', 1.4);
             setattr(self, 'st_min' , 140.); setattr(self, 'st_max' , 5000.); setattr(self, 'st_rho' , 1.8);
             setattr(self, 'ldp_min',   0.); setattr(self, 'ldp_max',  3.14); setattr(self, 'ldp_rho', 1.8);
@@ -318,7 +318,8 @@ def buildModels(w):
             ## w.factory("DoubleCB::{var}_analyticalPDF({vartree},a3d_mean,a3d_sigma,a3d_alpha1,a3d_n1,a3d_alpha2,a3d_n2)".format(var=var, vartree=vartree))
         elif var == 'ldp':
             vartree = 'lepsDPhi_Edge'
-            w.factory('EXPR::{var}_analyticalPDF{t}("ldp_a2{t}*({vartree})*({vartree}) + ldp_a0{t}",{{{vartree},ldp_a0{t}[0.5,0,2],ldp_a2{t}[0.8,0.,2.]}})'.format(var=var, vartree=vartree,t=t))
+#            w.factory('EXPR::{var}_analyticalPDF{t}("ldp_a2{t}*({vartree})*({vartree}) + ldp_a0{t}",{{{vartree},ldp_a0{t}[0.5,0,2],ldp_a2{t}[0.8,0.,2.]}})'.format(var=var, vartree=vartree,t=t))
+            w.factory('EXPR::{var}_analyticalPDF{t}("ldp_a2{t}*({vartree})*({vartree}) +ldp_a1{t}*({vartree}) + ldp_a0{t}",{{{vartree},ldp_a0{t}[0.5,0,2],ldp_a1{t}[0.01,0,5],ldp_a2{t}[0.0,-0.05,2.]}})'.format(var=var, vartree=vartree,t=t))
             ## w.factory("ldp_lambda{t}[-3.,3.,-1.]".format(t=t))
             ## w.factory('SUM::{var}_analyticalPDF{t}(ldp{t}[0,1]*RooExponential::{var}_cb{t}({vartree},ldp_lambda{t}))'.format(var=var, vartree=vartree, t=t))
 
@@ -339,8 +340,8 @@ if __name__ == '__main__':
         print '%-20s : %-20s' %(key, value)
 
     cuts = CutManager.CutManager()
-    cuts_sr_met150_of = cuts.AddList([cuts.BaselineNoTrigger, cuts.OF, cuts.JETMETBaselineNoMT2]); cuts_sr_met150_of = cleanCut(cuts_sr_met150_of)
-    cuts_sr_met150_sf = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.JETMETBaselineNoMT2]); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
+    cuts_sr_met150_of = cuts.AddList([cuts.BaselineNoTrigger, cuts.OF, cuts.JETMETBaselineNoMT2,'lepsZPt_Edge > 25']); cuts_sr_met150_of = cleanCut(cuts_sr_met150_of)
+    cuts_sr_met150_sf = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.JETMETBaselineNoMT2,'lepsZPt_Edge > 25']); cuts_sr_met150_sf = cleanCut(cuts_sr_met150_sf)
     print cuts_sr_met150_of
     ## 2016 data and MC
 #    tt_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/mc_jun17_miniaodv2_noLHE/friends/evVarFriend_TTJets_DiLepton_total.root')
@@ -349,44 +350,32 @@ if __name__ == '__main__':
 #    em_tfile = ROOT.TFile('/afs/cern.ch/work/m/mdunser/public/edgeTrees/trees_80X_ICHEP/data_jun23_prompt_4invfb/friends/evVarFriend_MuonEG_Run2016B-PromptReco-v2_runs_271036_275125.root')
 #    em_tree = em_tfile.Get('sf/t')
     em_tree = ROOT.TChain('sf/t')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016H-PromptReco-v2_runs_281207_284035.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_MuonEG_Run2016H-PromptReco-v3_runs_284036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2.root')
-    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/jan27_skim/evVarFriend_DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035.root')
+    em_tree.Add('/afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/evVarFriend_MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035.root')
+    em_tree.Add('/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/evVarFriend_DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044.root')
 
-
-
-
+    
 
    
     dss = []
@@ -413,14 +402,14 @@ if __name__ == '__main__':
     
     frs = []; pdf_histos = []; frames = []
     writeobjs = []
-    for var in [ 'zpt', 'mlb', 'ldp', 'met']:
+    for var in [ 'ldp','zpt', 'mlb', 'met']:
         print '====================================================================='
         print '====================================================================='
         print '====== AT VARIABLE %s ================================================'%(var)
         print '====================================================================='
         print '====================================================================='
         opt = 'a' if var != 'met' else 'am'
-        fmin = (150 if var == 'met' else 0 if var == 'zpt' else 0 if var == 'mlb' else 0)
+        fmin = (150 if var == 'met' else 25. if var == 'zpt' else 0 if var == 'mlb' else 0)
         fmax = (500 if var == 'met' else 600 if var == 'zpt' else 1000 if var == 'mlb' else 3.14 if var =='ldp' else 0)
         tmp_frame = getFrame(var, fmin, fmax); 
         dslist = w.allData()
