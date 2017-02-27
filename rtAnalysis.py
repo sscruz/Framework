@@ -219,8 +219,8 @@ if __name__ == '__main__':
     daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
                    'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
                    'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
-                   'SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'
-                   'SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'
+                   'SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
+                   #'SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
                    'MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
                    'JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']             
  
@@ -228,45 +228,45 @@ if __name__ == '__main__':
     daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044', 
-                   'SingleMuon_Run2016C_03Feb2017_ver2_v2_runs_271036_284044'
-                   'SingleElectron_Run2016C_03Feb2017_ver2_v2_runs_271036_284044'
-                   'MET_Run2016C_03Feb2017_ver2_v2_runs_271036_284044', 
-                   'JetHT_Run2016C_03Feb2017_ver2_v2_runs_271036_284044']                    
+                   'SingleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'SingleElectron_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'MET_Run2016C_03Feb2017_v1_runs_271036_284044', 
+                   'JetHT_Run2016C_03Feb2017_v1_runs_271036_284044']                    
 
 
     
     daDatasetsD = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
                    'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'SingleMuon_Run2016D_03Feb2017_ver2_v2_runs_271036_284044'
-                   'SingleElectron_Run2016D_03Feb2017_ver2_v2_runs_271036_284044'
-                   'MET_Run2016D_03Feb2017_ver2_v2_runs_271036_284044', 
-                   'JetHT_Run2016D_03Feb2017_ver2_v2_runs_271036_284044']          
+                   'SingleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'SingleElectron_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'MET_Run2016D_03Feb2017_v1_runs_271036_284044', 
+                   'JetHT_Run2016D_03Feb2017_v1_runs_271036_284044']          
  
     daDatasetsE = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044'
-                   'SingleMuon_Run2016E_03Feb2017_ver2_v2_runs_271036_284044'
-                   'SingleElectron_Run2016E_03Feb2017_ver2_v2_runs_271036_284044'
-                   'MET_Run2016E_03Feb2017_ver2_v2_runs_271036_284044', 
-                   'JetHT_Run2016E_03Feb2017_ver2_v2_runs_271036_284044']          
+                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'SingleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'SingleElectron_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'MET_Run2016E_03Feb2017_v1_runs_271036_284044', 
+                   'JetHT_Run2016E_03Feb2017_v1_runs_271036_284044']          
  
     daDatasetsF = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
                   'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
                   'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044', 
-                  'SingleMuon_Run2016F_03Feb2017_ver2_v2_runs_271036_284044'        
-                  'SingleElectron_Run2016F_03Feb2017_ver2_v2_runs_271036_284044'
-                  'MET_Run2016F_03Feb2017_ver2_v2_runs_271036_284044', 
-                  'JetHT_Run2016F_03Feb2017_ver2_v2_runs_271036_284044']          
+                  'SingleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',        
+                  'SingleElectron_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'MET_Run2016F_03Feb2017_v1_runs_271036_284044', 
+                  'JetHT_Run2016F_03Feb2017_v1_runs_271036_284044']          
 
  
     daDatasetsG = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044'
-                   'SingleMuon_Run2016G_03Feb2017_ver2_v2_runs_271036_284044'       
-                   'SingleElectron_Run2016G_03Feb2017_ver2_v2_runs_271036_284044'
-                   'MET_Run2016G_03Feb2017_ver2_v2_runs_271036_284044', 
-                   'JetHT_Run2016G_03Feb2017_ver2_v2_runs_271036_284044']          
+                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'SingleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',       
+                   'SingleElectron_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'MET_Run2016G_03Feb2017_v1_runs_271036_284044', 
+                   'JetHT_Run2016G_03Feb2017_v1_runs_271036_284044']          
 
  
     daDatasetsH = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
@@ -283,41 +283,8 @@ if __name__ == '__main__':
                    'MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
                    'JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
                    'JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044']    
-                   
-                   
-                   
-                   
-
-
  
- 
-     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH     
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
 
