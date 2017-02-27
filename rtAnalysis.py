@@ -216,74 +216,107 @@ if __name__ == '__main__':
     
     mcDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO', 'TTJets_DiLepton', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',  'T_tch_powheg', 'TBar_tch_powheg', 'WWTo2L2Nu',  'WZTo3LNu','WZTo2L2Q', 'ZZTo4L', 'ZZTo2L2Nu', 'ZZTo2L2Q', 'WWW', 'WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu' , 'TTZToQQ', 'TTLLJets_m1to10', 'TTWToLNu','TTWToQQ',  'TTTT', 'TTHnobb_pow', 'VHToNonbb',  'GGHZZ4L',  'WJetsToLNu_LO']
     
-    daDatasets = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',             
-                'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',        
-                'JetHT_Run2016B_23Sep2016_v3_runs_273150_275376',      
-                'JetHT_Run2016C_23Sep2016_v1_runs_271036_284044',                
-                'JetHT_Run2016D_23Sep2016_v1_runs_271036_284044',               
-                'JetHT_Run2016E_23Sep2016_v1_runs_271036_284044',             
-                'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',                 
-                'JetHT_Run2016F_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016G_23Sep2016_v1_runs_271036_284044',                    
-                'JetHT_Run2016H-PromptReco-v2_runs_281207_284035',                   
-                'JetHT_Run2016H-PromptReco-v3_runs_284036_284044',                   
-                #'MET_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                #'MET_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                #'MET_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                #'MET_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                #'MET_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                #'MET_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                #'MET_Run2016H-PromptReco-v3_runs_284036_284044',       
-                #'MET_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
-                'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleElectron_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'SingleElectron_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleElectron_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',       
-                'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',       
-                'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',       
-                'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'MuonEG_Run2016B_23Sep2016_v3_runs_recovery', 
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',       
-                'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',       
-                'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',       
-                'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',       
-                'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016E_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016B_23Sep2016_v3_runs_273150_275376',       
-                'SingleMuon_Run2016D_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v3_runs_284036_284044',       
-                'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035',       
-                'SingleMuon_Run2016G_23Sep2016_v1_runs_271036_284044',       
-                'SingleMuon_Run2016H-PromptReco-v2_runs_281207_284035']               
+    daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
+                   'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
+                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
+                   'SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'
+                   'SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'
+                   'MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
+                   'JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']             
+ 
+ 
+    daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044', 
+                   'SingleMuon_Run2016C_03Feb2017_ver2_v2_runs_271036_284044'
+                   'SingleElectron_Run2016C_03Feb2017_ver2_v2_runs_271036_284044'
+                   'MET_Run2016C_03Feb2017_ver2_v2_runs_271036_284044', 
+                   'JetHT_Run2016C_03Feb2017_ver2_v2_runs_271036_284044']                    
+
+
+    
+    daDatasetsD = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'SingleMuon_Run2016D_03Feb2017_ver2_v2_runs_271036_284044'
+                   'SingleElectron_Run2016D_03Feb2017_ver2_v2_runs_271036_284044'
+                   'MET_Run2016D_03Feb2017_ver2_v2_runs_271036_284044', 
+                   'JetHT_Run2016D_03Feb2017_ver2_v2_runs_271036_284044']          
+ 
+    daDatasetsE = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044'
+                   'SingleMuon_Run2016E_03Feb2017_ver2_v2_runs_271036_284044'
+                   'SingleElectron_Run2016E_03Feb2017_ver2_v2_runs_271036_284044'
+                   'MET_Run2016E_03Feb2017_ver2_v2_runs_271036_284044', 
+                   'JetHT_Run2016E_03Feb2017_ver2_v2_runs_271036_284044']          
+ 
+    daDatasetsF = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044', 
+                  'SingleMuon_Run2016F_03Feb2017_ver2_v2_runs_271036_284044'        
+                  'SingleElectron_Run2016F_03Feb2017_ver2_v2_runs_271036_284044'
+                  'MET_Run2016F_03Feb2017_ver2_v2_runs_271036_284044', 
+                  'JetHT_Run2016F_03Feb2017_ver2_v2_runs_271036_284044']          
+
+ 
+    daDatasetsG = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044'
+                   'SingleMuon_Run2016G_03Feb2017_ver2_v2_runs_271036_284044'       
+                   'SingleElectron_Run2016G_03Feb2017_ver2_v2_runs_271036_284044'
+                   'MET_Run2016G_03Feb2017_ver2_v2_runs_271036_284044', 
+                   'JetHT_Run2016G_03Feb2017_ver2_v2_runs_271036_284044']          
+
+ 
+    daDatasetsH = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
+                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044', 
+                   'SingleElectron_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'SingleElectron_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'SingleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'SingleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'MET_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
+                   'MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044']    
+                   
+                   
+                   
+                   
+
+
+ 
+ 
+     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
     treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
