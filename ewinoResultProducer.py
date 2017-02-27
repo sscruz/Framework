@@ -264,7 +264,7 @@ def scaleByEWKFactors(histo, kappa, kappa_e):
     return histo                                  
 
 def makeTheFactors():
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
@@ -373,7 +373,7 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
@@ -397,7 +397,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
-    lint = 36.4  ; maxrun = 999999 ; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999 ; lint_str = '36.8invfb'
     if region == "TChiWZ":
         regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
@@ -489,9 +489,9 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
-    lint = 36.4
+    lint = 36.8
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
@@ -511,7 +511,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         bins = [50.0, 100.0, 150.0, 250.0]
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '36.4invfb'
+    newLumiString = '36.8invfb'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -583,7 +583,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.4, specialcut = '',
         else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
         if wz_SF.GetBinContent(bin) > 0:
             wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
-        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                    
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
 
     mc_full = copy.deepcopy(zz_SF)
     
@@ -676,51 +676,39 @@ if __name__ == '__main__':
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
     
+                                                                                    
+    daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
+                   'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
+                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']     
+ 
+ 
+    daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']    
     
-    daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                   'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376',
-                   'DoubleEG_Run2016B_23Sep2016_v3_runs_recovery', 
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_recovery']
-    
-    daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
-                   'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044']
-    
-    daDatasetsD = ['DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                   'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044']
-    
-    daDatasetsE = ['DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                   'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1']
-    
-    daDatasetsF = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',
-                   'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044']
-    
-    daDatasetsG = ['DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044']
-    
-    daDatasetsH = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',
-                   'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',
-                   'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',
-                   'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',
-                   'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
-                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
-    
-    
+    daDatasetsD = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044']    
+ 
+    daDatasetsE = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044']    
+ 
+    daDatasetsF = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044']  
+ 
+    daDatasetsG = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044']    
+ 
+    daDatasetsH = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
+                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044']    
+
     
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH    
 
@@ -742,7 +730,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.4  ; maxrun = 999999; lint_str = '36.4invfb'
+    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================

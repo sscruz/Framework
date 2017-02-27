@@ -463,53 +463,41 @@ if __name__ == "__main__":
     DYDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     ttDatasets = ['TTJets_DiLepton']
     mcDatasets = [ 'ZZTo4L','GGHZZ4L',  'WZTo3LNu', 'WWW', 'WWZ',  'WZZ', 'ZZZ', 'tZq_ll','WWTo2L2Nu', 'ZZTo2L2Nu', 'TTHnobb_pow', 'VHToNonbb', 'TWZ', 'WZTo2L2Q',  'TBar_tch_powheg', 'T_tch_powheg',  'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTZToQQ', 'TTWToQQ', 'TTLLJets_m1to10','TTZToLLNuNu' ,'TTWToLNu', 'WJetsToLNu_LO']
-    #mcDatasets += ttDatasets
-    #mcDatasets += DYDatasets
-    mcDatasets = DYDatasets
+    mcDatasets += ttDatasets
+    mcDatasets += DYDatasets
 
-                                                                                                                          
-    daDatasetsB = ['DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                   'DoubleEG_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part1',
-                   'DoubleMuon_Run2016B_23Sep2016_v3_runs_273150_275376_part2',
-                   'MuonEG_Run2016B_23Sep2016_v3_runs_273150_275376']
- 
-    daDatasetsC = ['DoubleEG_Run2016C_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016C_23Sep2016_v1_runs_271036_284044',
-                   'MuonEG_Run2016C_23Sep2016_v1_runs_271036_284044']
- 
-    daDatasetsD = ['DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleEG_Run2016D_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016D_23Sep2016_v1_runs_271036_284044_part1',
-                   'MuonEG_Run2016D_23Sep2016_v1_runs_271036_284044']
- 
-    daDatasetsE = ['DoubleEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part2',
-                   'MuonEG_Run2016E_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016E_23Sep2016_v1_runs_271036_284044_part1']
- 
-    daDatasetsF = ['DoubleEG_Run2016F_23Sep2016_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016F_23Sep2016_v1_runs_271036_284044',
-                   'MuonEG_Run2016F_23Sep2016_v1_runs_271036_284044']
- 
-    daDatasetsG = ['DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleEG_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part3',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part2',
-                   'DoubleMuon_Run2016G_23Sep2016_v1_runs_271036_284044_part1',
-                   'MuonEG_Run2016G_23Sep2016_v1_runs_271036_284044']
- 
-    daDatasetsH = ['DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part1',
-                   'DoubleEG_Run2016H-PromptReco-v2_runs_281207_284035_part2',
-                   'DoubleEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part1',
-                   'DoubleMuon_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part2',
-                   'MuonEG_Run2016H-PromptReco-v3_runs_284036_284044',
-                   'DoubleMuon_Run2016H-PromptReco-v2_runs_281207_284035_part3',
-                   'MuonEG_Run2016H-PromptReco-v2_runs_281207_284035']                      
- 
- 
+    daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',                                                                                                                            
+                   'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
+                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']    
+                                                                              
+                                                                              
+    daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']    
+    
+    daDatasetsD = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044']    
+                                                                              
+    daDatasetsE = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044']    
+                                                                              
+    daDatasetsF = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
+                  'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044']  
+                                                                              
+    daDatasetsG = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
+                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044']    
+                                                                              
+    daDatasetsH = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+                   'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+                   'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
+                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044']    
+
  
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH       
 
@@ -519,7 +507,7 @@ if __name__ == "__main__":
     #treeSI = Sample.Tree(helper.selectSamples(opts.sampleFile, siDatasets, 'SI'), 'SI', 0, isScan = 1)
     print bcolors.HEADER + '[Data - MC comparisons] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 36.2 ; maxrun = 999999; lumi_str = '36.2invfb'
+    lumi = 36.8 ; maxrun = 999999; lumi_str = '36.8invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -562,24 +550,25 @@ if __name__ == "__main__":
 ##########################################End Stuff from Leonora##########################    
 
 
-    makePlot(lumi, lumi_str, treeDA, treeMC, "nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)", "nll", 26, 10, 36, cuts.AddList([cuts.goodLepton, cuts.SignalRegion, cuts.ZmassRel, cuts.SF]), cuts, 'nll',  0, True)
-    makePlot(lumi, lumi_str, treeMC, treeMC, "lepsMll_Edge", "mll_SR", 30, 0, 300, cuts.AddList([cuts.goodLepton, cuts.SignalRegion,  cuts.SF]), cuts, 'mll',  0, True)
-    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll", 30, 0, 300, cuts.AddList([cuts.goodLepton, cuts.DYControlRegionNoMll,  cuts.ee]), cuts, 'nll',  0, True)
+   # makePlot(lumi, lumi_str, treeDA, treeMC, "nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge)", "nll", 26, 10, 36, cuts.AddList([cuts.goodLepton, cuts.SignalRegion, cuts.ZmassRel, cuts.SF]), cuts, 'nll',  0, True)
+   # makePlot(lumi, lumi_str, treeMC, treeMC, "lepsMll_Edge", "mll_SR", 30, 0, 300, cuts.AddList([cuts.goodLepton, cuts.SignalRegion,  cuts.SF]), cuts, 'mll',  0, True)
+   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll", 30, 0, 300, cuts.AddList([cuts.goodLepton, cuts.DYControlRegionNoMll,  cuts.ee]), cuts, 'nll',  0, True)
    # makePlot(lumi, lumi_str, treeDA, treeMC, "mbb_Edge", "mbb_SF", 20, 0, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.ewinoNeuNeuNomt2bbmbb]), cuts, 'mbb',  0, True)
    # makePlot(lumi, lumi_str, treeDA, treeMC, "mt2bb_Edge", "mt2bb_SF", 20, 0, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.ewinoNeuNeuNomt2bbmbb]), cuts, 'mt2bb',  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
-   # 
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_DYJets_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.DYControlRegionNoMll]), cuts, labelmll,  0, True)
+    
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_SF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.SF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_OF", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.OF, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_ee", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.ee, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "lepsMll_Edge", "mll_ttbarcontrol_mm", 20, 20, 300, cuts.AddList([cuts.goodLepton, cuts.mm, cuts.RSFOFDirectControlRegionNoMll]), cuts, labelmll,  0, True)
  
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_SF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.SF]), cuts, labelnjet, 0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_OF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.OF]), cuts, labelnjet, 0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_ee", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.ee]), cuts, labelnjet, 0, True)
-   # makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_mm", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.mm]), cuts, labelnjet, 0, True)                                              
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_SF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.SF]), cuts, labelnjet, 0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_OF", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.OF]), cuts, labelnjet, 0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_ee", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.ee]), cuts, labelnjet, 0, True)
+    makePlot(lumi, lumi_str, treeDA, treeMC, "nJetSel_Edge", "njet_inclusive_mm", 9, 0, 9, cuts.AddList([cuts.goodLepton, cuts.mm]), cuts, labelnjet, 0, True)                                              
 
 
    # #This one needs protection

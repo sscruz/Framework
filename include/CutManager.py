@@ -37,6 +37,7 @@ class CutManager:
       ######Basic Jets and bJets Cuts###############################################
       ########################################################################
       self.nj2 = "(nJetSel_Edge >= 2)"
+      self.njless2 = "(nJetSel_Edge < 2)"
       self.nj1 = "(nJetSel_Edge >= 1)"
       self.nj0 = "(nJetSel_Edge >= 0)"
       self.nbj2 = "(nBJetMedium25_Edge >= 2)"
@@ -150,9 +151,12 @@ class CutManager:
 
       ########################################################################
       ######EWK signal regions ###############################################
-      self.region3l = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj2])
-      self.region4l = self.AddList([self.fourTightLeptons,  self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])
-      self.regionttZ = self.AddList([self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
+      self.region3l  = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj2])
+      self.region4l  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])
+      self.regionttZ = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
+      self.regionEdge3l  = self.AddList([self.goodLepton, self.threeTightLeptons, self.njless2, self.dPhiJETMET, self.METg60, self.bveto])  
+      self.regionEdge4l  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.njless2, self.dPhiJETMET, self.mZ2g20, self.bveto])
+      self.regionEdgettZ = self.AddList([self.goodLepton, self.threeTightLeptons, self.njless2, self.dPhiJETMET, self.nbj2, self.METg30])
 
       ########################################################################
       ######EWK signal regions ###############################################
