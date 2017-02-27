@@ -291,6 +291,7 @@ def getEffMapsSys(sys):
     effMap.GetXaxis().GetBinCenter(1)
     print effMap.Integral()
     effMap.Divide(scan.ngen_3d)
+    print 'kk is ', effMap.Integral()
     return effMap
 
 def getSREffMaps():

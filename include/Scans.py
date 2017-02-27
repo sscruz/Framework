@@ -154,8 +154,9 @@ class Scan(object):
             self.datasets = ['TChiHZ']
             self.xbins =  binning(150,1000,50)
             self.ybins =  binning(0,1,1) 
-            self.xvar = 'GenSusyMScan1_Edge'
-            self.yvar = 'GenSusyMScan2_Edge'
+            self.br = 0.36
+            self.xvar = 'GenSusyMNeutralino2_Edge'
+            self.yvar = '1'
             self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH])#,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
