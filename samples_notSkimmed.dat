@@ -9,7 +9,7 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-------------------------- 25 ns --------------------------
 MET             r.kBlack      MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
-MET             r.kBlack      MET_Run2016C_03Feb_v1_runs_271036_284044                           MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
+MET             r.kBlack      MET_Run2016C_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 MET             r.kBlack      MET_Run2016D_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 MET             r.kBlack      MET_Run2016E_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 MET             r.kBlack      MET_Run2016F_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
@@ -17,7 +17,7 @@ MET             r.kBlack      MET_Run2016G_03Feb2017_v1_runs_271036_284044      
 MET             r.kBlack      MET_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 MET             r.kBlack      MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 JetHT           r.kBlack      JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016C_03Feb_v1_runs_271036_284044                         JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
+JetHT           r.kBlack      JetHT_Run2016C_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 JetHT           r.kBlack      JetHT_Run2016D_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 JetHT           r.kBlack      JetHT_Run2016E_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 JetHT           r.kBlack      JetHT_Run2016F_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
@@ -25,7 +25,7 @@ JetHT           r.kBlack      JetHT_Run2016G_03Feb2017_v1_runs_271036_284044    
 JetHT           r.kBlack      JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 JetHT           r.kBlack      JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1
 DoubleEG        r.kBlack      DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016C_03Feb_v1_runs_271036_284044                      DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
+DoubleEG        r.kBlack      DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 DoubleEG        r.kBlack      DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 DoubleEG        r.kBlack      DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 DoubleEG        r.kBlack      DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
@@ -33,7 +33,7 @@ DoubleEG        r.kBlack      DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044 
 DoubleEG        r.kBlack      DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 DoubleEG        r.kBlack      DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 SingleElectron  r.kBlack      SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016C_03Feb_v1_runs_271036_284044                SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
+SingleElectron  r.kBlack      SingleElectron_Run2016C_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 SingleElectron  r.kBlack      SingleElectron_Run2016D_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 SingleElectron  r.kBlack      SingleElectron_Run2016E_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 SingleElectron  r.kBlack      SingleElectron_Run2016F_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
@@ -41,7 +41,7 @@ SingleElectron  r.kBlack      SingleElectron_Run2016G_03Feb2017_v1_runs_271036_2
 SingleElectron  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver2_v1_runs_281085_284035       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 SingleElectron  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver3_v1_runs_284036_284044       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepSkim/ 1    1 
 DoubleMuon      r.kBlack      DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016C_03Feb_v1_runs_271036_284044                    DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
+DoubleMuon      r.kBlack      DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 DoubleMuon      r.kBlack      DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 DoubleMuon      r.kBlack      DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 DoubleMuon      r.kBlack      DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
@@ -49,7 +49,7 @@ DoubleMuon      r.kBlack      DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_28404
 DoubleMuon      r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 DoubleMuon      r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 SingleMuon      r.kBlack      SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016C_03Feb_v1_runs_271036_284044                    SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
+SingleMuon      r.kBlack      SingleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 SingleMuon      r.kBlack      SingleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 SingleMuon      r.kBlack      SingleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 SingleMuon      r.kBlack      SingleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
@@ -57,14 +57,13 @@ SingleMuon      r.kBlack      SingleMuon_Run2016G_03Feb2017_v1_runs_271036_28404
 SingleMuon      r.kBlack      SingleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 SingleMuon      r.kBlack      SingleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016C_03Feb_v1_runs_271036_284044                        MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
+MuonEG          r.kBlack      MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
 MuonEG          r.kBlack      MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26/ 1    1 
-
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
 #-----------------------------------------------------------
