@@ -15,7 +15,7 @@ class Sample:
       self.ftfile = TFile(ftfileloc)
       self.ttree = self.ftfile.Get('sf/t')
       self.isScan = isScan
-      if not self.isData:
+      if not self.isData and not self.isScan:
         gw = 0.
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
