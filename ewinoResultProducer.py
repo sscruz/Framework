@@ -502,7 +502,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         bins = [50.0, 100.0, 150.0, 250.0]
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '36.8invfb'
+    newLumiString = '35.9invfb'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -584,7 +584,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.)  ; other_datacard.Add(ra_SF ,1.)
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.)  ; other_datacard.Add(wz_SF ,1.)
     mc_stack.Add(da_OF_fmllScaled); mc_full.Add(da_OF_fmllScaled, 1.) 
-    mc_stack.Add(zz_SF);                           other_datacard.Add(zz_SF ,1.)
+    mc_stack.Add(zz_SF);                           
     mc_stack.Add(dy_shape); mc_full.Add(dy_shape); 
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
@@ -722,7 +722,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================
