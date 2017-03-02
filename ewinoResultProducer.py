@@ -586,14 +586,15 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
 
     mc_full = copy.deepcopy(zz_SF)
-    
-    mc_stack.Add(vvv_SF); mc_full.Add(vvv_SF, 1.) 
-    mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.) 
-    mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.) 
-    mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.) 
+    other_datacard = copy.deepcopy(zz_SF)
+
+    mc_stack.Add(vvv_SF); mc_full.Add(vvv_SF, 1.); other_datacard.Add(vvv_SF,1.)
+    mc_stack.Add(ttz_SF); mc_full.Add(ttz_SF, 1.); other_datacard.Add(ttz_SF,1.)
+    mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.)  ; other_datacard.Add(ra_SF ,1.)
+    mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.)  ; other_datacard.Add(wz_SF ,1.)
     mc_stack.Add(da_OF_fmllScaled); mc_full.Add(da_OF_fmllScaled, 1.) 
-    mc_stack.Add(zz_SF); 
-    mc_stack.Add(dy_shape); mc_full.Add(dy_shape);
+    mc_stack.Add(zz_SF);                           other_datacard.Add(zz_SF ,1.)
+    mc_stack.Add(dy_shape); mc_full.Add(dy_shape); 
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
     mc_full_e = copy.deepcopy(mc_full)
@@ -620,7 +621,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     da_OF   .SetName('da_OF'   );     da_OF    .Write();  
     tf_CR_SR.SetName('tf_CR_SR');     tf_CR_SR .Write(); 
     dy_shape.SetName('dy_shape');     dy_shape .Write(); 
-    mc_full .SetName('mc_full' );     mc_full  .Write(); 
+    other_datacard.SetName('mc_full' );     other_datacard.Write(); 
     forDataCards.Close()
 
 
