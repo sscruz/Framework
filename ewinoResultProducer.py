@@ -455,11 +455,8 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_prediction.Multiply(mc_result[2])                                                                                                                                                          
 
     mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut ,cuts.Zmass, cuts.SF]), '', xlabel)
-    mc_OF_err = copy.deepcopy(mc_OF)
-    mc_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    mc_OF_err.SetFillStyle(3004); mc_OF_err.SetMarkerSize(0.)
 
-    mc_SF.GetYaxis().SetRangeUser(0., 2*mc_SF.GetMaximum())
+    mc_SF.GetYaxis().SetRangeUser(0., 1.5*mc_SF.GetMaximum())
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
 
     mc_OF_fmllScaled = copy.deepcopy(mc_prediction)
@@ -469,9 +466,6 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_OF_fmllScaled_err.SetFillStyle(3004); mc_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
     da_OF_fmllScaled = copy.deepcopy(prediction)
     da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
-    da_OF_fmllScaled_err = copy.deepcopy(da_OF_fmllScaled)
-    da_OF_fmllScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
-    da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
 
     for i in range(1, mc_OF.GetNbinsX()+1):
         if not  mc_OF.GetBinContent(i): continue
@@ -479,13 +473,10 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
 
     print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     plot_closure = Canvas.Canvas('ewino/%s/plot_closure_%s_%s_%s'%(lint_str, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.6, 0.55, 0.75, 0.8)
-    plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
+    plot_closure.addHisto(mc_SF                , 'PE'       , 'MC SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure.addHisto(mc_OF_fmllScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure.addHisto(da_OF_fmllScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
-    plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, da_OF_fmllScaled, mc_OF_fmllScaled, 0.2, 1.8)
-    #makeClosureTable(mc_SF, mc_OF_fmllScaled, da_OF_fmllScaled)
+    plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC (OF*R_{SFOF}*#kappa)', 'L' , r.kBlue+1 , 1,  1)
+    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_fmllScaled, 0.2, 1.8, "MC SF/MC OF")
     return da_OF_fmllScaled                                                                                                                              
 
 
@@ -671,7 +662,7 @@ if __name__ == '__main__':
     fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu_ext1']
+    ttzDatasets = ['TTZToLLNuNu']
     raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
@@ -738,19 +729,8 @@ if __name__ == '__main__':
     ## ============================================================
     global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
     rsfof, rsfof_e, rsfof_mc, rsfof_mc_e =  1.0449 ,     0.0641 , 1.0444 ,     0.0640
-    #rsfof, rsfof_e, rsfof_mc, rsfof_mc_e =  makeFactorsTable()
-    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
     ## result plots in different variables:
  
-
- #   #for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
- #   #    makeResultData(v , maxrun , lint , specialcut =''                                     , scutstring = ''                 , _options='returnplot,splitFlavor,printIntegral')
- #   #    makeResultData(v , maxrun , lint , specialcut ='nll_Edge > 21.'                        , scutstring = 'nllAbove21'        , _options='returnplot,splitFlavor,printIntegral')
- #   #    makeResultData(v , maxrun , lint , specialcut ='nll_Edge <= 21.'                        , scutstring = 'nllBelow21'        , _options='returnplot,splitFlavor,printIntegral')
- #       
- #       makeResultData(v,maxrun,lint,specialcut='nll_Edge <= 21. && lepsMll_Edge > 400' , scutstring = 'mll400_nllBelow21', _options='returnplot,splitFlavor,printIntegral')
-
-
     #makeClosureTests('met','', 'inclusive', True)
     #makeClosureTests('met','', 'inclusive', True)
     #makeDYMETShape('met','', 'inclusive', True)

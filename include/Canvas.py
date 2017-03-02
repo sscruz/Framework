@@ -207,7 +207,7 @@ class Canvas:
       if not os.path.exists(d):
          os.makedirs(d)                 
 
-   def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2):
+   def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2, label ="Data/Prediction"):
 
       self.myCanvas.cd()
 
@@ -266,13 +266,13 @@ class Canvas:
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
-          tmp_ratio.GetYaxis().SetTitle("Data/Prediction");
+          tmp_ratio.GetYaxis().SetTitle(label);
           tmp_ratio.GetYaxis().CenterTitle();
           tmp_ratio.GetYaxis().SetLabelSize(0.12);
           tmp_ratio.GetXaxis().SetLabelSize(0.12);
           tmp_ratio.GetYaxis().SetTitleOffset(0.3);
           tmp_ratio.GetYaxis().SetNdivisions(4);
-          tmp_ratio.GetYaxis().SetTitleSize(0.10);
+          tmp_ratio.GetYaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());

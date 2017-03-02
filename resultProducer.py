@@ -204,13 +204,13 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         print "nll below 21 ", (dy_loNll.Integral()/dy_shape.Integral())
         pred = pred * (dy_loNll.Integral()/dy_shape.Integral())
     dy_shape.SetBinContent(1, pred*rinout1); dy_shape.SetBinError(1, pred*rinout1*math.sqrt((pred_e/pred)**2 + (rinout1_e/rinout1)**2))
-    dy_shape.SetBinContent(2, pred*rinout2); dy_shape.SetBinError(2, pred*rinout2*math.sqrt((pred_e/pred)**2 + (rinout2_e/rinout1)**2))
+    dy_shape.SetBinContent(2, pred*rinout2); dy_shape.SetBinError(2, pred*rinout2*math.sqrt((pred_e/pred)**2 + (rinout2_e/rinout2)**2))
     dy_shape.SetBinContent(3, 0); dy_shape.SetBinError(3, 0)
-    dy_shape.SetBinContent(4, pred*rinout3); dy_shape.SetBinError(4, pred*rinout3*math.sqrt((pred_e/pred)**2 + (rinout3_e/rinout1)**2))
-    dy_shape.SetBinContent(5, pred*rinout4); dy_shape.SetBinError(5, pred*rinout4*math.sqrt((pred_e/pred)**2 + (rinout4_e/rinout1)**2))
-    dy_shape.SetBinContent(6, pred*rinout5); dy_shape.SetBinError(6, pred*rinout5*math.sqrt((pred_e/pred)**2 + (rinout5_e/rinout1)**2))
-    dy_shape.SetBinContent(7, pred*rinout6); dy_shape.SetBinError(7, pred*rinout6*math.sqrt((pred_e/pred)**2 + (rinout6_e/rinout1)**2))
-    dy_shape.SetBinContent(8, pred*rinout7); dy_shape.SetBinError(8, pred*rinout7*math.sqrt((pred_e/pred)**2 + (rinout7_e/rinout1)**2))
+    dy_shape.SetBinContent(4, pred*rinout3); dy_shape.SetBinError(4, pred*rinout3*math.sqrt((pred_e/pred)**2 + (rinout3_e/rinout3)**2))
+    dy_shape.SetBinContent(5, pred*rinout4); dy_shape.SetBinError(5, pred*rinout4*math.sqrt((pred_e/pred)**2 + (rinout4_e/rinout4)**2))
+    dy_shape.SetBinContent(6, pred*rinout5); dy_shape.SetBinError(6, pred*rinout5*math.sqrt((pred_e/pred)**2 + (rinout5_e/rinout5)**2))
+    dy_shape.SetBinContent(7, pred*rinout6); dy_shape.SetBinError(7, pred*rinout6*math.sqrt((pred_e/pred)**2 + (rinout6_e/rinout6)**2))
+    dy_shape.SetBinContent(8, pred*rinout7); dy_shape.SetBinError(8, pred*rinout7*math.sqrt((pred_e/pred)**2 + (rinout7_e/rinout7)**2))
     plot_dy_shape = Canvas.Canvas('results/36.8invfb/plot_Templates', 'png,pdf', 0.60, 0.65, 0.80, 0.85)
     plot_dy_shape.addHisto(dy_shape  , 'HIST'       , 'Templates', 'PL', r.kBlack  , 1,  0)
     plot_dy_shape.save(1, 0, 0, lint)                            
@@ -228,13 +228,6 @@ def makeResultsTable(da, fs, dy,rare, mc, nll = ''):
         line1 =  '&& non ttbar-like  &&& \\\\ \hline'
     if nll == "":
         line1 =  '&& Total (inclusive in nll)  &&& \\\\ \hline'
-    # line3 = '20-60  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(1),fs.GetBinError(1),dy.GetBinContent(1),dy.GetBinError(1), mc.GetBinContent(1),mc.GetBinError(1) , da.GetBinContent(1))
-    # line4 = '60-86  &   %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(2),fs.GetBinError(2),dy.GetBinContent(2),dy.GetBinError(2), mc.GetBinContent(2),mc.GetBinError(2) , da.GetBinContent(2))
-    # line5 = '96-150   & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(4),fs.GetBinError(4),dy.GetBinContent(4),dy.GetBinError(4),  mc.GetBinContent(4),mc.GetBinError(4) , da.GetBinContent(4))
-    # line6 = '150-200  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(5),fs.GetBinError(5),dy.GetBinContent(5),dy.GetBinError(5), mc.GetBinContent(5),mc.GetBinError(5) , da.GetBinContent(5))
-    # line7 = '200-300  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(6),fs.GetBinError(6),dy.GetBinContent(6),dy.GetBinError(6), mc.GetBinContent(6),mc.GetBinError(6) , da.GetBinContent(6))
-    # line8 = '300-400  &  %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(7),fs.GetBinError(7),dy.GetBinContent(7),dy.GetBinError(7), mc.GetBinContent(7),mc.GetBinError(7) , da.GetBinContent(7))
-    # line9 = ' + 400  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f  & %.2f $\\pm$ %.2f   & %.f  \\\  ' %(fs.GetBinContent(8),fs.GetBinError(8),dy.GetBinContent(8),dy.GetBinError(8),  mc.GetBinContent(8),mc.GetBinError(8) , da.GetBinContent(8))
     mllLabels = ['20-60 ', '60-86 ','onz', '96-150 ', '150-200','200-300','300-400', '+400']
     lines = []
     print line0                                                                                                                                                      
@@ -306,7 +299,6 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return result
 
 
-
 def makeClosureTestPlots(analysis, var, specialcut = '', scutstring = '', doCumulative = False, nbins=0, xmin=0, xmax=0, save=True):
 
     if var == 'mll':
@@ -370,7 +362,7 @@ def makeClosureTestPlots(analysis, var, specialcut = '', scutstring = '', doCumu
                                                                              errDn = da_prediction.GetBinErrorLow(bin))
         stat = '^{{+ {errUp:4.1f}}}_{{- {errDn:4.1f}}}'.format(errUp = dummyHisto.GetBinErrorUp(1) * da_result[2].GetBinContent(bin),
                                                                errDn = dummyHisto.GetBinErrorLow(1) * da_result[2].GetBinContent(bin))
-        del dummyHisto                                                                                                                                                                                                                                                                                                                                               
+        del dummyHisto                                                                                                                 
 
     ## ## mll distributions
     da_SF = treeDA.getTH1F(lint, var+"da_SF"+scutstring, treevar, nbins, xmin, xmax, cuts.AddList([specialcut, cuts.goodLepton, cuts.SignalRegion, cuts.Zveto, cuts.SF]), '', xlabel)
@@ -601,17 +593,17 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     ttz_SF = treeTTZ.getTH1F(lint, var+"ttz_SF"+scutstring, treevar, nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
     zz_SF = treeZZ.getTH1F(lint, var+"zz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
     wz_SF = treeWZ.getTH1F(lint, var+"wz_SF"+scutstring, treevar,    nbins, 1,1, cuts.AddList([specialcut, cuts.SignalRegion, cuts.goodLepton, cuts.SF, cuts.Zveto,cuts.lepsFromZ]), '', xlabel)
-   # ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
-   # for bin, label in scan.SRLabels.items():
-   #     if ttz_SF.GetBinContent(bin) > 0:
-   #         ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
-   #     else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
-   #     if zz_SF.GetBinContent(bin) > 0:
-   #         zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
-   #     else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
-   #     if wz_SF.GetBinContent(bin) > 0:
-   #         wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
-   #     else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
+    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+    for bin, label in scan.SRLabels.items():
+        if ttz_SF.GetBinContent(bin) > 0:
+            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.3)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+        else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
+        if zz_SF.GetBinContent(bin) > 0:
+            zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
+        else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
+        if wz_SF.GetBinContent(bin) > 0:
+            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
     # aesthetics
     
     rare = copy.deepcopy(others)
