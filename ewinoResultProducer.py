@@ -254,12 +254,12 @@ def scaleByRSFOF(histo, rsfof, rsfof_err):
         h_rsfof.SetBinError  (i,rsfof_e)
     histo.Multiply(h_rsfof)
     return histo                                   
-def scaleByEWKFactors(histo, kappa, kappa_e):
+def scaleByEWKFactors(histo, kappa):
     h_scaled = copy.deepcopy(histo)
     h_scaled.SetName('h_scaled')
     for i in range(1, h_scaled.GetNbinsX()+1):
         h_scaled.SetBinContent(i,kappa)
-        h_scaled.SetBinError  (i,kappa_e)
+        h_scaled.SetBinError  (i,kappa*0.3)
     histo.Multiply(h_scaled)
     return histo                                  
 
@@ -459,12 +459,12 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
 
     mc_OF_fmllScaled = copy.deepcopy(mc_prediction)
-    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc, kappa_mc*0.3)
+    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc)
     mc_OF_fmllScaled_err = copy.deepcopy(mc_OF_fmllScaled)
     mc_OF_fmllScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_fmllScaled_err.SetFillStyle(3004); mc_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
     da_OF_fmllScaled = copy.deepcopy(prediction)
-    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
+    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da)
 
     for i in range(1, mc_OF.GetNbinsX()+1):
         if not  mc_OF.GetBinContent(i): continue
@@ -542,7 +542,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         del dummyHisto                                                                                                                           
 
     da_OF_fmllScaled = copy.deepcopy(prediction)
-    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
+    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da)
     da_OF_fmllScaled_err = copy.deepcopy(da_OF_fmllScaled)
     da_OF_fmllScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
     da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)       
@@ -563,16 +563,16 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
     da_OF_fmllScaled.SetFillColorAlpha(r.kRed-9, 0.8);da_OF_fmllScaled.SetTitle("FS")                                  
     #sorry these are the multilepton control region scale factor and they are hard coded for now, it's uglyy
-    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+    ttz_SF.Scale(1.36);wz_SF.Scale(1.06);zz_SF.Scale(1.71) 
     for bin, label in scan.SRLabels.items():
         if ttz_SF.GetBinContent(bin) > 0:
-            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.3)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
         else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
         if zz_SF.GetBinContent(bin) > 0:
             zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
         else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
         if wz_SF.GetBinContent(bin) > 0:
-            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
         else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
 
     mc_full = copy.deepcopy(zz_SF)
@@ -606,7 +606,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
     #### for the datacards
     sergiosLabel = 'CharNeu_Moriond2017' if region == 'TChiWZ' else 'NeuNeu_Moriond2017'
     forDataCards = TFile.Open('datacards/forDatacards_%s.root'%sergiosLabel,'recreate')
-    tf_CR_SR = scaleByEWKFactors(result[2], kappa_da, kappa_da_e)
+    tf_CR_SR = scaleByEWKFactors(result[2], kappa_da)
     da_SF   .SetName('da_SF'   );     da_SF    .Write();      
     da_OF   .SetName('da_OF'   );     da_OF    .Write();  
     tf_CR_SR.SetName('tf_CR_SR');     tf_CR_SR .Write(); 
