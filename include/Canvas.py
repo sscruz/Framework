@@ -255,14 +255,9 @@ class Canvas:
       ratios = []
 
       for tmp_hMC in hMClist:
-          #print 'making ratio for', tmp_hMC.GetName()
           ind = hMClist.index(tmp_hMC)
           tmp_ratio = hdata.Clone(tmp_hMC.GetName()+'_ratio')
           tmp_ratio.Divide(tmp_hMC)
-          ## print 'at histogram', hdata.GetName()
-          ## print 'ranges', hdata.GetXaxis().GetXmin(), hdata.GetXaxis().GetXmax(), hdata.GetNbinsX()
-          ## print 'dividing by ', tmp_hMC.GetName()
-          ## print 'ranges', tmp_hMC.GetXaxis().GetXmin(), tmp_hMC.GetXaxis().GetXmax(), tmp_hMC.GetNbinsX()
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
@@ -276,8 +271,6 @@ class Canvas:
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
-          #tmp_ratio.SetMarkerSize (tmp_hMC.GetMarkerSize());
-          #tmp_ratio.SetMarkerSize(0)
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
           tmp_ratio.SetFillStyle(3017)
           tmp_ratio.SetMarkerColor(r.kBlack);

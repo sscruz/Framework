@@ -264,7 +264,7 @@ def scaleByEWKFactors(histo, kappa, kappa_e):
     return histo                                  
 
 def makeTheFactors():
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
@@ -373,7 +373,7 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
@@ -397,7 +397,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
-    lint = 36.8  ; maxrun = 999999 ; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999 ; lint_str = '35.9invfb'
     if region == "TChiWZ":
         regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
@@ -455,12 +455,11 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_prediction.Multiply(mc_result[2])                                                                                                                                                          
 
     mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut ,cuts.Zmass, cuts.SF]), '', xlabel)
-
     mc_SF.GetYaxis().SetRangeUser(0., 1.5*mc_SF.GetMaximum())
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
 
     mc_OF_fmllScaled = copy.deepcopy(mc_prediction)
-    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc, kappa_mc_e)
+    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc, kappa_mc*0.3)
     mc_OF_fmllScaled_err = copy.deepcopy(mc_OF_fmllScaled)
     mc_OF_fmllScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_fmllScaled_err.SetFillStyle(3004); mc_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
@@ -480,9 +479,9 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
-    lint = 36.8
+    lint = 35.9
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
@@ -502,7 +501,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         bins = [50.0, 100.0, 150.0, 250.0]
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '36.8invfb'
+    newLumiString = '35.9invfb'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -722,7 +721,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================

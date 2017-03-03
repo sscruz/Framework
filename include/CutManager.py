@@ -10,8 +10,7 @@ class CutManager:
       ########################################################################
       ######Basic Lepton Cuts ################################################
       ########################################################################
-      self.twoLeptons = "nPairLep_Edge > 0 && Flag_eeBadScFilter_Edge == 1    && Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_CSCTightHalo2016Filter_Edge ==1 "
-      #self.twoLeptons = "nPairLep_Edge > 0 &&Flag_badCloneMuonMoriond2017_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1   && Flag_eeBadScFilter_Edge == 1    && Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_CSCTightHalo2016Filter_Edge ==1 "
+      self.twoLeptons = "nPairLep_Edge > 0 &&  Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 "
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
       self.diLeptonPt = "lepsZPt_Edge > 25"
