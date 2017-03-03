@@ -583,7 +583,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.)  ; other_datacard.Add(ra_SF ,1.)
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.)  ; other_datacard.Add(wz_SF ,1.)
     mc_stack.Add(da_OF_fmllScaled); mc_full.Add(da_OF_fmllScaled, 1.) 
-    mc_stack.Add(zz_SF);                           other_datacard.Add(zz_SF ,1.)
+    mc_stack.Add(zz_SF);                           
     mc_stack.Add(dy_shape); mc_full.Add(dy_shape); 
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
