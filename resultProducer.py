@@ -626,8 +626,8 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         rare_perGeV.SetBinError(ib,  rare.GetBinError(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))
 
 
-    mc_stack.Add(dy_shape);                        mc_stack_perGeV.Add(dy_perGeV); 
-    mc_stack.Add(rare);                            mc_stack_perGeV.Add(rare_perGeV);
+    mc_stack.Add(dy_shape  );                      mc_stack_perGeV.Add(dy_perGeV); 
+    mc_stack.Add(rare      );                      mc_stack_perGeV.Add(rare_perGeV);
     mc_stack.Add(prediction);                      mc_stack_perGeV.Add(fs_perGeV); 
     mc_stack.Draw();                               mc_stack_perGeV.Draw("SAME");
     mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');  mc_stack_perGeV.GetXaxis().SetTitle('m_{ll} [GeV]');
@@ -664,6 +664,15 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     plot_result.addHisto(da_perGeV       , 'E1,SAME'  , 'observed data', 'PL', r.kBlack  , 1,  0)
     plot_result.saveRatio(1, 1, 0, lint, da_perGeV, mc_full_perGeV, 0. , int(maxrat+1.0)) 
     
+    tfile = r.TFile('datacards/forDatacards_Edge_Moriond2017_%s.root'%scutstring,'recreate')
+    tfile.cd()
+    tfile.WriteTObject(dy_shape  , 'dy_shape')
+    tfile.WriteTObject(rare      , 'mc_full')
+    tfile.WriteTObject(da_SF     , 'da_SF')
+    tfile.WriteTObject(da_OF     , 'da_OF')
+    tfile.WriteTObject(result[2] , 'tf_CR_SR')
+    tfile.Close()
+
     if returnplot:
         return plot_result                                                                                                                                                                         
         del mc_stack;da_SF;mc_stack_perGeV;da_perGeV;mc_full; mc_full_perGeV; 
