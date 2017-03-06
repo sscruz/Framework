@@ -672,7 +672,6 @@ if __name__ == '__main__':
                    'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
                    'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']     
  
- 
     daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']    
