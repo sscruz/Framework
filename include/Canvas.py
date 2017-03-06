@@ -207,7 +207,7 @@ class Canvas:
       if not os.path.exists(d):
          os.makedirs(d)                 
 
-   def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2):
+   def saveRatio(self, legend, isData, log, lumi, hdata, hMC, r_ymin=0, r_ymax=2, label ="Data/Prediction"):
 
       self.myCanvas.cd()
 
@@ -255,29 +255,22 @@ class Canvas:
       ratios = []
 
       for tmp_hMC in hMClist:
-          #print 'making ratio for', tmp_hMC.GetName()
           ind = hMClist.index(tmp_hMC)
           tmp_ratio = hdata.Clone(tmp_hMC.GetName()+'_ratio')
           tmp_ratio.Divide(tmp_hMC)
-          ## print 'at histogram', hdata.GetName()
-          ## print 'ranges', hdata.GetXaxis().GetXmin(), hdata.GetXaxis().GetXmax(), hdata.GetNbinsX()
-          ## print 'dividing by ', tmp_hMC.GetName()
-          ## print 'ranges', tmp_hMC.GetXaxis().GetXmin(), tmp_hMC.GetXaxis().GetXmax(), tmp_hMC.GetNbinsX()
 
           tmp_ratio.SetTitle("")
           tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
-          tmp_ratio.GetYaxis().SetTitle("Data/Prediction");
+          tmp_ratio.GetYaxis().SetTitle(label);
           tmp_ratio.GetYaxis().CenterTitle();
           tmp_ratio.GetYaxis().SetLabelSize(0.12);
           tmp_ratio.GetXaxis().SetLabelSize(0.12);
           tmp_ratio.GetYaxis().SetTitleOffset(0.3);
           tmp_ratio.GetYaxis().SetNdivisions(4);
-          tmp_ratio.GetYaxis().SetTitleSize(0.10);
+          tmp_ratio.GetYaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitleSize(0.14);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
-          #tmp_ratio.SetMarkerSize (tmp_hMC.GetMarkerSize());
-          #tmp_ratio.SetMarkerSize(0)
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
           tmp_ratio.SetFillStyle(3017)
           tmp_ratio.SetMarkerColor(r.kBlack);

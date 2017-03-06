@@ -507,7 +507,7 @@ if __name__ == "__main__":
     #treeSI = Sample.Tree(helper.selectSamples(opts.sampleFile, siDatasets, 'SI'), 'SI', 0, isScan = 1)
     print bcolors.HEADER + '[Data - MC comparisons] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
-    lumi = 36.8 ; maxrun = 999999; lumi_str = '36.8invfb'
+    lumi = 35.9 ; maxrun = 999999; lumi_str = '35.9invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()

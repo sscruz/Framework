@@ -254,17 +254,17 @@ def scaleByRSFOF(histo, rsfof, rsfof_err):
         h_rsfof.SetBinError  (i,rsfof_e)
     histo.Multiply(h_rsfof)
     return histo                                   
-def scaleByEWKFactors(histo, kappa, kappa_e):
+def scaleByEWKFactors(histo, kappa):
     h_scaled = copy.deepcopy(histo)
     h_scaled.SetName('h_scaled')
     for i in range(1, h_scaled.GetNbinsX()+1):
         h_scaled.SetBinContent(i,kappa)
-        h_scaled.SetBinError  (i,kappa_e)
+        h_scaled.SetBinError  (i,kappa*0.3)
     histo.Multiply(h_scaled)
     return histo                                  
 
 def makeTheFactors():
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     
     mll = 'm_{ll} [GeV]' 
     bins = [100, 150, 250]
@@ -373,7 +373,7 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     dy = r.TH1F('dy'+region,'dy'+region, nbin, metbins_)
     dy.SetBinContent(1, bin1);dy.SetBinError(1,bin1_e);
     dy.SetBinContent(2, bin2);dy.SetBinError(2,bin2_e);
@@ -397,7 +397,7 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     elif var == 'met':
         treevar = 'met_Edge'
         xlabel = 'E_{T}^{miss} [GeV]'                    
-    lint = 36.8  ; maxrun = 999999 ; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999 ; lint_str = '35.9invfb'
     if region == "TChiWZ":
         regioncut =  cuts.ewinoWZExtMll
         bins = [50.0, 100.0, 150.0, 250.0, 350.0]
@@ -455,23 +455,16 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
     mc_prediction.Multiply(mc_result[2])                                                                                                                                                          
 
     mc_SF = treeFS.getTH1F(lint, var+"mc_SF"+scutstring, treevar, bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, regioncut ,cuts.Zmass, cuts.SF]), '', xlabel)
-    mc_OF_err = copy.deepcopy(mc_OF)
-    mc_OF_err.SetFillColorAlpha(r.kBlue+1, 0.8)
-    mc_OF_err.SetFillStyle(3004); mc_OF_err.SetMarkerSize(0.)
-
-    mc_SF.GetYaxis().SetRangeUser(0., 2*mc_SF.GetMaximum())
+    mc_SF.GetYaxis().SetRangeUser(0., 1.5*mc_SF.GetMaximum())
     print helper.bcolors.HEADER + '[MC only closure test not scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
 
     mc_OF_fmllScaled = copy.deepcopy(mc_prediction)
-    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc, kappa_mc_e)
+    mc_OF_fmllScaled = scaleByEWKFactors(mc_OF_fmllScaled, kappa_mc)
     mc_OF_fmllScaled_err = copy.deepcopy(mc_OF_fmllScaled)
     mc_OF_fmllScaled_err.SetFillColorAlpha(r.kBlue+1, 0.8)
     mc_OF_fmllScaled_err.SetFillStyle(3004); mc_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
     da_OF_fmllScaled = copy.deepcopy(prediction)
-    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
-    da_OF_fmllScaled_err = copy.deepcopy(da_OF_fmllScaled)
-    da_OF_fmllScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
-    da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)                                                                                    
+    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da)
 
     for i in range(1, mc_OF.GetNbinsX()+1):
         if not  mc_OF.GetBinContent(i): continue
@@ -479,19 +472,16 @@ def makeClosureTests(var, specialcut = '', scutstring = '', doCumulative = False
 
     print helper.bcolors.HEADER + '[MC only closure test scaled by RSFOF] ' + helper.bcolors.OKBLUE + 'Producing plot...' + helper.bcolors.ENDC
     plot_closure = Canvas.Canvas('ewino/%s/plot_closure_%s_%s_%s'%(lint_str, var, '' if not scutstring else '_'+scutstring, region), 'png,pdf', 0.6, 0.55, 0.75, 0.8)
-    plot_closure.addHisto(mc_SF                , 'PE'       , 'MC - SF', 'PL', r.kRed+1  , 1,  0)
+    plot_closure.addHisto(mc_SF                , 'PE'       , 'MC SF', 'PL', r.kRed+1  , 1,  0)
     plot_closure.addHisto(mc_OF_fmllScaled_err, 'e2,same'  , ''       , 'PL', r.kBlue+1 , 1, -1)
-    plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC - OF', 'L' , r.kBlue+1 , 1,  1)
-    plot_closure.addHisto(da_OF_fmllScaled    , 'hist,SAME', 'Data - OF', 'L' , r.kBlack , 1,  1)
-    plot_closure.addLatex (0.61, 0.82, 'R_{SFOF} scaled')
-    plot_closure.saveRatio(1, 0, 0, lint, da_OF_fmllScaled, mc_OF_fmllScaled, 0.2, 1.8)
-    #makeClosureTable(mc_SF, mc_OF_fmllScaled, da_OF_fmllScaled)
+    plot_closure.addHisto(mc_OF_fmllScaled    , 'hist,SAME', 'MC (OF*R_{SFOF}*#kappa)', 'L' , r.kBlue+1 , 1,  1)
+    plot_closure.saveRatio(1, 0, 0, lint, mc_SF, mc_OF_fmllScaled, 0.2, 1.8, "MC SF/MC OF")
     return da_OF_fmllScaled                                                                                                                              
 
 
-def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '', scutstring = '', region = '', _options = ''):
+def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '', scutstring = '', region = '', _options = ''):
     scan = Scans.Scan(analysis)
-    lint = 36.8
+    lint = 35.9
     print "Doing region: ", region
     dy_shape =  makeDYMETShape('met','', '', True, region)
     fs_shape  = makeClosureTests('met','','', True, region)
@@ -511,7 +501,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         bins = [50.0, 100.0, 150.0, 250.0]
         regioncut = cuts.ewinoZHExtMll
     mc_stack = r.THStack() 
-    newLumiString = '36.8invfb'
+    newLumiString = '35.9invfb'
 
     rsfof_da = helper.readFromFileRsfofD("ingredients.dat", "DATA") 
     rt_da = helper.readFromFileRT("ingredients.dat", "DATA")
@@ -552,7 +542,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
         del dummyHisto                                                                                                                           
 
     da_OF_fmllScaled = copy.deepcopy(prediction)
-    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da, kappa_da_e)
+    da_OF_fmllScaled = scaleByEWKFactors(da_OF_fmllScaled, kappa_da)
     da_OF_fmllScaled_err = copy.deepcopy(da_OF_fmllScaled)
     da_OF_fmllScaled_err.SetFillColorAlpha(r.kBlack, 0.8)
     da_OF_fmllScaled_err.SetFillStyle(3004); da_OF_fmllScaled_err.SetMarkerSize(0.)       
@@ -573,16 +563,16 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     dy_shape.SetFillColorAlpha(r.kYellow-9, 0.8);dy_shape.SetTitle("E_{T}^{miss} templates")
     da_OF_fmllScaled.SetFillColorAlpha(r.kRed-9, 0.8);da_OF_fmllScaled.SetTitle("FS")                                  
     #sorry these are the multilepton control region scale factor and they are hard coded for now, it's uglyy
-    ttz_SF.Scale(1.36);wz_SF.Scale(1.0);zz_SF.Scale(1.57) 
+    ttz_SF.Scale(1.36);wz_SF.Scale(1.06);zz_SF.Scale(1.71) 
     for bin, label in scan.SRLabels.items():
         if ttz_SF.GetBinContent(bin) > 0:
-            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.5)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
+            ttz_SF.SetBinError(bin, ttz_SF.GetBinContent(bin)*math.sqrt(((ttz_SF.GetBinContent(bin)*0.3)/ttz_SF.GetBinContent(bin))**2 + (ttz_SF.GetBinError(bin)/ttz_SF.GetBinContent(bin)**2)) )
         else: ttz_SF.SetBinError(bin , ttz_SF.GetBinError(bin))                                                                                                                                    
         if zz_SF.GetBinContent(bin) > 0:
             zz_SF.SetBinError(bin, zz_SF.GetBinContent(bin)*math.sqrt(((zz_SF.GetBinContent(bin)*0.5)/zz_SF.GetBinContent(bin))**2 + (zz_SF.GetBinError(bin)/zz_SF.GetBinContent(bin)**2)) )
         else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
         if wz_SF.GetBinContent(bin) > 0:
-            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.5)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
+            wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
         else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
 
     mc_full = copy.deepcopy(zz_SF)
@@ -593,7 +583,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     mc_stack.Add(ra_SF); mc_full.Add(ra_SF, 1.)  ; other_datacard.Add(ra_SF ,1.)
     mc_stack.Add(wz_SF); mc_full.Add(wz_SF, 1.)  ; other_datacard.Add(wz_SF ,1.)
     mc_stack.Add(da_OF_fmllScaled); mc_full.Add(da_OF_fmllScaled, 1.) 
-    mc_stack.Add(zz_SF);                           other_datacard.Add(zz_SF ,1.)
+    mc_stack.Add(zz_SF);                           
     mc_stack.Add(dy_shape); mc_full.Add(dy_shape); 
     mc_stack.Draw()
     mc_stack.GetXaxis().SetTitle(xlabel)
@@ -616,7 +606,7 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 36.8, specialcut = '',
     #### for the datacards
     sergiosLabel = 'CharNeu_Moriond2017' if region == 'TChiWZ' else 'NeuNeu_Moriond2017'
     forDataCards = TFile.Open('datacards/forDatacards_%s.root'%sergiosLabel,'recreate')
-    tf_CR_SR = scaleByEWKFactors(result[2], kappa_da, kappa_da_e)
+    tf_CR_SR = scaleByEWKFactors(result[2], kappa_da)
     da_SF   .SetName('da_SF'   );     da_SF    .Write();      
     da_OF   .SetName('da_OF'   );     da_OF    .Write();  
     tf_CR_SR.SetName('tf_CR_SR');     tf_CR_SR .Write(); 
@@ -672,7 +662,7 @@ if __name__ == '__main__':
     fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu_ext1']
+    ttzDatasets = ['TTZToLLNuNu']
     raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
@@ -731,7 +721,7 @@ if __name__ == '__main__':
     gROOT.SetBatch(1)
     r.setTDRStyle() 
     cuts = CutManager.CutManager()
-    lint = 36.8  ; maxrun = 999999; lint_str = '36.8invfb'
+    lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
     print 'Running with an integrated luminosity of %.2f fb-1' %(lint)
 
     ## ============================================================
@@ -739,19 +729,8 @@ if __name__ == '__main__':
     ## ============================================================
     global rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
     rsfof, rsfof_e, rsfof_mc, rsfof_mc_e =  1.0449 ,     0.0641 , 1.0444 ,     0.0640
-    #rsfof, rsfof_e, rsfof_mc, rsfof_mc_e =  makeFactorsTable()
-    print rsfof, rsfof_e, rsfof_mc, rsfof_mc_e
     ## result plots in different variables:
  
-
- #   #for v in ['mll']:#'nll_noMET', 'nll_noMLB', 'nll_noZPT', 'nll_noLDP']: #'iso1', 'iso2', 'mll', 'nll', 'nb', 'nj', 'zpt', 'mlb', 'met', 'ldp', 'pt1', 'pt2']:
- #   #    makeResultData(v , maxrun , lint , specialcut =''                                     , scutstring = ''                 , _options='returnplot,splitFlavor,printIntegral')
- #   #    makeResultData(v , maxrun , lint , specialcut ='nll_Edge > 21.'                        , scutstring = 'nllAbove21'        , _options='returnplot,splitFlavor,printIntegral')
- #   #    makeResultData(v , maxrun , lint , specialcut ='nll_Edge <= 21.'                        , scutstring = 'nllBelow21'        , _options='returnplot,splitFlavor,printIntegral')
- #       
- #       makeResultData(v,maxrun,lint,specialcut='nll_Edge <= 21. && lepsMll_Edge > 400' , scutstring = 'mll400_nllBelow21', _options='returnplot,splitFlavor,printIntegral')
-
-
     #makeClosureTests('met','', 'inclusive', True)
     #makeClosureTests('met','', 'inclusive', True)
     #makeDYMETShape('met','', 'inclusive', True)
