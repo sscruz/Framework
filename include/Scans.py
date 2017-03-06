@@ -126,9 +126,7 @@ class Scan(object):
             self.br    = 0.102
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            print 'volver a meter el central jets cleaning!!!!!!'
-            print 20*'#######################'
-            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger])#,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             print self.cuts_norm
             self.zminUL = 1e-3; self.zmaxUL = 1e3
@@ -147,14 +145,41 @@ class Scan(object):
                                 2: '250 GeV < ME_{T} < 350 GeV', 
                                 3: 'ME_{T} > 350 GeV'}
 
+        if self.name == 'ChiZZ_Moriond2017':
+            self.makeMCDatacards = False#True
+            self.paper = 'SUS16034'
+            self.datasets = ['TChiZZ2L']
+            self.xbins =  binning(150,1000,50)
+            self.ybins =  binning(0,1,1) 
+            self.br    = 0.2
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = '1'
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
+            print self.cuts_norm
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('datacards/neuneuXsec.txt')
+            self.regions = []
+            self.xtitle = 'm_{chi^{0}_{2}} = m_{chi^{+}_{1}}'; self.ytitle = 'm_{chi^{0}_{1}}'
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 150) + 1*(met_Edge > 150)*(met_Edge < 250) + 2*(met_Edge > 250)*(met_Edge < 350) + 3*(met_Edge > 350)'
+            self.srIDMax = 3
+            self.shortLabels = {0: 'vlowmet',
+                                1: 'lowmet',
+                                2: 'medmet',
+                                3: 'highmet'}
+            self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
+                                1: '150 GeV < ME_{T} < 250 GeV',
+                                2: '250 GeV < ME_{T} < 350 GeV', 
+                                3: 'ME_{T} > 350 GeV'}
 
         if self.name == 'NeuNeu_Moriond2017':
             self.makeMCDatacards = False
             self.paper = 'SUS16034'
-            self.datasets = ['TChiHZ']
+            self.datasets = ['SMS_TChiHZ']
             self.xbins =  binning(150,1000,50)
             self.ybins =  binning(0,1,1) 
-            self.br = 0.36
+            self.br = 0.057
             self.xvar = 'GenSusyMNeutralino2_Edge'
             self.yvar = '1'
             self.cuts_norm = cuts.AddList([cuts.BaselineNoTrigger, cuts.SF, cuts.ewinoZH])#,cuts.FSCentralJetCleaning])
@@ -299,10 +324,11 @@ class Scan(object):
         self.ex_exp_m2s.Reset()
     
         for point in limittree:
-            limit = min(10.,point.limit)
+            limit = point.limit # min(10.,point.limit)
             mass      = str(int(point.mh))
+            print mass,
             massx     = int(mass[:3]); massy = int(mass[3:])
-            print mass, massx, massy
+            print massx, massy
             if point.quantileExpected == -1:
                 self.ex_obs    .Fill(massx, massy, limit)
                 self.ex_obs_p1s.Fill(massx, massy, limit*(self.xsecs[massx][0]+self.xsecs[massx][1])/self.xsecs[massx][0])
@@ -328,9 +354,48 @@ class Scan(object):
         self.ex_exp_p2s.GetZaxis().SetRangeUser(0.,10.)
         self.ex_exp_m2s.GetZaxis().SetRangeUser(0.,10.)
         out  = r.TFile('limits_%s.root'%self.name,'recreate')
-        self.ex_obs.Write()
+        self.ex_obs    .Write()
+        self.ex_obs_p1s.Write()
+        self.ex_obs_m1s.Write()
+        self.ex_exp    .Write()
+        self.ex_exp_p1s.Write()
+        self.ex_exp_m1s.Write()
+        self.ex_exp_p2s.Write()
+        self.ex_exp_m2s.Write()
         out.Close()
     
+    def makeSignificanceMap(self):
+        print 'making the exclusions!!'
+        limitfile = r.TFile('datacards/datacards_{name}/{name}/{name}_allSigs.root'.format(name=self.name),'READ')
+        limittree = limitfile.Get('limit')
+        ## observed limit
+        self.ex_sig = copy.deepcopy(self.yx)
+        self.ex_sig.SetTitle("observed signficance"); self.ex_sig.SetName('ex_sig')
+        self.ex_sig.Reset()
+        for point in limittree:
+            limit = point.limit # min(10.,point.limit)
+            mass      = str(int(point.mh))
+            massx     = int(mass[:3]); massy = int(mass[3:])
+            print massx, massy, limit
+            self.ex_sig.Fill(massx, massy, limit)
+
+
+        self.ex_sig.GetZaxis().SetRangeUser(-5,5.)
+        #####self.getSmoothedGraph(self.ex_sig)
+   
+        gr2d = r.TGraph2D(self.ex_sig)
+        xbinsize = 12.5; ybinsize = 12.5
+        gr2d.SetNpx( int((gr2d.GetXmax() - gr2d.GetXmin())/xbinsize) )
+        gr2d.SetNpy( int((gr2d.GetYmax() - gr2d.GetYmin())/ybinsize) )
+        tmp_2d_histo = gr2d.GetHistogram()
+        tmp_2d_histo.SetName('smoothed_sig')
+        print 'here'
+        tfile = r.TFile.Open('map_{name}.root'.format(name=self.name),'recreate')
+        tmp_2d_histo.Write()
+        tfile.Close()
+
+
+
     def getSmoothedGraph(self,h_orig):
         tmp_name       = (h_orig.GetName()+'_smoothed').replace('Graph2D_from_','')
         tmp_name_graph = tmp_name+'_graph'

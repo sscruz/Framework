@@ -112,14 +112,18 @@ lumi   lnN             1.026            -               -
     # shapes.Close()
     
 def makeDataCardsFromRootFile():
-    print 20*"#"
     print "Making datacard from rootfile"
-    rootfile = TFile.Open('datacards/forDatacards_%s.root'%scan.name)
+    rootfile = TFile.Open('datacards/forDatacards_%s.root'%('CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name))
     da_SF    = rootfile.Get('da_SF'   )
     da_OF    = rootfile.Get('da_OF'   )
     tf_CR_SR = rootfile.Get('tf_CR_SR')
     dy_shape = rootfile.Get('dy_shape')
     mc_full  = rootfile.Get('mc_full' )
+    
+    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name=scan.name), 'read')
+
+    puSystUp = puFile.Get('puUp')
+    puSystDn = puFile.Get('puDn')
 
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
@@ -137,20 +141,20 @@ rate         XXSIGRATEXX    {fs}           {DY}       {other}
 ----------------------------------------------------------------------------------------------------------------------------------
 fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
 fs_unc lnN             -            {tf_e}             -          -
-#jec   lnN           XXjecXX            -             -          -
+jec   lnN           XXjecXX            -             -          -
 El    lnN           XXElXX             -             -          -
 Mu    lnN           XXMuXX             -             -          -
-#FastSimEl   lnN     XXFastSimElXX      -             -          -
-#FastSimMu   lnN     XXFastSimMuXX      -             -          -
+FastSimEl   lnN     XXFastSimElXX      -             -          -
+FastSimMu   lnN     XXFastSimMuXX      -             -          -
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
-PU    lnN           XXPUXX            -             -          - 
+PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
 genMet lnU              XXgenMetXX     -             -          -
 ISR   lnN              XXISRXX     -             -          - 
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            {dy_e}        - 
-otherSys lnN         -                  -            -          1.3
+otherSys lnN         -                  -            -          {other_e}
 lumi   lnN             1.026              -            -          - 
 '''.format(label = label, 
            obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
@@ -160,7 +164,10 @@ lumi   lnN             1.026              -            -          -
            fs_int = int(da_OF.GetBinContent(SR+2)),
            tf = tf_CR_SR.GetBinContent(SR+2),
            tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
-           dy_e = 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinError(SR+1))
+           dy_e = 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinError(SR+1),
+           pu_Up = 1 + puSystUp.GetBinContent(SR+1),
+           pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
+           other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
         print da_SF.GetBinContent(SR+2)
 
         outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
@@ -207,7 +214,7 @@ cmsenv\n'''
     cmd2 = '%s/%s'%(os.getcwd(),'command'+randomHash + '.sh')
     os.chmod(cmd2, 0o755)
     subprocess.call(cmd2,shell=True)
-    os.system('rm command'+randomHash + '.sh')
+#    os.system('rm command'+randomHash + '.sh')
 
 
     return True
@@ -230,11 +237,16 @@ def produceLimits( njobs ):
         dc_name    = '{fd}/datacard_{suffix}.txt'.format(fd=fd,suffix=d)
         runcmd = 'combineCards.py -S {bstr} > {final_dc}'.format(bstr=srCards,final_dc=dc_name)
         combinecmd = 'combine -m {mass} -M Asymptotic {dc_name}'.format(mass=mass,dc_name=dc_name)
+        combinecmd = combinecmd + '\n' + 'combine -m {mass} -M  ProfileLikelihood  --uncapped 1 --significance --rMin -5 {dc_name}'.format(mass=mass,dc_name=dc_name) # for significance maps
 #        print runcmd
         tasks.append([runcmd,combinecmd, fd])
     pool.map(runCmd, tasks)
     print 'hadding everything'
-    haddcmd = 'hadd -f {bd}/{name}_allLimits.root {bd}/*/higgs*.root'.format(name=scan.name,bd=basedir)
+    print 'hadding asymptotic'
+    haddcmd = 'hadd -f {bd}/{name}_allLimits.root {bd}/*/higgs*Asymptotic*.root'.format(name=scan.name,bd=basedir)
+    os.system(haddcmd)
+    print 'hadding profilelikelihood'
+    haddcmd = 'hadd -f {bd}/{name}_allSigs.root {bd}/*/higgs*ProfileLikelihood*.root'.format(name=scan.name,bd=basedir)
     os.system(haddcmd)
 
 
@@ -430,7 +442,7 @@ if __name__ == "__main__":
     global lumi, scan
 
     cuts = CutManager.CutManager()
-    lumi = 36.8
+    lumi = 35.9
 
     global replaceCutsForSys, extraWeightsForSys
     replaceCutsForSys = {'':      [],
@@ -548,7 +560,7 @@ if __name__ == "__main__":
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
 
-        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu PU ISR'
+        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu ISR'
         scan.SysString = 'genMet'
 #        scan.SysStringUpDown = ''
 #        scan.SysString = ''
@@ -589,6 +601,7 @@ if __name__ == "__main__":
         produceLimits(40 if os.path.exists('/pool/') else 8)
 
     os.system('mkdir -p mkdir -p makeExclusionPlot/config/%s/'%scan.paper)
+    scan.makeSignificanceMap()
     scan.makeExclusion()
     scan.makePrettyPlots()
 
