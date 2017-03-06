@@ -96,10 +96,8 @@ class Sample:
          #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * "  + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
-         #addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
-         #addDataFilters = "&&(  (Flag_badCloneMuonMoriond2017_Edge == 1  )  && (Flag_badMuonMoriond2017_Edge == 1  )  &&(Flag_eeBadScFilter_Edge == 1  ))"
-         #cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
-         cut = cut + "* (" + extraWeight +")"
+         addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
+         cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
       self.ttree.Project(h.GetName(), var, cut, options) 
 
       for _bin in range(1, h.GetNbinsX()+2):
