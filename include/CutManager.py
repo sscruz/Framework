@@ -95,8 +95,10 @@ class CutManager:
       ########################################################################
       self.wideZ = "lepsMll_Edge > 76 && lepsMll_Edge < 106"
       self.mZ140 =  "mZ1_Edge < 140"
-      self.mZ4_120 = "mZ2_Edge < 120 && mZ1_Edge > 4 && mZ2_Edge > 4 && lepsMll_Edge > 4 "
+      self.mZ4_120 = "mZ2_Edge < 120 && mZ2_Edge >= 60"
       self.Zmass = "lepsMll_Edge >= 86 && lepsMll_Edge < 96"
+      self.belowZmass = "lepsMll_Edge < 86"
+      self.aboveZmass = "lepsMll_Edge > 96"
       self.mll20_60= "lepsMll_Edge < 60. && lepsMll_Edge >= 20 "
       self.mll60_86= "lepsMll_Edge < 86. && lepsMll_Edge >= 60 "
       self.mll81_101= "lepsMll_Edge < 101. && lepsMll_Edge >= 81 "

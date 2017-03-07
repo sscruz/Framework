@@ -659,10 +659,11 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    fsDatasets = [ 'TTJets_DiLepton_ext1', 'WWTo2L2Nu', 'WWW', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT']
+    #fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton_ext', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu']
+    ttzDatasets = ['TTZToLLNuNu_ext1']
     raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
@@ -671,7 +672,6 @@ if __name__ == '__main__':
     daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
                    'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
                    'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']     
- 
  
     daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
