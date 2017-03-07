@@ -604,6 +604,10 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         if wz_SF.GetBinContent(bin) > 0:
             wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
         else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
+        if others.GetBinContent(bin) > 0:
+            others.SetBinError(bin, others.GetBinContent(bin)*math.sqrt(((others.GetBinContent(bin)*0.5)/others.GetBinContent(bin))**2 + (others.GetBinError(bin)/others.GetBinContent(bin)**2)) )
+        else: others.SetBinError(bin , others.GetBinError(bin))                                                                                                                                  
+    
     # aesthetics
     
     rare = copy.deepcopy(others)
