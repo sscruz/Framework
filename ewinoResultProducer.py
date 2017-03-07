@@ -573,7 +573,16 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
         if wz_SF.GetBinContent(bin) > 0:
             wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
-        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin)) 
+
+        if ra_SR.GetBinContent(bin) > 0:
+            ra_SR.SetBinError(bin, ra_SR.GetBinContent(bin)*math.sqrt(((ra_SR.GetBinContent(bin)*0.3)/ra_SR.GetBinContent(bin))**2 + (ra_SR.GetBinError(bin)/ra_SR.GetBinContent(bin)**2)) )
+        else: ra_SR.SetBinError(bin , ra_SR.GetBinError(bin)) 
+        
+        if vvv_SF.GetBinContent(bin) > 0:
+            vvv_SF.SetBinError(bin, vvv_SF.GetBinContent(bin)*math.sqrt(((vvv_SF.GetBinContent(bin)*0.3)/vvv_SF.GetBinContent(bin))**2 + (vvv_SF.GetBinError(bin)/vvv_SF.GetBinContent(bin)**2)) )
+        else: vvv_SF.SetBinError(bin , vvv_SF.GetBinError(bin)) 
+
 
     mc_full = copy.deepcopy(zz_SF)
     other_datacard = copy.deepcopy(zz_SF)
