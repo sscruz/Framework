@@ -364,12 +364,12 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
     if region == "TChiWZ":
-        bin1  =795.0 ; bin1_e = 32.6;bin2  = 28.1; bin2_e = 5.5;bin3  = 4.1; bin3_e = 2.8;bin4  = 0.8; bin4_e = 1.0;bin5  = 0.00; bin5_e = 0.5;
+        bin1  =777.0 ; bin1_e = 32.0;bin2  = 29.5; bin2_e = 4.5;bin3  =2.9; bin3_e = 2.1;bin4  = 1.0; bin4_e = 0.7;bin5  = 0.4; bin5_e = 0.3;
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
         nbin = 5
     if region == "TChiZH":
-        bin1  = 77.8; bin1_e = 9.5;bin2  = 2.9; bin2_e =2.1;bin3  = 0.2; bin3_e = 0.3;bin4  = 0.1; bin4_e = 0.1
+        bin1  = 77.6; bin1_e = 9.4;bin2  = 2.9; bin2_e =2.1;bin3  = 0.2; bin3_e = 0.2;bin4  = 0.1; bin4_e = 0.1
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
