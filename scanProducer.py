@@ -12,6 +12,7 @@ import include.Tables     as Tables
 import include.Scans      as Scans
 import include.LeptonSF 
 import include.FastSimSF
+import include.nll
 
 import subprocess
 
@@ -120,7 +121,7 @@ def makeDataCardsFromRootFile():
     dy_shape = rootfile.Get('dy_shape')
     mc_full  = rootfile.Get('mc_full' )
     
-    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name=scan.name), 'read')
+    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
 
     puSystUp = puFile.Get('puUp')
     puSystDn = puFile.Get('puDn')
@@ -155,6 +156,7 @@ ISR   lnN              XXISRXX     -             -          -
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            {dy_e}        - 
 otherSys lnN         -                  -            -          {other_e}
+scale    lnN         1.03               -            -            - 
 lumi   lnN             1.026              -            -          - 
 '''.format(label = label, 
            obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
@@ -164,7 +166,7 @@ lumi   lnN             1.026              -            -          -
            fs_int = int(da_OF.GetBinContent(SR+2)),
            tf = tf_CR_SR.GetBinContent(SR+2),
            tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
-           dy_e = 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinError(SR+1),
+           dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
            pu_Up = 1 + puSystUp.GetBinContent(SR+1),
            pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
            other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
@@ -174,6 +176,77 @@ lumi   lnN             1.026              -            -          -
         outputFile.write(datacard)
         outputFile.close()
 
+def makeDataCardsFromRootFileForEdge():
+    print "Making datacard from rootfile"
+    rootfileBelow = TFile.Open('datacards/forDatacards_%s_%s.root'%(scan.name,'nllBelow21'))
+    rootfileAbove = TFile.Open('datacards/forDatacards_%s_%s.root'%(scan.name,'nllAbove21'))
+
+    da_SFBelow    = copy.deepcopy( rootfileBelow.Get('da_SF'   )); da_SFBelow   .SetName('da_SFBelow'   )
+    da_OFBelow    = copy.deepcopy( rootfileBelow.Get('da_OF'   )); da_OFBelow   .SetName('da_OFBelow'   )
+    tf_CR_SRBelow = copy.deepcopy( rootfileBelow.Get('tf_CR_SR')); tf_CR_SRBelow.SetName('tf_CR_SRBelow')
+    dy_shapeBelow = copy.deepcopy( rootfileBelow.Get('dy_shape')); dy_shapeBelow.SetName('dy_shapeBelow')
+    mc_fullBelow  = copy.deepcopy( rootfileBelow.Get('mc_full' )); mc_fullBelow .SetName('mc_fullBelow' )
+
+    da_SFAbove    = copy.deepcopy( rootfileAbove.Get('da_SF'   )); da_SFAbove   .SetName('da_SFAbove'   )
+    da_OFAbove    = copy.deepcopy( rootfileAbove.Get('da_OF'   )); da_OFAbove   .SetName('da_OFAbove'   )
+    tf_CR_SRAbove = copy.deepcopy( rootfileAbove.Get('tf_CR_SR')); tf_CR_SRAbove.SetName('tf_CR_SRAbove')
+    dy_shapeAbove = copy.deepcopy( rootfileAbove.Get('dy_shape')); dy_shapeAbove.SetName('dy_shapeAbove')
+    mc_fullAbove  = copy.deepcopy( rootfileAbove.Get('mc_full' )); mc_fullAbove .SetName('mc_fullAbove' )
+
+    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name=scan.name), 'read')
+
+    puSystUp = puFile.Get('puUp')
+    puSystDn = puFile.Get('puDn')
+
+    for SR, label in scan.shortLabels.items():
+        bin = SR + 1 if SR < 2 else SR+2 if SR < 7 else SR-6 if SR < 9 else SR-5
+        print SR, bin
+        if scan.hasOther:
+            datacard = '''imax 1 number of bins
+jmax 3 number of processes minus 1
+kmax *  number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}
+observation  {obs}   
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}      {label}        {label}      {label}
+process      XXSIGNALXX     FSbkg          DY         Other
+process      0             1              2           3
+rate         XXSIGRATEXX    {fs}           {DY}       {other}
+----------------------------------------------------------------------------------------------------------------------------------
+fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
+fs_unc lnN             -            {tf_e}             -          -
+jec   lnN           XXjecXX            -             -          -
+El    lnN           XXElXX             -             -          -
+Mu    lnN           XXMuXX             -             -          -
+FastSimEl   lnN     XXFastSimElXX      -             -          -
+FastSimMu   lnN     XXFastSimMuXX      -             -          -
+SigTrig  lnN          1.05             -             -          -
+bHe   lnN           XXbHeXX            -             -          -
+bLi   lnN           XXbLiXX            -             -          -
+PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
+genMet lnU              XXgenMetXX     -             -          -
+ISR   lnN              XXISRXX     -             -          - 
+signalMCstats_{label} lnN    XXmcStatXX  -           -          -
+dySys  lnN           -                  -            {dy_e}        - 
+otherSys lnN         -                  -            -          {other_e}
+lumi   lnN             1.026              -            -          - 
+'''.format(label = label, 
+           obs = da_SFBelow.GetBinContent(bin) if SR < 7 else da_SFAbove.GetBinContent(bin),
+           fs  = da_OFBelow.GetBinContent(bin)*tf_CR_SRBelow.GetBinContent(bin) if SR < 7 else da_OFAbove.GetBinContent(bin)*tf_CR_SRAbove.GetBinContent(bin),
+           DY = dy_shapeBelow.GetBinContent(bin) if SR < 7 else dy_shapeAbove.GetBinContent(bin),
+           other = mc_fullBelow.GetBinContent(bin) if SR < 7 else mc_fullAbove.GetBinContent(bin),
+           fs_int = int(da_OFBelow.GetBinContent(bin)) if SR < 7 else int(da_OFAbove.GetBinContent(bin)),
+           tf = tf_CR_SRBelow.GetBinContent(bin) if SR < 7 else tf_CR_SRAbove.GetBinContent(bin),
+           tf_e = (1 + tf_CR_SRBelow.GetBinError(bin)/tf_CR_SRBelow.GetBinContent(bin)) if SR < 7  else (1 + tf_CR_SRAbove.GetBinError(bin)/tf_CR_SRAbove.GetBinContent(bin)),
+           dy_e = ( 1.5 if dy_shapeBelow.GetBinContent(bin) == 0 else 1 + dy_shapeBelow.GetBinError(bin)/dy_shapeBelow.GetBinContent(bin) ) if SR < 7 else ( 1.5 if dy_shapeAbove.GetBinContent(bin) == 0 else 1 + dy_shapeAbove.GetBinError(bin)/dy_shapeAbove.GetBinContent(bin) ),
+           pu_Up = 1 + puSystUp.GetBinContent(bin),
+           pu_Dn = 1 + puSystDn.GetBinContent(bin),
+           other_e = (1 + mc_fullBelow.GetBinError(bin) / mc_fullBelow.GetBinContent(bin)) if SR < 7 else (1 + mc_fullAbove.GetBinError(bin) / mc_fullBelow.GetBinContent(bin)))
+
+        outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
+        outputFile.write(datacard)
+        outputFile.close()
 
 
 # def runCmd(cmd):
@@ -292,11 +365,11 @@ def getEffMapsSys(sys):
                                scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '',
                                scan.xtitle, scan.ytitle, scan.ztitle, 
                                extraWeightsForSys[sys])
-    if sys == '':
-        kk = TFile('map.root','recreate')
-        effMap.Write()
-        scan.ngen_3d.Write()
-        kk.Close()
+#    if sys == '':
+#        kk = TFile('map.root','recreate')
+#        effMap.Write()
+#        scan.ngen_3d.Write()
+#        kk.Close()
         
     #     print mierda
         
@@ -329,10 +402,10 @@ def getSREffMaps():
     effmaps.Close()
 
 def PutHistosIntoRootFiles():
-    print 'everything into datacards'
-    kk = TFile.Open('map2.root','recreate')
-    scan.maps[''].Write()
-    kk.Close()
+#    print 'everything into datacards'
+#    kk = TFile.Open('map2.root','recreate')
+#    scan.maps[''].Write()
+#    kk.Close()
 
     for i in range(1, scan.norm.GetXaxis().GetNbins()+1):
         for j in range(1, scan.norm.GetYaxis().GetNbins()+1):
@@ -348,10 +421,10 @@ def PutHistosIntoRootFiles():
                 out.Scale(scan.br*lumi*scan.xsecs[xval][0])
                 out.SetName(massString + sys)
                 sysHistos[sys] = out
-                if sys == '':
-                    tfile = TFile.Open(massString+'.root','recreate')
-                    out.Write()
-                    tfile.Close()
+#                if sys == '':
+#                    tfile = TFile.Open(massString+'.root','recreate')
+#                    out.Write()
+#                    tfile.Close()
 
             if sysHistos[''].Integral() == 0: 
                 print 'no sensitivty for', massString
@@ -388,7 +461,7 @@ def PutHistosIntoRootFiles():
                         print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
                         itsOk = False
 
-#                if not itsOk: continue
+                if not itsOk: continue
                 for sys in scan.SysString.split():
                     var = sysHistos[sys]  .GetBinContent(sysHistos[sys]  .FindBin(SR))
                     nom= sysHistos['']    .GetBinContent(sysHistos['']   .FindBin(SR))
@@ -527,7 +600,10 @@ if __name__ == "__main__":
         if scan.makeMCDatacards:
             makeMCDatacards()
         else:
-            makeDataCardsFromRootFile()
+            if not 'Edge' in scan.name:
+                makeDataCardsFromRootFile()
+            else:
+                makeDataCardsFromRootFileForEdge()
 
         scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         ## Load the number of generated events to produce efficiency maps per systematic

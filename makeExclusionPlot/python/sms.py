@@ -23,11 +23,11 @@ class sms():
         self.label2= "#tilde{#chi}^{0}_{1} = 100 GeV";
         # scan range to plot
         self.Xmin = 400.
-        self.Xmax = 950.
-        self.Ymin = 200.
-        self.Ymax = 900.
-        self.Zmin = 0.01
-        self.Zmax = 0.5
+        self.Xmax = 1500.
+        self.Ymin = 150.
+        self.Ymax = 1450.
+        self.Zmin = 0.001
+        self.Zmax = 0.01
         # produce sparticle
         self.sParticle = "m#kern[0.1]{_{#lower[-0.12]{#tilde{b}}}} [GeV]"
         # LSP
