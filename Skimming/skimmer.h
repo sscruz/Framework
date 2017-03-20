@@ -39,13 +39,14 @@ public :
    Int_t           Flag_globalTightHalo2016Filter_Edge;
    Int_t           Flag_CSCTightHalo2016Filter_Edge;                      
    Float_t         Flag_badMuonFilter_Edge;                      
-   Float_t           Flag_badChargedHadronFilter_Edge;                      
+   Float_t         Flag_badChargedHadronFilter_Edge;                      
    Int_t           Flag_badCloneMuonMoriond2017_Edge;                      
    Int_t           Flag_badMuonMoriond2017_Edge;                      
    Float_t         badCloneMuonMoriond2017_maxPt_Edge;                      
    Float_t         badNotCloneMuonMoriond2017_maxPt_Edge;                      
    Int_t           nLepTight_Edge;
    Int_t           nLepLoose_Edge;
+   Int_t           isTightTau_Edge;
    Int_t           nJetSel_Edge;
    Int_t           nJetSel_jecUp_Edge;
    Int_t           nJetSel_jecDn_Edge;
@@ -119,7 +120,6 @@ public :
    Float_t         Lep1_tightCharge_Edge;
    Float_t         Lep1_mvaIdSpring15_Edge;
    Float_t         Lep1_mcMatchId_Edge;
-   Float_t         Lep1_mcMatchTau_Edge;
    Float_t         Lep1_minTauDR_Edge;
    Float_t         Lep2_pt_Edge;
    Float_t         Lep2_eta_Edge;
@@ -134,7 +134,6 @@ public :
    Float_t         Lep2_tightCharge_Edge;
    Float_t         Lep2_mvaIdSpring15_Edge;
    Float_t         Lep2_mcMatchId_Edge;
-   Float_t         Lep2_mcMatchTau_Edge;
    Float_t         Lep2_minTauDR_Edge;
    Float_t         PileupW_Edge;
    Float_t         min_mlb1_Edge;
@@ -241,6 +240,7 @@ public :
    TBranch        *b_badCloneMuonMoriond2017_maxPt_Edge;                                    
    TBranch        *b_badNotCloneMuonMoriond2017_maxPt_Edge;                                    
    TBranch        *b_nLepLoose_Edge;   //!
+   TBranch        *b_isTightTau_Edge;   //!
    TBranch        *b_nJetSel_Edge;   //!
    TBranch        *b_nJetSel_jecUp_Edge;   //!
    TBranch        *b_nJetSel_jecDn_Edge;   //!
@@ -314,7 +314,6 @@ public :
    TBranch        *b_Lep1_tightCharge_Edge;   //!
    TBranch        *b_Lep1_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep1_mcMatchId_Edge;   //!
-   TBranch        *b_Lep1_mcMatchTau_Edge;   //!
    TBranch        *b_Lep1_minTauDR_Edge;   //!
    TBranch        *b_Lep2_pt_Edge;   //!
    TBranch        *b_Lep2_eta_Edge;   //!
@@ -329,7 +328,6 @@ public :
    TBranch        *b_Lep2_tightCharge_Edge;   //!
    TBranch        *b_Lep2_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep2_mcMatchId_Edge;   //!
-   TBranch        *b_Lep2_mcMatchTau_Edge;   //!
    TBranch        *b_Lep2_minTauDR_Edge;   //!
    TBranch        *b_PileupW_Edge;   //!
    TBranch        *b_min_mlb1_Edge;   //!
@@ -512,6 +510,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("badNotCloneMuonMoriond2017_maxPt_Edge", &badNotCloneMuonMoriond2017_maxPt_Edge, &b_badNotCloneMuonMoriond2017_maxPt_Edge);                                            
    fChain->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    fChain->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
+   fChain->SetBranchAddress("isTightTau_Edge", &isTightTau_Edge, &b_isTightTau_Edge);
    fChain->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
    fChain->SetBranchAddress("nPFLep5_Edge", &nPFLep5_Edge, &b_nPFLep5_Edge);
    fChain->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
@@ -579,7 +578,6 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    fChain->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
-   fChain->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    fChain->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    fChain->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -594,7 +592,6 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    fChain->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
-   fChain->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    fChain->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
    fChain->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);
@@ -712,6 +709,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("badNotCloneMuonMoriond2017_maxPt_Edge", &badNotCloneMuonMoriond2017_maxPt_Edge, &b_badNotCloneMuonMoriond2017_maxPt_Edge);      
    outputtree->SetBranchAddress("nLepTight_Edge", &nLepTight_Edge, &b_nLepTight_Edge);
    outputtree->SetBranchAddress("nLepLoose_Edge", &nLepLoose_Edge, &b_nLepLoose_Edge);
+   outputtree->SetBranchAddress("isTightTau_Edge", &isTightTau_Edge, &b_isTightTau_Edge);
    outputtree->SetBranchAddress("nPFHad10_Edge", &nPFHad10_Edge, &b_nPFHad10_Edge);
    outputtree->SetBranchAddress("nPFLep5_Edge", &nPFLep5_Edge, &b_nPFLep5_Edge);
    outputtree->SetBranchAddress("nJetSel_Edge", &nJetSel_Edge, &b_nJetSel_Edge);
@@ -779,7 +777,6 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
-   outputtree->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    outputtree->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    outputtree->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -794,7 +791,6 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
-   outputtree->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    outputtree->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
    outputtree->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);

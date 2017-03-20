@@ -162,7 +162,7 @@ def makeDYMllShape(var, specialcut = '', scutstring = ''):
         xlabel = 'm_{ll} [GeV]'                    
         nbins = [20, 60, 86, 96, 150, 200, 300, 400]
     lint = 35.9  ; maxrun = 999999; lint_str = '35.9invfb'
-    pred = 21.6; pred_e =13.1
+    pred = 19.4; pred_e =11.7
     
     rinout1 = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[0]
     rinout1_stat = helper.readFromFileRinout(ingredientsFile, "DATA", "dy_m20_60__")[1]
@@ -604,6 +604,10 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         if wz_SF.GetBinContent(bin) > 0:
             wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
         else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                         
+        if others.GetBinContent(bin) > 0:
+            others.SetBinError(bin, others.GetBinContent(bin)*math.sqrt(((others.GetBinContent(bin)*0.5)/others.GetBinContent(bin))**2 + (others.GetBinError(bin)/others.GetBinContent(bin)**2)) )
+        else: others.SetBinError(bin , others.GetBinError(bin))                                                                                                                                  
+    
     # aesthetics
     
     rare = copy.deepcopy(others)
@@ -626,8 +630,8 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         rare_perGeV.SetBinError(ib,  rare.GetBinError(ib)/(rare.GetBinLowEdge(ib+1)-rare.GetBinLowEdge(ib)))
 
 
-    mc_stack.Add(dy_shape);                        mc_stack_perGeV.Add(dy_perGeV); 
-    mc_stack.Add(rare);                            mc_stack_perGeV.Add(rare_perGeV);
+    mc_stack.Add(dy_shape  );                      mc_stack_perGeV.Add(dy_perGeV); 
+    mc_stack.Add(rare      );                      mc_stack_perGeV.Add(rare_perGeV);
     mc_stack.Add(prediction);                      mc_stack_perGeV.Add(fs_perGeV); 
     mc_stack.Draw();                               mc_stack_perGeV.Draw("SAME");
     mc_stack.GetXaxis().SetTitle('m_{ll} [GeV]');  mc_stack_perGeV.GetXaxis().SetTitle('m_{ll} [GeV]');
@@ -664,6 +668,15 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
     plot_result.addHisto(da_perGeV       , 'E1,SAME'  , 'observed data', 'PL', r.kBlack  , 1,  0)
     plot_result.saveRatio(1, 1, 0, lint, da_perGeV, mc_full_perGeV, 0. , int(maxrat+1.0)) 
     
+    tfile = r.TFile('datacards/forDatacards_Edge_Moriond2017_%s.root'%scutstring,'recreate')
+    tfile.cd()
+    tfile.WriteTObject(dy_shape  , 'dy_shape')
+    tfile.WriteTObject(rare      , 'mc_full')
+    tfile.WriteTObject(da_SF     , 'da_SF')
+    tfile.WriteTObject(da_OF     , 'da_OF')
+    tfile.WriteTObject(result[2] , 'tf_CR_SR')
+    tfile.Close()
+
     if returnplot:
         return plot_result                                                                                                                                                                         
         del mc_stack;da_SF;mc_stack_perGeV;da_perGeV;mc_full; mc_full_perGeV; 
@@ -696,12 +709,11 @@ if __name__ == '__main__':
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu']
+    ttzDatasets = ['TTZToLLNuNu_ext1']
     othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TTLLJets_m1to10', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton_ext1', 'TTLLJets_m1to10', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     
     mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets + ttzDatasets
- 
  
                                                                                      
     daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',

@@ -364,12 +364,12 @@ def makeDYMETShape(var, specialcut = '', scutstring = '', doCumulative = False, 
         xlabel = 'E_{T}^{miss} [GeV]'                    
         nbins, xmin, xmax = 15, 0, 300
     if region == "TChiWZ":
-        bin1  =795.0 ; bin1_e = 32.6;bin2  = 28.1; bin2_e = 5.5;bin3  = 4.1; bin3_e = 2.8;bin4  = 0.8; bin4_e = 1.0;bin5  = 0.00; bin5_e = 0.5;
+        bin1  =777.0 ; bin1_e = 32.0;bin2  = 29.5; bin2_e = 4.5;bin3  =2.9; bin3_e = 2.1;bin4  = 1.0; bin4_e = 0.7;bin5  = 0.4; bin5_e = 0.3;
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0, 450.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0, 450.0])
         nbin = 5
     if region == "TChiZH":
-        bin1  = 77.8; bin1_e = 9.5;bin2  = 2.9; bin2_e =2.1;bin3  = 0.2; bin3_e = 0.3;bin4  = 0.1; bin4_e = 0.1
+        bin1  = 77.6; bin1_e = 9.4;bin2  = 2.9; bin2_e =2.1;bin3  = 0.2; bin3_e = 0.2;bin4  = 0.1; bin4_e = 0.1
         metbins = [50.0, 100.0, 150.0, 250.0, 350.0]
         metbins_ = array('d', [50.0, 100.0, 150.0, 250.0, 350.0])
         nbin = 4
@@ -573,7 +573,16 @@ def makeResultData(analysis, var, maxrun = 999999, lint = 35.9, specialcut = '',
         else: zz_SF.SetBinError(bin , zz_SF.GetBinError(bin))                                                                                                                                    
         if wz_SF.GetBinContent(bin) > 0:
             wz_SF.SetBinError(bin, wz_SF.GetBinContent(bin)*math.sqrt(((wz_SF.GetBinContent(bin)*0.3)/wz_SF.GetBinContent(bin))**2 + (wz_SF.GetBinError(bin)/wz_SF.GetBinContent(bin)**2)) )
-        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin))                                                                                                                                          
+        else: wz_SF.SetBinError(bin , wz_SF.GetBinError(bin)) 
+
+        if ra_SF.GetBinContent(bin) > 0:
+            ra_SF.SetBinError(bin, ra_SF.GetBinContent(bin)*math.sqrt(((ra_SF.GetBinContent(bin)*0.5)/ra_SF.GetBinContent(bin))**2 + (ra_SF.GetBinError(bin)/ra_SF.GetBinContent(bin)**2)) )
+        else: ra_SF.SetBinError(bin , ra_SF.GetBinError(bin)) 
+        
+        if vvv_SF.GetBinContent(bin) > 0:
+            vvv_SF.SetBinError(bin, vvv_SF.GetBinContent(bin)*math.sqrt(((vvv_SF.GetBinContent(bin)*0.5)/vvv_SF.GetBinContent(bin))**2 + (vvv_SF.GetBinError(bin)/vvv_SF.GetBinContent(bin)**2)) )
+        else: vvv_SF.SetBinError(bin , vvv_SF.GetBinError(bin)) 
+
 
     mc_full = copy.deepcopy(zz_SF)
     other_datacard = copy.deepcopy(zz_SF)
@@ -659,10 +668,11 @@ if __name__ == '__main__':
     ##print asdf
     print 'Going to load DATA and MC trees...'
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    fsDatasets = [ 'TTJets_DiLepton_ext1', 'WWTo2L2Nu', 'WWW', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT']
+    #fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton_ext', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTZToQQ', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     zzDatasets = ['ZZTo2L2Nu']
     wzDatasets = ['WZTo3LNu']
-    ttzDatasets = ['TTZToLLNuNu']
+    ttzDatasets = ['TTZToLLNuNu_ext1']
     raDatasets = ['TWZ', 'tZq_ll']
     vvvDatasets = ['WWZ','WZZ', 'ZZZ']
     mcDatasets = fsDatasets+dyDatasets + raDatasets + zzDatasets + wzDatasets + ttzDatasets + vvvDatasets
@@ -671,7 +681,6 @@ if __name__ == '__main__':
     daDatasetsB = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
                    'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
                    'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']     
- 
  
     daDatasetsC = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
