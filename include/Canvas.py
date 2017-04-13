@@ -225,6 +225,7 @@ class Canvas:
 
       for i in range(0, len(self.histos)):
           if(self.ToDraw[i] != 0):
+              self.histos[i].SetMinimum(0.1)
               self.histos[i].Draw(self.options[i])
 
       if(legend):

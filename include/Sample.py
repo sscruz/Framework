@@ -2,6 +2,7 @@ import ROOT as r
 from array import array
 from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
 import include.LeptonSF
+import include.FastSimSF
 
 class Sample:
    'Common base class for all Samples'
@@ -19,33 +20,35 @@ class Sample:
         gw = 0.
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
+            print "gw ", gw
             if gw: break
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
+        print "sumgenweight ", self.count
       else:
         #self.count = self.ftfile.Get('Count').GetBinContent(1)
         self.count = self.ftfile.Get('sf/t').GetEntries()
-      self.lumWeight =   1.0
       self.puWeight   = '1.0'
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
       self.triggWeight = '1.0'
       self.ISRWeight  = '1.0'
 
-      if not self.isData and not self.isScan:
+      if not self.isData and not self.isScan  > 0:
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
         #self.triggWeight = "weight_trigger_Edge"
 
-      if self.isScan:
+      if self.isScan > 0:
         self.lumWeight  =  1.0
+        self.xSection = self.isScan
         self.puWeight    = "1.0"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
         self.ISRWeight = 'ISRweight_Edge'
-#        self.triggWeight = "weight_trigger_Edge"
-        self.smsCount =  self.ftfile.Get('CountSMS')
+        self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
+        self.lumWeight = self.xSection / self.smsCount
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -92,14 +95,11 @@ class Sample:
       #    cut = cut + "* ( " + addCut + " ) "
            
       if(self.isData == 0):
-         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +  " * " + self.btagWeight + " * " + extraWeight + " )" 
-         #cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * "  + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight + " * " + self.SFWeight + " * " + self.btagWeight + " * " + extraWeight + " )" 
       else: 
          addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
       self.ttree.Project(h.GetName(), var, cut, options) 
-
       for _bin in range(1, h.GetNbinsX()+2):
           h_of.SetBinContent(_bin, h.GetBinContent(_bin))
           h_of.SetBinError  (_bin, h.GetBinError  (_bin))

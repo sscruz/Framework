@@ -28,8 +28,9 @@ class CutManager:
       self.triggerForCR = "((" + self.trigMMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 169) || (" + self.trigEENEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 121 ) || (" + self.trigEMNEW + " && abs(Lep1_pdgId_Edge * Lep2_pdgId_Edge) == 143))"
       self.goodLeptonInc = "("+self.trigger + "&&" +self.twoLeptons +  "&&" + self.leptonDR + ")"
       self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      self.goodLeptonSig = "( nPairLep_Edge > 0 &&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonNoTrigger = "(" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
+      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nTightTau_Edge == 0)'
       self.tightIso = 'max(Lep1_miniRelIso_Edge, Lep2_miniRelIso_Edge) < 0.05'
       self.threeTightLeptons = 'nLepTight_Edge == 3'
       self.fourTightLeptons = 'nLepTight_Edge == 4'
@@ -67,13 +68,34 @@ class CutManager:
       self.METg60 = "(met_Edge > 60)"
       self.METg50 = "(met_Edge > 50)"
       self.METg80 = "(met_Edge >  80)"
+      self.METg50 = "(met_Edge >= 50)"
       self.METg100 = "(met_Edge >= 100)"
       self.METg150 = "(met_Edge >= 150)"
       self.METg200 = "(met_Edge >= 200)"
+      self.METg250 = "(met_Edge >= 250)"
+      self.JETg50 = "(JetSel_Edge_pt >= 50)"
+      self.JETg100 = "(JetSel_Edge_pt >= 100)"
+      self.JETg150 = "(JetSel_Edge_pt >= 150)"
+      self.JETg200 = "(JetSel_Edge_pt >= 200)"
+      self.JETg250 = "(JetSel_Edge_pt >= 250)"
+      self.JET = "(JetSel_Edge_pt >= 250)"
+      
       self.MET50_100 = "(met_Edge >= 50 && met_Edge < 100)"
       self.MET100_150 = "(met_Edge >= 100 && met_Edge < 150)"
       self.MET150_250 = "(met_Edge >= 150 && met_Edge < 250)"
       self.MET250 = "(met_Edge >= 250)"
+      self.lep1W = "abs(Lep1_mcMatchId_Edge) == 24 "
+      self.lep1Z = "abs(Lep1_mcMatchId_Edge) == 23 "
+      self.lep2W = "abs(Lep2_mcMatchId_Edge) == 24 "
+      self.lep2Z = "abs(Lep2_mcMatchId_Edge) == 23 "
+      self.bothTau = "Lep1_mcMatchTau_Edge == 1 && Lep2_mcMatchTau_Edge == 1 "
+      self.bothNoTau = "Lep1_mcMatchTau_Edge == 0 && Lep2_mcMatchTau_Edge == 0 "
+      #self.lep1W = "abs(Lep1_mcMatchId_Edge) == 24 "
+      #self.lep1Z = "abs(Lep1_mcMatchId_Edge) == 23 "
+      #self.lep2W = "abs(Lep2_mcMatchId_Edge) == 24 "
+      #self.lep2Z = "abs(Lep2_mcMatchId_Edge) == 23 "
+      
+      
       self.dPhiJETMET = " (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4)"
       
       ########################################################################
@@ -112,6 +134,7 @@ class CutManager:
       self.ZmassExtended = "lepsMll_Edge >= 60 && lepsMll_Edge < 120"
       self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
+      self.ZvetoExt = "!(lepsMll_Edge >= 76 && lepsMll_Edge < 106)"
       self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
       self.baselineNoTrigger = self.AddList([self.METg100, self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLeptonNoTrigger])
       self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton])
@@ -159,6 +182,10 @@ class CutManager:
 
       ########################################################################
       ######EWK signal regions ###############################################
+      self.slep  = self.AddList([self.bveto, self.ThirdLeptonVeto, self.METg100, self.ZvetoExt])
+      self.slep3lCR  = self.AddList([self.bveto, self.METg60, self.ZvetoExt, self.threeTightLeptons])
+      self.slepNoThirdLeptonVeto  = self.AddList([self.bveto, self.METg100, self.ZvetoExt])
+      #self.slep  = self.AddList([self.goodLepton, self.SF, self.bveto, self.METg50, self.ZvetoExt])
       self.region3l  = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET, self.METg60, self.bveto, self.nj2])
       self.region4l  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])
       self.region4lInc  = self.AddList([self.goodLeptonInc, self.fourLooseLeptons, self.ZmassInc, self.mZ140, self.mZ4_120 ])
