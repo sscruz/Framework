@@ -20,10 +20,8 @@ class Sample:
         gw = 0.
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
-            print "gw ", gw
             if gw: break
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
-        print "sumgenweight ", self.count
       else:
         #self.count = self.ftfile.Get('Count').GetBinContent(1)
         self.count = self.ftfile.Get('sf/t').GetEntries()

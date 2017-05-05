@@ -30,7 +30,8 @@ class CutManager:
       self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonSig = "( nPairLep_Edge > 0 &&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonNoTrigger = "(" +self.twoLeptons + "&&" + self.diLeptonPt +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nTightTau_Edge == 0)'
+      self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
+      #self.ThirdLeptonVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nTightTau_Edge == 0)'
       self.tightIso = 'max(Lep1_miniRelIso_Edge, Lep2_miniRelIso_Edge) < 0.05'
       self.threeTightLeptons = 'nLepTight_Edge == 3'
       self.fourTightLeptons = 'nLepTight_Edge == 4'

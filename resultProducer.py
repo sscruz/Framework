@@ -711,7 +711,7 @@ if __name__ == '__main__':
     wzDatasets = ['WZTo3LNu']
     ttzDatasets = ['TTZToLLNuNu_ext1']
     othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll']
-    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTJets_DiLepton_ext1', 'TTLLJets_m1to10', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTWToLNu',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
+    fsDatasets = ['TTTT', 'TTHnobb_pow', 'VHToNonbb',  'TTTo2L2Nu', 'TTLLJets_m1to10', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT',   'WJetsToLNu_LO']
     
     mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets + ttzDatasets
  
