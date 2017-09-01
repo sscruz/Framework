@@ -8,112 +8,104 @@
 # BLOCK        COLOR                         NAME                 LABEL                                     LOCATION OF FRIENDS                                                     XSEC     ISDATA
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #-------------------------- 25 ns --------------------------
-MET             r.kBlack      MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016C_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016D_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016E_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016F_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016G_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-MET             r.kBlack      MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016C_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016D_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016E_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016F_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016G_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-JetHT           r.kBlack      JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1
-DoubleEG        r.kBlack      DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleEG        r.kBlack      DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016C_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016D_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016E_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016F_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016G_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver2_v1_runs_281085_284035       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-SingleElectron  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver3_v1_runs_284036_284044       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-DoubleMuon      r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           DoubleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016G_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-SingleMuon      r.kBlack      SingleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           SingleMuon       /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
-MuonEG          r.kBlack      MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044               MuonEG           /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/feb26-skim/ 1    1 
+data  r.kBlack      MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0   
+data  r.kBlack      MET_Run2016C_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016D_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016E_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016F_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016G_03Feb2017_v1_runs_271036_284044                       MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                  MET              /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016C_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016D_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016E_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016F_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016G_03Feb2017_v1_runs_271036_284044                     JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044                JetHT            /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044                  DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044             DoubleEG         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016C_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016D_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016E_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016F_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016G_03Feb2017_v1_runs_271036_284044            SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver2_v1_runs_281085_284035       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleElectron_Run2016H_03Feb2017_ver3_v1_runs_284036_284044       SingleElectron   /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044                DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           DoubleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376           SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016C_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016D_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016E_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016F_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016G_03Feb2017_v1_runs_271036_284044                SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035           SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      SingleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044           SingleMuon       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376               MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044                    MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035               MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
+data  r.kBlack      MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044               MuonEG           /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/nLepnJetSkimNew/ 1    1 0
 #-----------------------------------------------------------
 #----------------- monte carlo -----------------------------
 #-----------------------------------------------------------
 # BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO          DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/  18610000.0   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_LO              DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   6024000.0   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT100to200      DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/    181302.0   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT200to400      DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     50417.7   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT400to600      DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      6983.9   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT600toInf      DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      2703.5   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT100to200_ext  DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/    181302.0   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT200to400_ext  DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     50417.7   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT400to600_ext  DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      6983.9   0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT600toInf_ext  DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      2703.5   0
-TTJets    r.kRed-9       TTTo2L2Nu                      TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     87314.8   0
-TTJets    r.kRed-9       TTJets_DiLepton                TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     87314.8   0
-TTJets    r.kRed-9       TTJets_DiLepton_ext1           TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     87314.8   0
-TTJets    r.kRed-9       TTJets_SingleLeptonFromTbar    TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   182175.40   0
-TTJets    r.kRed-9       TTJets_SingleLeptonFromT       TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   182175.40   0
-singleT   r.kRed-7       TToLeptons_sch                 singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      3680.7   0
-singleT   r.kRed-7       T_tch_powheg                   singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     44330.0   0
-singleT   r.kRed-7       TBar_tch_powheg                singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     26380.0   0
-singleT   r.kRed-7       TBar_tWch                      singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     35600.0   0
-singleT   r.kRed-7       T_tWch                         singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     35600.0   0
-TTZ       r.kBlue-7      TTZToLLNuNu                    TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       252.9   0
-TTZ       r.kBlue-7      TTZToLLNuNu_ext1               TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       252.9   0
-TTZ       r.kBlue-7      TTZToQQ                        TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       529.7   0
-TTZ       r.kBlue-7      TTLLJets_m1to10                TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/        49.3   0
-TWZ       r.kBlue-9      TWZ                            TWZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       11.23   0
-TTW       r.kCyan+1      TTWToLNu                       TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       204.3   0
-TTW       r.kCyan+1      TTWToLNu_ext2                  TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       204.3   0
-TTW       r.kCyan+1      TTWToQQ                        TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       406.2   0
-VV2l      r.kCyan+3      WWTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     12178.0   0
-VV2l      r.kCyan+3      WZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      5595.0   0
-VV2l      r.kCyan+3      ZZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      3220.0   0
-VV2l      r.kCyan+3      ZZTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       564.0   0
-VV2l      r.kCyan+3      VVTo2L2Nu_ext                  VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     11950.0   0
-ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      1256.0   0
-#ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.08   0
-ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.08   0
-WZ3l      r.kGreen-8     WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     4429.65   0
-rares     r.kGreen-5     WWW                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       208.6   0
-rares     r.kGreen-5     WWZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       165.1   0
-rares     r.kGreen-5     WZZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       55.65   0
-rares     r.kGreen-5     ZZZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.98   0
-rares     r.kGreen-5     TTHnobb_pow                    rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       215.0   0
-rares     r.kGreen-5     VHToNonbb                      rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       927.0   0
-rares     r.kGreen-5     tZq_ll                         rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/        75.8   0
-rares     r.kGreen-5     TTTT                           rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       9.103   0
-rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/  61526700.0   0
+DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO          DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/  18610000.0    0 0
+DYJets    r.kYellow-9    DYJetsToLL_M50_LO              DY+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   6024000.0    0 0
+#TTJets    r.kRed-9       TTTo2L2Nu                      TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     87314.8   0  0
+TTJets    r.kRed-9       TTTo2L2Nu_1                      TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     87314.8  0   0
+TTJets    r.kRed-9       TTJets_SingleLeptonFromTbar    TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   182175.40    0 0
+TTJets    r.kRed-9       TTJets_SingleLeptonFromT       TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/   182175.40    0 0
+singleT   r.kRed-7       TToLeptons_sch                 singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      3680.7    0 0
+singleT   r.kRed-7       T_tch_powheg                   singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     44330.0    0 0
+singleT   r.kRed-7       TBar_tch_powheg                singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     26380.0    0 0
+singleT   r.kRed-7       TBar_tWch                      singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     35600.0    0 0
+singleT   r.kRed-7       T_tWch                         singleT     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     35600.0    0 0
+TTZ       r.kBlue-7      TTZToLLNuNu                    TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       252.9    0 0
+TTZ       r.kBlue-7      TTZToLLNuNu_ext1               TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       252.9    0 0
+TTZ       r.kBlue-7      TTZToQQ                        TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       529.7    0 0
+TTZ       r.kBlue-7      TTLLJets_m1to10                TTZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/        49.3    0 0
+TWZ       r.kBlue-9      TWZ                            TWZ         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       11.23    0 0
+TTW       r.kCyan+1      TTWToLNu                       TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       204.3    0 0
+TTW       r.kCyan+1      TTWToLNu_ext2                  TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       204.3    0 0
+TTW       r.kCyan+1      TTWToQQ                        TTW         /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       406.2    0 0
+VV2l      r.kCyan+3      WWTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     12178.0    0 0
+VV2l      r.kCyan+3      WZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      5595.0    0 0
+VV2l      r.kCyan+3      ZZTo2L2Q                       VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      3220.0    0 0
+VV2l      r.kCyan+3      ZZTo2L2Nu                      VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       564.0    0 0
+VV2l      r.kCyan+3      VVTo2L2Nu_ext                  VV2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     11950.0    0 0
+ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/      1256.0    0 0
+#ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.08   0  0
+ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.08    0 0
+WZ3l      r.kGreen-8     WZTo3LNu                       WZ3l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/     4429.65    0 0
+rares     r.kGreen-5     WWW                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       208.6    0 0
+rares     r.kGreen-5     WWZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       165.1    0 0
+rares     r.kGreen-5     WZZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       55.65    0 0
+rares     r.kGreen-5     ZZZ                            rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       13.98    0 0
+rares     r.kGreen-5     TTHnobb_pow                    rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       215.0    0 0
+rares     r.kGreen-5     VHToNonbb                      rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       927.0    0 0
+rares     r.kGreen-5     tZq_ll                         rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/        75.8    0 0
+rares     r.kGreen-5     TTTT                           rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/       9.103    0 0
+rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_March14/nLepnJetSkim/  61526700.0    0 0
 #
-TChiWZ  r.kBlack+2   TChiWZ    TChiWZ     /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/mergedSignals/slimmed/   1     0
+TChiWZ  r.kBlack+2   TChiWZ    TChiWZ     /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/mergedSignals/slimmed/   1   0   0
+SMS_TSlepSlep  r.kBlack+2   SMS_TSlepSlep     SMS_TSlepSlep     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/signals/SMS_TSlepSlep/   1     0  0
