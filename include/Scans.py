@@ -144,7 +144,39 @@ class Scan(object):
                                 1: '150 GeV < ME_{T} < 250 GeV',
                                 2: '250 GeV < ME_{T} < 350 GeV', 
                                 3: 'ME_{T} > 350 GeV'}
+        
 
+
+        if self.name == 'slepton2017':                                                                                                   
+            self.makeMCDatacards = True                                                                                                  
+            self.hasOther = True                                                                                                         
+            self.paper = 'SUS170XX'                                                                                                      
+            self.datasets = ['SMS_TSlepSlep']                                                                                            
+            self.xbins =  binning(100,450,25)                                                                                            
+            self.ybins =  binning(0,250,10)                                                                                              
+            self.br    = 1.                                                                                                              
+            self.xvar = 'GenSusyMScan1_Edge' #slepton                                                                                    
+            self.yvar = 'GenSusyMScan2_Edge' #neutralino                                                                                 
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.slep])                                                                      
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')                                                
+            print self.cuts_norm                                                                                                         
+            self.zminUL = 1e-3; self.zmaxUL = 1e3                                                                                        
+            self.zmaxEff = 0.30                                                                                                          
+            self.xsecFile = ('datacards/sleptonXsecLeft.txt')                                                                                
+            self.regions = []                                                                                                            
+            self.xtitle = 'm_{slep_L}'; self.ytitle = 'm_{chi^{0}_{1}}'                                                                    
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 175) + 1*(met_Edge > 175)*(met_Edge < 250) + 2*(met_Edge > 250)'       
+            #self.srID   = '0*(met_Edge > 100)*(met_Edge < 175)*(nJet25_Edge ==0)*(mt2_Edge > 90) + 1*(met_Edge > 175)*(met_Edge < 250)*(nJet25_Edge ==0)*(mt2_Edge > 90) + 2*(met_Edge > 250)*(nJet25_Edge ==0)*(mt2_Edge > 90)'       
+            self.srIDMax = 3                                                                                                             
+            self.shortLabels = {0: 'lowmetHT0',                                                                                             
+                                1: 'medmetHT0',                                                                                             
+                                2: 'himetHT0'}                                                                                              
+            self.SRLabels    = {0: '100 GeV < ME_{T} < 175 GeV, HT == 0',                                                                         
+                                1: '175 GeV < ME_{T} < 250 GeV, HT == 0',                                                                         
+                                2: '250 GeV < ME_{T}, HT == 0'}                                                                                                                                                                                 
+            
+           
+            
         if self.name == 'ChiZZ_Moriond2017':
             self.makeMCDatacards = False#True
             self.paper = 'SUS16034'
@@ -171,7 +203,7 @@ class Scan(object):
             self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
                                 1: '150 GeV < ME_{T} < 250 GeV',
                                 2: '250 GeV < ME_{T} < 350 GeV', 
-                                3: 'ME_{T} > 350 GeV'}
+                                3: 'ME_{T} > 350 GeV'}                                                                                                                              
 
         if self.name == 'NeuNeu_Moriond2017':
             self.makeMCDatacards = False
@@ -488,7 +520,9 @@ class Scan(object):
             xbinsize = 12.5; ybinsize = 12.5
             tmp_2d_graph.SetNpx( int((tmp_2d_graph.GetXmax() - tmp_2d_graph.GetXmin())/xbinsize) )
             tmp_2d_graph.SetNpy( int((tmp_2d_graph.GetYmax() - tmp_2d_graph.GetYmin())/ybinsize) )
+            print "tmp_2d_graph ", tmp_2d_graph
             tmp_2d_histo = tmp_2d_graph.GetHistogram()
+            print "tmp_2d_histo ", tmp_2d_histo
             tmp_graph_list = tmp_2d_graph.GetContourList(1.0)
             tmp_graph = tmp_graph_list[max( (i.GetN(),j) for j,i in enumerate( tmp_graph_list )  )[1]]
             setattr(self, 'ex%s_graph'%t, copy.deepcopy(tmp_graph    ) )

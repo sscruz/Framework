@@ -97,8 +97,8 @@ def readFromFileRmueCoeff(theFile, coeff, dataMC):
                 arr = []
                 arr.append(rmue)
                 arr.append(stat)
-                arr.append(0.0000)
-                print "using these rmues ", dataMC, ": ", arr
+                arr.append('0.00')
+                print "using these rmues coeff", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rmue!!!", arr
                 return map(float, arr)                                        
@@ -117,8 +117,8 @@ def readFromFileRmue(theFile, dataMC):
                 arr = []
                 arr.append(rmue)
                 arr.append(stat)
-                arr.append('0.0000')
-                print "using these rmues ", dataMC, ": ", arr
+                arr.append('0.00')
+                print "using these rmues factor", dataMC, ": ", arr
                 if arr[0] == '':
                     print "warning probably not right rmue!!!", arr
                 return map(float, arr)                                               
@@ -268,8 +268,10 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     checkedList = []
     typeList    = []
     for line in f.readlines():
+        #print "line ", line
         if '#' in line or not len(line.rstrip('\r')): continue
         for _sample in selList:
+            #print "_sample", _sample
             _sample = _sample.replace('*','.*')
             if _sample == line.split()[2] or re.search(_sample, line.split()[2]):
                 if not sType == 'SYNCH':
@@ -279,7 +281,9 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
                     tmp_splitline[0] = 'synching'
                     tmp_file.write('  '.join(tmp_splitline+['\n']))
                 checkedList.append(_sample)
-                typeList   .append(int(line.split()[-1]))
+                typeList   .append(int(line.split()[-2]))
+                #typeList   .append(int(line.split()[-1])) 
+                #i changed this to 2!
     for _selSample in selList:
         if not '*' in _selSample:
             if _selSample not in checkedList:
