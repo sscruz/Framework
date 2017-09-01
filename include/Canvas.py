@@ -1,6 +1,6 @@
-from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
+from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TGraphAsymmErrors, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
 import ROOT as r
-import os, copy
+import os, copy, math, array
 
 class Canvas:
    'Common base class for all Samples'
@@ -118,6 +118,7 @@ class Canvas:
    def addLine(self, x1, y1, x2, y2, color, thickness = 0.):
       line = TLine(x1,y1,x2,y2)
       line.SetLineColor(color)
+      line.SetLineStyle(2)
       if thickness:
           line.SetLineWidth(thickness)
       self.lines.append(line)
@@ -225,7 +226,10 @@ class Canvas:
 
       for i in range(0, len(self.histos)):
           if(self.ToDraw[i] != 0):
-              self.histos[i].SetMinimum(0.1)
+              #self.histos[i].SetMinimum(0.00001)
+              #self.histos[i].SetMinimum(0.1)
+              #self.histos[i].SetMinimum(0.0001)
+              #self.histos[i].SetMaximum(0.5)
               self.histos[i].Draw(self.options[i])
 
       if(legend):
@@ -312,7 +316,180 @@ class Canvas:
       pad1.IsA().Destructor(pad1) 
       pad2.IsA().Destructor(pad2) 
       self.myLegend.IsA().Destructor(self.myLegend)
-      self.myCanvas.IsA().Destructor(self.myCanvas)
+      self.myCanvas.IsA().Destructor(self.myCanvas)                                                                                                                                            
+
+
+
+   def saveRatioSystErrors(self, legend, isData, log, lumi, hdata, hMC, hjecUp, hjecDown, r_ymin=0, r_ymax=2, label ="Data/Prediction"):
+
+      self.myCanvas.cd()
+
+      pad1 = TPad("pad1", "pad1", 0, 0.25, 1, 1.0)
+      pad1.SetBottomMargin(0.12)
+      pad1.Draw()
+      pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.25)
+      pad2.SetTopMargin(0.1);
+      pad2.SetBottomMargin(0.3);
+      pad2.Draw();
+
+      pad1.cd()
+      if(log):
+          pad1.SetLogy(1)
+
+      for i in range(0, len(self.histos)):
+          if(self.ToDraw[i] != 0):
+              #self.histos[i].SetMinimum(0.00001)
+              #self.histos[i].SetMinimum(0.1)
+              #self.histos[i].SetMinimum(0.0001)
+              #self.histos[i].SetMaximum(0.5)
+              self.histos[i].Draw(self.options[i])
+
+      if(legend):
+          self.makeLegend()
+          self.myLegend.Draw()
+
+      for band in self.bands:
+          band.Draw('f')
+  
+      for line in self.lines:
+          line.Draw()
+  
+      for arrow in self.arrows:
+          arrow.Draw()
+  
+      for latex in self.latexs:
+          lat = TLatex()
+          lat.SetNDC()
+          lat.SetTextSize(latex[-1])
+          lat.SetTextFont(latex[-2])
+          lat.DrawLatex(latex[0], latex[1], latex[2])
+  
+      
+      if type(hMC) != list:
+          hMClist = [hMC]
+      else: hMClist = hMC
+
+      ratios = []
+
+      for tmp_hMC in hMClist:
+          ind = hMClist.index(tmp_hMC)
+          tmp_ratio = hdata.Clone(tmp_hMC.GetName()+'_ratio')
+          tmp_ratio.Divide(tmp_hMC)
+
+          tmp_ratio.SetTitle("")
+          tmp_ratio.GetYaxis().SetRangeUser(r_ymin, r_ymax);
+          tmp_ratio.GetYaxis().SetTitle(label);
+          tmp_ratio.GetYaxis().CenterTitle();
+          tmp_ratio.GetYaxis().SetLabelSize(0.12);
+          tmp_ratio.GetXaxis().SetLabelSize(0.12);
+          tmp_ratio.GetYaxis().SetTitleOffset(0.3);
+          tmp_ratio.GetYaxis().SetNdivisions(4);
+          tmp_ratio.GetYaxis().SetTitleSize(0.14);
+          tmp_ratio.GetXaxis().SetTitleSize(0.14);
+          tmp_ratio.GetXaxis().SetTitle('');
+          tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
+          tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
+          tmp_ratio.SetFillStyle(3017)
+          tmp_ratio.SetMarkerColor(r.kBlack);
+          tmp_ratio.SetMarkerSize(0.6);
+          #tmp_ratio.SetMarkerColor(r.kBlack if len(hMClist) == 1 else tmp_hMC.GetMarkerColor());
+          #tmp_ratio.SetLineColor  (r.kBlack if len(hMClist) == 1 else tmp_hMC.GetLineColor  ());
+          tmp_ratio.SetLineColor  (tmp_hMC.GetLineColor());
+          tmp_ratio.SetLineStyle(tmp_hMC.GetLineStyle())
+          ratios.append(tmp_ratio)
+          xmin = tmp_ratio.GetBinLowEdge(1)
+          xmax = tmp_ratio.GetBinLowEdge(tmp_ratio.GetNbinsX()+1)
+ 
+          #make some jec + stat errors     
+          den1 = copy.deepcopy(hMC.Clone("bkgden1"))
+          den2 = copy.deepcopy(hMC.Clone("bkgden2"))
+          	                                                                                                                                                                                 
+          nvar = hMC.GetNbinsX()     
+          x = array.array('f', range(0, hMC.GetNbinsX()))
+          y = array.array('f', range(0, hMC.GetNbinsX()))
+          exl = array.array('f', range(0, hMC.GetNbinsX()))
+          exh = array.array('f', range(0, hMC.GetNbinsX()))
+          eyl = array.array('f', range(0, hMC.GetNbinsX()))
+          eyh = array.array('f', range(0, hMC.GetNbinsX()))
+          ratioup = copy.deepcopy(hMC.Clone("ratioup"))
+          ratiodown = copy.deepcopy(hMC.Clone("ratiodown"))
+          
+          for km in range(0, hMC.GetNbinsX()):
+              conte1 =  math.sqrt(hMC.GetBinError (km) * hMC.GetBinError (km) + (hjecUp.GetBinContent (km) - hMC.GetBinContent   (km))*(hjecUp.GetBinContent (km) -  hMC.GetBinContent (km)));       
+              conte2 =  math.sqrt(hMC.GetBinError (km) * hMC.GetBinError (km) + (hMC.GetBinContent (km) - hjecDown.GetBinContent (km))*(hMC.GetBinContent (km) -  hjecDown.GetBinContent (km)));   
+              if conte1 > conte2:
+                  den1.SetBinContent (km, hMC.GetBinContent (km) + conte1);                                                                                                                           
+                  den2.SetBinContent (km, hMC.GetBinContent (km) - conte1);                                                                                                                           
+              else:
+                  den1.SetBinContent (km, hMC.GetBinContent (km) + conte2);  
+                  den2.SetBinContent (km, hMC.GetBinContent (km) - conte2);
+              ymax = hMC.GetBinContent(km) + conte1;           
+              eyl[km] = conte2;                                                                                                                                                           
+              eyh[km] = conte1;                                                                                                                                                                        
+          
+          ratioup.Divide(den1);                                                                                                                                                         
+          ratiodown.Divide(den2);                   
+                                                                                                                                                                                             
+          for km in range(0, tmp_ratio.GetNbinsX()):
+              if (ratioup.GetBinContent (km) != 0):
+                  eyh[km] = (1. / ratioup.GetBinContent (km) - 1)*tmp_ratio.GetBinContent (km);                                                                                                   
+              else:                                                                                                                                                                       
+                  eyh[km] = 0;                                                                                                                                                                 
+                                                                                                                                                                                             
+              if (ratiodown.GetBinContent (km) != 0):
+                  eyl[km] = (1 - 1. / ratiodown.GetBinContent (km))*tmp_ratio.GetBinContent (km);                                                                                                   
+              else:                                                                                                                                                                       
+                  eyl[km] = 0.                                                                                                                        
+          err = TGraphAsymmErrors(nvar, x, y, exl, exh, eyl, eyh);                                                                                                                                     
+          err.SetFillColor (r.kGreen);
+          err.SetFillStyle (3002);
+
+
+      #tmp_ratio.Draw("E,SAME");
+      pad2.cd();  
+      for rat in ratios:
+          rat.Draw('PE2, same');
+          err.Draw("PE2 same")
+          rat.Draw('PE2,same');
+
+      #err.Draw("2 same")
+      line = TLine(xmin, 1, xmax, 1)
+      line.SetLineColor(r.kGray+2);
+      line.Draw('');
+
+      pad1.cd()
+      self.banner2(isData, lumi)
+      for i,plotName in enumerate(self.plotNames):
+          pad1.cd()
+          pad1.SetLogy(0)
+          path    = 'plots/'+plotName
+          pathlog = 'plots/'+self.plotNamesLog[i]
+          self.ensurePath(path)
+          self.myCanvas.SaveAs(path)
+          if not '.root' in pathlog:
+              pad1.cd()
+              pad1.SetLogy()
+              self.myCanvas.SaveAs(pathlog)
+
+          
+
+      pad1.IsA().Destructor(pad1) 
+      pad2.IsA().Destructor(pad2) 
+      self.myLegend.IsA().Destructor(self.myLegend)
+      self.myCanvas.IsA().Destructor(self.myCanvas)                                                                                                                                            
+
+
+
+
+
+
+
+
+
+
+
+
+
 
  
    def save(self, legend, isData, log, lumi, ymin=0, ymax=0):
