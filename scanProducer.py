@@ -26,17 +26,20 @@ _r = r.TRandom3(42)
 
 def makeMCDatacards():
     print 'producing mc datacards'
-    ttDatasets = ['TTJets_DiLepton']
-    dyDatasets = ['DYJetsToLL_M50_LO']
+    othersDatasets = [ 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu', 'WZTo3LNu', 'WWG', 'WWW', 'WWZ',  'WZZ', 'ZZZ', 'ZGTo2LG',  'WWDouble', 'WpWpJJ',  'ZZTo2L2Nu', 'TTHnobb_pow', 'VHToNonbb', 'TWZ', 'WZTo2L2Q']
+    ttDatasets = ['TTTo2L2Nu','WWTo2L2Nu', 'GGHWWTo2L2Nu', 'GGWWTo2L2Nu']
+    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
     print 'getting trees'
-    treeTT = Sample.Tree(helper.selectSamples(opts.sampleFile, ttDatasets, 'TT'), 'TT', 0, isScan = 0)
-    print dyDatasets
-    treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY', 0, isScan = 0)
+    treeTT     = Sample.Tree(helper.selectSamples('samplesSlepton.dat', ttDatasets, 'TT'), 'TT', 0, isScan = 0)
+    treeDY     = Sample.Tree(helper.selectSamples('samplesSlepton.dat', dyDatasets, 'DY'), 'DY', 0, isScan = 0)
+    treeOTHERS = Sample.Tree(helper.selectSamples('samplesSlepton.dat', othersDatasets, 'OTHERS'), 'OTHERS', 0, isScan = 0)
     print 'getting yields'
     print cuts.AddList([scan.cuts_norm,cuts.goodLepton])
+    print cuts
     tt = treeTT.getTH1F(lumi, 'FSbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); tt.SetName('FSbkg')
-    dy = treeDY.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); dy.SetName('otherbkg')
-    data = tt.Clone('data_obs'); data.Add(dy)
+    dy = treeDY.getTH1F(lumi, 'dybkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); dy.SetName('dybkg')
+    others = treeOTHERS.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); others.SetName('otherbkg')
+    data = tt.Clone('data_obs'); data.Add(dy);data.Add(others)
     helper.ensureDirectory('datacards/datacards_%s/%s'%(scan.name,scan.name))
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
@@ -59,7 +62,7 @@ El    lnN           XXElXX             -             -          -
 Mu    lnN           XXMuXX             -             -          -
 FastSimEl   lnN     XXFastSimElXX      -             -          -
 FastSimMu   lnN     XXFastSimMuXX      -             -          -
-PU    lnN           XXPUXX            -             -          - 
+PU    lnN             1.0              -             -          - 
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
@@ -68,8 +71,8 @@ signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            1.4        - 
 otherSys lnN         -                  -            -          1.5
 lumi   lnN             1.026              -            -          - 
-'''.format(obs = tt.GetBinContent(tt.FindBin(SR)) + dy.GetBinContent(dy.FindBin(SR)), 
-           fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), other=0., 
+'''.format(obs = int(tt.GetBinContent(tt.FindBin(SR))) + int(dy.GetBinContent(dy.FindBin(SR))) + int(others.GetBinContent(others.FindBin(SR))), 
+           fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), other = others.GetBinContent(others.FindBin(SR)), 
            label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))))
 
         else:
@@ -92,7 +95,7 @@ El    lnN           XXElXX            -               -
 Mu    lnN           XXMuXX            -               -
 FastSimEl   lnN     XXFastSimElXX     -              - 
 FastSimMu   lnN     XXFastSimMuXX     -              -
-PU    lnN           XXPUXX            -             -          - 
+PU    lnN           1.0            -             -          - 
 SigTrig  lnN          1.05             -               -
 bHe   lnN           XXbHeXX            -               -
 bLi   lnN           XXbLiXX            -               -
@@ -112,19 +115,22 @@ lumi   lnN             1.026            -               -
     # tt.Write(); dy.Write(); data.Write();
     # shapes.Close()
     
+
+    
 def makeDataCardsFromRootFile():
     print "Making datacard from rootfile"
     rootfile = TFile.Open('datacards/forDatacards_%s.root'%('CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name))
-    da_SF    = rootfile.Get('da_SF'   )
-    da_OF    = rootfile.Get('da_OF'   )
-    tf_CR_SR = rootfile.Get('tf_CR_SR')
-    dy_shape = rootfile.Get('dy_shape')
-    mc_full  = rootfile.Get('mc_full' )
-    
-    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
+    #da_SF    = rootfile.Get('da_SF'   )
+    #da_OF    = rootfile.Get('da_OF'   )
+    #tf_CR_SR = rootfile.Get('tf_CR_SR')
+    fs_SF = rootfile.Get('fs_SF')
+    dy_SF = rootfile.Get('dy_SF')
+    rare  = rootfile.Get('rares' )
+    print "opened ", rootfile    
+    #puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
 
-    puSystUp = puFile.Get('puUp')
-    puSystDn = puFile.Get('puDn')
+    #puSystUp = puFile.Get('puUp')
+    #puSystDn = puFile.Get('puDn')
 
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
@@ -150,7 +156,6 @@ FastSimMu   lnN     XXFastSimMuXX      -             -          -
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
-PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
 genMet lnU              XXgenMetXX     -             -          -
 ISR   lnN              XXISRXX     -             -          - 
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
@@ -159,22 +164,87 @@ otherSys lnN         -                  -            -          {other_e}
 scale    lnN         1.03               -            -            - 
 lumi   lnN             1.026              -            -          - 
 '''.format(label = label, 
-           obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
-           fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
-           DY = dy_shape.GetBinContent(SR+2),
-           other = mc_full.GetBinContent(SR+2),
-           fs_int = int(da_OF.GetBinContent(SR+2)),
-           tf = tf_CR_SR.GetBinContent(SR+2),
-           tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
-           dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
-           pu_Up = 1 + puSystUp.GetBinContent(SR+1),
-           pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
-           other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
-        print da_SF.GetBinContent(SR+2)
+           obs = 1., # the plots for ewk start in [50,100]
+           #obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+           fs  = fs_SF.GetBinContent(SR+1),
+           #fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
+           DY = dy_SF.GetBinContent(SR+1),
+           other = rare.GetBinContent(SR+1),
+           fs_int = int(da_OF.GetBinContent(SR+1)),
+           tf = 1.,
+           #tf = tf_CR_SR.GetBinContent(SR+2),
+           tf_e = 1 + 0.01/1.,
+           dy_e = 1.5 if dy_SF.GetBinContent(SR+2) == 0 else 1 + dy_SF.GetBinError(SR+2)/dy_SF.GetBinContent(SR+2),
+           other_e = 1 + rare.GetBinError(SR+2) / rare.GetBinContent(SR+2))
+        #print da_SF.GetBinContent(SR+2)
 
         outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
         outputFile.write(datacard)
-        outputFile.close()
+        outputFile.close()                                                                                                                                              
+
+#def makeDataCardsFromRootFile():
+#    print "Making datacard from rootfile"
+#    rootfile = TFile.Open('datacards/forDatacards_%s.root'%('CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name))
+#    da_SF    = rootfile.Get('da_SF'   )
+#    da_OF    = rootfile.Get('da_OF'   )
+#    tf_CR_SR = rootfile.Get('tf_CR_SR')
+#    dy_shape = rootfile.Get('dy_shape')
+#    mc_full  = rootfile.Get('mc_full' )
+#    print "opened ", rootfile    
+#    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
+#
+#    puSystUp = puFile.Get('puUp')
+#    puSystDn = puFile.Get('puDn')
+#
+#    for SR, label in scan.shortLabels.items():
+#        if scan.hasOther:
+#            datacard = '''imax 1 number of bins
+#jmax 3 number of processes minus 1
+#kmax *  number of nuisance parameters
+#----------------------------------------------------------------------------------------------------------------------------------
+#bin          {label}
+#observation  {obs}   
+#----------------------------------------------------------------------------------------------------------------------------------
+#bin          {label}      {label}        {label}      {label}
+#process      XXSIGNALXX     FSbkg          DY         Other
+#process      0             1              2           3
+#rate         XXSIGRATEXX    {fs}           {DY}       {other}
+#----------------------------------------------------------------------------------------------------------------------------------
+#fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
+#fs_unc lnN             -            {tf_e}             -          -
+#jec   lnN           XXjecXX            -             -          -
+#El    lnN           XXElXX             -             -          -
+#Mu    lnN           XXMuXX             -             -          -
+#FastSimEl   lnN     XXFastSimElXX      -             -          -
+#FastSimMu   lnN     XXFastSimMuXX      -             -          -
+#SigTrig  lnN          1.05             -             -          -
+#bHe   lnN           XXbHeXX            -             -          -
+#bLi   lnN           XXbLiXX            -             -          -
+#PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
+#genMet lnU              XXgenMetXX     -             -          -
+#ISR   lnN              XXISRXX     -             -          - 
+#signalMCstats_{label} lnN    XXmcStatXX  -           -          -
+#dySys  lnN           -                  -            {dy_e}        - 
+#otherSys lnN         -                  -            -          {other_e}
+#scale    lnN         1.03               -            -            - 
+#lumi   lnN             1.026              -            -          - 
+#'''.format(label = label, 
+#           obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+#           fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
+#           DY = dy_shape.GetBinContent(SR+2),
+#           other = mc_full.GetBinContent(SR+2),
+#           fs_int = int(da_OF.GetBinContent(SR+2)),
+#           tf = tf_CR_SR.GetBinContent(SR+2),
+#           tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
+#           dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
+#           pu_Up = 1 + puSystUp.GetBinContent(SR+1),
+#           pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
+#           other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
+#        print da_SF.GetBinContent(SR+2)
+#
+#        outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
+#        outputFile.write(datacard)
+#        outputFile.close()                                                                                                                                              
 
 def makeDataCardsFromRootFileForEdge():
     print "Making datacard from rootfile"
@@ -265,7 +335,7 @@ export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
 export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
 cmsenv                                                                                                              
-cd /nfs/fanae/user/sscruz/TTH/DataCards/CMSSW_7_4_7/src/
+cd /afs/cern.ch/user/m/mvesterb/edgeSW/combine/CMSSW_7_4_7/src/
 cmsenv\n'''                                                                                            
     else:
         command = '''#!/bin/sh                                                                             
@@ -274,7 +344,7 @@ export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
 export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
 cmsenv                                                                                                              
-cd /afs/cern.ch/work/s/sesanche/private/Edge/produceLimits/CMSSW_7_1_5/src/                                         
+cd /afs/cern.ch/work/m/mvesterb/private/Edge/produceLimits/CMSSW_7_4_7/src/                                         
 cmsenv\n'''                                                                                            
     command = command+'cd ' + cmd[2] + '\n'
     command = command+cmd[0] + '\n'
@@ -308,6 +378,7 @@ def produceLimits( njobs ):
         # some SRs are empty so, better this way
         srCards = ' {fd}/datacard_{mass}_*.txt'.format(fd=fd,mass=d)
         dc_name    = '{fd}/datacard_{suffix}.txt'.format(fd=fd,suffix=d)
+        #runcmd = 'combineCards.py -S 0'
         runcmd = 'combineCards.py -S {bstr} > {final_dc}'.format(bstr=srCards,final_dc=dc_name)
         combinecmd = 'combine -m {mass} -M Asymptotic {dc_name}'.format(mass=mass,dc_name=dc_name)
         combinecmd = combinecmd + '\n' + 'combine -m {mass} -M  ProfileLikelihood  --uncapped 1 --significance --rMin -5 {dc_name}'.format(mass=mass,dc_name=dc_name) # for significance maps
@@ -316,6 +387,7 @@ def produceLimits( njobs ):
     pool.map(runCmd, tasks)
     print 'hadding everything'
     print 'hadding asymptotic'
+    print "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW ", basedir
     haddcmd = 'hadd -f {bd}/{name}_allLimits.root {bd}/*/higgs*Asymptotic*.root'.format(name=scan.name,bd=basedir)
     os.system(haddcmd)
     print 'hadding profilelikelihood'
@@ -353,9 +425,9 @@ def getEffMapsSys(sys):
         theCuts = theCuts.replace(rpl[0],rpl[1])
         srId    = srId.replace(rpl[0],rpl[1])
     print '##############'
-    print sys
-    print theCuts
-    print srId
+    print "sys ", sys
+    print "the Cuts ", theCuts
+    print "srId ", srId
     print '##############'
     effMap = scan.tree.getTH3F(1., 'nPass_norm'+sys, srId+':'+scan.yvar+':'+scan.xvar,
                                scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
@@ -406,13 +478,13 @@ def PutHistosIntoRootFiles():
 #    kk = TFile.Open('map2.root','recreate')
 #    scan.maps[''].Write()
 #    kk.Close()
-
     for i in range(1, scan.norm.GetXaxis().GetNbins()+1):
         for j in range(1, scan.norm.GetYaxis().GetNbins()+1):
             xval = scan.norm.GetXaxis().GetBinCenter(i)
             yval = scan.norm.GetYaxis().GetBinCenter(j)
             if (yval > xval): continue
-            massString = 'mSbottom_%.0f_mchi2_%.0f'%(xval, yval)
+            massString = 'mSlepton_%.0f_mchi1_%.0f'%(xval, yval)
+            #massString = 'mSbottom_%.0f_mchi2_%.0f'%(xval, yval)
             print xval, yval
            
             sysHistos = {}
@@ -425,13 +497,14 @@ def PutHistosIntoRootFiles():
 #                    tfile = TFile.Open(massString+'.root','recreate')
 #                    out.Write()
 #                    tfile.Close()
-
+            print "sysHistos[''].Integral() ", sysHistos[''].Integral()
             if sysHistos[''].Integral() == 0: 
                 print 'no sensitivty for', massString
                 continue # if no sensitivity
-
+            
             helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,
                                                                                       mass=massString))
+            print "just ensured directories!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
             for SR, label in scan.shortLabels.items():
                 itsOk = True
                 if scan.makeMCDatacards:
@@ -447,7 +520,7 @@ def PutHistosIntoRootFiles():
                 var = sysHistos['genMet']  .GetBinContent(sysHistos['genMet']  .FindBin(SR))
                 nom = (nom+var) / 2 
                 template = template.replace('XXSIGRATEXX', '%4.4f'%nom)
-
+                
 
                 for sys in scan.SysStringUpDown.split():
                     up = sysHistos[sys+'Up']  .GetBinContent(sysHistos[sys+'Up']  .FindBin(SR))
@@ -457,7 +530,8 @@ def PutHistosIntoRootFiles():
                     scan.SysForTableMin[sys] = min( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMin[sys])
 
                     template = template.replace('XX'+sys+'XX', '%4.4f/%4.4f'%(dn/nom,up/nom))
-                    if dn/nom < 1e-4 or up/nom < 1e-4: 
+                    if dn/nom < 1e-1000 or up/nom < 1e-1000: 
+                    #if dn/nom < 1e-4 or up/nom < 1e-4: 
                         print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
                         itsOk = False
 
@@ -516,7 +590,6 @@ if __name__ == "__main__":
 
     cuts = CutManager.CutManager()
     lumi = 35.9
-
     global replaceCutsForSys, extraWeightsForSys
     replaceCutsForSys = {'':      [],
                          'jecUp'       : [['nBJetMedium35_Edge','nBJetMedium35_jecUp_Edge'],
@@ -598,6 +671,7 @@ if __name__ == "__main__":
         ## everything that takes long should be done here!
         scan = Scans.Scan(opts.scanName)
         if scan.makeMCDatacards:
+            print "doing makeDataCards"
             makeMCDatacards()
         else:
             if not 'Edge' in scan.name:
@@ -605,9 +679,10 @@ if __name__ == "__main__":
             else:
                 makeDataCardsFromRootFileForEdge()
 
-        scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
+        scan.tree = Sample.Tree(helper.selectSamples("samplesSlepton.dat", scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
+        #scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         ## Load the number of generated events to produce efficiency maps per systematic
-
+        print "getting treeeees     ____________________________________________________________________________________________________"
         scan.dummy = scan.tree.getTH3F(1., 'dummy', '1:1:1',
                                        scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
                                        scan.xbins._max+scan.xbins.w/2., scan.ybins.n+1,
@@ -616,9 +691,12 @@ if __name__ == "__main__":
                                        scan.srIDMax+1, -0.5, scan.srIDMax+0.5, '1', '',
                                        scan.xtitle, scan.ytitle, scan.ztitle, 
                                        '1')
-        if scan.has3DGen:
+        if True:
             scan.ngen = scan.tree.blocks[0].samples[0].smsCount ## take the first slice's ngen histo
+            print "scan.ngen ",  scan.ngen
             for ind,i in enumerate(scan.tree.blocks[0].samples):
+                print "ind ", ind
+                print "i ", i
                 if ind: ## do not add the first one twice
                     scan.ngen.Add(i.smsCount, 1.) ## add all others
         else:
