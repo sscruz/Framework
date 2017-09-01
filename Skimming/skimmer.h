@@ -63,17 +63,29 @@ public :
    Int_t           nPairLep_Edge;
    Int_t           iLT_Edge[3];   //[nLepTight_Edge]
    Int_t           iJ_Edge[13];   //[nJetSel_Edge]
+   Int_t           LHEweight_id_Edge[200];   //[nJetSel_Edge]
+   Float_t         LHEweight_wgt_Edge[200];   //[nJetSel_Edge]
+   Float_t           nLHEweight_Edge;
    Int_t           nLepGood20_Edge;
    Int_t           nLepGood20T_Edge;
+   Int_t           nJet25_Edge;
+   Int_t           nJet25_jecUp_Edge;
+   Int_t           nJet25_jecDn_Edge;
    Int_t           nJet35_Edge;
    Int_t           nJet35_jecUp_Edge;
    Int_t           nJet35_jecDn_Edge;
    Float_t         htJet35j_Edge;
    Float_t         htJet35j_jecUp_Edge;
    Float_t         htJet35j_jecDn_Edge;
+   Float_t         htJet25j_Edge;
+   Float_t         htJet25j_jecUp_Edge;
+   Float_t         htJet25j_jecDn_Edge;
    Int_t           nBJetMedium25_Edge;
    Int_t           nBJetMedium25_jecUp_Edge;
    Int_t           nBJetMedium25_jecDn_Edge;
+   Int_t           nBJetLoose25_Edge;
+   Int_t           nBJetLoose25_jecUp_Edge;
+   Int_t           nBJetLoose25_jecDn_Edge;
    Int_t           nBJetLoose35_Edge;
    Int_t           nBJetLoose35_jecUp_Edge;
    Int_t           nBJetLoose35_jecDn_Edge;
@@ -87,6 +99,7 @@ public :
    Float_t         lepsJZB_raw_Edge;
    Float_t         lepsJZB_recoil_Edge;
    Float_t         lepsDR_Edge;
+   Float_t         lepsPhi_Edge;
    Float_t         lepsMETRec_Edge;
    Float_t         lepsZPt_Edge;
    Float_t         metl1DPhi_Edge;
@@ -98,9 +111,21 @@ public :
    Float_t         met_raw_Edge;
    Float_t         mZ1_Edge;
    Float_t         mZ2_Edge;
+   Float_t         mT_dilep_Edge;
    Float_t         mT_lep1_Edge;
    Float_t         mT_lep2_Edge;
    Float_t         minMT_Edge;
+   Float_t         WmT_Edge;
+   Float_t         WZMT2_Edge;
+   Float_t         GENmassZZ_Edge;
+   Float_t         GENptZZ_Edge;
+   Float_t         GENphiZZ_Edge;
+   Float_t         mt2BestZ_Edge;
+   Float_t         ptBestZ_Edge;
+   Float_t         mllBestZ_Edge;
+   Float_t         mllOtherZ_Edge;
+   Float_t         newMet_Edge;
+   Float_t         newMetPhi_Edge;
    Float_t         mt2bb_Edge;
    Float_t         mt2bb_jecUp_Edge;
    Float_t         mt2bb_jecDn_Edge;
@@ -186,6 +211,8 @@ public :
    Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    Float_t         HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    Float_t         HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;    
+   Float_t         HLT_SOSHighMET_Edge;    
+   Float_t         HLT_SOSDoubleMuLowMET_Edge;    
    Float_t         HLT_BIT_HLT_PFHT200_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT250_v_Edge;
    Float_t         HLT_BIT_HLT_PFHT300_v_Edge;
@@ -262,20 +289,32 @@ public :
    TBranch        *b_nPairLep_Edge;   //!
    TBranch        *b_iLT_Edge;   //!
    TBranch        *b_iJ_Edge;   //!
+   TBranch        *b_LHEweight_id_Edge;   //!
+   TBranch        *b_LHEweight_wgt_Edge;   //!
+   TBranch        *b_nLHEweight_Edge;   //!
    TBranch        *b_nLepGood20_Edge;   //!
    TBranch        *b_nLepGood20T_Edge;   //!
+   TBranch        *b_nJet25_Edge;   //!
+   TBranch        *b_nJet25_jecUp_Edge;   //!
+   TBranch        *b_nJet25_jecDn_Edge;   //!
    TBranch        *b_nJet35_Edge;   //!
-   TBranch        *b_nJet35_jecUp_Edge;   //!
-   TBranch        *b_nJet35_jecDn_Edge;   //!
+   TBranch        *b_nJet35_jecUp_Edge;     
+   TBranch        *b_nJet35_jecDn_Edge;     
    TBranch        *b_htJet35j_Edge;   //!
    TBranch        *b_htJet35j_jecUp_Edge;   //!
    TBranch        *b_htJet35j_jecDn_Edge;   //!
+   TBranch        *b_htJet25j_Edge;   //!
+   TBranch        *b_htJet25j_jecUp_Edge;   //!   
+   TBranch        *b_htJet25j_jecDn_Edge;   //!   
    TBranch        *b_nBJetMedium25_Edge;   //!
    TBranch        *b_nBJetMedium25_jecUp_Edge;   //!
    TBranch        *b_nBJetMedium25_jecDn_Edge;   //!
    TBranch        *b_nBJetLoose35_Edge;   //!
    TBranch        *b_nBJetLoose35_jecUp_Edge;   //!
    TBranch        *b_nBJetLoose35_jecDn_Edge;   //!
+   TBranch        *b_nBJetLoose25_Edge;   //!
+   TBranch        *b_nBJetLoose25_jecUp_Edge;   //!   
+   TBranch        *b_nBJetLoose25_jecDn_Edge;   //!   
    TBranch        *b_nBJetMedium35_Edge;   //!
    TBranch        *b_nBJetMedium35_jecUp_Edge;   //!
    TBranch        *b_nBJetMedium35_jecDn_Edge;   //!
@@ -286,6 +325,7 @@ public :
    TBranch        *b_lepsJZB_raw_Edge;   //!
    TBranch        *b_lepsJZB_recoil_Edge;   //!
    TBranch        *b_lepsDR_Edge;   //!
+   TBranch        *b_lepsPhi_Edge;   //!
    TBranch        *b_lepsMETRec_Edge;   //!
    TBranch        *b_lepsZPt_Edge;   //!
    TBranch        *b_metl1DPhi_Edge;   //!
@@ -297,9 +337,21 @@ public :
    TBranch        *b_met_raw_Edge;   //!
    TBranch        *b_mZ1_Edge;
    TBranch        *b_mZ2_Edge;
+   TBranch        *b_mT_dilep_Edge;
    TBranch        *b_mT_lep1_Edge;
    TBranch        *b_mT_lep2_Edge;
    TBranch        *b_minMT_Edge;
+   TBranch        *b_WmT_Edge;
+   TBranch        *b_WZMT2_Edge;
+   TBranch        *b_GENmassZZ_Edge;
+   TBranch        *b_GENptZZ_Edge;
+   TBranch        *b_GENphiZZ_Edge;
+   TBranch        *b_mllBestZ_Edge;
+   TBranch        *b_ptBestZ_Edge;
+   TBranch        *b_mt2BestZ_Edge;
+   TBranch        *b_mllOtherZ_Edge;
+   TBranch        *b_newMet_Edge;
+   TBranch        *b_newMetPhi_Edge;
    TBranch        *b_mt2bb_Edge;
    TBranch        *b_mt2bb_jecUp_Edge;
    TBranch        *b_mt2bb_jecDn_Edge;
@@ -385,6 +437,8 @@ public :
    TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    TBranch        *b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;
    TBranch        *b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge;    
+   TBranch        *b_HLT_SOSHighMET_Edge;    
+   TBranch        *b_HLT_SOSDoubleMuLowMET_Edge;    
    TBranch        *b_HLT_BIT_HLT_PFHT200_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT250_v_Edge;   //!
    TBranch        *b_HLT_BIT_HLT_PFHT300_v_Edge;   //!
@@ -539,20 +593,32 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("nPairLep_Edge", &nPairLep_Edge, &b_nPairLep_Edge);
    fChain->SetBranchAddress("iLT_Edge", iLT_Edge, &b_iLT_Edge);
    fChain->SetBranchAddress("iJ_Edge", iJ_Edge, &b_iJ_Edge);
+   fChain->SetBranchAddress("LHEweight_id_Edge", LHEweight_id_Edge, &b_LHEweight_id_Edge);
+   fChain->SetBranchAddress("LHEweight_wgt_Edge", LHEweight_wgt_Edge, &b_LHEweight_wgt_Edge);
+   fChain->SetBranchAddress("nLHEweight_Edge", &nLHEweight_Edge, &b_nLHEweight_Edge);
    fChain->SetBranchAddress("nLepGood20_Edge", &nLepGood20_Edge, &b_nLepGood20_Edge);
    fChain->SetBranchAddress("nLepGood20T_Edge", &nLepGood20T_Edge, &b_nLepGood20T_Edge);
    fChain->SetBranchAddress("nJet35_Edge", &nJet35_Edge, &b_nJet35_Edge);
    fChain->SetBranchAddress("nJet35_jecUp_Edge", &nJet35_jecUp_Edge, &b_nJet35_jecUp_Edge);
    fChain->SetBranchAddress("nJet35_jecDn_Edge", &nJet35_jecDn_Edge, &b_nJet35_jecDn_Edge);
+   fChain->SetBranchAddress("nJet25_Edge", &nJet25_Edge, &b_nJet25_Edge);
+   fChain->SetBranchAddress("nJet25_jecUp_Edge", &nJet25_jecUp_Edge, &b_nJet25_jecUp_Edge);
+   fChain->SetBranchAddress("nJet25_jecDn_Edge", &nJet25_jecDn_Edge, &b_nJet25_jecDn_Edge);
    fChain->SetBranchAddress("htJet35j_Edge", &htJet35j_Edge, &b_htJet35j_Edge);
    fChain->SetBranchAddress("htJet35j_jecUp_Edge", &htJet35j_jecUp_Edge, &b_htJet35j_jecUp_Edge);
    fChain->SetBranchAddress("htJet35j_jecDn_Edge", &htJet35j_jecDn_Edge, &b_htJet35j_jecDn_Edge);
+   fChain->SetBranchAddress("htJet25j_Edge", &htJet25j_Edge, &b_htJet25j_Edge);
+   fChain->SetBranchAddress("htJet25j_jecUp_Edge", &htJet25j_jecUp_Edge, &b_htJet25j_jecUp_Edge);
+   fChain->SetBranchAddress("htJet25j_jecDn_Edge", &htJet25j_jecDn_Edge, &b_htJet25j_jecDn_Edge);
    fChain->SetBranchAddress("nBJetMedium25_Edge", &nBJetMedium25_Edge, &b_nBJetMedium25_Edge);
    fChain->SetBranchAddress("nBJetMedium25_jecUp_Edge", &nBJetMedium25_jecUp_Edge, &b_nBJetMedium25_jecUp_Edge);
    fChain->SetBranchAddress("nBJetMedium25_jecDn_Edge", &nBJetMedium25_jecDn_Edge, &b_nBJetMedium25_jecDn_Edge);
    fChain->SetBranchAddress("nBJetLoose35_Edge", &nBJetLoose35_Edge, &b_nBJetLoose35_Edge);
    fChain->SetBranchAddress("nBJetLoose35_jecUp_Edge", &nBJetLoose35_jecUp_Edge, &b_nBJetLoose35_jecUp_Edge);
    fChain->SetBranchAddress("nBJetLoose35_jecDn_Edge", &nBJetLoose35_jecDn_Edge, &b_nBJetLoose35_jecDn_Edge);
+   fChain->SetBranchAddress("nBJetLoose25_Edge", &nBJetLoose25_Edge, &b_nBJetLoose25_Edge);
+   fChain->SetBranchAddress("nBJetLoose25_jecUp_Edge", &nBJetLoose25_jecUp_Edge, &b_nBJetLoose25_jecUp_Edge);
+   fChain->SetBranchAddress("nBJetLoose25_jecDn_Edge", &nBJetLoose25_jecDn_Edge, &b_nBJetLoose25_jecDn_Edge);
    fChain->SetBranchAddress("nBJetMedium35_Edge", &nBJetMedium35_Edge, &b_nBJetMedium35_Edge);
    fChain->SetBranchAddress("nBJetMedium35_jecUp_Edge", &nBJetMedium35_jecUp_Edge, &b_nBJetMedium35_jecUp_Edge);
    fChain->SetBranchAddress("nBJetMedium35_jecDn_Edge", &nBJetMedium35_jecDn_Edge, &b_nBJetMedium35_jecDn_Edge);
@@ -563,6 +629,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("lepsJZB_raw_Edge", &lepsJZB_raw_Edge, &b_lepsJZB_raw_Edge);
    fChain->SetBranchAddress("lepsJZB_recoil_Edge", &lepsJZB_recoil_Edge, &b_lepsJZB_recoil_Edge);
    fChain->SetBranchAddress("lepsDR_Edge", &lepsDR_Edge, &b_lepsDR_Edge);
+   fChain->SetBranchAddress("lepsPhi_Edge", &lepsPhi_Edge, &b_lepsPhi_Edge);
    fChain->SetBranchAddress("lepsMETRec_Edge", &lepsMETRec_Edge, &b_lepsMETRec_Edge);
    fChain->SetBranchAddress("lepsZPt_Edge", &lepsZPt_Edge, &b_lepsZPt_Edge);
    fChain->SetBranchAddress("metl1DPhi_Edge", &metl1DPhi_Edge, &b_metl1DPhi_Edge);
@@ -624,9 +691,21 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
    fChain->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
    fChain->SetBranchAddress("mt2bb_jecDn_Edge", &mt2bb_jecDn_Edge, &b_mt2bb_jecDn_Edge);
+   fChain->SetBranchAddress("mT_dilep_Edge", &mT_dilep_Edge, &b_mT_dilep_Edge);
    fChain->SetBranchAddress("mT_lep1_Edge", &mT_lep1_Edge, &b_mT_lep1_Edge);
    fChain->SetBranchAddress("mT_lep2_Edge", &mT_lep2_Edge, &b_mT_lep2_Edge);
    fChain->SetBranchAddress("minMT_Edge", &minMT_Edge, &b_minMT_Edge);
+   fChain->SetBranchAddress("WmT_Edge", &WmT_Edge, &b_WmT_Edge);
+   fChain->SetBranchAddress("WZMT2_Edge", &WZMT2_Edge, &b_WZMT2_Edge);
+   fChain->SetBranchAddress("GENmassZZ_Edge", &GENmassZZ_Edge, &b_GENmassZZ_Edge);
+   fChain->SetBranchAddress("GENptZZ_Edge", &GENptZZ_Edge, &b_GENptZZ_Edge);
+   fChain->SetBranchAddress("GENphiZZ_Edge", &GENphiZZ_Edge, &b_GENphiZZ_Edge);
+   fChain->SetBranchAddress("mllBestZ_Edge", &mllBestZ_Edge, &b_mllBestZ_Edge);
+   fChain->SetBranchAddress("ptBestZ_Edge", &ptBestZ_Edge, &b_ptBestZ_Edge);
+   fChain->SetBranchAddress("mt2BestZ_Edge", &mt2BestZ_Edge, &b_mt2BestZ_Edge);
+   fChain->SetBranchAddress("mllOtherZ_Edge", &mllOtherZ_Edge, &b_mllOtherZ_Edge);
+   fChain->SetBranchAddress("newMet_Edge", &newMet_Edge, &b_newMet_Edge);
+   fChain->SetBranchAddress("newMetPhi_Edge", &newMetPhi_Edge, &b_newMetPhi_Edge);
    fChain->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    fChain->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
    fChain->SetBranchAddress("mbb_jecDn_Edge", &mbb_jecDn_Edge, &b_mbb_jecDn_Edge);          
@@ -661,6 +740,8 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   fChain->SetBranchAddress("HLT_SOSHighMET_Edge", &HLT_SOSHighMET_Edge, &b_HLT_SOSHighMET_Edge);
+   fChain->SetBranchAddress("HLT_SOSDoubleMuLowMET_Edge", &HLT_SOSDoubleMuLowMET_Edge, &b_HLT_SOSDoubleMuLowMET_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT200_v_Edge", &HLT_BIT_HLT_PFHT200_v_Edge, &b_HLT_BIT_HLT_PFHT200_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT250_v_Edge", &HLT_BIT_HLT_PFHT250_v_Edge, &b_HLT_BIT_HLT_PFHT250_v_Edge);
    fChain->SetBranchAddress("HLT_BIT_HLT_PFHT300_v_Edge", &HLT_BIT_HLT_PFHT300_v_Edge, &b_HLT_BIT_HLT_PFHT300_v_Edge);
@@ -743,20 +824,32 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("nPairLep_Edge", &nPairLep_Edge, &b_nPairLep_Edge);
    outputtree->SetBranchAddress("iLT_Edge", iLT_Edge, &b_iLT_Edge);
    outputtree->SetBranchAddress("iJ_Edge", iJ_Edge, &b_iJ_Edge);
+   outputtree->SetBranchAddress("LHEweight_id_Edge", LHEweight_id_Edge, &b_LHEweight_id_Edge);
+   outputtree->SetBranchAddress("LHEweight_wgt_Edge", LHEweight_wgt_Edge, &b_LHEweight_wgt_Edge);
+   outputtree->SetBranchAddress("nLHEweight_Edge", &nLHEweight_Edge, &b_nLHEweight_Edge);
    outputtree->SetBranchAddress("nLepGood20_Edge", &nLepGood20_Edge, &b_nLepGood20_Edge);
    outputtree->SetBranchAddress("nLepGood20T_Edge", &nLepGood20T_Edge, &b_nLepGood20T_Edge);
    outputtree->SetBranchAddress("nJet35_Edge", &nJet35_Edge, &b_nJet35_Edge);
    outputtree->SetBranchAddress("nJet35_jecUp_Edge", &nJet35_jecUp_Edge, &b_nJet35_jecUp_Edge);
    outputtree->SetBranchAddress("nJet35_jecDn_Edge", &nJet35_jecDn_Edge, &b_nJet35_jecDn_Edge);
+   outputtree->SetBranchAddress("nJet25_Edge", &nJet25_Edge, &b_nJet25_Edge);
+   outputtree->SetBranchAddress("nJet25_jecUp_Edge", &nJet25_jecUp_Edge, &b_nJet25_jecUp_Edge);
+   outputtree->SetBranchAddress("nJet25_jecDn_Edge", &nJet25_jecDn_Edge, &b_nJet25_jecDn_Edge);
    outputtree->SetBranchAddress("htJet35j_Edge", &htJet35j_Edge, &b_htJet35j_Edge);
    outputtree->SetBranchAddress("htJet35j_jecUp_Edge", &htJet35j_jecUp_Edge, &b_htJet35j_jecUp_Edge);
    outputtree->SetBranchAddress("htJet35j_jecDn_Edge", &htJet35j_jecDn_Edge, &b_htJet35j_jecDn_Edge);
+   outputtree->SetBranchAddress("htJet25j_Edge", &htJet25j_Edge, &b_htJet25j_Edge);
+   outputtree->SetBranchAddress("htJet25j_jecUp_Edge", &htJet25j_jecUp_Edge, &b_htJet25j_jecUp_Edge);
+   outputtree->SetBranchAddress("htJet25j_jecDn_Edge", &htJet25j_jecDn_Edge, &b_htJet25j_jecDn_Edge);
    outputtree->SetBranchAddress("nBJetMedium25_Edge", &nBJetMedium25_Edge, &b_nBJetMedium25_Edge);
    outputtree->SetBranchAddress("nBJetMedium25_jecUp_Edge", &nBJetMedium25_jecUp_Edge, &b_nBJetMedium25_jecUp_Edge);
    outputtree->SetBranchAddress("nBJetMedium25_jecDn_Edge", &nBJetMedium25_jecDn_Edge, &b_nBJetMedium25_jecDn_Edge);
    outputtree->SetBranchAddress("nBJetLoose35_Edge", &nBJetLoose35_Edge, &b_nBJetLoose35_Edge);
    outputtree->SetBranchAddress("nBJetLoose35_jecUp_Edge", &nBJetLoose35_jecUp_Edge, &b_nBJetLoose35_jecUp_Edge);
    outputtree->SetBranchAddress("nBJetLoose35_jecDn_Edge", &nBJetLoose35_jecDn_Edge, &b_nBJetLoose35_jecDn_Edge);
+   outputtree->SetBranchAddress("nBJetLoose25_Edge", &nBJetLoose25_Edge, &b_nBJetLoose25_Edge);
+   outputtree->SetBranchAddress("nBJetLoose25_jecUp_Edge", &nBJetLoose25_jecUp_Edge, &b_nBJetLoose25_jecUp_Edge);
+   outputtree->SetBranchAddress("nBJetLoose25_jecDn_Edge", &nBJetLoose25_jecDn_Edge, &b_nBJetLoose25_jecDn_Edge);
    outputtree->SetBranchAddress("nBJetMedium35_Edge", &nBJetMedium35_Edge, &b_nBJetMedium35_Edge);
    outputtree->SetBranchAddress("nBJetMedium35_jecUp_Edge", &nBJetMedium35_jecUp_Edge, &b_nBJetMedium35_jecUp_Edge);
    outputtree->SetBranchAddress("nBJetMedium35_jecDn_Edge", &nBJetMedium35_jecDn_Edge, &b_nBJetMedium35_jecDn_Edge);
@@ -767,6 +860,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("lepsJZB_raw_Edge", &lepsJZB_raw_Edge, &b_lepsJZB_raw_Edge);
    outputtree->SetBranchAddress("lepsJZB_recoil_Edge", &lepsJZB_recoil_Edge, &b_lepsJZB_recoil_Edge);
    outputtree->SetBranchAddress("lepsDR_Edge", &lepsDR_Edge, &b_lepsDR_Edge);
+   outputtree->SetBranchAddress("lepsPhi_Edge", &lepsPhi_Edge, &b_lepsPhi_Edge);
    outputtree->SetBranchAddress("lepsMETRec_Edge", &lepsMETRec_Edge, &b_lepsMETRec_Edge);
    outputtree->SetBranchAddress("lepsZPt_Edge", &lepsZPt_Edge, &b_lepsZPt_Edge);
    outputtree->SetBranchAddress("metl1DPhi_Edge", &metl1DPhi_Edge, &b_metl1DPhi_Edge);
@@ -829,9 +923,21 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
    outputtree->SetBranchAddress("mt2bb_jecUp_Edge", &mt2bb_jecUp_Edge, &b_mt2bb_jecUp_Edge);
    outputtree->SetBranchAddress("mt2bb_jecDn_Edge", &mt2bb_jecDn_Edge, &b_mt2bb_jecDn_Edge);
+   outputtree->SetBranchAddress("mT_dilep_Edge", &mT_dilep_Edge, &b_mT_dilep_Edge);
    outputtree->SetBranchAddress("mT_lep1_Edge", &mT_lep1_Edge, &b_mT_lep1_Edge);
    outputtree->SetBranchAddress("mT_lep2_Edge", &mT_lep2_Edge, &b_mT_lep2_Edge);
    outputtree->SetBranchAddress("minMT_Edge", &minMT_Edge, &b_minMT_Edge);
+   outputtree->SetBranchAddress("WmT_Edge", &WmT_Edge, &b_WmT_Edge);
+   outputtree->SetBranchAddress("WZMT2_Edge", &WZMT2_Edge, &b_WZMT2_Edge);
+   outputtree->SetBranchAddress("GENmassZZ_Edge", &GENmassZZ_Edge, &b_GENmassZZ_Edge);
+   outputtree->SetBranchAddress("GENptZZ_Edge", &GENptZZ_Edge, &b_GENptZZ_Edge);
+   outputtree->SetBranchAddress("GENphiZZ_Edge", &GENphiZZ_Edge, &b_GENphiZZ_Edge);
+   outputtree->SetBranchAddress("mllBestZ_Edge", &mllBestZ_Edge, &b_mllBestZ_Edge);
+   outputtree->SetBranchAddress("mt2BestZ_Edge", &mt2BestZ_Edge, &b_mt2BestZ_Edge);
+   outputtree->SetBranchAddress("ptBestZ_Edge", &ptBestZ_Edge, &b_ptBestZ_Edge);
+   outputtree->SetBranchAddress("mllOtherZ_Edge", &mllOtherZ_Edge, &b_mllOtherZ_Edge);
+   outputtree->SetBranchAddress("newMet_Edge", &newMet_Edge, &b_newMet_Edge);
+   outputtree->SetBranchAddress("newMetPhi_Edge", &newMetPhi_Edge, &b_newMetPhi_Edge);
    outputtree->SetBranchAddress("mbb_Edge", &mbb_Edge, &b_mbb_Edge);
    outputtree->SetBranchAddress("mbb_jecUp_Edge", &mbb_jecUp_Edge, &b_mbb_jecUp_Edge);
    outputtree->SetBranchAddress("mbb_jecDn_Edge", &mbb_jecDn_Edge, &b_mbb_jecDn_Edge);          
@@ -866,6 +972,8 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge", &HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge, &b_HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge);
+   outputtree->SetBranchAddress("HLT_SOSDoubleMuLowMET_Edge", &HLT_SOSDoubleMuLowMET_Edge, &b_HLT_SOSDoubleMuLowMET_Edge);
+   outputtree->SetBranchAddress("HLT_SOSHighMET_Edge", &HLT_SOSHighMET_Edge, &b_HLT_SOSHighMET_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT200_v_Edge", &HLT_BIT_HLT_PFHT200_v_Edge, &b_HLT_BIT_HLT_PFHT200_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT250_v_Edge", &HLT_BIT_HLT_PFHT250_v_Edge, &b_HLT_BIT_HLT_PFHT250_v_Edge);
    outputtree->SetBranchAddress("HLT_BIT_HLT_PFHT300_v_Edge", &HLT_BIT_HLT_PFHT300_v_Edge, &b_HLT_BIT_HLT_PFHT300_v_Edge);
