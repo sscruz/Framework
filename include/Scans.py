@@ -148,7 +148,8 @@ class Scan(object):
 
 
         if self.name == 'slepton2017':                                                                                                   
-            self.makeMCDatacards = True                                                                                                  
+            self.makeMCDatacards = False                                                                                                  
+            self.makeMCDatacardsSlepton = True                                                                                                  
             self.hasOther = True                                                                                                         
             self.paper = 'SUS170XX'                                                                                                      
             self.datasets = ['SMS_TSlepSlep']                                                                                            
@@ -165,15 +166,18 @@ class Scan(object):
             self.xsecFile = ('datacards/sleptonXsecLeft.txt')                                                                                
             self.regions = []                                                                                                            
             self.xtitle = 'm_{slep_L}'; self.ytitle = 'm_{chi^{0}_{1}}'                                                                    
-            self.srID   = '0*(met_Edge > 100)*(met_Edge < 175) + 1*(met_Edge > 175)*(met_Edge < 250) + 2*(met_Edge > 250)'       
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 150) + 1*(met_Edge > 150)*(met_Edge < 225) + 2*(met_Edge > 225)*(met_Edge < 300)+ 3*(met_Edge > 300)'       
+            #self.srID   = '0*(met_Edge > 100)*(met_Edge < 175) + 1*(met_Edge > 175)*(met_Edge < 250) + 2*(met_Edge > 250)'       
             #self.srID   = '0*(met_Edge > 100)*(met_Edge < 175)*(nJet25_Edge ==0)*(mt2_Edge > 90) + 1*(met_Edge > 175)*(met_Edge < 250)*(nJet25_Edge ==0)*(mt2_Edge > 90) + 2*(met_Edge > 250)*(nJet25_Edge ==0)*(mt2_Edge > 90)'       
-            self.srIDMax = 3                                                                                                             
-            self.shortLabels = {0: 'lowmetHT0',                                                                                             
-                                1: 'medmetHT0',                                                                                             
-                                2: 'himetHT0'}                                                                                              
-            self.SRLabels    = {0: '100 GeV < ME_{T} < 175 GeV, HT == 0',                                                                         
-                                1: '175 GeV < ME_{T} < 250 GeV, HT == 0',                                                                         
-                                2: '250 GeV < ME_{T}, HT == 0'}                                                                                                                                                                                 
+            self.srIDMax = 4                                                                                                             
+            self.shortLabels = {0: 'lowmet',                                                                                             
+                                1: 'medmet',                                                                                             
+                                2: 'higmet',                                                                                             
+                                3: 'maxmet'}                                                                                              
+            self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV, HT == 0',                                                                         
+                                1: '150 GeV < ME_{T} < 225 GeV, HT == 0',                                                                         
+                                2: '225 GeV < ME_{T} < 300 GeV, HT == 0',                                                                         
+                                3: '300 GeV > ME_{T}, HT == 0'}                                                                                                                                                                                 
             
            
             

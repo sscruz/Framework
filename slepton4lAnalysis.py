@@ -64,7 +64,7 @@ def compareMMEEPlots(plotmm, plotee):
     plot.saveRatio(1, 1, 0, 4, h_ee, h_mm)
     
 
-def makeSummaryTable3l4l(plot, up, dn):
+def makeSummaryTable3l4l(plot, plot_sig, up, dn, plot_up, plot_dn):
 
     sig, sig_e = 0., 0.
     sigUp, sigDn = 0., 0.
@@ -80,8 +80,8 @@ def makeSummaryTable3l4l(plot, up, dn):
         tmp_double = r.Double()
         print "h.GetName() ", h.GetName()
         if 'ZZTo4l' in h.GetName():
-            sig = h.IntegralAndError(1, h.GetNbinsX()+1, tmp_double)
-            sig_e = tmp_double
+            old = h.IntegralAndError(1, h.GetNbinsX()+1, tmp_double)
+            old_e = tmp_double
         elif not 'DATA' in h.GetName(): 
             tmp_yield = h.IntegralAndError(1, h.GetNbinsX()+1, tmp_double)
             bkg  += tmp_yield
@@ -89,11 +89,25 @@ def makeSummaryTable3l4l(plot, up, dn):
         elif 'DATA' in h.GetName():
             obs = h.Integral()                                                      
     
+    for i, h in enumerate(plot_sig.histos):
+        sig = h.IntegralAndError(1, 4, tmp_double)
+        print "sig int", sig
+        sig_e = tmp_double                            
+    for i, h in enumerate(plot_up.histos):
+        sigUp = h.IntegralAndError(1, 4, tmp_double)
+        print "sigUp int", sigUp
+        sigUp_e = tmp_double                            
+    for i, h in enumerate(plot_dn.histos):
+        sigDn = h.IntegralAndError(1, 4, tmp_double)
+        print "sigDn int", sigDn
+        sigDn_e = tmp_double                            
+    
+    
     for i, h in enumerate(up.histos):                           
         if not i: continue
         print "jec up h.GetName() ", h.GetName()
         if 'ZZTo4l' in h.GetName():
-            sigUp = h.Integral()
+            sigUpOld = h.Integral()
         elif not 'DATA' in h.GetName(): 
             tmp_yieldUp = h.Integral()
             bkgUp  += tmp_yieldUp                         
@@ -102,7 +116,7 @@ def makeSummaryTable3l4l(plot, up, dn):
         if not i: continue
         print "jec down h.GetName() ", h.GetName()
         if 'ZZTo4l' in h.GetName():
-            sigDn = h.Integral()
+            sigDnOld = h.Integral()
         elif not 'DATA' in h.GetName(): 
             tmp_yieldDn = h.Integral()
             bkgDn  += tmp_yieldDn                               
@@ -113,10 +127,10 @@ def makeSummaryTable3l4l(plot, up, dn):
     print "sig-sigDn", abs(sig-sigDn)
     print "bkg_e ", bkg_e**2              
 
-    if abs(bkgUp-bkg) > abs(bkg-bkgDn): bkgSyst_e = bkgUp-bkg 
+    if abs(bkgUp-bkg) > abs(bkg-bkgDn): bkgSyst_e = abs(bkgUp-bkg) 
     else:bkgSyst_e = bkg-bkgDn
-    if abs(sigUp-sig) > abs(sig-sigDn): sigSyst_e = sigUp-sig 
-    else:sigSyst_e = sig-sigDn
+    if abs(sigUp-sig) > abs(sig-sigDn): sigSyst_e = abs(sigUp-sig) 
+    else:sigSyst_e = abs(sig-sigDn)
     obsSub,     obsSub_e = obs-bkg, math.sqrt(obs + bkg_e**2)
     obsSubSyst, obsSubSyst_e = obs-bkg, math.sqrt(bkgSyst_e**2)
     rat, rat_e = helper.ratioError(obsSub, obsSub_e, sig, sig_e)
@@ -167,6 +181,8 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
     MC4l   = tree4l.getTH1F(lumi, "hMC4l_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1",  'ZZpt')
     MCBKG   = treeBKG.getTH1F(lumi, "hMCBKG_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx,  "1",  'ZZpt')
     MC   = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
+    MC_jecUp   = treeMC.getTH1F(lumi, "hMC_jecUp%s"%(name), "met_jecUp_Edge", nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
+    MC_jecDn   = treeMC.getTH1F(lumi, "hMC_jecDn%s"%(name), "met_jecDn_Edge", nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
     MCS  = treeMCForPlots.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx)
     DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCutDATA, '', labelx, "1", 'ZZpt')
     MCS_jecUp   = treeMCForPlots.getStack(lumi, "hMCS_jecUp%s"%(name), "met_jecUp_Edge", nbin, xmin, xmax, theCut, "", labelx)
@@ -221,12 +237,18 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
             plot.addHisto(h, 'hist,same' if not h.GetName() == 'data' else 'p,same', h.GetName(), 'PL', h.GetLineColor(), 1, 0)
     plot.saveRatio(1, 1, logx, lumi, DATA, MC)
 
-    plot_jecUp = Canvas.Canvas('CRs/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
+    plot_jecUpKF = Canvas.Canvas('CRs/%s/plotupKF_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
+    plot_jecUpKF.addHisto(MC_jecUp , "HIST", "4lUp", "P", r.kBlack, 1, 0)                                                         
+    plot_jecDnKF = Canvas.Canvas('CRs/%s/plotdnKF_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
+    plot_jecDnKF.addHisto(MC_jecDn , "HIST", "4lDn", "P", r.kBlack, 1, 0)                                                         
+    plot_jecUp = Canvas.Canvas('CRs/%s/plotup_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
     plot_jecUp.addStack(MCS_jecUp , "HIST", 1, 1)                                                         
-    plot_jecDn = Canvas.Canvas('CRs/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
-    plot_jecDn.addStack(MCS_jecDn, "HIST", 1, 1)                                                          
+    plot_jecDn = Canvas.Canvas('CRs/%s/plotdn_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
+    plot_jecDn.addStack(MCS_jecDn , "HIST", 1, 1)                                                         
+    plot_sig = Canvas.Canvas('CRs/%s/plotsig_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
+    plot_sig.addHisto(MC4l , "HIST", "4l", "P", r.kBlack, 1, 0)                                                         
     
-    makeSummaryTable3l4l(plot, plot_jecUp, plot_jecDn)
+    #makeSummaryTable3l4l(plot, plot_sig, plot_jecUp, plot_jecDn, plot_jecUpKF, plot_jecDnKF )
     if returnplot:
         return plot
     else:
@@ -348,12 +370,12 @@ if __name__ == "__main__":
     #plot_4l_jet1Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[0]", "jet1Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Leading Jet p_{T} [GeV]", 0, True)
     #plot_4l_jet2Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[1]", "jet2Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Subleading Jet p_{T} [GeV]", 0, True)
     #plot_4l_jet3Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[2]", "jet3Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Third Jet Jet p_{T} [GeV]", 0, True)
-    #plot_4l_bestMll  = makePlot(lumi, lumi_str, treeDA, tree4l, "mZ1_Edge", "bestMll_4l", 100,  70, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
+    plot_4l_bestMll  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG,treeMCForPlots, "mZ1_Edge", "bestMll_4l", 100,  70, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ1_Edge < 106 && mZ1_Edge > 76 &&mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
 # start here
 #    plot_4l_newMET = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "newMet_Edge", "newMET_4l_Kfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New p_{T}^{miss} [GeV]", 0, True, True)
 #    plot_4l_newMT2 = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "mt2BestZ_Edge", "newMT2_4l_Kfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New M_{T2} [GeV]", 0, True, True)
-#    plot_4l_otherMll = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "mZ2_Edge", "otherMll_4l_Kfactor", 39,  50, 128, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of other Z candidate [GeV]", 0, True)
-    plot_4l_met_noKF  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, "met_Edge", "met_4l_noKfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'noKFactor')
+    plot_4l_otherMll = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots,"mZ2_Edge", "otherMll_4l_Kfactor", 39,  50, 128, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of other Z candidate [GeV]", 0, True)
+    #plot_4l_met_noKF  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, "met_Edge", "met_4l_noKfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ1_Edge < 106 && mZ1_Edge > 76 &&  mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'noKFactor')
     #plot_4l_bestMll_noKF  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, "mZ1_Edge", "bestMll_4l_noKfactor", 35,  75, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'noKFactor')
     #makeSummaryTable3l4l(plot_4l_bestMll_noKF, 'noKFactor')
 #    plot_4l_bestMll_ZZpt  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "mZ1_Edge", "bestMll_4l_ptKfactor", 35,  75, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'ZZpt')
@@ -365,8 +387,8 @@ if __name__ == "__main__":
     #plot_4l_bestMT2 = makePlot(lumi, lumi_str, treeDA, tree4l, "mt2BestZ_Edge", "bestMT2_4l", 15,  0, 300, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton , " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 106 && mZ2_Edge > 76"]), cuts, "new MT2", 0, True)
     #plot_4l_otherMll = makePlot(lumi, lumi_str, treeDA, tree4l, "mZ2_Edge", "otherMll_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton]), cuts, "m_{ll} of other Z candidate [GeV]", 0, True)
     #plot_4l_otherMll = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "mZ2_Edge", "otherMll_4l", 35,  60, 120, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 120 && mZ2_Edge > 60"]), cuts, "m_{ll} of other Z candidate [GeV]", 0, True)
-    #plot_4l_lep1_pt = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "Lep1_pt_Edge", "Lep1_pt_4l", 35,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "Leading lepton p_{T} [GeV]", 0, True)
-    #plot_4l_lep2_pt = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, "Lep2_pt_Edge", "Lep2_pt_4l", 35,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "Subleading lepton p_{T} [GeV]", 0, True)
+    plot_4l_lep1_pt = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG,treeMCForPlots, "Lep1_pt_Edge", "Lep1_pt_4l", 35,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "Leading lepton p_{T} [GeV]", 0, True)
+    plot_4l_lep2_pt = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG,treeMCForPlots, "Lep2_pt_Edge", "Lep2_pt_4l", 35,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "Subleading lepton p_{T} [GeV]", 0, True)
     #plot_4l_jet1Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[0]", "jet1Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Leading Jet p_{T} [GeV]", 0, True)
     #plot_4l_jet2Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[1]", "jet2Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Subleading Jet p_{T} [GeV]", 0, True)
 #    plot_2l2nu_met  = makePlot(lumi, lumi_str, treeDA, tree4l, "met_Edge", "met_2l2nu", 40,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region2l2nuSlepton]), cuts, "met 2l2nu", 0, True)

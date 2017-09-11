@@ -36,9 +36,9 @@ def makeMCDatacards():
     print 'getting yields'
     print cuts.AddList([scan.cuts_norm,cuts.goodLepton])
     print cuts
-    tt = treeTT.getTH1F(lumi, 'FSbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); tt.SetName('FSbkg')
-    dy = treeDY.getTH1F(lumi, 'dybkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); dy.SetName('dybkg')
-    others = treeOTHERS.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', ''); others.SetName('otherbkg')
+    tt = treeTT.getTH1F(lumi, 'FSbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); tt.SetName('FSbkg')
+    dy = treeDY.getTH1F(lumi, 'dybkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); dy.SetName('dybkg')
+    others = treeOTHERS.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); others.SetName('otherbkg')
     data = tt.Clone('data_obs'); data.Add(dy);data.Add(others)
     helper.ensureDirectory('datacards/datacards_%s/%s'%(scan.name,scan.name))
     for SR, label in scan.shortLabels.items():
@@ -116,21 +116,109 @@ lumi   lnN             1.026            -               -
     # shapes.Close()
     
 
-    
+def makeDataCardsFromRootFileSlepton():                                                                                                                                            
+    print "Making datacard from rootfile"
+    rootfile = TFile.Open('datacards/forDatacards_slepton_2017_.root')
+    da_SF    = rootfile.Get('da_SF'   )
+    da_OF    = rootfile.Get('da_OF'   )
+    tf_CR_SR = rootfile.Get('tf_CR_SR')
+    rareMC   = rootfile.Get('rare' )
+    wz       = rootfile.Get('wz_SF' )
+    zz       = rootfile.Get('zz_SF' )
+    zz_jecUp = rootfile.Get('zz_jecUp')
+    zz_jecDn = rootfile.Get('zz_jecDn')
+    wz_jecUp = rootfile.Get('wz_jecUp')
+    wz_jecDn = rootfile.Get('wz_jecDn')
+    zz_qcdUp = rootfile.Get('zz_qcdUp')
+    zz_qcdDn = rootfile.Get('zz_qcdDn')
+    wz_qcdUp = rootfile.Get('wz_qcdUp')
+    wz_qcdDn = rootfile.Get('wz_qcdDn')
+    zz_pdf   = rootfile.Get('pdfZZ')
+    wz_pdf   = rootfile.Get('pdfWZ')
+    print "opened ", rootfile    
+    #puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
+    #puSystUp = puFile.Get('puUp')
+    #puSystDn = puFile.Get('puDn')
+#fs_stat_{label} gmN  {fs_int}  -  {tf}                -                  -
+#fs_unc  lnN         -                 {tf_e}          -                  -                  -
+#fs   lnN         -                 {fs_int}          -                  -                  -
+
+    for SR, label in scan.shortLabels.items():
+        #print "SR", SR
+        #print "zz_pdf.GetBinContent(SR+1) ", zz_pdf.GetBinContent(SR+1)
+        #print "wz_pdf.GetBinContent(SR+1) ", wz_pdf.GetBinContent(SR+1)
+        if scan.hasOther:
+            datacard = '''imax 1 number of bins
+jmax 4 number of processes minus 1
+kmax *  number of nuisance parameters
+----------------------------------------------------------------------------------------------------------------------------------
+bin          {label}
+observation  {obs}   
+----------------------------------------------------------------------------------------------------------------------------------
+bin                                {label}            {label}       {label}            {label}            {label}
+process                            XXSIGNALXX         FSbkg         ZZ                 WZ                 rare
+process                            0                  1             2                  2                  3
+rate                               XXSIGRATEXX        {fs}  {ZZ}  {WZ}  {rare}
+--------------------------------------------------------------------------------------------------------------------------------------
+fs_stat_{label} gmN  {fs_int}  -  {tf}                -                  -                  -              - 
+fs_unc  lnN         -                 {tf_e}          -                  -                  -
+jec  lnN         XXjecXX            -             {zz_jUp}/{zz_jDn}                  {wz_jUp}/{wz_jDn}                  -
+El  lnN          XXElXX             -             1.03               1.03               -
+Mu  lnN          XXMuXX             -             1.06               1.06               -
+SigTrig  lnN          1.05               -             -                  -                  -
+Trig  lnN          -                  -             1.03               1.03               -
+bHe  lnN          XXbHeXX            -             -                  -                  -
+bLi  lnN          XXbLiXX            -             -                  -                  -
+signalMCstats_{label} lnN          XXmcStatXX         -             -                  -                  -
+zzSys  lnN          -                  -             1.1                -                  - 
+wzSys  lnN          -                  -             -                  1.07               - 
+rareSys  lnN          -                  -             -                  -                  1.5
+scale  lnN          1.03               -             -                  -                  - 
+pdf  lnN          1.03               -             {zz_p}      {wz_p}      - 
+lumi  lnN          1.025              -             1.025              1.025              -               
+'''.format(label = label, 
+           obs = da_OF.GetBinContent(SR+1), # this is for blinding!!!!!!!!!!!!!!!
+           #obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+           fs  = da_OF.GetBinContent(SR+1)*tf_CR_SR.GetBinContent(SR+1),
+           ZZ = zz.GetBinContent(SR+1),
+           WZ = wz.GetBinContent(SR+1),
+           rare = rareMC.GetBinContent(SR+1),
+           fs_int = int(da_OF.GetBinContent(SR+1)),
+           tf = tf_CR_SR.GetBinContent(SR+1),
+           tf_e = 1 + tf_CR_SR.GetBinError(SR+1)/tf_CR_SR.GetBinContent(SR+1),
+           zz_jUp = 1 + zz_jecUp.GetBinContent(SR+1),
+           zz_jDn = 1 + zz_jecUp.GetBinContent(SR+1),
+           wz_jUp = 1 + wz_jecUp.GetBinContent(SR+1),
+           wz_jDn = 1 + wz_jecDn.GetBinContent(SR+1),
+           #rare_e = 1 + rareMC.GetBinError(SR+2) / rareMC.GetBinContent(SR+2),
+           zz_p = 1 + zz_pdf.GetBinContent(SR+1),
+           wz_p = 1 + wz_pdf.GetBinContent(SR+1))
+           #dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
+           #pu_Up = 1 + puSystUp.GetBinContent(SR+1),
+           #pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
+           #zz_e = 1 + ZZ.GetBinError(SR+2) / ZZ.GetBinContent(SR+2),
+           #wz_e = 1 + WZ.GetBinError(SR+2) / WZ.GetBinContent(SR+2),
+        print da_OF.GetBinContent(SR+1)
+        #print da_SF.GetBinContent(SR+2)
+
+        outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
+        outputFile.write(datacard)
+        outputFile.close()                                                                                                                                              
+
+
 def makeDataCardsFromRootFile():
     print "Making datacard from rootfile"
     rootfile = TFile.Open('datacards/forDatacards_%s.root'%('CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name))
-    #da_SF    = rootfile.Get('da_SF'   )
-    #da_OF    = rootfile.Get('da_OF'   )
-    #tf_CR_SR = rootfile.Get('tf_CR_SR')
-    fs_SF = rootfile.Get('fs_SF')
-    dy_SF = rootfile.Get('dy_SF')
-    rare  = rootfile.Get('rares' )
+    da_SF    = rootfile.Get('da_SF'   )
+    da_OF    = rootfile.Get('da_OF'   )
+    tf_CR_SR = rootfile.Get('tf_CR_SR')
+    dy_shape = rootfile.Get('dy_shape')
+    mc_full  = rootfile.Get('mc_full' )
     print "opened ", rootfile    
-    #puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
+    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
 
-    #puSystUp = puFile.Get('puUp')
-    #puSystDn = puFile.Get('puDn')
+    puSystUp = puFile.Get('puUp')
+    puSystDn = puFile.Get('puDn')
 
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
@@ -156,6 +244,7 @@ FastSimMu   lnN     XXFastSimMuXX      -             -          -
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
+PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
 genMet lnU              XXgenMetXX     -             -          -
 ISR   lnN              XXISRXX     -             -          - 
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
@@ -164,87 +253,22 @@ otherSys lnN         -                  -            -          {other_e}
 scale    lnN         1.03               -            -            - 
 lumi   lnN             1.026              -            -          - 
 '''.format(label = label, 
-           obs = 1., # the plots for ewk start in [50,100]
-           #obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
-           fs  = fs_SF.GetBinContent(SR+1),
-           #fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
-           DY = dy_SF.GetBinContent(SR+1),
-           other = rare.GetBinContent(SR+1),
-           fs_int = int(da_OF.GetBinContent(SR+1)),
-           tf = 1.,
-           #tf = tf_CR_SR.GetBinContent(SR+2),
-           tf_e = 1 + 0.01/1.,
-           dy_e = 1.5 if dy_SF.GetBinContent(SR+2) == 0 else 1 + dy_SF.GetBinError(SR+2)/dy_SF.GetBinContent(SR+2),
-           other_e = 1 + rare.GetBinError(SR+2) / rare.GetBinContent(SR+2))
-        #print da_SF.GetBinContent(SR+2)
+           obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+           fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
+           DY = dy_shape.GetBinContent(SR+2),
+           other = mc_full.GetBinContent(SR+2),
+           fs_int = int(da_OF.GetBinContent(SR+2)),
+           tf = tf_CR_SR.GetBinContent(SR+2),
+           tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
+           dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
+           pu_Up = 1 + puSystUp.GetBinContent(SR+1),
+           pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
+           other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
+        print da_SF.GetBinContent(SR+2)
 
         outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
         outputFile.write(datacard)
         outputFile.close()                                                                                                                                              
-
-#def makeDataCardsFromRootFile():
-#    print "Making datacard from rootfile"
-#    rootfile = TFile.Open('datacards/forDatacards_%s.root'%('CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name))
-#    da_SF    = rootfile.Get('da_SF'   )
-#    da_OF    = rootfile.Get('da_OF'   )
-#    tf_CR_SR = rootfile.Get('tf_CR_SR')
-#    dy_shape = rootfile.Get('dy_shape')
-#    mc_full  = rootfile.Get('mc_full' )
-#    print "opened ", rootfile    
-#    puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
-#
-#    puSystUp = puFile.Get('puUp')
-#    puSystDn = puFile.Get('puDn')
-#
-#    for SR, label in scan.shortLabels.items():
-#        if scan.hasOther:
-#            datacard = '''imax 1 number of bins
-#jmax 3 number of processes minus 1
-#kmax *  number of nuisance parameters
-#----------------------------------------------------------------------------------------------------------------------------------
-#bin          {label}
-#observation  {obs}   
-#----------------------------------------------------------------------------------------------------------------------------------
-#bin          {label}      {label}        {label}      {label}
-#process      XXSIGNALXX     FSbkg          DY         Other
-#process      0             1              2           3
-#rate         XXSIGRATEXX    {fs}           {DY}       {other}
-#----------------------------------------------------------------------------------------------------------------------------------
-#fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
-#fs_unc lnN             -            {tf_e}             -          -
-#jec   lnN           XXjecXX            -             -          -
-#El    lnN           XXElXX             -             -          -
-#Mu    lnN           XXMuXX             -             -          -
-#FastSimEl   lnN     XXFastSimElXX      -             -          -
-#FastSimMu   lnN     XXFastSimMuXX      -             -          -
-#SigTrig  lnN          1.05             -             -          -
-#bHe   lnN           XXbHeXX            -             -          -
-#bLi   lnN           XXbLiXX            -             -          -
-#PU    lnN           {pu_Up}/{pu_Dn}            -             -          - 
-#genMet lnU              XXgenMetXX     -             -          -
-#ISR   lnN              XXISRXX     -             -          - 
-#signalMCstats_{label} lnN    XXmcStatXX  -           -          -
-#dySys  lnN           -                  -            {dy_e}        - 
-#otherSys lnN         -                  -            -          {other_e}
-#scale    lnN         1.03               -            -            - 
-#lumi   lnN             1.026              -            -          - 
-#'''.format(label = label, 
-#           obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
-#           fs  = da_OF.GetBinContent(SR+2)*tf_CR_SR.GetBinContent(SR+2),
-#           DY = dy_shape.GetBinContent(SR+2),
-#           other = mc_full.GetBinContent(SR+2),
-#           fs_int = int(da_OF.GetBinContent(SR+2)),
-#           tf = tf_CR_SR.GetBinContent(SR+2),
-#           tf_e = 1 + tf_CR_SR.GetBinError(SR+2)/tf_CR_SR.GetBinContent(SR+2),
-#           dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
-#           pu_Up = 1 + puSystUp.GetBinContent(SR+1),
-#           pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
-#           other_e = 1 + mc_full.GetBinError(SR+2) / mc_full.GetBinContent(SR+2))
-#        print da_SF.GetBinContent(SR+2)
-#
-#        outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
-#        outputFile.write(datacard)
-#        outputFile.close()                                                                                                                                              
 
 def makeDataCardsFromRootFileForEdge():
     print "Making datacard from rootfile"
@@ -385,12 +409,8 @@ def produceLimits( njobs ):
 #        print runcmd
         tasks.append([runcmd,combinecmd, fd])
     pool.map(runCmd, tasks)
-    print 'hadding everything'
-    print 'hadding asymptotic'
-    print "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW ", basedir
     haddcmd = 'hadd -f {bd}/{name}_allLimits.root {bd}/*/higgs*Asymptotic*.root'.format(name=scan.name,bd=basedir)
     os.system(haddcmd)
-    print 'hadding profilelikelihood'
     haddcmd = 'hadd -f {bd}/{name}_allSigs.root {bd}/*/higgs*ProfileLikelihood*.root'.format(name=scan.name,bd=basedir)
     os.system(haddcmd)
 
@@ -504,7 +524,6 @@ def PutHistosIntoRootFiles():
             
             helper.ensureDirectory('datacards/datacards_{scan}/{scan}/{mass}/'.format(scan=scan.name,
                                                                                       mass=massString))
-            print "just ensured directories!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" 
             for SR, label in scan.shortLabels.items():
                 itsOk = True
                 if scan.makeMCDatacards:
@@ -673,6 +692,8 @@ if __name__ == "__main__":
         if scan.makeMCDatacards:
             print "doing makeDataCards"
             makeMCDatacards()
+        if scan.makeMCDatacardsSlepton:
+            makeDataCardsFromRootFileSlepton()
         else:
             if not 'Edge' in scan.name:
                 makeDataCardsFromRootFile()
@@ -714,10 +735,11 @@ if __name__ == "__main__":
         print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
 
-        scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu ISR'
+        scan.SysStringUpDown = 'El Mu jec bHe bLi ISR'
+        #scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu ISR'
         scan.SysString = 'genMet'
 #        scan.SysStringUpDown = ''
-#        scan.SysString = ''
+        #scan.SysString = ''
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
         for sys in scan.SysStringUpDown.split()+scan.SysString.split():

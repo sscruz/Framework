@@ -12,6 +12,9 @@ class sms():
         if modelname.find("T1bbbb") != -1: self.T1bbbb()
         if modelname.find("T1qqqq") != -1: self.T1qqqq()
         if modelname.find("TChiWZ") != -1: self.TChiWZ()
+        if modelname.find("TSlepton") != -1: self.TSlepton()
+        if modelname.find("TSleptonLH") != -1: self.TSleptonLH()
+        if modelname.find("TSleptonRH") != -1: self.TSleptonRH()
 
 
     def T6bbslepton(self):
@@ -146,7 +149,7 @@ class sms():
         # LSP
         self.LSP = "m#kern[0.1]{_{"+lsp_s+"}} [GeV]"
         # turn off diagonal lines
-        self.diagOn = False
+        self.diagOn = False                                                                                                                
 
     def T1qqqq(self):
         # model name
@@ -167,3 +170,69 @@ class sms():
         self.LSP = "m#kern[0.1]{_{"+lsp_s+"}} [GeV]"
         # turn off diagonal lines
         self.diagOn = False
+
+    def TSlepton(self):
+        # model name
+        self.modelname = "TSlepton"
+        # decay chain
+        lsp_s = "#lower[-0.12]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}"
+        self.label= "pp #rightarrow #tilde{e}_{L/R} #tilde{e}_{L/R}, #tilde{#mu}_{L/R} #tilde{#mu}_{L/R}";
+        self.label2= "BR( #tilde{l} #rightarrow  l "+lsp_s +" ) = 1";
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 100.
+        self.Xmax = 450.
+        self.Ymin = 20.
+        self.Ymax = 400.
+        self.Zmin = 0.0001
+        self.Zmax = 2.
+        # produce sparticle
+        self.sParticle = "m#kern[0.1]{_{#lower[-0.12]{#tilde{l}}}} [GeV]"
+        # LSP
+        self.LSP = "m#kern[0.1]{_{"+lsp_s+"}} [GeV]"
+        # turn off diagonal lines
+        self.diagOn = False                                                                                                                
+
+
+    def TSleptonLH(self):
+        # model name
+        self.modelname = "TSleptonLH"
+        # decay chain
+        lsp_s = "#lower[-0.12]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}"
+        self.label= "pp #rightarrow #tilde{e}_{L} #tilde{e}_{L}, #tilde{#mu}_{L} #tilde{#mu}_{L}";
+        self.label2= "BR( #tilde{l} #rightarrow  l "+lsp_s +" ) = 1";
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 100.
+        self.Xmax = 450.
+        self.Ymin = 20.
+        self.Ymax = 400.
+        self.Zmin = 0.001
+        self.Zmax = 2.
+        # produce sparticle
+        self.sParticle = "m#kern[0.1]{_{#lower[-0.12]{#tilde{l} (Left handed)}}} [GeV]"
+        # LSP
+        self.LSP = "m#kern[0.1]{_{"+lsp_s+"}} [GeV]"
+        # turn off diagonal lines
+        self.diagOn = False                                                                                                
+
+    def TSleptonRH(self):
+        # model name
+        self.modelname = "TSleptonRH"
+        print "self.modelname", self.modelname
+        # decay chain
+        lsp_s = "#lower[-0.12]{#tilde{#chi}}#lower[0.2]{#scale[0.85]{^{0}}}#kern[-1.3]{#scale[0.85]{_{1}}}"
+        self.label= "pp #rightarrow #tilde{e}_{R} #tilde{e}_{R}, #tilde{#mu}_{R} #tilde{#mu}_{R}";
+        self.label2= "BR( #tilde{l} #rightarrow  l "+lsp_s +" ) = 1";
+        # plot boundary. The top 1/4 of the y axis is taken by the legend
+        self.Xmin = 100.
+        self.Xmax = 450.
+        self.Ymin = 20.
+        self.Ymax = 400.
+        self.Zmin = 0.001
+        self.Zmax = 2.
+        # produce sparticle
+        self.sParticle = "m#kern[0.1]{_{#lower[-0.12]{#tilde{l} (Right handed)}}} [GeV]"
+        # LSP
+        self.LSP = "m#kern[0.1]{_{"+lsp_s+"}} [GeV]"
+        # turn off diagonal lines
+        self.diagOn = False                                                                                                
+    

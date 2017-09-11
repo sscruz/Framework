@@ -394,7 +394,7 @@ class Tree:
    
 
      hs = THStack(name, "")
-
+     print "xlabel ", xlabel
      for b in self.blocks:
      
        AuxName = "auxStack_block_" + name + "_" + b.name
