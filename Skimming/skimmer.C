@@ -44,14 +44,16 @@ void skimmer::Loop()
       nb = fChain->GetEntry(jentry);   nbytes += nb;
       if (nPairLep_Edge == 0) continue;
       //if (htJet35j_Edge < 200) continue;
-      //if (nJetSel_Edge <=1 ) continue;
-      if (nJet25_Edge >=2) continue;
+      if (nJetSel_Edge >1 ) continue;
+      //if (GenSusyMScan1_Edge < 475) continue;
       //if (nJetSel_Edge ==0) continue;
       //if (nJetSel_Edge >0) continue;
       outputtree->Fill();
    }
    
    if(counts != NULL) counts->Write();
+   if(countsLHE != NULL) countsLHE->Write();
+   if(countsSMS != NULL) countsSMS->Write();
    if(genWeights != NULL) genWeights->Write();
    TDirectory *cddir = out->mkdir("sf");
    out->cd("sf");

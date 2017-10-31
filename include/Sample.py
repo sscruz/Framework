@@ -25,6 +25,7 @@ class Sample:
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
             if gw: break
+        print "using this self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw) ", self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw), " for ", self.name
         self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
         #self.count = self.ftfile.Get('Count').GetBinContent(1)
@@ -50,15 +51,17 @@ class Sample:
       if self.isScan > 0:
         self.lumWeight  =  1.0
         self.xSection = self.isScan
-        self.puWeight    = "1.0"
+        self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
         self.ISRWeight = 'ISRweight_Edge'
-        if self.isScan == 1:
+        if self.isScan == True:
             self.smsCount =   self.ftfile.Get('CountSMS')
+            print "using this self.smsCount ", self.smsCount, " for ", self.name
         else:
             self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
             self.lumWeight = self.xSection / self.smsCount
+            print "using this self.smsCount ", self.smsCount, " for ", self.name
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -145,8 +148,6 @@ class Sample:
                   kf = "(1.23613*(abs(GENmassZZ_Edge)>0.0&&abs(GENmassZZ_Edge)<=25.0)+1.1755*(abs(GENmassZZ_Edge)>25.0 &&abs(GENmassZZ_Edge)<=50.0 )+ 1.1704*(abs(GENmassZZ_Edge)>50.0 &&abs(GENmassZZ_Edge)<=75.0 )+ 1.0314*(abs(GENmassZZ_Edge)>75.0 &&abs(GENmassZZ_Edge)<=100.0)+1.0528*(abs(GENmassZZ_Edge)>100.0&&abs(GENmassZZ_Edge)<=125.0)+1.1128*(abs(GENmassZZ_Edge)>125.0&&abs(GENmassZZ_Edge)<=150.0)+1.1336*(abs(GENmassZZ_Edge)>150.0&&abs(GENmassZZ_Edge)<=175.0)+1.1035*(abs(GENmassZZ_Edge)>175.0&&abs(GENmassZZ_Edge)<=200.0)+1.1005*(abs(GENmassZZ_Edge)>200.0&&abs(GENmassZZ_Edge)<=225.0)+1.1097*(abs(GENmassZZ_Edge)>225.0&&abs(GENmassZZ_Edge)<=250.0)+1.1206*(abs(GENmassZZ_Edge)>250.0&&abs(GENmassZZ_Edge)<=275.0)+1.1158*(abs(GENmassZZ_Edge)>275.0&&abs(GENmassZZ_Edge)<=300.0)+1.1390*(abs(GENmassZZ_Edge)>300.0&&abs(GENmassZZ_Edge)<=325.0)+1.1485*(abs(GENmassZZ_Edge)>325.0&&abs(GENmassZZ_Edge)<=350.0)+1.1461*(abs(GENmassZZ_Edge)>350.0&&abs(GENmassZZ_Edge)<=375.0)+1.1457*(abs(GENmassZZ_Edge)>375.0&&abs(GENmassZZ_Edge)<=400.0)+1.1382*(abs(GENmassZZ_Edge)>400.0&&abs(GENmassZZ_Edge)<=425.0)+1.1552*(abs(GENmassZZ_Edge)>425.0&&abs(GENmassZZ_Edge)<=450.0)+1.1367*(abs(GENmassZZ_Edge)>450.0&&abs(GENmassZZ_Edge)<=475.0)+1.1322*(abs(GENmassZZ_Edge)>475.0))"
               if doKfactorGENVar == 'ZZpt':
                   kf =  "(0.64155*(abs(GENptZZ_Edge)>0.0&&abs(GENptZZ_Edge)<=5.0)+1.0998*(abs(GENptZZ_Edge)>5.0 &&abs(GENptZZ_Edge)<=10.0) +1.2939*(abs(GENptZZ_Edge)>10.0&&abs(GENptZZ_Edge)<=15.0)+1.3785*(abs(GENptZZ_Edge)>15.0&&abs(GENptZZ_Edge)<=20.0)+1.4243*(abs(GENptZZ_Edge)>20.0&&abs(GENptZZ_Edge)<=25.0)+1.4503*(abs(GENptZZ_Edge)>25.0&&abs(GENptZZ_Edge)<=30.0)+1.4701*(abs(GENptZZ_Edge)>30.0&&abs(GENptZZ_Edge)<=35.0)+1.4882*(abs(GENptZZ_Edge)>35.0&&abs(GENptZZ_Edge)<=40.0)+1.5057*(abs(GENptZZ_Edge)>40.0&&abs(GENptZZ_Edge)<=45.0)+1.5021*(abs(GENptZZ_Edge)>45.0&&abs(GENptZZ_Edge)<=50.0)+1.5091*(abs(GENptZZ_Edge)>50.0&&abs(GENptZZ_Edge)<=55.0)+1.5246*(abs(GENptZZ_Edge)>55.0&&abs(GENptZZ_Edge)<=60.0)+1.5240*(abs(GENptZZ_Edge)>60.0&&abs(GENptZZ_Edge)<=65.0)+1.5241*(abs(GENptZZ_Edge)>65.0&&abs(GENptZZ_Edge)<=70.0)+1.5542*(abs(GENptZZ_Edge)>70.0&&abs(GENptZZ_Edge)<=75.0)+1.5254*(abs(GENptZZ_Edge)>75.0&&abs(GENptZZ_Edge)<=80.0)+1.5789*(abs(GENptZZ_Edge)>80.0&&abs(GENptZZ_Edge)<=85.0)+1.5303*(abs(GENptZZ_Edge)>85.0&&abs(GENptZZ_Edge)<=90.0)+1.5614*(abs(GENptZZ_Edge)>90.0&&abs(GENptZZ_Edge)<=95.0)+1.5446*(abs(GENptZZ_Edge)>95.0&&abs(GENptZZ_Edge)<=100.0)+1.5722*(abs(GENptZZ_Edge)>100.0))"
-              if doKfactorGENVar == 'ZZdPhi':
-                  kf = "(1.5158*(abs(GENphiZZ_Edge)>0.0&&abs(GENphiZZ_Edge)<=0.1)+1.4962*(abs(GENphiZZ_Edge)>0.1&&abs(GENphiZZ_Edge)<=0.2)+1.4955*(abs(GENphiZZ_Edge)>0.2&&abs(GENphiZZ_Edge)<=0.3)+1.4832*(abs(GENphiZZ_Edge)>0.3&&abs(GENphiZZ_Edge)<=0.4)+1.4655*(abs(GENphiZZ_Edge)>0.4&&abs(GENphiZZ_Edge)<=0.5)+1.4915*(abs(GENphiZZ_Edge)>0.5&&abs(GENphiZZ_Edge)<=0.6)+1.4411*(abs(GENphiZZ_Edge)>0.6&&abs(GENphiZZ_Edge)<=0.7)+1.4408*(abs(GENphiZZ_Edge)>0.7&&abs(GENphiZZ_Edge)<=0.8)+1.4143*(abs(GENphiZZ_Edge)>0.8&&abs(GENphiZZ_Edge)<=0.9)+1.4225*(abs(GENphiZZ_Edge)>0.9&&abs(GENphiZZ_Edge)<=1.0)+1.4010*(abs(GENphiZZ_Edge)>1.0&&abs(GENphiZZ_Edge)<=1.1)+1.4085*(abs(GENphiZZ_Edge)>1.1&&abs(GENphiZZ_Edge)<=1.2)+1.3812*(abs(GENphiZZ_Edge)>1.2&&abs(GENphiZZ_Edge)<=1.3)+1.3705*(abs(GENphiZZ_Edge)>1.3&&abs(GENphiZZ_Edge)<=1.4)+1.3473*(abs(GENphiZZ_Edge)>1.4&&abs(GENphiZZ_Edge)<=1.5)+1.3401*(abs(GENphiZZ_Edge)>1.5&&abs(GENphiZZ_Edge)<=1.6)+1.3126*(abs(GENphiZZ_Edge)>1.6&&abs(GENphiZZ_Edge)<=1.7)+1.2900*(abs(GENphiZZ_Edge)>1.7&&abs(GENphiZZ_Edge)<=1.8)+1.2553*(abs(GENphiZZ_Edge)>1.8&&abs(GENphiZZ_Edge)<=1.9)+1.2544*(abs(GENphiZZ_Edge)>1.9&&abs(GENphiZZ_Edge)<=2.0)+1.2241*(abs(GENphiZZ_Edge)>2.0&&abs(GENphiZZ_Edge)<=2.1)+1.1788*(abs(GENphiZZ_Edge)>2.1&&abs(GENphiZZ_Edge)<=2.2)+1.1626*(abs(GENphiZZ_Edge)>2.2&&abs(GENphiZZ_Edge)<=2.3)+1.1054*(abs(GENphiZZ_Edge)>2.3&&abs(GENphiZZ_Edge)<=2.4)+1.0747*(abs(GENphiZZ_Edge)>2.4&&abs(GENphiZZ_Edge)<=2.5)+1.0218*(abs(GENphiZZ_Edge)>2.5&&abs(GENphiZZ_Edge)<=2.6)+0.9463*(abs(GENphiZZ_Edge)>2.6&&abs(GENphiZZ_Edge)<=2.7)+0.8574*(abs(GENphiZZ_Edge)>2.7&&abs(GENphiZZ_Edge)<=2.8)+0.7166*(abs(GENphiZZ_Edge)>2.8&&abs(GENphiZZ_Edge)<=2.9)+1.1328*(abs(GENphiZZ_Edge)>2.9&&abs(GENphiZZ_Edge)<=3.1416))"
               if doKfactorGENVar == 'noKFactor':
                   kf = "1"
           if (self.doKfactor == 2): #this is the kfactor for ZZto2l2nu
@@ -154,8 +155,6 @@ class Sample:
                   kf = "(1.25094*(abs(GENmassZZ_Edge)>0.0&&abs(GENmassZZ_Edge)<=25.0)+1.2245*(abs(GENmassZZ_Edge)>25.0 &&abs(GENmassZZ_Edge)<=50.0 )+1.1928*(abs(GENmassZZ_Edge)>50.0 &&abs(GENmassZZ_Edge)<=75.0 )+1.0459*(abs(GENmassZZ_Edge)>75.0 &&abs(GENmassZZ_Edge)<=100.0)+1.0832*(abs(GENmassZZ_Edge)>100.0&&abs(GENmassZZ_Edge)<=125.0)+1.0999*(abs(GENmassZZ_Edge)>125.0&&abs(GENmassZZ_Edge)<=150.0)+1.1669*(abs(GENmassZZ_Edge)>150.0&&abs(GENmassZZ_Edge)<=175.0)+1.1039*(abs(GENmassZZ_Edge)>175.0&&abs(GENmassZZ_Edge)<=200.0)+1.1059*(abs(GENmassZZ_Edge)>200.0&&abs(GENmassZZ_Edge)<=225.0)+1.1069*(abs(GENmassZZ_Edge)>225.0&&abs(GENmassZZ_Edge)<=250.0)+1.1119*(abs(GENmassZZ_Edge)>250.0&&abs(GENmassZZ_Edge)<=275.0)+1.1352*(abs(GENmassZZ_Edge)>275.0&&abs(GENmassZZ_Edge)<=300.0)+1.1189*(abs(GENmassZZ_Edge)>300.0&&abs(GENmassZZ_Edge)<=325.0)+1.1389*(abs(GENmassZZ_Edge)>325.0&&abs(GENmassZZ_Edge)<=350.0)+1.1546*(abs(GENmassZZ_Edge)>350.0&&abs(GENmassZZ_Edge)<=375.0)+1.1734*(abs(GENmassZZ_Edge)>375.0&&abs(GENmassZZ_Edge)<=400.0)+1.2009*(abs(GENmassZZ_Edge)>400.0&&abs(GENmassZZ_Edge)<=425.0)+1.1891*(abs(GENmassZZ_Edge)>425.0&&abs(GENmassZZ_Edge)<=450.0)+1.1854*(abs(GENmassZZ_Edge)>450.0&&abs(GENmassZZ_Edge)<=475.0)+1.12864*(abs(GENmassZZ_Edge)>475.0))"
               if doKfactorGENVar == 'ZZpt':
                   kf  = "(0.7436*(abs(GENptZZ_Edge)>0.0&&abs(GENptZZ_Edge)<=5.0)+1.14789*(abs(GENptZZ_Edge)>5.0&&abs(GENptZZ_Edge)<=10.0)+1.33815*(abs(GENptZZ_Edge)>10.0&&abs(GENptZZ_Edge)<=15.0)+1.41420*(abs(GENptZZ_Edge)>15.0&&abs(GENptZZ_Edge)<=20.0)+1.45511*(abs(GENptZZ_Edge)>20.0&&abs(GENptZZ_Edge)<=25.0)+1.47569*(abs(GENptZZ_Edge)>25.0&&abs(GENptZZ_Edge)<=30.0)+1.49053*(abs(GENptZZ_Edge)>30.0&&abs(GENptZZ_Edge)<=35.0)+1.50622*(abs(GENptZZ_Edge)>35.0&&abs(GENptZZ_Edge)<=40.0)+1.50328*(abs(GENptZZ_Edge)>40.0&&abs(GENptZZ_Edge)<=45.0)+1.52186*(abs(GENptZZ_Edge)>45.0&&abs(GENptZZ_Edge)<=50.0)+1.52043*(abs(GENptZZ_Edge)>50.0&&abs(GENptZZ_Edge)<=55.0)+1.53977*(abs(GENptZZ_Edge)>55.0&&abs(GENptZZ_Edge)<=60.0)+1.53491*(abs(GENptZZ_Edge)>60.0&&abs(GENptZZ_Edge)<=65.0)+1.51772*(abs(GENptZZ_Edge)>65.0&&abs(GENptZZ_Edge)<=70.0)+1.54494*(abs(GENptZZ_Edge)>70.0&&abs(GENptZZ_Edge)<=75.0)+1.57762*(abs(GENptZZ_Edge)>75.0&&abs(GENptZZ_Edge)<=80.0)+1.55078*(abs(GENptZZ_Edge)>80.0&&abs(GENptZZ_Edge)<=85.0)+1.57078*(abs(GENptZZ_Edge)>85.0&&abs(GENptZZ_Edge)<=90.0)+1.56162*(abs(GENptZZ_Edge)>90.0&&abs(GENptZZ_Edge)<=95.0)+1.54183*(abs(GENptZZ_Edge)>95.0&&abs(GENptZZ_Edge)<=100.0)+1.58485*(abs(GENptZZ_Edge)>100.0))"
-              if doKfactorGENVar == 'ZZdPhi':
-                  kf = "(1.513834489150*(abs(GENphiZZ_Edge)>0.0&&abs(GENphiZZ_Edge)<=0.1)+1.54173*(abs(GENphiZZ_Edge)>0.1&&abs(GENphiZZ_Edge)<=0.2)+1.49782*(abs(GENphiZZ_Edge)>0.2&&abs(GENphiZZ_Edge)<=0.3)+1.53495*(abs(GENphiZZ_Edge)>0.3&&abs(GENphiZZ_Edge)<=0.4)+1.47821*(abs(GENphiZZ_Edge)>0.4&&abs(GENphiZZ_Edge)<=0.5)+1.50433*(abs(GENphiZZ_Edge)>0.5&&abs(GENphiZZ_Edge)<=0.6)+1.52062*(abs(GENphiZZ_Edge)>0.6&&abs(GENphiZZ_Edge)<=0.7)+1.50701*(abs(GENphiZZ_Edge)>0.7&&abs(GENphiZZ_Edge)<=0.8)+1.49424*(abs(GENphiZZ_Edge)>0.8&&abs(GENphiZZ_Edge)<=0.9)+1.45053*(abs(GENphiZZ_Edge)>0.9&&abs(GENphiZZ_Edge)<=1.0)+1.46081*(abs(GENphiZZ_Edge)>1.0&&abs(GENphiZZ_Edge)<=1.1)+1.47160*(abs(GENphiZZ_Edge)>1.1&&abs(GENphiZZ_Edge)<=1.2)+1.46770*(abs(GENphiZZ_Edge)>1.2&&abs(GENphiZZ_Edge)<=1.3)+1.42240*(abs(GENphiZZ_Edge)>1.3&&abs(GENphiZZ_Edge)<=1.4)+1.39718*(abs(GENphiZZ_Edge)>1.4&&abs(GENphiZZ_Edge)<=1.5)+1.37559*(abs(GENphiZZ_Edge)>1.5&&abs(GENphiZZ_Edge)<=1.6)+1.39190*(abs(GENphiZZ_Edge)>1.6&&abs(GENphiZZ_Edge)<=1.7)+1.36856*(abs(GENphiZZ_Edge)>1.7&&abs(GENphiZZ_Edge)<=1.8)+1.31788*(abs(GENphiZZ_Edge)>1.8&&abs(GENphiZZ_Edge)<=1.9)+1.31401*(abs(GENphiZZ_Edge)>1.9&&abs(GENphiZZ_Edge)<=2.0)+1.27464*(abs(GENphiZZ_Edge)>2.0&&abs(GENphiZZ_Edge)<=2.1)+1.24234*(abs(GENphiZZ_Edge)>2.1&&abs(GENphiZZ_Edge)<=2.2)+1.24472*(abs(GENphiZZ_Edge)>2.2&&abs(GENphiZZ_Edge)<=2.3)+1.14625*(abs(GENphiZZ_Edge)>2.3&&abs(GENphiZZ_Edge)<=2.4)+1.10780*(abs(GENphiZZ_Edge)>2.4&&abs(GENphiZZ_Edge)<=2.5)+1.04205*(abs(GENphiZZ_Edge)>2.5&&abs(GENphiZZ_Edge)<=2.6)+0.97360*(abs(GENphiZZ_Edge)>2.6&&abs(GENphiZZ_Edge)<=2.7)+0.87216*(abs(GENphiZZ_Edge)>2.7&&abs(GENphiZZ_Edge)<=2.8)+0.73450*(abs(GENphiZZ_Edge)>2.8&&abs(GENphiZZ_Edge)<=2.9)+1.16315*(abs(GENphiZZ_Edge)>2.9&&abs(GENphiZZ_Edge)<=3.1416))"
               if doKfactorGENVar == 'noKFactor':
                   kf = "1"
           
@@ -163,12 +162,10 @@ class Sample:
               kf = "1"  
           cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
       else: 
-         addDataFilters = "&&(  (Flag_eeBadScFilter_Edge == 1  ))"
+         addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
-      
       #fileD.Close()                                                                                                                
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
-      #print "kfactor is ", kf
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
       self.ttree.Project(h.GetName(), var, cut, options)
       for _bin in range(1, h.GetNbinsX()+2):
@@ -245,7 +242,6 @@ class Block:
       self.samples.append(s)
 
    def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight,doKFactorGENVar):
-   #def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin = True, extraWeight='1',ylabel = "Events" , doKFactorGENVar = 'noKFactor'):
      for _is,s in enumerate(self.samples):
        
        AuxName = "auxT1_sample" + s.name
@@ -258,6 +254,7 @@ class Block:
 
      h.SetLineColor(self.color)
      h.SetMarkerColor(self.color)
+     h.GetYaxis().SetTitle('Events')
      h.SetTitle(self.label)
 
      return h
@@ -394,7 +391,6 @@ class Tree:
    
 
      hs = THStack(name, "")
-     print "xlabel ", xlabel
      for b in self.blocks:
      
        AuxName = "auxStack_block_" + name + "_" + b.name
@@ -410,6 +406,7 @@ class Tree:
 
      del can_aux
 
+     ylabel = "# events"
      if xmax != xmin:
        hs.GetXaxis().SetTitle(xlabel)
        b = int((xmax-xmin)/nbin)

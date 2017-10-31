@@ -51,11 +51,11 @@ def dumpObjects():
                 print "defined in file:", filename                
 
 
-def makePlot(lumi, lumi_str, treeMC, var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx):
+def makePlot(lumi, lumi_str, treeDA, var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx):
     normalized = False
     theCutMC = cuts.AddList([theCut, cuts.goodLepton])
     #theCutSIG = cuts.AddList([theCut, cuts.goodLeptonSignal])
-    MC   = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCutMC, '', labelx)
+    MC   = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCutMC, '', labelx, "6*", 'ZZpt')
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCutMC, "", labelx)
    # SIG1 = sigs[0].getTH1F(lumi, "hSIG1_%s"%(name), var, nbin, xmin, xmax, theCutSIG, '', labelx)
    # SIG2 = sigs[1].getTH1F(lumi, "hSIG2_%s"%(name), var, nbin, xmin, xmax, theCutSIG, '', labelx)
@@ -88,21 +88,22 @@ def makePlot(lumi, lumi_str, treeMC, var, name, nbin, xmin, xmax, theCut, cuts,l
     #SIG1.SetLineWidth(2);SIG2.SetLineWidth(2);SIG3.SetLineWidth(2);SIG4.SetLineWidth(2);SIG5.SetLineWidth(2);
     #print "SIG1 ", SIG1.Integral()
     maxVal = MC.GetMaximum() #GetBinContent(MC.GetMaximumBin())
-    if not logx:
-        MCS.SetMaximum(1.5*maxVal)
-    else:
-        MCS.SetMaximum(10000*maxVal)
-
+#    if not logx:
+#        MCS.SetMaximum(1.5*maxVal)
+#    else:
+#        MCS.SetMaximum(10000*maxVal)
+    
     print name
     SetOwnership(MC, 0 )   # 0 = release (not keep), 1 = keep
     SetOwnership(MCS, 0 )   # 0 = release (not keep), 1 = keep
-    plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.6, 0.5, 0.85, 0.9)
+    plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.5, 0.85, 0.9)
     if not normalized:
-        plot.addStack(MCS, "HIST", 1, 1)
+        plot.addHisto(MC, "HIST", "GGHZZ4L x 3 x BF", "PL", r.kPink, 1, 0)
+        #plot.addStack(MCS, "HIST", 1, 1)
     else:
         for h in hists:
             plot.addHisto(h, 'hist,same' if not h.GetName() == 'data' else 'p,same', h.GetName(), 'PL', h.GetLineColor(), 1, 0)
-    plot.save(1, 1, logx, lumi)                                                                                                                                           
+    plot.saveRatio(1, 1, 1, lumi, MC, MC)                                                                                                                                           
 
 
 def makeTable(lumi, lumi_str, treeMC, sigs,var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx, names):
@@ -110,34 +111,45 @@ def makeTable(lumi, lumi_str, treeMC, sigs,var, name, nbin, xmin, xmax, theCut, 
     err1 = r.Double()    
     err2 = r.Double()    
     err3 = r.Double()    
-    theCut1 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 100 && met_Edge < 175'])
-    theCut2 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 175 && met_Edge < 250'])
-    theCut3 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 250'])
-    theCutSIG1 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 100 && met_Edge < 175'])
-    theCutSIG2 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 175 && met_Edge < 250'])
-    theCutSIG3 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 250'])
-    metbins = [100, 175, 250]
-    MC1   = treeMC.getTH1F(lumi, "hMC1_%s"%(name), var, nbin, xmin, xmax, theCut1, '', labelx)
-    MC2   = treeMC.getTH1F(lumi, "hMC2_%s"%(name), var, nbin, xmin, xmax, theCut2, '', labelx)
-    MC3   = treeMC.getTH1F(lumi, "hMC3_%s"%(name), var, nbin, xmin, xmax, theCut3, '', labelx)
+    err4 = r.Double()    
+    theCut1 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 100 && met_Edge < 150'])
+    theCut2 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 150 && met_Edge < 225'])
+    theCut3 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 225 && met_Edge < 300'])
+    theCut4 = cuts.AddList([theCut, cuts.goodLepton, 'met_Edge > 300'])
+    theCutSIG1 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 100 && met_Edge < 150'])
+    theCutSIG2 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 150 && met_Edge < 225'])
+    theCutSIG3 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 225 && met_Edge < 300'])
+    theCutSIG4 = cuts.AddList([theCut, cuts.goodLeptonSignal, 'met_Edge > 300'])
+    metbins = [100, 150, 225, 300]
+    MC1   = treeMC.getTH1F(lumi, "hMC1_%s"%(name), var, nbin, xmin, xmax, theCut1, '', labelx, "1", "ZZpt")
+    MC2   = treeMC.getTH1F(lumi, "hMC2_%s"%(name), var, nbin, xmin, xmax, theCut2, '', labelx, "1", "ZZpt")
+    MC3   = treeMC.getTH1F(lumi, "hMC3_%s"%(name), var, nbin, xmin, xmax, theCut3, '', labelx, "1", "ZZpt")
+    MC4   = treeMC.getTH1F(lumi, "hMC4_%s"%(name), var, nbin, xmin, xmax, theCut4, '', labelx, "1", "ZZpt")
     MCS1  = treeMC.getStack(lumi, "hMCS1_%s"%(name), var, nbin, xmin, xmax, theCut1, "", labelx)
     MCS2  = treeMC.getStack(lumi, "hMCS2_%s"%(name), var, nbin, xmin, xmax, theCut2, "", labelx)
     MCS3  = treeMC.getStack(lumi, "hMCS3_%s"%(name), var, nbin, xmin, xmax, theCut3, "", labelx)
+    MCS4  = treeMC.getStack(lumi, "hMCS4_%s"%(name), var, nbin, xmin, xmax, theCut4, "", labelx)
 
-    SIGlowMet1 = sigs[0].getTH1F(lumi, "hSIG11_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
-    SIGlowMet2 = sigs[1].getTH1F(lumi, "hSIG12_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
-    SIGlowMet3 = sigs[2].getTH1F(lumi, "hSIG13_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
-    SIGlowMet4 = sigs[3].getTH1F(lumi, "hSIG14_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
-    SIGmidMet1 = sigs[0].getTH1F(lumi, "hSIG21_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
-    SIGmidMet2 = sigs[1].getTH1F(lumi, "hSIG22_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
-    SIGmidMet3 = sigs[2].getTH1F(lumi, "hSIG23_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
-    SIGmidMet4 = sigs[3].getTH1F(lumi, "hSIG24_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
-    SIGhiMet1 = sigs[0].getTH1F(lumi, "hSIG31_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
-    SIGhiMet2 = sigs[1].getTH1F(lumi, "hSIG32_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
-    SIGhiMet3 = sigs[2].getTH1F(lumi, "hSIG33_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
-    SIGhiMet4 = sigs[3].getTH1F(lumi, "hSIG34_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
+#    SIGlowMet1 = sigs[0].getTH1F(lumi, "hSIG11_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
+#    SIGlowMet2 = sigs[1].getTH1F(lumi, "hSIG12_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
+#    SIGlowMet3 = sigs[2].getTH1F(lumi, "hSIG13_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
+#    SIGlowMet4 = sigs[3].getTH1F(lumi, "hSIG14_%s"%(name), var, nbin, xmin, xmax, theCutSIG1, '', labelx)
+#    SIGmidMet1 = sigs[0].getTH1F(lumi, "hSIG21_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
+#    SIGmidMet2 = sigs[1].getTH1F(lumi, "hSIG22_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
+#    SIGmidMet3 = sigs[2].getTH1F(lumi, "hSIG23_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
+#    SIGmidMet4 = sigs[3].getTH1F(lumi, "hSIG24_%s"%(name), var, nbin, xmin, xmax, theCutSIG2, '', labelx)
+#    SIGhiMet1 = sigs[0].getTH1F(lumi, "hSIG31_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
+#    SIGhiMet2 = sigs[1].getTH1F(lumi, "hSIG32_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
+#    SIGhiMet3 = sigs[2].getTH1F(lumi, "hSIG33_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
+#    SIGhiMet4 = sigs[3].getTH1F(lumi, "hSIG34_%s"%(name), var, nbin, xmin, xmax, theCutSIG3, '', labelx)
+#    SIGtopMet1 = sigs[0].getTH1F(lumi, "hSIG41_%s"%(name), var, nbin, xmin, xmax, theCutSIG4, '', labelx)
+#    SIGtopMet2 = sigs[1].getTH1F(lumi, "hSIG42_%s"%(name), var, nbin, xmin, xmax, theCutSIG4, '', labelx)
+#    SIGtopMet3 = sigs[2].getTH1F(lumi, "hSIG43_%s"%(name), var, nbin, xmin, xmax, theCutSIG4, '', labelx)
+#    SIGtopMet4 = sigs[3].getTH1F(lumi, "hSIG44_%s"%(name), var, nbin, xmin, xmax, theCutSIG4, '', labelx)
 
-    line0 ='       & 100 $<$ MET $<$ 175 & 175 $<$ MET $<$ 250 & MET $>$ 250 \\\\'
+
+
+    line0 ='       & 100 $<$ MET $<$ 150 & 150 $<$ MET $<$ 225 & 225 $<$ MET $<$ 350 & MET $>$ 350 \\\\'
     line1 =' ttbar ' 
     line2 =' WW2l  ' 
     line3 =' DY    ' 
@@ -146,11 +158,11 @@ def makeTable(lumi, lumi_str, treeMC, sigs,var, name, nbin, xmin, xmax, theCut, 
     line6 =' rares ' 
     #line7 =' VVV   ' 
     line8 =' TTV   ' 
-    line9 =' Total MC & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f' %(MC1.IntegralAndError(1, MC1.GetNbinsX()+1, err1), err1, MC2.IntegralAndError(1, MC2.GetNbinsX()+1, err2), err2,MC3.IntegralAndError(1, MC3.GetNbinsX()+1, err3), err3) 
-    line10 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[0][0], names[0][1], SIGlowMet1.IntegralAndError(1, SIGlowMet1.GetNbinsX()+1, err1), err1, SIGmidMet1.IntegralAndError(1, SIGmidMet1.GetNbinsX()+1, err2), err2,SIGhiMet1.IntegralAndError(1, SIGhiMet1.GetNbinsX()+1, err3), err3) 
-    line11 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[1][0], names[1][1], SIGlowMet2.IntegralAndError(1, SIGlowMet2.GetNbinsX()+1, err1), err1, SIGmidMet2.IntegralAndError(1, SIGmidMet2.GetNbinsX()+1, err2), err2,SIGhiMet2.IntegralAndError(1, SIGhiMet2.GetNbinsX()+1, err3), err3) 
-    line12 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[2][0], names[2][1], SIGlowMet3.IntegralAndError(1, SIGlowMet3.GetNbinsX()+1, err1), err1, SIGmidMet3.IntegralAndError(1, SIGmidMet3.GetNbinsX()+1, err2), err2,SIGhiMet3.IntegralAndError(1, SIGhiMet3.GetNbinsX()+1, err3), err3) 
-    line13 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[3][0], names[3][1], SIGlowMet4.IntegralAndError(1, SIGlowMet4.GetNbinsX()+1, err1), err1, SIGmidMet4.IntegralAndError(1, SIGmidMet4.GetNbinsX()+1, err2), err2,SIGhiMet4.IntegralAndError(1, SIGhiMet4.GetNbinsX()+1, err3), err3) 
+    line9 =' Total MC & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f & %.1f $\pm$ %.1f' %(MC1.IntegralAndError(1, MC1.GetNbinsX()+1, err1), err1, MC2.IntegralAndError(1, MC2.GetNbinsX()+1, err2), err2,MC3.IntegralAndError(1, MC3.GetNbinsX()+1, err3), err3, MC4.IntegralAndError(1, MC4.GetNbinsX()+1, err4), err4) 
+ #   line10 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f & %.1f $\pm$ %.1f\\\\' %(names[0][0], names[0][1], SIGlowMet1.IntegralAndError(1, SIGlowMet1.GetNbinsX()+1, err1), err1, SIGmidMet1.IntegralAndError(1, SIGmidMet1.GetNbinsX()+1, err2), err2,SIGhiMet1.IntegralAndError(1, SIGhiMet1.GetNbinsX()+1, err3), err3SIGhiMet1.IntegralAndError(1, SIGtopMet1.GetNbinsX()+1, err4), err4) 
+ #   line11 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[1][0], names[1][1], SIGlowMet2.IntegralAndError(1, SIGlowMet2.GetNbinsX()+1, err1), err1, SIGmidMet2.IntegralAndError(1, SIGmidMet2.GetNbinsX()+1, err2), err2,SIGhiMet2.IntegralAndError(1, SIGhiMet2.GetNbinsX()+1, err3), err3) 
+ #   line12 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f & %.1f $\pm$ %.1f\\\\' %(names[2][0], names[2][1], SIGlowMet3.IntegralAndError(1, SIGlowMet3.GetNbinsX()+1, err1), err1, SIGmidMet3.IntegralAndError(1, SIGmidMet3.GetNbinsX()+1, err2), err2,SIGhiMet3.IntegralAndError(1, SIGhiMet3.GetNbinsX()+1, err3), err3) 
+ #   line13 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f & %.1f $\pm$ %.1f\\\\' %(names[3][0], names[3][1], SIGlowMet4.IntegralAndError(1, SIGlowMet4.GetNbinsX()+1, err1), err1, SIGmidMet4.IntegralAndError(1, SIGmidMet4.GetNbinsX()+1, err2), err2,SIGhiMet4.IntegralAndError(1, SIGhiMet4.GetNbinsX()+1, err3), err3) 
     #line10 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[0][0], names[0][1], SIG11.IntegralAndError(1, SIG11.GetNbinsX()+1, err1), err1, SIG12.IntegralAndError(1, SIG12.GetNbinsX()+1, err2), err2,SIG13.IntegralAndError(1, SIG13.GetNbinsX()+1, err3), err3) 
     #line11 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[1][0], names[1][1], SIG21.IntegralAndError(1, SIG21.GetNbinsX()+1, err1), err1, SIG22.IntegralAndError(1, SIG22.GetNbinsX()+1, err2), err2,SIG23.IntegralAndError(1, SIG23.GetNbinsX()+1, err3), err3) 
     #line12 ='m_{l}: %s, m_{LSP} : %s & %.1f $\pm$ %.1f& %.1f $\pm$ %.1f& %.1f $\pm$ %.1f \\\\' %(names[2][0], names[2][1], SIG31.IntegralAndError(1, SIG31.GetNbinsX()+1, err1), err1, SIG32.IntegralAndError(1, SIG32.GetNbinsX()+1, err2), err2,SIG33.IntegralAndError(1, SIG33.GetNbinsX()+1, err3), err3) 
@@ -178,16 +190,29 @@ def makeTable(lumi, lumi_str, treeMC, sigs,var, name, nbin, xmin, xmax, theCut, 
         if  _h2.GetName() == 'auxStack_block_hMCS2_mt2_SR_TTV_blockHisto'   : line8 += ' & %.1f $\pm$ %.1f'  %(_h2.IntegralAndError(1, _h2.GetNbinsX()+1, err), err)    
         
     for _i3, _h3 in enumerate(MCS3.GetHists()):
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_TTJets_blockHisto': line1 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_WW2l_blockHisto'  : line2 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_DYJets_blockHisto': line3 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_ZZ2l_blockHisto'  : line4 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_WZ3l_blockHisto'  : line5 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_rares_blockHisto' : line6 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        #if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_VVV_blockHisto'   : line7 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
-        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_TTV_blockHisto'   : line8 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err) 
-        
-    line0 += '\\hline'; line8 += '\\hline'; line9 += '\\\\\hline' ;  line13 += '\\hline\hline'                                                       
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_TTJets_blockHisto': line1 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_WW2l_blockHisto'  : line2 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_DYJets_blockHisto': line3 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_ZZ2l_blockHisto'  : line4 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_WZ3l_blockHisto'  : line5 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_rares_blockHisto' : line6 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        #if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_VVV_blockHisto'  : line7 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h3.GetName() == 'auxStack_block_hMCS3_mt2_SR_TTV_blockHisto'   : line8 += ' & %.1f $\pm$ %.1f '  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err) 
+    
+    for _i4, _h4 in enumerate(MCS3.GetHists()):
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_TTJets_blockHisto': line1 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_WW2l_blockHisto'  : line2 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_DYJets_blockHisto': line3 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_ZZ2l_blockHisto'  : line4 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_WZ3l_blockHisto'  : line5 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_rares_blockHisto' : line6 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err)
+        #if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_VVV_blockHisto'   : line7 += ' & %.1f $\pm$ %.1f \\\\'  %(_h3.IntegralAndError(1, _h3.GetNbinsX()+1, err), err)
+        if  _h4.GetName() == 'auxStack_block_hMCS4_mt2_SR_TTV_blockHisto'   : line8 += ' & %.1f $\pm$ %.1f \\\\'  %(_h4.IntegralAndError(1, _h4.GetNbinsX()+1, err), err) 
+
+
+
+
+    line0 += '\\hline'; line8 += '\\hline';                                                     
     
 
     print line0
@@ -200,10 +225,10 @@ def makeTable(lumi, lumi_str, treeMC, sigs,var, name, nbin, xmin, xmax, theCut, 
     #print line7
     print line8
     print line9
-    print line10
-    print line11
-    print line12
-    print line13
+#    print line10
+#    print line11
+#    print line12
+#    print line13
 
 
 if __name__ == "__main__":
@@ -219,14 +244,17 @@ if __name__ == "__main__":
      
     print bcolors.HEADER + '[Data - MC comparisons] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
-    zzDatasets = ['ZZTo2L2Nu',  'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
-    wzDatasets = ['WZTo3LNu']
-    othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu_ext2', 'TTZToQQ', 'TTLLJets_m1to10', 'TTHnobb_pow', 'VHToNonbb']
-    fsDatasets = ['TTTT', 'TTTo2L2Nu', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'WWDouble', 'WpWpJJ', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT'] 
+    #dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
+    #zzDatasets = ['ZZTo2L2Nu',  'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
+    zzDatasets = ['GGHZZ4L']
+    #wzDatasets = ['WZTo3LNu']
+    #othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu_ext2', 'TTZToQQ', 'TTLLJets_m1to10', 'TTHnobb_pow', 'VHToNonbb']
+    #fsDatasets = ['TTTT', 'TTTo2L2Nu', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'WWDouble', 'WpWpJJ', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT'] 
 
 
-    mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets
+
+    mcDatasets = zzDatasets
+    #mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets
     #mcDatasets = ['GGHWWTo2L2Nu', 'GGWWTo2L2Nu', 'WZTo3LNu','WWZ',  'WZZ', 'ZZZ', 'DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WWDouble', 'WpWpJJ', 'TTTo2L2Nu', 'ZZTo2L2Nu', 'tZq_ll', 'TTZToLLNuNu_ext2', 'TWZ',  'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT','TTZToQQ', 'TTLLJets_m1to10', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
     #mcDatasets = ['GGHWWTo2L2Nu', 'GGWWTo2L2Nu', 'GGHZZ4L', 'ZZTo4L', 'WZTo3LNu','WWG',  'WWW', 'WWZ',  'WZZ', 'ZZZ', 'ZGTo2LG', 'DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50', 'WWTo2L2Nu', 'WWDouble', 'WpWpJJ', 'WGToLNuG', 'TTTo2L2Nu', 'ZZTo2L2Nu', 'TTHnobb_pow', 'VHToNonbb', 'TWZ', 'WZTo2L2Q',  'TBar_tch_powheg', 'T_tch_powheg', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT', 'TTTT',  'TTZToQQ', 'TTWToQQ', 'TTLLJets_m1to10', 'TTWToLNu_ext2', 'GluGluToContinToZZTo2e2tau', 'GluGluToContinToZZTo2mu2tau', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo4e', 'GluGluToContinToZZTo4mu', 'GluGluToContinToZZTo4tau']
 
@@ -257,27 +285,23 @@ if __name__ == "__main__":
     cut  = "nJetSel_Edge >= 0"
     #cut  = "lepsMll_Edge < 101 && lepsMll_Edge > 81"
     name = "SR"
-    metbins = [100, 175, 250]
-    makeTable(lumi, lumi_str, treeMC, sigs, "mt2_Edge","mt2_"+name, 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && mt2_Edge > 90']),cuts, "mt2 [GeV] (SF, njet = 0)",  0, signames)
+    metbins = [100, 150, 225, 300]
+    topbins = [0, 20, 40, 70, 130 ]
+    medbins = [0, 8, 15, 25, 35, 45, 55, 70, 90, 120, 150]
+    #medbins = [0, 15, 30, 45, 60, 90, 120, 150, 180, 220, 300]
+    finebins = [0, 10, 20, 30, 40, 50, 60, 75, 90, 105, 120,140, 160, 200, 250, 300]
+    finemetbins = [110, 120, 130, 140, 150, 160, 170, 185, 200, 220, 250, 290, 350]
+    #makeTable(lumi, lumi_str, treeMC, sigs, "mt2_Edge","mt2_"+name, 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && mt2_Edge > 90']),cuts, "mt2 [GeV] (SF, njet = 0)",  0, signames)
 
-    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_incMET", 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 100 ']),cuts, "MT_{2} (E_{T}^{miss} > 100) [GeV]",  0)
-    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_lowMET", 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 100 && met_Edge < 175']),cuts, "MT_{2} (100 < E_{T}^{miss} < 175) [GeV]",  0)
-    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_medMET", 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 175 && met_Edge < 250']),cuts, "MT_{2} (175 < E_{T}^{miss} < 250) [GeV]",  0)
-    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_hiMET", 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 250']),cuts, "MT_{2} (E_{T}^{miss} > 250) [GeV]",  0)
-    makePlot(lumi, lumi_str, treeMC, "met_Edge","met_SR", 40, 0, 400, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && mt2_Edge > 90']),cuts, "E_{T}^{miss} [GeV] ",  0)                                                  
-
-
-
-
-
-
-
-
-
-
-
-
-
+    #makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2", finebins, 1, 1 , cuts.AddList([cuts.OF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 100']),cuts, "M_{T2} [GeV], p_{T}^{miss} > 100",  0)
+    #makePlot(lumi, lumi_str, treeMC, "met_Edge","met_SR", finemetbins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && mt2_Edge > 90']),cuts, "p_{T}^{miss} [GeV], M_{T2} > 90",  0)                                                  
+    makePlot(lumi, lumi_str, treeMC, "newMet_Edge","newMET_GGHZZ4l", finebins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ZvetoExt, ' htJet25j_Edge  == 0 ']),cuts, "new Met [GeV], SR",  0)
+    makePlot(lumi, lumi_str, treeMC, "mt2BestZ_Edge","newMT2_GGHZZ4l", medbins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && newMet_Edge > 100']),cuts, "new M_{T2} [GeV], SR",  0)
+    #makePlot(lumi, lumi_str, treeMC, "newMet_Edge","newMET_GGHZZ4l", finebins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && mt2BestZ_Edge > 90']),cuts, "new Met [GeV], SR",  0)
+#    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_lowMET", finebins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 100 && met_Edge < 150']),cuts, "M_{T2} [GeV], 100 < p_{T}^{miss} < 150",  0)
+#    makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_medMET", finebins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 150 && met_Edge < 225']),cuts, "M_{T2} [GeV], 175 < p_{T}^{miss} < 225",  0)
+ #   makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_hiMET", topbins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 225 && met_Edge < 300']),cuts, "M_{T2} [GeV], 225 < p_{T}^{miss} < 300",  0)
+ #   makePlot(lumi, lumi_str, treeMC, "mt2_Edge","mt2_topMET", topbins, 1, 1, cuts.AddList([cuts.SF, cuts.bvetoLoose25, cuts.ThirdLeptonVeto, cuts.ZvetoExt, ' htJet25j_Edge  == 0 && met_Edge > 300']),cuts, "M_{T2} [GeV], p_{T}^{miss} > 300",  0)
 
 
 

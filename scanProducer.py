@@ -2,6 +2,8 @@ import ROOT as r
 from   ROOT import gROOT, TCanvas, TFile, TF1, TPaveStats
 import math, sys, optparse, copy, re, array, os, pickle
 import random, string
+from random import randrange
+
 
 import include.helper     as helper
 import include.Region     as Region
@@ -66,7 +68,10 @@ PU    lnN             1.0              -             -          -
 SigTrig  lnN          1.05             -             -          -
 bHe   lnN           XXbHeXX            -             -          -
 bLi   lnN           XXbLiXX            -             -          -
-genMet lnU              XXgenMetXX     -             -          - 
+genMet lnN              XXgenMetXX     -             -          - 
+metElEn lnN              XXmetElEnXX     -             -          - 
+metMuEn lnN              XXmetMuEnXX     -             -          - 
+metUnclEn lnN              XXmetUnclEnXX     -             -          - 
 signalMCstats_{label} lnN    XXmcStatXX  -           -          -
 dySys  lnN           -                  -            1.4        - 
 otherSys lnN         -                  -            -          1.5
@@ -129,12 +134,21 @@ def makeDataCardsFromRootFileSlepton():
     zz_jecDn = rootfile.Get('zz_jecDn')
     wz_jecUp = rootfile.Get('wz_jecUp')
     wz_jecDn = rootfile.Get('wz_jecDn')
-    zz_qcdUp = rootfile.Get('zz_qcdUp')
-    zz_qcdDn = rootfile.Get('zz_qcdDn')
-    wz_qcdUp = rootfile.Get('wz_qcdUp')
-    wz_qcdDn = rootfile.Get('wz_qcdDn')
+    zz_qcdInclNom = rootfile.Get('zz_qcdInclNom')
+    zz_qcdInclUp  = rootfile.Get('zz_qcdInclUp')
+    zz_qcdInclDn  = rootfile.Get('zz_qcdInclDn') 
+    zz_qcdExclNom = rootfile.Get('zz_qcdExclNom')
+    zz_qcdExclUp  = rootfile.Get('zz_qcdExclUp')
+    zz_qcdExclDn  = rootfile.Get('zz_qcdExclDn') 
+    wz_qcdInclNom = rootfile.Get('wz_qcdInclNom')
+    wz_qcdInclUp  = rootfile.Get('wz_qcdInclUp')
+    wz_qcdInclDn  = rootfile.Get('wz_qcdInclDn')  
+    wz_qcdExclNom = rootfile.Get('wz_qcdExclNom')
+    wz_qcdExclUp  = rootfile.Get('wz_qcdExclUp')
+    wz_qcdExclDn  = rootfile.Get('wz_qcdExclDn')  
     zz_pdf   = rootfile.Get('pdfZZ')
     wz_pdf   = rootfile.Get('pdfWZ')
+    kfactorZZ   = rootfile.Get('kfactorZZ')
     print "opened ", rootfile    
     #puFile = TFile.Open('datacards/PuSysts_{name}.root'.format(name ='CharNeu_Moriond2017' if scan.name=='ChiZZ_Moriond2017' else scan.name), 'read')
     #puSystUp = puFile.Get('puUp')
@@ -160,25 +174,30 @@ process                            XXSIGNALXX         FSbkg         ZZ          
 process                            0                  1             2                  2                  3
 rate                               XXSIGRATEXX        {fs}  {ZZ}  {WZ}  {rare}
 --------------------------------------------------------------------------------------------------------------------------------------
-fs_stat_{label} gmN  {fs_int}  -  {tf}                -                  -                  -              - 
-fs_unc  lnN         -                 {tf_e}          -                  -                  -
-jec  lnN         XXjecXX            -             {zz_jUp}/{zz_jDn}                  {wz_jUp}/{wz_jDn}                  -
-El  lnN          XXElXX             -             1.03               1.03               -
-Mu  lnN          XXMuXX             -             1.06               1.06               -
-SigTrig  lnN          1.05               -             -                  -                  -
-Trig  lnN          -                  -             1.03               1.03               -
-bHe  lnN          XXbHeXX            -             -                  -                  -
-bLi  lnN          XXbLiXX            -             -                  -                  -
-signalMCstats_{label} lnN          XXmcStatXX         -             -                  -                  -
-zzSys  lnN          -                  -             1.1                -                  - 
-wzSys  lnN          -                  -             -                  1.07               - 
-rareSys  lnN          -                  -             -                  -                  1.5
-scale  lnN          1.03               -             -                  -                  - 
-pdf  lnN          1.03               -             {zz_p}      {wz_p}      - 
-lumi  lnN          1.025              -             1.025              1.025              -               
+fs_stat_{label}   gmN     {fs_int}  -  {tf}                 -                  -                 -              - 
+fs_unc            lnN     -                 {tf_e}          -                  -                 -
+jec               lnN     XXjecXX            -              {zz_jUp}/{zz_jDn} {wz_jUp}/{wz_jDn}  -
+lepEl             lnN     XXlepElXX             -              1.03              1.03               -
+lepMu             lnN     XXlepMuXX             -              1.06              1.06               -
+SigTrig           lnN     1.05               -              1.03              1.03               -
+FastSimEl         lnN     XXFastSimElXX      -              -                 -                  -  
+FastSimMu         lnN     XXFastSimMuXX      -              -                 -                  -
+genMet            lnN     XXgenMetXX         -              -                 -                  -
+metElEn           lnN     XXmetElEnXX        -              -                 -                  - 
+metMuEn           lnN     XXmetMuEnXX        -              -                 -                  - 
+metUnclEn         lnN     XXmetUnclEnXX        -              -                 -                  - 
+PU                lnN     XXPUXX              -              -                 -                  -
+sigMCstat_{label} lnN     XXmcStatXX         -              -                 -                  -
+zzSys             lnN     -                  -              1.07              -                  - 
+zzKFactor         lnN     -                  -              {zzKF}            -                  - 
+wzSys             lnN     -                  -              -                 1.06               - 
+rareSys           lnN     -                  -              -                 -                  1.5
+scaleExcl         lnN     XXscaleExclXX      -              {zz_qExclUp}/{zz_qExclDn} {wz_qExclUp}/{wz_qExclDn}  - 
+scaleIncl         lnN     XXscaleInclXX      -              {zz_qInclUp}/{zz_qInclDn} {wz_qInclUp}/{wz_qInclDn}  - 
+pdf               lnN     1.03               -              {zz_p}            {wz_p}             - 
+lumi              lnN     1.025              -              -                  -                 -               
 '''.format(label = label, 
-           obs = da_OF.GetBinContent(SR+1), # this is for blinding!!!!!!!!!!!!!!!
-           #obs = da_SF.GetBinContent(SR+2), # the plots for ewk start in [50,100]
+           obs = da_SF.GetBinContent(SR+1), # this is OF for blinding!!!!!!!!!!!!!!!
            fs  = da_OF.GetBinContent(SR+1)*tf_CR_SR.GetBinContent(SR+1),
            ZZ = zz.GetBinContent(SR+1),
            WZ = wz.GetBinContent(SR+1),
@@ -186,20 +205,26 @@ lumi  lnN          1.025              -             1.025              1.025    
            fs_int = int(da_OF.GetBinContent(SR+1)),
            tf = tf_CR_SR.GetBinContent(SR+1),
            tf_e = 1 + tf_CR_SR.GetBinError(SR+1)/tf_CR_SR.GetBinContent(SR+1),
-           zz_jUp = 1 + zz_jecUp.GetBinContent(SR+1),
-           zz_jDn = 1 + zz_jecUp.GetBinContent(SR+1),
-           wz_jUp = 1 + wz_jecUp.GetBinContent(SR+1),
-           wz_jDn = 1 + wz_jecDn.GetBinContent(SR+1),
-           #rare_e = 1 + rareMC.GetBinError(SR+2) / rareMC.GetBinContent(SR+2),
+           zz_jUp = zz_jecUp.GetBinContent(SR+1)/zz.GetBinContent(SR+1),
+           zz_jDn = zz_jecDn.GetBinContent(SR+1)/zz.GetBinContent(SR+1),
+           wz_jUp = wz_jecUp.GetBinContent(SR+1)/wz.GetBinContent(SR+1),
+           wz_jDn = wz_jecDn.GetBinContent(SR+1)/wz.GetBinContent(SR+1),
+           zzKF  = 1+kfactorZZ.GetBinContent(SR+1)/zz.GetBinContent(SR+1),
+           zz_qExclUp = zz_qcdExclUp.GetBinContent(SR+1)/zz_qcdExclNom.GetBinContent(SR+1),
+           zz_qExclDn = zz_qcdExclDn.GetBinContent(SR+1)/zz_qcdExclNom.GetBinContent(SR+1),
+           wz_qExclUp = wz_qcdExclUp.GetBinContent(SR+1)/wz_qcdExclNom.GetBinContent(SR+1),
+           wz_qExclDn = wz_qcdExclDn.GetBinContent(SR+1)/wz_qcdExclNom.GetBinContent(SR+1),
+           zz_qInclUp = zz_qcdInclUp.GetBinContent(SR+1)/zz_qcdInclNom.GetBinContent(SR+1),
+           zz_qInclDn = zz_qcdInclDn.GetBinContent(SR+1)/zz_qcdInclNom.GetBinContent(SR+1),
+           wz_qInclUp = wz_qcdInclUp.GetBinContent(SR+1)/wz_qcdInclNom.GetBinContent(SR+1),
+           wz_qInclDn = wz_qcdInclDn.GetBinContent(SR+1)/wz_qcdInclNom.GetBinContent(SR+1),
+         #  zz_qUp = zz_qcdUp.GetBinContent(SR+1)/zz_qcdNom.GetBinContent(SR+1),
+         #  zz_qDn = zz_qcdDn.GetBinContent(SR+1)/zz_qcdNom.GetBinContent(SR+1),
+         #  wz_qUp = wz_qcdUp.GetBinContent(SR+1)/wz_qcdNom.GetBinContent(SR+1),
+         #  wz_qDn = wz_qcdDn.GetBinContent(SR+1)/wz_qcdNom.GetBinContent(SR+1),
            zz_p = 1 + zz_pdf.GetBinContent(SR+1),
            wz_p = 1 + wz_pdf.GetBinContent(SR+1))
-           #dy_e = 1.5 if dy_shape.GetBinContent(SR+2) == 0 else 1 + dy_shape.GetBinError(SR+2)/dy_shape.GetBinContent(SR+2),
-           #pu_Up = 1 + puSystUp.GetBinContent(SR+1),
-           #pu_Dn = 1 + puSystDn.GetBinContent(SR+1),
-           #zz_e = 1 + ZZ.GetBinError(SR+2) / ZZ.GetBinContent(SR+2),
-           #wz_e = 1 + WZ.GetBinError(SR+2) / WZ.GetBinContent(SR+2),
         print da_OF.GetBinContent(SR+1)
-        #print da_SF.GetBinContent(SR+2)
 
         outputFile = open('datacards/datacards_{scan}/{scan}/datacard_{sr}.txt'.format(scan=scan.name,sr=label),'w')
         outputFile.write(datacard)
@@ -237,8 +262,8 @@ rate         XXSIGRATEXX    {fs}           {DY}       {other}
 fs_stat_{label} gmN  {fs_int}  -            {tf}             -         - 
 fs_unc lnN             -            {tf_e}             -          -
 jec   lnN           XXjecXX            -             -          -
-El    lnN           XXElXX             -             -          -
-Mu    lnN           XXMuXX             -             -          -
+lepEl    lnN           XXlepElXX             -             -          -
+lepMu    lnN           XXlepMuXX             -             -          -
 FastSimEl   lnN     XXFastSimElXX      -             -          -
 FastSimMu   lnN     XXFastSimMuXX      -             -          -
 SigTrig  lnN          1.05             -             -          -
@@ -424,8 +449,9 @@ def adaptBinning(target, current):
     ret_histo.Reset()
     for i in range(1,final.GetXaxis().GetNbins()+1):
         for j in range(1, final.GetYaxis().GetNbins()+1):
+            if j == 1: yval = 1.0
+            else: yval = final.GetYaxis().GetBinCenter(j)
             xval = final.GetXaxis().GetBinCenter(i)
-            yval = final.GetYaxis().GetBinCenter(j)
             cont = current_yx.GetBinContent(current_yx.FindBin(xval, yval))
             err  = current_yx.GetBinError  (current_yx.FindBin(xval, yval))
             final.SetBinContent(final.FindBin(xval, yval), cont)
@@ -438,18 +464,28 @@ def adaptBinning(target, current):
 
 def getEffMapsSys(sys):
     print ('getting scan for sys', sys) if len(sys) > 0 else 'getting nominal scan'
-    theCuts = scan.cuts_norm
     srId = scan.srID
-    for rpl in replaceCutsForSys[sys]:
-        print 'replacing',rpl[0],rpl[1]
-        theCuts = theCuts.replace(rpl[0],rpl[1])
-        srId    = srId.replace(rpl[0],rpl[1])
+    if sys == 'scaleInclUp' or sys == 'scaleInclDown' or sys == 'scaleIncl': #for the QCD scales uncertiainty the Stewart-Tackmann prescription is used to avoid anti-correlatoins in the xsec.
+        print "here! ", sys
+        theCuts = scan.cuts_normScaleInclJet
+    elif sys == 'scaleExclUp' or sys == 'scaleExclDown' or sys == 'scaleExcl':
+        print "here! ", sys
+        theCuts = scan.cuts_normScaleExclJet
+
+    else:
+        theCuts = scan.cuts_norm
+        for rpl in replaceCutsForSys[sys]:
+            print 'replacing',rpl[0],rpl[1]
+            theCuts = theCuts.replace(rpl[0],rpl[1])
+            srId    = srId.replace(rpl[0],rpl[1])
     print '##############'
     print "sys ", sys
     print "the Cuts ", theCuts
     print "srId ", srId
     print '##############'
+    #irand = randrange(0, 100)
     effMap = scan.tree.getTH3F(1., 'nPass_norm'+sys, srId+':'+scan.yvar+':'+scan.xvar,
+    #effMap = scan.tree.getTH3F(1., 'nPass_norm'+sys+str(irand), srId+':'+scan.yvar+':'+scan.xvar,
                                scan.xbins.n+1, scan.xbins._min-scan.xbins.w/2.,
                                scan.xbins._max+scan.xbins.w/2., scan.ybins.n+1,
                                scan.ybins._min-scan.ybins.w/2., 
@@ -457,7 +493,10 @@ def getEffMapsSys(sys):
                                scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '',
                                scan.xtitle, scan.ytitle, scan.ztitle, 
                                extraWeightsForSys[sys])
-#    if sys == '':
+
+    
+    
+    #    if sys == '':
 #        kk = TFile('map.root','recreate')
 #        effMap.Write()
 #        scan.ngen_3d.Write()
@@ -484,9 +523,10 @@ def getSREffMaps():
         scan.effMapSR[SR] = tmp.Clone()
         for i in range(1, scan.effMapSR[SR].GetXaxis().GetNbins()+1):
             for j in range(1, scan.effMapSR[SR].GetYaxis().GetNbins()+1):
-                bin = effmap.FindBin(effmap.GetXaxis().GetBinCenter(i),
-                                     effmap.GetYaxis().GetBinCenter(j),
-                                     SR)
+                if (j == 1):
+                    bin = effmap.FindBin(effmap.GetXaxis().GetBinCenter(i),1.0,SR)                                                                                                  
+                else:
+                    bin = effmap.FindBin(effmap.GetXaxis().GetBinCenter(i),effmap.GetYaxis().GetBinCenter(j),SR)                                             
                 scan.effMapSR[SR].SetBinContent(i, j, effmap.GetBinContent(bin))
         scan.effMapSR[SR].SetName(label)
         scan.effMapSR[SR].SetTitle(label)
@@ -494,30 +534,20 @@ def getSREffMaps():
     effmaps.Close()
 
 def PutHistosIntoRootFiles():
-#    print 'everything into datacards'
-#    kk = TFile.Open('map2.root','recreate')
-#    scan.maps[''].Write()
-#    kk.Close()
     for i in range(1, scan.norm.GetXaxis().GetNbins()+1):
         for j in range(1, scan.norm.GetYaxis().GetNbins()+1):
+            if j == 1: yval = 1.0
+            else: yval = scan.norm.GetYaxis().GetBinCenter(j)
             xval = scan.norm.GetXaxis().GetBinCenter(i)
-            yval = scan.norm.GetYaxis().GetBinCenter(j)
             if (yval > xval): continue
             massString = 'mSlepton_%.0f_mchi1_%.0f'%(xval, yval)
-            #massString = 'mSbottom_%.0f_mchi2_%.0f'%(xval, yval)
-            print xval, yval
-           
+            print "doing ", xval , "  ", yval
             sysHistos = {}
             for sys, histo in scan.maps.items():
                 out = histo.ProjectionZ('%4.0f_%4.0f'%(xval,yval), i, i, j, j)
                 out.Scale(scan.br*lumi*scan.xsecs[xval][0])
                 out.SetName(massString + sys)
-                sysHistos[sys] = out
-#                if sys == '':
-#                    tfile = TFile.Open(massString+'.root','recreate')
-#                    out.Write()
-#                    tfile.Close()
-            print "sysHistos[''].Integral() ", sysHistos[''].Integral()
+                sysHistos[sys] = out                                               
             if sysHistos[''].Integral() == 0: 
                 print 'no sensitivty for', massString
                 continue # if no sensitivity
@@ -540,17 +570,24 @@ def PutHistosIntoRootFiles():
                 nom = (nom+var) / 2 
                 template = template.replace('XXSIGRATEXX', '%4.4f'%nom)
                 
-
                 for sys in scan.SysStringUpDown.split():
-                    up = sysHistos[sys+'Up']  .GetBinContent(sysHistos[sys+'Up']  .FindBin(SR))
-                    dn = sysHistos[sys+'Down'].GetBinContent(sysHistos[sys+'Down'].FindBin(SR))
-                    nom= sysHistos['']        .GetBinContent(sysHistos['']        .FindBin(SR))
-                    scan.SysForTableMax[sys] = max( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMax[sys])
-                    scan.SysForTableMin[sys] = min( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMin[sys])
-
+                    if sys == 'scaleIncl' or sys == 'scaleExcl': 
+                        up = sysHistos[sys+'Up']  .GetBinContent(sysHistos[sys+'Up']  .FindBin(SR))
+                        dn = sysHistos[sys+'Down'].GetBinContent(sysHistos[sys+'Down'].FindBin(SR))
+                        nom= sysHistos[sys]        .GetBinContent(sysHistos[sys]        .FindBin(SR))
+                        if nom == 0: 
+                            print 'no events in', label, 'for', i, j
+                            continue
+                    else:
+                        up = sysHistos[sys+'Up']  .GetBinContent(sysHistos[sys+'Up']  .FindBin(SR))
+                        dn = sysHistos[sys+'Down'].GetBinContent(sysHistos[sys+'Down'].FindBin(SR))
+                        nom= sysHistos['']        .GetBinContent(sysHistos['']        .FindBin(SR))
+                    if scan.SysForTableMin[sys]== -1: scan.SysForTableMin[sys]=1.
+                    if dn != nom and up != nom:
+                        scan.SysForTableMax[sys] = max( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMax[sys])
+                        scan.SysForTableMin[sys] = min( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMin[sys])
                     template = template.replace('XX'+sys+'XX', '%4.4f/%4.4f'%(dn/nom,up/nom))
-                    if dn/nom < 1e-1000 or up/nom < 1e-1000: 
-                    #if dn/nom < 1e-4 or up/nom < 1e-4: 
+                    if dn/nom < 1e-4 or up/nom < 1e-4: 
                         print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
                         itsOk = False
 
@@ -558,6 +595,7 @@ def PutHistosIntoRootFiles():
                 for sys in scan.SysString.split():
                     var = sysHistos[sys]  .GetBinContent(sysHistos[sys]  .FindBin(SR))
                     nom= sysHistos['']    .GetBinContent(sysHistos['']   .FindBin(SR))
+                    if scan.SysForTableMin[sys]== -1: scan.SysForTableMin[sys]=0.
                     scan.SysForTableMax[sys] = max( abs(var/nom-1), scan.SysForTableMax[sys])
                     scan.SysForTableMin[sys] = min( abs(var/nom-1), scan.SysForTableMin[sys])
 
@@ -576,15 +614,18 @@ def PutHistosIntoRootFiles():
 
 def makeTable():
     print 'Source of uncertainty                 &    Uncertainty (\%)'
-    print 'Luminosity                            &    6.2 \\'
-    print 'Pileup                                &    %4.0f-%4.0f\\'%(scan.SysForTableMin['PU'],scan.SysForTableMax['PU'])
-    print 'b tag modelling                       &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['bHe']**2 + scan.SysForTableMin['bLi']**2), math.sqrt( scan.SysForTableMax['bHe']**2 + scan.SysForTableMax['bLi']**2))
-    print 'Lepton reconstruction and isolation   &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['Mu']**2 + scan.SysForTableMin['El']**2), math.sqrt( scan.SysForTableMax['Mu']**2 + scan.SysForTableMax['El']**2))
-    print 'Fast simulation scale factors         &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['FastSimMu']**2 + scan.SysForTableMin['FastSimEl']**2), math.sqrt( scan.SysForTableMax['FastSimMu']**2 + scan.SysForTableMax['FastSimEl']**2))
+    print 'Luminosity                            &    2.5 \\'
+#    print 'Pileup                                &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['PU']**2 + scan.SysForTableMin['PU']**2), math.sqrt( scan.SysForTableMax['PU']**2 + scan.SysForTableMax['PU']**2))
+    #print 'b tag modelling                       &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['bHe']**2 + scan.SysForTableMin['bLi']**2), math.sqrt( scan.SysForTableMax['bHe']**2 + scan.SysForTableMax['bLi']**2))
+    #print 'Lepton reconstruction and isolation   &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['Mu']**2 + scan.SysForTableMin['El']**2), math.sqrt( scan.SysForTableMax['Mu']**2 + scan.SysForTableMax['El']**2))
+    print 'Fast simulation scale factors         &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['FastSimMu']**2 + scan.SysForTableMin['FastSimEl']**2), math.sqrt( scan.SysForTableMax['FastSimMu']**2 + scan.SysForTableMax['FastSimEl']**2))
     print 'Trigger modelling                     &    5 \\'
-    print 'Jet energy scale                      &    %4.0f-%4.0f\\'%(scan.SysForTableMin['jec'],scan.SysForTableMax['jec'])
+#    print 'Jet energy scale                      &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['jec']**2 + scan.SysForTableMin['jec']**2), math.sqrt( scan.SysForTableMax['jec']**2 + scan.SysForTableMax['jec']**2))
+    #print 'Jet energy scale                      &    %4.0f-%4.0f\\'%(scan.SysForTableMin['jec'],scan.SysForTableMax['jec'])
+    print 'Scale                                 &    %.2f-%.2f\\'%(math.sqrt( scan.SysForTableMin['scale']**2 + scan.SysForTableMin['scale']**2), math.sqrt( scan.SysForTableMax['scale']**2 + scan.SysForTableMax['scale']**2))
+    #print 'Statistical Uncertainty               &    %4.0f-%4.0f\\'%(math.sqrt( scan.SysForTableMin['mcStat']**2 + scan.SysForTableMin['mcStat']**2), math.sqrt( scan.SysForTableMax['mcStat']**2 + scan.SysForTableMax['mcStat']**2))
     print 'ISR modelling TODO \\'
-    print 'Statistical uncertainty               &    %4.0f-%4.0f\\'%()
+    #print 'Statistical uncertainty               &    %4.0f-%4.0f\\'%()
     
      
 if __name__ == "__main__":
@@ -606,73 +647,127 @@ if __name__ == "__main__":
     print 'Going to load the tree(s)...'
 
     global lumi, scan
-
+    scan = Scans.Scan(opts.scanName)
     cuts = CutManager.CutManager()
     lumi = 35.9
     global replaceCutsForSys, extraWeightsForSys
-    replaceCutsForSys = {'':      [],
-                         'jecUp'       : [['nBJetMedium35_Edge','nBJetMedium35_jecUp_Edge'],
-                                          ['nBJetMedium25_Edge','nBJetMedium25_jecUp_Edge'],
-                                          ['mt2_Edge','mt2_jecUp_Edge'],
-                                          ['mbb_Edge','mbb_jecUp_Edge'],
-                                          ['nll_Edge', 'nll_jecUp_Edge'],
-                                          ['met_Edge', 'met_jecUp_Edge'],
-                                          ['dphiMjj_Edge', 'dphiMjj_jecUp_Edge'],
-                                          ['mt2bb_Edge', 'mt2bb_jecUp_Edge'],
-                                          ['mbb_Edge', 'mbb_jecUp_Edge'],
-                                          ['htJet35j_Edge', 'htJet35j_jecUp_Edge'],
-                                          ['nJetSel_Edge','nJetSel_jecUp_Edge'],
-                                          ['FS_central_jets_Edge','FS_central_jets_jecUp_Edge']],
-                         'jecDown'     : [['nBJetMedium35_Edge','nBJetMedium35_jecDn_Edge'],
-                                          ['nBJetMedium25_Edge','nBJetMedium25_jecDn_Edge'],
-                                          ['mt2_Edge','mt2_jecDn_Edge'],
-                                          ['mbb_Edge','mbb_jecDn_Edge'],
-                                          ['nll_Edge', 'nll_jecDn_Edge'],
-                                          ['met_Edge', 'met_jecDn_Edge'],
-                                          ['dphiMjj_Edge', 'dphiMjj_jecDn_Edge'],
-                                          ['mt2bb_Edge', 'mt2bb_jecDn_Edge'],
-                                          ['mbb_Edge', 'mbb_jecDn_Edge'],
-                                          ['htJet35j_Edge', 'htJet35j_jecDn_Edge'],
-                                          ['nJetSel_Edge','nJetSel_jecDn_Edge'],
-                                          ['FS_central_jets_Edge','FS_central_jets_jecDn_Edge']],
-                         'bHeUp'        : [],
-                         'bHeDown'      : [],
-                         'bLiUp'        : [],
-                         'bLiDown'      : [],
-                         'ElUp'         : [],
-                         'ElDown'       : [],
-                         'FastSimElUp'  : [],
-                         'FastSimElDown': [],
-                         'FastSimMuUp'  : [],
-                         'FastSimMuDown': [],
-                         'MuUp'   : [],
-                         'MuDown' : [],
-                         'PUUp'   : [],
-                         'PUDown' : [],
-                         'ISRUp'  : [],
-                         'ISRDown': [],
-                         'genMet' : [['met_Edge','genMet_Edge'],
-                                     ['nll_Edge','nll_genMet_Edge']]}
+    if 'Slepton' in scan.name:
+        replaceCutsForSys = {'':      [],
+                             'jecUp'       : [['nJet25_Edge','nJet25_jecUp_Edge'],
+                                              ['mt2_Edge','mt2_jecUp_Edge'],
+                                              ['met_Edge', 'met_jecUp_Edge']],
+                             'jecDown'     : [['nJet25_Edge','nJet25_jecDn_Edge'],
+                                              ['mt2_Edge','mt2_jecDn_Edge'],
+                                              ['met_Edge', 'met_jecDn_Edge']],
+                             'metElEnUp'     : [['met_Edge','met_shifted_ElectronEnUp_pt_Edge']],
+                             'metElEnDown'   : [['met_Edge','met_shifted_ElectronEnDown_pt_Edge']],
+                             'metMuEnUp'     : [['met_Edge','met_shifted_MuonEnUp_pt_Edge']],
+                             'metMuEnDown'   : [['met_Edge','met_shifted_MuonEnDown_pt_Edge']],
+                             'metUnclEnUp'   : [['met_Edge','met_shifted_UnclusteredEnUp_pt_Edge']],
+                             'metUnclEnDown' : [['met_Edge','met_shifted_UnclusteredEnDown_pt_Edge']],
+                             'bHeUp'        : [],
+                             'bHeDown'      : [],
+                             'bLiUp'        : [],
+                             'bLiDown'      : [],
+                             'lepElUp'         : [],
+                             'lepElDown'       : [],
+                             'FastSimElUp'  : [],
+                             'FastSimElDown': [],
+                             'FastSimMuUp'  : [],
+                             'FastSimMuDown': [],
+                             'lepMuUp'   : [],
+                             'lepMuDown' : [],
+                             'PUUp'   : [],
+                             'PUDown' : [],
+                             'ISRUp'  : [],
+                             'ISRDown': [],
+                             'scaleInclUp'  : [],
+                             'scaleInclDown': [],
+                             'scaleExclUp'  : [],
+                             'scaleExclDown': [],
+                             'genMet' : [['met_Edge','genMet_Edge']]}                                            
     
+    else:
+        replaceCutsForSys = {'':      [],
+                             'jecUp'       : [['nBJetMedium35_Edge','nBJetMedium35_jecUp_Edge'],
+                                              ['nBJetMedium25_Edge','nBJetMedium25_jecUp_Edge'],
+                                              ['mt2_Edge','mt2_jecUp_Edge'],
+                                              ['mbb_Edge','mbb_jecUp_Edge'],
+                                              ['nll_Edge', 'nll_jecUp_Edge'],
+                                              ['met_Edge', 'met_jecUp_Edge'],
+                                              ['dphiMjj_Edge', 'dphiMjj_jecUp_Edge'],
+                                              ['mt2bb_Edge', 'mt2bb_jecUp_Edge'],
+                                              ['mbb_Edge', 'mbb_jecUp_Edge'],
+                                              ['htJet35j_Edge', 'htJet35j_jecUp_Edge'],
+                                              ['nJetSel_Edge','nJetSel_jecUp_Edge'],
+                                              ['FS_central_jets_Edge','FS_central_jets_jecUp_Edge']],
+                             'jecDown'     : [['nBJetMedium35_Edge','nBJetMedium35_jecDn_Edge'],
+                                              ['nBJetMedium25_Edge','nBJetMedium25_jecDn_Edge'],
+                                              ['mt2_Edge','mt2_jecDn_Edge'],
+                                              ['mbb_Edge','mbb_jecDn_Edge'],
+                                              ['nll_Edge', 'nll_jecDn_Edge'],
+                                              ['met_Edge', 'met_jecDn_Edge'],
+                                              ['dphiMjj_Edge', 'dphiMjj_jecDn_Edge'],
+                                              ['mt2bb_Edge', 'mt2bb_jecDn_Edge'],
+                                              ['mbb_Edge', 'mbb_jecDn_Edge'],
+                                              ['htJet35j_Edge', 'htJet35j_jecDn_Edge'],
+                                              ['nJetSel_Edge','nJetSel_jecDn_Edge'],
+                                              ['FS_central_jets_Edge','FS_central_jets_jecDn_Edge']],    
+                             'bHeUp'        : [],
+                             'bHeDown'      : [],
+                             'bLiUp'        : [],
+                             'bLiDown'      : [],
+                             'lepElUp'         : [],
+                             'lepElDown'       : [],
+                             'FastSimElUp'  : [],
+                             'FastSimElDown': [],
+                             'FastSimMuUp'  : [],
+                             'FastSimMuDown': [],
+                             'lepMuUp'   : [],
+                             'lepMuDown' : [],
+                             'PUUp'   : [],
+                             'PUDown' : [],
+                             'ISRUp'  : [],
+                             'ISRDown': [],
+                             'scaleInclUp'  : [],
+                             'scaleInclDown': [],
+                             'scaleExclUp'  : [],
+                             'scaleExclDown': [],
+                             'genMet' : [['met_Edge','genMet_Edge']]}                                            
+
+
+
     extraWeightsForSys = {''          : '1',
                           'jecUp'     : '1',
                           'jecDown'   : '1',
+                          'metElEnUp'   : '1',
+                          'metElEnDown' : '1',
+                          'metMuEnUp' : '1',
+                          'metMuEnDown' : '1',
+                          'metUnclEnUp' : '1',
+                          'metUnclEnDown' : '1',
                           'bHeUp'     : 'weight_btagsf_heavy_UP_Edge / weight_btagsf_Edge',
                           'bHeDown'   : 'weight_btagsf_heavy_DN_Edge / weight_btagsf_Edge',
                           'bLiUp'     : 'weight_btagsf_light_UP_Edge / weight_btagsf_Edge',
                           'bLiDown'   : 'weight_btagsf_light_DN_Edge / weight_btagsf_Edge',
-                          'ElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'ElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'lepElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'lepElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimElUp'  : 'LepSFFastSimElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimElDown': 'LepSFFastSimElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimMuUp'  : 'LepSFFastSimMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimMuDown': 'LepSFFastSimMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'MuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'lepMuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'lepMuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
                           'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
                           'ISRUp'     : 'ISRweight_Up_Edge / ISRweight_Edge',
                           'ISRDown'   : 'ISRweight_Dn_Edge / ISRweight_Edge',
+                          'scaleIncl'   : '1',
+                          'scaleInclUp'   : 'LHEweight_wgt_Edge[4]/LHEweight_wgt_Edge[0]',
+                          'scaleInclDown' : 'LHEweight_wgt_Edge[8]/LHEweight_wgt_Edge[0]',
+                          'scaleExcl'   : '1',
+                          'scaleExclUp'   : 'LHEweight_wgt_Edge[4]/LHEweight_wgt_Edge[0]',
+                          'scaleExclDown' : 'LHEweight_wgt_Edge[8]/LHEweight_wgt_Edge[0]',
                           'genMet'    : '1'}
 
 
@@ -712,14 +807,22 @@ if __name__ == "__main__":
                                        scan.srIDMax+1, -0.5, scan.srIDMax+0.5, '1', '',
                                        scan.xtitle, scan.ytitle, scan.ztitle, 
                                        '1')
+        
+        
+        
         if True:
             scan.ngen = scan.tree.blocks[0].samples[0].smsCount ## take the first slice's ngen histo
-            print "scan.ngen ",  scan.ngen
+            thisName = []
             for ind,i in enumerate(scan.tree.blocks[0].samples):
-                print "ind ", ind
-                print "i ", i
-                if ind: ## do not add the first one twice
-                    scan.ngen.Add(i.smsCount, 1.) ## add all others
+                print "adding  ",  i.name
+                scan.ngen.Add(i.smsCount, 1.) ## add all others
+                #thisName.append(i.name)
+                #if ind: 
+                #    if thisName[ind-1] == i.name:
+                #        print "hahah don't add this same one!"
+                #        continue## do not add the first one twice
+                #    else:
+                #        scan.ngen.Add(i.smsCount, 1.) ## add all others
         else:
             scan.make3DGen()
 
@@ -728,18 +831,13 @@ if __name__ == "__main__":
                 for k in range(1, scan.ngen.GetZaxis().GetNbins()+1):
                     scan.ngen.SetBinError(scan.ngen.GetBin(i,j,k),0.)
 
-        print 'this is the type of scan.ngen before', type(scan.ngen)
         newbinning   = adaptBinning(scan.dummy, scan.ngen)
         scan.ngen_2d = newbinning[0]
         scan.ngen_3d = newbinning[1] ## this one has ngen in every single bin. for every SR. and it's 3D, so that's cool
-        print 'this is the type of scan.ngen after', type(scan.ngen)
         getSREffMaps()
 
-        scan.SysStringUpDown = 'El Mu jec bHe bLi ISR'
-        #scan.SysStringUpDown = 'El Mu jec bHe bLi FastSimEl FastSimMu ISR'
+        scan.SysStringUpDown = 'lepEl lepMu metElEn metMuEn metUnclEn jec FastSimEl FastSimMu PU scaleExcl scaleIncl'
         scan.SysString = 'genMet'
-#        scan.SysStringUpDown = ''
-        #scan.SysString = ''
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
         for sys in scan.SysStringUpDown.split()+scan.SysString.split():
@@ -755,8 +853,13 @@ if __name__ == "__main__":
             print 'integral is', scan.maps[sys].Integral()
         print 'up/down systematics'
         for sys in scan.SysStringUpDown.split():
-            scan.maps[sys+'Up']   = getEffMapsSys(sys+'Up')
-            scan.maps[sys+'Down'] = getEffMapsSys(sys+'Down')
+            if sys == 'scaleExcl' or sys == 'scaleIncl':
+                scan.maps[sys] = getEffMapsSys(sys)
+                scan.maps[sys+'Up']   = getEffMapsSys(sys+'Up')
+                scan.maps[sys+'Down'] = getEffMapsSys(sys+'Down')
+            else:
+                scan.maps[sys+'Up']   = getEffMapsSys(sys+'Up')
+                scan.maps[sys+'Down'] = getEffMapsSys(sys+'Down')
 
         scan.norm = scan.maps['']
         print 'getting serveral maps'
@@ -771,6 +874,7 @@ if __name__ == "__main__":
         print 'done. now calculating limits'
         
 
+    #makeTable()
     if opts.reloadLimits:
         print 'reloading limits and datacards'
  #        fillAndSaveDatacards(dobs)
@@ -780,6 +884,7 @@ if __name__ == "__main__":
     scan.makeSignificanceMap()
     scan.makeExclusion()
     scan.makePrettyPlots()
+    #makeTable()
 
     ## save the scan object in a pickle file to save time the second time around.
     #pickle.dump(scan, open('datacards/datacards_{name}/{name}/{name}.pkl'.format(name=scan.name),'w') )

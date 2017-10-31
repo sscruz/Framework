@@ -13,10 +13,10 @@ def runDataset(ins):
     os.system('root -l -b -q runSkim.C+\(\\\"{sample}\\\",\\\"{path}\\\"\);'.format(sample=ins[0],path=ins[1]))
 
 #pathList = ['/tmp/mvesterb/']
-#pathList = ['/eos/cms/store/user/mvesterb/edgeFriends_Aug11_Unskimmed/skimThis/']
+#pathList = ['/eos/cms/store/user/mvesterb/edgeFriends_Sep14_Unskimmed/doNow/']
 #pathList = ['/afs/cern.ch/work/p/pablom/public/Edge-Production-Friend-Trees-June-2017-Feb23-ReReco/']
-pathList = ['/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/make/']
-#pathList = ['/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/data/']
+pathList = ['/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Sep14/make/']
+#pathList = ['/afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/signals/make/']
 
 tasks = []
 for path in pathList:

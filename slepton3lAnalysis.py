@@ -65,11 +65,9 @@ def compareMMEEPlots(plotmm, plotee):
     plot.saveRatio(1, 1, 0, 4, h_ee, h_mm)
     
 
-def makeSummaryTable3l4l(plot, up, dn):
+def makeSummaryTable3l4l(plot):
     sig, sig_e = 0., 0.
-    sigUp, sigDn = 0., 0.
     bkg, bkg_e = 0., 0.
-    bkgUp, bkgDn = 0., 0.
     obs= 0
     rat, rat_e = 0., 0.         
     
@@ -88,38 +86,9 @@ def makeSummaryTable3l4l(plot, up, dn):
         elif 'DATA' in h.GetName():
             obs = h.Integral()                                                      
    
-    for i, h in enumerate(up.histos):                                                  
-        if not i: continue
-        print "jec up h.GetName() ", h.GetName()
-        if 'WZTo3l' in h.GetName():
-            sigUp = h.Integral()
-        elif not 'DATA' in h.GetName(): 
-            tmp_yieldUp = h.Integral()
-            bkgUp  += tmp_yieldUp                         
-
-    for i, h in enumerate(dn.histos):                      
-        if not i: continue
-        print "jec down h.GetName() ", h.GetName()
-        if 'WZTo3l' in h.GetName():
-            sigDn = h.Integral()
-        elif not 'DATA' in h.GetName(): 
-            tmp_yieldDn = h.Integral()
-            bkgDn  += tmp_yieldDn                                                     
-
-    print "bkgUp-bkg", abs(bkgUp-bkg)
-    print "bkg-bkgDn", abs(bkg-bkgDn)
-    print "sigUp-sig", abs(sigUp-sig)
-    print "sig-sigDn", abs(sig-sigDn)
-    print "bkg_e ", bkg_e**2               
     
-    if abs(bkgUp-bkg) > abs(bkg-bkgDn): bkgSyst_e = bkgUp-bkg 
-    else:bkgSyst_e = bkg-bkgDn
-    if abs(sigUp-sig) > abs(sig-sigDn): sigSyst_e = sigUp-sig 
-    else:sigSyst_e = sig-sigDn
     obsSub,     obsSub_e = obs-bkg, math.sqrt(obs + bkg_e**2)
-    obsSubSyst, obsSubSyst_e = obs-bkg, math.sqrt(bkgSyst_e**2)
     rat, rat_e = helper.ratioError(obsSub, obsSub_e, sig, sig_e)
-    ratSyst, ratSyst_e = helper.ratioError(obsSub, obsSubSyst_e, sig, sigSyst_e)
 
     table3l4lComparisonString = '''\\documentclass[12pt,a4paper]{{article}}
 \\begin{{document}}
@@ -131,21 +100,21 @@ def makeSummaryTable3l4l(plot, up, dn):
 \\label{{tab:tab3lcontrol}} 
 \\begin{{tabular}}{{l| c }} 
               & 3-lepton region \\\\ \\hline \\hline
-signal MC        & {sig:.2f}     $\\pm$  {sig_e:.2f}   $\\pm$  {sigSyst_e:.2f}  \\\\ \\hline
-bkg. MC          & {bkg:.2f}  $\\pm$  {bkg_e:.2f}  $\\pm$  {bkgSyst_e:.2f}   \\\\ \\hline \\hline
+signal MC        & {sig:.2f}     $\\pm$  {sig_e:.2f} \\\\ \\hline
+bkg. MC          & {bkg:.2f}  $\\pm$  {bkg_e:.2f}\\\\ \\hline \\hline
 \\textbf{{data}}       & \\textbf{{{obs}}}  \\\\ \\hline
-data-bkg.        &  {obsSub:.2f}   $\\pm$  {obsSub_e:.2f} $\\pm$  {obsSubSyst_e:.2f}   \\\\ \\hline \\hline
-(data-bkg.)/sig. & {rat:.2f}   $\\pm$  {rat_e:.2f}  $\\pm$  {ratSyst_e:.2f}   \\\\ \\hline
+data-bkg.        &  {obsSub:.2f}   $\\pm$  {obsSub_e:.2f} \\\\ \\hline \\hline
+(data-bkg.)/sig. & {rat:.2f}   $\\pm$  {rat_e:.2f}\\\\ \\hline
 
 \\end{{tabular}} 
 \\egroup 
 \\end{{center}} 
 \\end{{table}} 
-\\end{{document}}'''.format(sig=sig, sig_e=sig_e,sigSyst_e=sigSyst_e,
-                            bkg=bkg,bkg_e=bkg_e,bkgSyst_e=bkgSyst_e,
+\\end{{document}}'''.format(sig=sig, sig_e=sig_e,
+                            bkg=bkg,bkg_e=bkg_e,
                             obs=int(obs),
-                            obsSub=obsSub, obsSub_e=obsSub_e, obsSubSyst_e=obsSubSyst_e,
-                            rat=rat, rat_e=rat_e,  ratSyst_e=ratSyst_e)                                                          
+                            obsSub=obsSub, obsSub_e=obsSub_e,
+                            rat=rat, rat_e=rat_e)                                                          
     
     helper.ensurePath('plots/CRs/35.9invfb/tables/')
     compTableFile = open('plots/CRs/35.9invfb/tables/controlRegion3l_comparison.txt','w')
@@ -167,8 +136,6 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
     MC          = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
     MCS         = treeMCForPlots.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx)
     DATA        = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCutDATA, '', labelx, "1", 'ZZpt')
-    MCS_jecUp   = treeMCForPlots.getStack(lumi, "hMCS_jecUp%s"%(name), "met_jecUp_Edge", nbin, xmin, xmax, theCut, "", labelx)
-    MCS_jecDn   = treeMCForPlots.getStack(lumi, "hMCS_jecDn%s"%(name), "met_jecDn_Edge", nbin, xmin, xmax, theCut, "", labelx)
     
     print "MCBKG ", MCBKG.Integral() 
     print "MC ", MC.Integral() 
@@ -218,16 +185,9 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
     plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
     plot.saveRatio(1, 1, logx, lumi, DATA, MC)                                                                                                         
 
-    plot_jecUp = Canvas.Canvas('CRs/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
-    plot_jecUp.addStack(MCS_jecUp , "HIST", 1, 1)                                                         
-    plot_jecDn = Canvas.Canvas('CRs/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
-    plot_jecDn.addStack(MCS_jecDn, "HIST", 1, 1)                                                          
-   
-    #plot_lepUp = Canvas.Canvas('CRs/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
-    #plot_lepUp.addStack(MCS_lepUp , "HIST", 1, 1)                                                         
     
 
-    makeSummaryTable3l4l(plot, plot_jecUp, plot_jecDn)
+    makeSummaryTable3l4l(plot)
     if returnplot:
         return plot
     else:
@@ -252,7 +212,9 @@ if __name__ == "__main__":
 
     threelDatasets = ['WZTo3LNu']
    
+    #mcDatasets = [ 'GGHZZ4L', 'QQHZZ4L', 'ZZTo4L',  'ZGTo2LG', 'WGToLNuG','WZTo3LNu', 'WWG',  'WWW', 'WWZ', 'WWTo2L2Nu',  'GGWWTo2L2Nu',  'GGHWWTo2L2Nu', 'WWDouble','WpWpJJ',   'WZZ', 'ZZZ', 'WGToLNuG', 'TTHnobb_pow','DYJetsToLL_M50_LO', 'DYJetsToLL_M10to50_LO',  'VHToNonbb', 'TWZ', 'tZq_ll', 'TBar_tch_powheg',  'T_tch_powheg',  'TTTT', 'TTLLJets_m1to10', 'TTZToLLNuNu_ext2', 'TTWToLNu_ext2', 'GluGluToContinToZZTo2e2tau',  'GluGluToContinToZZTo2e2mu', 'GluGluToContinToZZTo2mu2tau', 'GluGluToContinToZZTo4e', 'GluGluToContinToZZTo4mu', 'GluGluToContinToZZTo4tau', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
     mcDatasets = [ 'GGHZZ4L', 'QQHZZ4L', 'ZZTo4L',  'ZGTo2LG', 'WGToLNuG','WZTo3LNu', 'WZTo2L2Q' , 'WWG',  'WWW', 'WWZ', 'WWTo2L2Nu',  'GGWWTo2L2Nu',  'GGHWWTo2L2Nu', 'WWDouble','WpWpJJ',   'WZZ', 'ZZZ', 'WGToLNuG', 'TTHnobb_pow','TTTo2L2Nu', 'TTJets_SingleLeptonFromT', 'TTJets_SingleLeptonFromTbar',  'DYJetsToLL_M50_LO', 'DYJetsToLL_M10to50_LO',  'VHToNonbb', 'TWZ', 'tZq_ll', 'TBar_tch_powheg',  'T_tch_powheg',  'TTTT',  'TTZToQQ', 'TTWToQQ', 'TTLLJets_m1to10', 'TTZToLLNuNu_ext2', 'TTWToLNu_ext2', 'GluGluToContinToZZTo2e2tau',  'GluGluToContinToZZTo2e2mu', 'GluGluToContinToZZTo2mu2tau', 'GluGluToContinToZZTo4e', 'GluGluToContinToZZTo4mu', 'GluGluToContinToZZTo4tau', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
+    #bkgDatasets = [ 'GGHZZ4L', 'QQHZZ4L', 'ZZTo4L',  'ZGTo2LG', 'WGToLNuG', 'WWG',  'WWW', 'WWZ', 'WWTo2L2Nu',  'GGWWTo2L2Nu',  'GGHWWTo2L2Nu', 'WWDouble','WpWpJJ',   'WZZ', 'ZZZ', 'WGToLNuG', 'TTHnobb_pow','DYJetsToLL_M50_LO', 'DYJetsToLL_M10to50_LO',  'VHToNonbb', 'TWZ', 'tZq_ll', 'TBar_tch_powheg',  'T_tch_powheg',  'TTTT', 'TTLLJets_m1to10', 'TTZToLLNuNu_ext2', 'TTWToLNu_ext2', 'GluGluToContinToZZTo2e2tau',  'GluGluToContinToZZTo2e2mu', 'GluGluToContinToZZTo2mu2tau', 'GluGluToContinToZZTo4e', 'GluGluToContinToZZTo4mu', 'GluGluToContinToZZTo4tau', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
     bkgDatasets = [ 'GGHZZ4L', 'QQHZZ4L', 'ZZTo4L',  'ZGTo2LG', 'WGToLNuG','WZTo2L2Q' , 'WWG',  'WWW', 'WWZ', 'WWTo2L2Nu',  'GGWWTo2L2Nu',  'GGHWWTo2L2Nu', 'WWDouble','WpWpJJ',   'WZZ', 'ZZZ', 'WGToLNuG', 'TTHnobb_pow','TTTo2L2Nu', 'TTJets_SingleLeptonFromT', 'TTJets_SingleLeptonFromTbar',  'DYJetsToLL_M50_LO', 'DYJetsToLL_M10to50_LO',  'VHToNonbb', 'TWZ', 'tZq_ll', 'TBar_tch_powheg',  'T_tch_powheg',  'TTTT',  'TTZToQQ', 'TTWToQQ', 'TTLLJets_m1to10', 'TTZToLLNuNu_ext2', 'TTWToLNu_ext2', 'GluGluToContinToZZTo2e2tau',  'GluGluToContinToZZTo2e2mu', 'GluGluToContinToZZTo2mu2tau', 'GluGluToContinToZZTo4e', 'GluGluToContinToZZTo4mu', 'GluGluToContinToZZTo4tau', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2e2nu']
     
                                                                               
@@ -322,11 +284,12 @@ if __name__ == "__main__":
    # plot_3l_WmT_Zmass_met65 = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WmT_Edge", "WmT_3l_Zmass_met65", 50,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 101     && mZ1_Edge > 81 && met_Edge > 65"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
     #plot_3l_met_ZmassCut_WmT = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "met_Edge", "met_3l_ZmassCut_WmT40", 30,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 101 && mZ1_Edge > 81 && WmT_Edge > 50"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
     #plot_3l_mll_ZmassCut = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "mZ1_Edge", "mll_3l_ZmassCut", 50,  80, 102, cuts.AddList([cuts.goodLepton3l, cuts.region3lSlepton, "mZ1_Edge <  101 && mZ1_Edge > 81"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
-    plot_3l_met_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "met_Edge", "met_3l_Zmass", 26,  70, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
+    plot_3l_met_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "met_Edge", "met_3l_Zmass", 13,  70, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
     #makeSummaryTable3l4l(plot_3l_met_Zmass)
-    plot_3l_WmT_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WmT_Edge", "WmT_3l_Zmass", 30,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106   && mZ1_Edge > 76"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
-    plot_3l_WMT2_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WZMT2_Edge", "WZMT2_3l_Zmass", 20,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "M_{T2} (w/ W lep) [GeV]", 0, True)
-    plot_3l_mll = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "mZ1_Edge", "mll_3l", 25,  70, 120, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
+    #plot_3l_WmT_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "WmT_Edge", "WmT_3l_Zmass", 15,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106   && mZ1_Edge > 76"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
+    #plot_3l_WMT2_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "WZ_ll_MT2_Edge", "WZMT2_3l_Zmass", 20,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "M_{T2} (w/ W lep) [GeV]", 0, True)
+    #plot_3l_ZMT2_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "Z_ll_MT2_Edge", "ZMT2_3l_Zmass", 19,  10, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "M_{T2} (w/ Z lep) [GeV]", 0, True)
+    #plot_3l_mll = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG,treeMCForPlots,  "mZ1_Edge", "mll_3l", 25,  70, 120, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
     #makeSummaryTable3l4l(plot_3l_mll_ZmassCut)
     #plot_3l_WmT = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WmT_Edge", "WmT_3l", 30,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 101     && mZ1_Edge > 81"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
     #plot_3l_WmT = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WmT_Edge", "WmT_3l", 50,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)

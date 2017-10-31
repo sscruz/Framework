@@ -65,6 +65,54 @@ def readFromFileRsfofD(theFile, dataMC):
                     print "warning probably not right rsfof!!!", arr
                 return map(float, arr)                                                          
 
+def readFromFileRsfofDee(theFile, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rsfofee") != -1 and line.find("direct") != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rsfof = splitline[25+x]
+                stat = splitline[31+x]
+                syst = splitline[38+x]
+                arr = []
+                arr.append(rsfof)
+                arr.append(stat)
+                arr.append(syst)
+                print "using these direct rsfofs for ee", dataMC, ": ", arr
+                if arr[0] == '':
+                    print "warning probably not right rsfof!!!", arr
+                return map(float, arr)                                          
+
+def readFromFileRsfofDmm(theFile, dataMC): 
+
+    for line in open(theFile).readlines():
+        if line.find("rsfofmm") != -1 and line.find("direct") != -1:
+            if line.find(dataMC) != -1:
+                splitline = line.split(" ")
+                x = 0
+                if dataMC == 'MC': x = 2
+                rsfof = splitline[25+x]
+                stat = splitline[31+x]
+                syst = splitline[38+x]
+                arr = []
+                arr.append(rsfof)
+                arr.append(stat)
+                arr.append(syst)
+                print "using these direct rsfofs for mm", dataMC, ": ", arr
+                if arr[0] == '':
+                    print "warning probably not right rsfof!!!", arr
+                return map(float, arr)                                          
+
+
+
+
+
+
+
+
+
 def readFromFileRinout(theFile, dataMC, reg): 
 
     for line in open(theFile).readlines():

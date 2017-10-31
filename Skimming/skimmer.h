@@ -12,6 +12,7 @@
 #include <TChain.h>
 #include <TFile.h>
 #include <TH1D.h>
+#include <TH3D.h>
 
 // Header file for the classes stored in the TTree if any.
 
@@ -21,6 +22,8 @@ public :
    TTree          *outputtree;   //!pointer to the analyzed TTree or TChain
    Int_t           fCurrent; //!current Tree number in a TChain
    TH1D           *counts;
+   TH3D           *countsSMS;
+   TH1D           *countsLHE;
    TH1D           *genWeights;
 // Fixed size dimensions of array or collections stored in the TTree if any.
 
@@ -29,6 +32,7 @@ public :
    Int_t           run_Edge;
    Int_t           lumi_Edge;
    Int_t           nVert_Edge;
+   Float_t           nTrueInt_Edge;
    Int_t           nPFHad10_Edge;
    Int_t           nPFLep5_Edge;
    Int_t           Flag_HBHENoiseFilter_Edge;
@@ -108,6 +112,12 @@ public :
    Float_t         met_phi_Edge;
    Float_t         met_jecUp_Edge;
    Float_t         met_jecDn_Edge;
+   Float_t         met_shifted_MuonEnUp_pt_Edge;
+   Float_t         met_shifted_MuonEnDown_pt_Edge;
+   Float_t         met_shifted_ElectronEnUp_pt_Edge;
+   Float_t         met_shifted_ElectronEnDown_pt_Edge;
+   Float_t         met_shifted_UnclusteredEnUp_pt_Edge;
+   Float_t         met_shifted_UnclusteredEnDown_pt_Edge;
    Float_t         met_raw_Edge;
    Float_t         mZ1_Edge;
    Float_t         mZ2_Edge;
@@ -116,10 +126,10 @@ public :
    Float_t         mT_lep2_Edge;
    Float_t         minMT_Edge;
    Float_t         WmT_Edge;
-   Float_t         WZMT2_Edge;
+   Float_t         WZ_ll_MT2_Edge;
+   Float_t         Z_ll_MT2_Edge;
    Float_t         GENmassZZ_Edge;
    Float_t         GENptZZ_Edge;
-   Float_t         GENphiZZ_Edge;
    Float_t         mt2BestZ_Edge;
    Float_t         ptBestZ_Edge;
    Float_t         mllBestZ_Edge;
@@ -148,7 +158,6 @@ public :
    Float_t         Lep1_tightCharge_Edge;
    Float_t         Lep1_mvaIdSpring15_Edge;
    Float_t         Lep1_mcMatchId_Edge;
-   Float_t         Lep1_mcMatchTau_Edge;
    Float_t         Lep1_minTauDR_Edge;
    Float_t         Lep2_pt_Edge;
    Float_t         Lep2_eta_Edge;
@@ -163,9 +172,10 @@ public :
    Float_t         Lep2_tightCharge_Edge;
    Float_t         Lep2_mvaIdSpring15_Edge;
    Float_t         Lep2_mcMatchId_Edge;
-   Float_t         Lep2_mcMatchTau_Edge;
    Float_t         Lep2_minTauDR_Edge;
    Float_t         PileupW_Edge;
+   Float_t         PileupW_Up_Edge;
+   Float_t         PileupW_Dn_Edge;
    Float_t         min_mlb1_Edge;
    Float_t         min_mlb2_Edge;
    Float_t         min_mlb1Up_Edge;
@@ -255,6 +265,7 @@ public :
    TBranch        *b_run_Edge;   //!
    TBranch        *b_lumi_Edge;   //!
    TBranch        *b_nVert_Edge;   //!
+   TBranch        *b_nTrueInt_Edge;   //!
    TBranch        *b_nLepTight_Edge;   //!
    TBranch        *b_nPFHad10_Edge;   //!
    TBranch        *b_nPFLep5_Edge;   //!
@@ -334,6 +345,12 @@ public :
    TBranch        *b_met_phi_Edge;   //!
    TBranch        *b_met_jecUp_Edge;   //!
    TBranch        *b_met_jecDn_Edge;   //!
+   TBranch        *b_met_shifted_MuonEnUp_pt_Edge;   //!
+   TBranch        *b_met_shifted_MuonEnDown_pt_Edge;   //!
+   TBranch        *b_met_shifted_ElectronEnUp_pt_Edge;   //!
+   TBranch        *b_met_shifted_ElectronEnDown_pt_Edge;   //!
+   TBranch        *b_met_shifted_UnclusteredEnUp_pt_Edge;   //!
+   TBranch        *b_met_shifted_UnclusteredEnDown_pt_Edge;   //!
    TBranch        *b_met_raw_Edge;   //!
    TBranch        *b_mZ1_Edge;
    TBranch        *b_mZ2_Edge;
@@ -342,10 +359,10 @@ public :
    TBranch        *b_mT_lep2_Edge;
    TBranch        *b_minMT_Edge;
    TBranch        *b_WmT_Edge;
-   TBranch        *b_WZMT2_Edge;
+   TBranch        *b_WZ_ll_MT2_Edge;
+   TBranch        *b_Z_ll_MT2_Edge;
    TBranch        *b_GENmassZZ_Edge;
    TBranch        *b_GENptZZ_Edge;
-   TBranch        *b_GENphiZZ_Edge;
    TBranch        *b_mllBestZ_Edge;
    TBranch        *b_ptBestZ_Edge;
    TBranch        *b_mt2BestZ_Edge;
@@ -374,7 +391,6 @@ public :
    TBranch        *b_Lep1_tightCharge_Edge;   //!
    TBranch        *b_Lep1_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep1_mcMatchId_Edge;   //!
-   TBranch        *b_Lep1_mcMatchTau_Edge;   //!
    TBranch        *b_Lep1_minTauDR_Edge;   //!
    TBranch        *b_Lep2_pt_Edge;   //!
    TBranch        *b_Lep2_eta_Edge;   //!
@@ -389,9 +405,10 @@ public :
    TBranch        *b_Lep2_tightCharge_Edge;   //!
    TBranch        *b_Lep2_mvaIdSpring15_Edge;   //!
    TBranch        *b_Lep2_mcMatchId_Edge;   //!
-   TBranch        *b_Lep2_mcMatchTau_Edge;   //!
    TBranch        *b_Lep2_minTauDR_Edge;   //!
    TBranch        *b_PileupW_Edge;   //!
+   TBranch        *b_PileupW_Up_Edge;   //!
+   TBranch        *b_PileupW_Dn_Edge;   //!
    TBranch        *b_min_mlb1_Edge;   //!
    TBranch        *b_min_mlb2_Edge;   //!
    TBranch        *b_min_mlb1Up_Edge;   //!
@@ -500,6 +517,8 @@ skimmer::skimmer(TString sampleName, TString pathString) : fChain(0)
   TFile* f = TFile::Open(path + "evVarFriend_" + sample + ".root","READ");
   TTree* tree = (TTree*) f->Get("sf/t");
   counts = (TH1D *) f->Get("Count");
+  countsLHE = (TH1D *) f->Get("CountLHE");
+  countsSMS = (TH3D *) f->Get("CountSMS");
   genWeights = (TH1D *) f->Get("SumGenWeights");
 
    /* if (tree == 0) { */
@@ -559,6 +578,8 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("evt_Edge", &evt_Edge, &b_evt_Edge);
    fChain->SetBranchAddress("run_Edge", &run_Edge, &b_run_Edge);
    fChain->SetBranchAddress("lumi_Edge", &lumi_Edge, &b_lumi_Edge);
+   fChain->SetBranchAddress("nVert_Edge", &nVert_Edge, &b_nVert_Edge);
+   fChain->SetBranchAddress("nTrueInt_Edge", &nTrueInt_Edge, &b_nTrueInt_Edge);
    fChain->SetBranchAddress("Flag_HBHENoiseFilter_Edge", &Flag_HBHENoiseFilter_Edge, &b_Flag_HBHENoiseFilter_Edge); 
    fChain->SetBranchAddress("Flag_HBHENoiseIsoFilter_Edge", &Flag_HBHENoiseIsoFilter_Edge, &b_Flag_HBHENoiseIsoFilter_Edge);
    fChain->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter_Edge", &Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, &b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge);
@@ -638,6 +659,12 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("met_phi_Edge", &met_phi_Edge, &b_met_phi_Edge);
    fChain->SetBranchAddress("met_jecUp_Edge", &met_jecUp_Edge, &b_met_jecUp_Edge);
    fChain->SetBranchAddress("met_jecDn_Edge", &met_jecDn_Edge, &b_met_jecDn_Edge);
+   fChain->SetBranchAddress("met_shifted_MuonEnUp_pt_Edge", &met_shifted_MuonEnUp_pt_Edge, &b_met_shifted_MuonEnUp_pt_Edge);
+   fChain->SetBranchAddress("met_shifted_MuonEnDown_pt_Edge", &met_shifted_MuonEnDown_pt_Edge, &b_met_shifted_MuonEnDown_pt_Edge);
+   fChain->SetBranchAddress("met_shifted_ElectronEnUp_pt_Edge", &met_shifted_ElectronEnUp_pt_Edge, &b_met_shifted_ElectronEnUp_pt_Edge);
+   fChain->SetBranchAddress("met_shifted_ElectronEnDown_pt_Edge", &met_shifted_ElectronEnDown_pt_Edge, &b_met_shifted_ElectronEnDown_pt_Edge);
+   fChain->SetBranchAddress("met_shifted_UnclusteredEnUp_pt_Edge", &met_shifted_UnclusteredEnUp_pt_Edge, &b_met_shifted_UnclusteredEnUp_pt_Edge);
+   fChain->SetBranchAddress("met_shifted_UnclusteredEnDown_pt_Edge", &met_shifted_UnclusteredEnDown_pt_Edge, &b_met_shifted_UnclusteredEnDown_pt_Edge);
    fChain->SetBranchAddress("met_raw_Edge", &met_raw_Edge, &b_met_raw_Edge);
    fChain->SetBranchAddress("genMet_Edge", &genMet_Edge, &b_genMet_Edge);
    fChain->SetBranchAddress("genMet_phi_Edge", &genMet_phi_Edge, &b_genMet_phi_Edge);
@@ -655,7 +682,6 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    fChain->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
-   fChain->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    fChain->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    fChain->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -670,9 +696,10 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    fChain->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    fChain->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
-   fChain->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    fChain->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    fChain->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
+   fChain->SetBranchAddress("PileupW_Up_Edge", &PileupW_Up_Edge, &b_PileupW_Up_Edge);
+   fChain->SetBranchAddress("PileupW_Dn_Edge", &PileupW_Dn_Edge, &b_PileupW_Dn_Edge);
    fChain->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);
    fChain->SetBranchAddress("min_mlb2_Edge", &min_mlb2_Edge, &b_min_mlb2_Edge);
    fChain->SetBranchAddress("min_mlb1Up_Edge", &min_mlb1Up_Edge, &b_min_mlb1Up_Edge);
@@ -686,6 +713,7 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("srID_Edge", &srID_Edge, &b_srID_Edge);
    fChain->SetBranchAddress("mt2_Edge", &mt2_Edge, &b_mt2_Edge);
    fChain->SetBranchAddress("mt2_jecUp_Edge", &mt2_jecUp_Edge, &b_mt2_jecUp_Edge);
+   fChain->SetBranchAddress("mt2_jecDn_Edge", &mt2_jecDn_Edge, &b_mt2_jecDn_Edge);
    fChain->SetBranchAddress("mZ1_Edge", &mZ1_Edge, &b_mZ1_Edge);
    fChain->SetBranchAddress("mZ2_Edge", &mZ2_Edge, &b_mZ2_Edge);
    fChain->SetBranchAddress("mt2bb_Edge", &mt2bb_Edge, &b_mt2bb_Edge);
@@ -696,10 +724,10 @@ void skimmer::Init(TTree *tree)
    fChain->SetBranchAddress("mT_lep2_Edge", &mT_lep2_Edge, &b_mT_lep2_Edge);
    fChain->SetBranchAddress("minMT_Edge", &minMT_Edge, &b_minMT_Edge);
    fChain->SetBranchAddress("WmT_Edge", &WmT_Edge, &b_WmT_Edge);
-   fChain->SetBranchAddress("WZMT2_Edge", &WZMT2_Edge, &b_WZMT2_Edge);
+   fChain->SetBranchAddress("WZ_ll_MT2_Edge", &WZ_ll_MT2_Edge, &b_WZ_ll_MT2_Edge);
+   fChain->SetBranchAddress("Z_ll_MT2_Edge", &Z_ll_MT2_Edge, &b_Z_ll_MT2_Edge);
    fChain->SetBranchAddress("GENmassZZ_Edge", &GENmassZZ_Edge, &b_GENmassZZ_Edge);
    fChain->SetBranchAddress("GENptZZ_Edge", &GENptZZ_Edge, &b_GENptZZ_Edge);
-   fChain->SetBranchAddress("GENphiZZ_Edge", &GENphiZZ_Edge, &b_GENphiZZ_Edge);
    fChain->SetBranchAddress("mllBestZ_Edge", &mllBestZ_Edge, &b_mllBestZ_Edge);
    fChain->SetBranchAddress("ptBestZ_Edge", &ptBestZ_Edge, &b_ptBestZ_Edge);
    fChain->SetBranchAddress("mt2BestZ_Edge", &mt2BestZ_Edge, &b_mt2BestZ_Edge);
@@ -790,6 +818,7 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("run_Edge", &run_Edge, &b_run_Edge);
    outputtree->SetBranchAddress("lumi_Edge", &lumi_Edge, &b_lumi_Edge);
    outputtree->SetBranchAddress("nVert_Edge", &nVert_Edge, &b_nVert_Edge);
+   outputtree->SetBranchAddress("nTrueInt_Edge", &nTrueInt_Edge, &b_nTrueInt_Edge);
    outputtree->SetBranchAddress("Flag_HBHENoiseFilter_Edge", &Flag_HBHENoiseFilter_Edge, &b_Flag_HBHENoiseFilter_Edge); 
    outputtree->SetBranchAddress("Flag_HBHENoiseIsoFilter_Edge", &Flag_HBHENoiseIsoFilter_Edge, &b_Flag_HBHENoiseIsoFilter_Edge);
    outputtree->SetBranchAddress("Flag_EcalDeadCellTriggerPrimitiveFilter_Edge", &Flag_EcalDeadCellTriggerPrimitiveFilter_Edge, &b_Flag_EcalDeadCellTriggerPrimitiveFilter_Edge);
@@ -869,6 +898,12 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("met_phi_Edge", &met_phi_Edge, &b_met_phi_Edge);
    outputtree->SetBranchAddress("met_jecUp_Edge", &met_jecUp_Edge, &b_met_jecUp_Edge);
    outputtree->SetBranchAddress("met_jecDn_Edge", &met_jecDn_Edge, &b_met_jecDn_Edge);
+   outputtree->SetBranchAddress("met_shifted_MuonEnUp_pt_Edge", &met_shifted_MuonEnUp_pt_Edge, &b_met_shifted_MuonEnUp_pt_Edge);
+   outputtree->SetBranchAddress("met_shifted_MuonEnDown_pt_Edge", &met_shifted_MuonEnDown_pt_Edge, &b_met_shifted_MuonEnDown_pt_Edge);
+   outputtree->SetBranchAddress("met_shifted_ElectronEnUp_pt_Edge", &met_shifted_ElectronEnUp_pt_Edge, &b_met_shifted_ElectronEnUp_pt_Edge);
+   outputtree->SetBranchAddress("met_shifted_ElectronEnDown_pt_Edge", &met_shifted_ElectronEnDown_pt_Edge, &b_met_shifted_ElectronEnDown_pt_Edge);
+   outputtree->SetBranchAddress("met_shifted_UnclusteredEnUp_pt_Edge", &met_shifted_UnclusteredEnUp_pt_Edge, &b_met_shifted_UnclusteredEnUp_pt_Edge);
+   outputtree->SetBranchAddress("met_shifted_UnclusteredEnDown_pt_Edge", &met_shifted_UnclusteredEnDown_pt_Edge, &b_met_shifted_UnclusteredEnDown_pt_Edge);
    outputtree->SetBranchAddress("met_raw_Edge", &met_raw_Edge, &b_met_raw_Edge);
    outputtree->SetBranchAddress("genMet_Edge", &genMet_Edge, &b_genMet_Edge);
    outputtree->SetBranchAddress("genMet_phi_Edge", &genMet_phi_Edge, &b_genMet_phi_Edge);
@@ -886,7 +921,6 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep1_tightCharge_Edge", &Lep1_tightCharge_Edge, &b_Lep1_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep1_mvaIdSpring15_Edge", &Lep1_mvaIdSpring15_Edge, &b_Lep1_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep1_mcMatchId_Edge", &Lep1_mcMatchId_Edge, &b_Lep1_mcMatchId_Edge);
-   outputtree->SetBranchAddress("Lep1_mcMatchTau_Edge", &Lep1_mcMatchTau_Edge, &b_Lep1_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep1_minTauDR_Edge", &Lep1_minTauDR_Edge, &b_Lep1_minTauDR_Edge);
    outputtree->SetBranchAddress("Lep2_pt_Edge", &Lep2_pt_Edge, &b_Lep2_pt_Edge);
    outputtree->SetBranchAddress("Lep2_eta_Edge", &Lep2_eta_Edge, &b_Lep2_eta_Edge);
@@ -901,9 +935,10 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("Lep2_tightCharge_Edge", &Lep2_tightCharge_Edge, &b_Lep2_tightCharge_Edge);
    outputtree->SetBranchAddress("Lep2_mvaIdSpring15_Edge", &Lep2_mvaIdSpring15_Edge, &b_Lep2_mvaIdSpring15_Edge);
    outputtree->SetBranchAddress("Lep2_mcMatchId_Edge", &Lep2_mcMatchId_Edge, &b_Lep2_mcMatchId_Edge);
-   outputtree->SetBranchAddress("Lep2_mcMatchTau_Edge", &Lep2_mcMatchTau_Edge, &b_Lep2_mcMatchTau_Edge);
    outputtree->SetBranchAddress("Lep2_minTauDR_Edge", &Lep2_minTauDR_Edge, &b_Lep2_minTauDR_Edge);
    outputtree->SetBranchAddress("PileupW_Edge", &PileupW_Edge, &b_PileupW_Edge);
+   outputtree->SetBranchAddress("PileupW_Up_Edge", &PileupW_Up_Edge, &b_PileupW_Up_Edge);
+   outputtree->SetBranchAddress("PileupW_Dn_Edge", &PileupW_Dn_Edge, &b_PileupW_Dn_Edge);
    outputtree->SetBranchAddress("min_mlb1_Edge", &min_mlb1_Edge, &b_min_mlb1_Edge);
    outputtree->SetBranchAddress("min_mlb2_Edge", &min_mlb2_Edge, &b_min_mlb2_Edge);
    outputtree->SetBranchAddress("min_mlb1Up_Edge", &min_mlb1Up_Edge, &b_min_mlb1Up_Edge);
@@ -928,10 +963,10 @@ void skimmer::SetOutVariables()
    outputtree->SetBranchAddress("mT_lep2_Edge", &mT_lep2_Edge, &b_mT_lep2_Edge);
    outputtree->SetBranchAddress("minMT_Edge", &minMT_Edge, &b_minMT_Edge);
    outputtree->SetBranchAddress("WmT_Edge", &WmT_Edge, &b_WmT_Edge);
-   outputtree->SetBranchAddress("WZMT2_Edge", &WZMT2_Edge, &b_WZMT2_Edge);
+   outputtree->SetBranchAddress("WZ_ll_MT2_Edge", &WZ_ll_MT2_Edge, &b_WZ_ll_MT2_Edge);
+   outputtree->SetBranchAddress("Z_ll_MT2_Edge", &Z_ll_MT2_Edge, &b_Z_ll_MT2_Edge);
    outputtree->SetBranchAddress("GENmassZZ_Edge", &GENmassZZ_Edge, &b_GENmassZZ_Edge);
    outputtree->SetBranchAddress("GENptZZ_Edge", &GENptZZ_Edge, &b_GENptZZ_Edge);
-   outputtree->SetBranchAddress("GENphiZZ_Edge", &GENphiZZ_Edge, &b_GENphiZZ_Edge);
    outputtree->SetBranchAddress("mllBestZ_Edge", &mllBestZ_Edge, &b_mllBestZ_Edge);
    outputtree->SetBranchAddress("mt2BestZ_Edge", &mt2BestZ_Edge, &b_mt2BestZ_Edge);
    outputtree->SetBranchAddress("ptBestZ_Edge", &ptBestZ_Edge, &b_ptBestZ_Edge);
