@@ -195,7 +195,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
     plot_sig = Canvas.Canvas('CRs/%s/plotsig_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.58, 0.87, 0.9)
     plot_sig.addHisto(MC4l , "HIST", "4l", "P", r.kBlack, 1, 0)                                                         
     
-    makeSummaryTable3l4l(plot, plot_sig)
+    #makeSummaryTable3l4l(plot, plot_sig)
     if returnplot:
         return plot
     else:
@@ -309,10 +309,12 @@ if __name__ == "__main__":
     #plot_4l_jet1Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[0]", "jet1Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Leading Jet p_{T} [GeV]", 0, True)
     #plot_4l_jet2Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[1]", "jet2Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Subleading Jet p_{T} [GeV]", 0, True)
     #plot_4l_jet3Pt = makePlot(lumi, lumi_str, treeDA, tree4l, "JetSel_Edge_pt[2]", "jet3Pt_4l", 100,  0, 200, cuts.AddList([cuts.goodLepton4l, cuts.region4lSlepton, " mZ1_Edge < 101 && mZ1_Edge > 81 && mZ2_Edge < 101 && mZ2_Edge > 81"]), cuts, "Third Jet Jet p_{T} [GeV]", 0, True)
-    plot_4l_bestMll  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG,treeMCForPlots, "mZ1_Edge", "bestMll_4l_lep1_50", 35,  75, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ1_Edge < 106 && mZ1_Edge > 76 &&mZ2_Edge < 130 && mZ2_Edge > 50 && Lep1_pt_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV] (Leading lepton p_{T} > 50 GeV)", 0, True)
+#    plot_4l_bestMll  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG,treeMCForPlots, "mZ1_Edge", "bestMll_4l", 35,  75, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ1_Edge < 106 && mZ1_Edge > 76 &&mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV] (Leading lepton p_{T} > 50 GeV)", 0, True)
 # start here
-#    plot_4l_newMET = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l,treeBKG,treeMCForPlots, "newMet_Edge", "newMET_4l_Kfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New p_{T}^{miss} [GeV]", 0, True)
-#    plot_4l_newMT2 = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots,"mt2BestZ_Edge", "newMT2_4l_Kfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New M_{T2} [GeV]", 0, True)
+    plot_4l_newMET_relaxedCut = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l,treeBKG,treeMCForPlots, "newMet_Edge", "newMET_4l_RelaxedCut", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSleptonRelaxedCut]), cuts, "New p_{T}^{miss} [GeV] (nLep == 4)", 0, True)
+    plot_4l_newMET_noNJetCut = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l,treeBKG,treeMCForPlots, "newMet_Edge", "newMET_4l_NoNjetCut", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSleptonNoNJetCut, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New p_{T}^{miss} [GeV] (nLep == 4, mll cuts)", 0, True)
+    plot_4l_newMET = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l,treeBKG,treeMCForPlots, "newMet_Edge", "newMET_4l", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New p_{T}^{miss} [GeV]", 0, True)
+    #plot_4l_newMT2 = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots,"mt2BestZ_Edge", "newMT2_4l_Kfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "New M_{T2} [GeV]", 0, True)
 #    plot_4l_otherMll = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots,"mZ2_Edge", "otherMll_4l_Kfactor", 39,  50, 128, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, " mZ1_Edge < 106 && mZ1_Edge > 76 && mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of other Z candidate [GeV]", 0, True)
     #plot_4l_met_noKF  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, "met_Edge", "met_4l_noKfactor", 16,  0, 400, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ1_Edge < 106 && mZ1_Edge > 76 &&  mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'noKFactor')
     #plot_4l_bestMll_noKF  = makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, "mZ1_Edge", "bestMll_4l_noKfactor", 35,  75, 110, cuts.AddList([cuts.goodLepton, cuts.region4lSlepton, "mZ2_Edge < 130 && mZ2_Edge > 50"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, 'noKFactor')

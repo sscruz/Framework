@@ -744,8 +744,8 @@ def makeResultData(analysis, var, signames, maxrun = 999999, lint = 35.9, specia
     for i in [0, 1, 2, 3]:
         zz.SetBinError(i, math.sqrt((zz.GetBinContent(i)*math.sqrt(0.07**2 + lepUnc**2+triggerUnc**2))**2+zz.GetBinError(i)**2 + max(math.sqrt(abs(zz_qcdExclUp.GetBinContent(i)-zz_qcdExclNom.GetBinContent(i))**2+ abs(zz_qcdInclUp.GetBinContent(i)-zz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(zz_qcdExclDn.GetBinContent(i)-zz_qcdExclNom.GetBinContent(i))**2+ abs(zz_qcdInclUp.GetBinContent(i)-zz_qcdInclNom.GetBinContent(i))**2))+max(abs(zz_jecUp.GetBinContent(i)-zz.GetBinContent(i))**2,abs(zz_jecDn.GetBinContent(i)-zz.GetBinContent(i))**2)+abs(zz_noKF.GetBinContent(i)-zz_pt.GetBinContent(i))**2 + (ZZ_met[i])**2  ))
         zz_syst.SetBinError(i, math.sqrt((zz.GetBinContent(i)*math.sqrt(0.07**2 + lepUnc**2+triggerUnc**2))**2+ max(math.sqrt(abs(zz_qcdExclUp.GetBinContent(i)-zz_qcdExclNom.GetBinContent(i))**2+ abs(zz_qcdInclUp.GetBinContent(i)-zz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(zz_qcdExclDn.GetBinContent(i)-zz_qcdExclNom.GetBinContent(i))**2+ abs(zz_qcdInclUp.GetBinContent(i)-zz_qcdInclNom.GetBinContent(i))**2))+max(abs(zz_jecUp.GetBinContent(i)-zz.GetBinContent(i))**2,abs(zz_jecDn.GetBinContent(i)-zz.GetBinContent(i))**2)+abs(zz_noKF.GetBinContent(i)-zz_pt.GetBinContent(i))**2 + (ZZ_met[i])**2  ))
-        wz.SetBinError(1, math.sqrt((wz.GetBinContent(1)*math.sqrt(0.06**2 + lepUnc**2+triggerUnc**2))**2+wz.GetBinError(i)**2 + max(math.sqrt(abs(wz_qcdExclUp.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(wz_qcdExclDn.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2))+max(abs(wz_jecUp.GetBinContent(i)-wz.GetBinContent(i))**2,abs(wz_jecDn.GetBinContent(i)-wz.GetBinContent(i))**2)+ (WZ_met[i])**2  ))
-        wz_syst.SetBinError(i, math.sqrt((wz.GetBinContent(i)*math.sqrt(0.06**2 + lepUnc**2+triggerUnc**2))**2+ max(math.sqrt(abs(wz_qcdExclUp.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(wz_qcdExclDn.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2))+max(abs(wz_jecUp.GetBinContent(i)-wz.GetBinContent(i))**2,abs(wz_jecDn.GetBinContent(i)-wz.GetBinContent(i))**2)+ (WZ_met[i])**2  ))
+        wz.SetBinError(1, math.sqrt((wz.GetBinContent(1)*math.sqrt(0.06**2 +0.05**2+  lepUnc**2+triggerUnc**2))**2+wz.GetBinError(i)**2 + max(math.sqrt(abs(wz_qcdExclUp.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(wz_qcdExclDn.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2))+max(abs(wz_jecUp.GetBinContent(i)-wz.GetBinContent(i))**2,abs(wz_jecDn.GetBinContent(i)-wz.GetBinContent(i))**2)+ (WZ_met[i])**2  ))
+        wz_syst.SetBinError(i, math.sqrt((wz.GetBinContent(i)*math.sqrt(0.06**2 +0.05**2+ lepUnc**2+triggerUnc**2))**2+ max(math.sqrt(abs(wz_qcdExclUp.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2),math.sqrt(abs(wz_qcdExclDn.GetBinContent(i)-wz_qcdExclNom.GetBinContent(i))**2+ abs(wz_qcdInclUp.GetBinContent(i)-wz_qcdInclNom.GetBinContent(i))**2))+max(abs(wz_jecUp.GetBinContent(i)-wz.GetBinContent(i))**2,abs(wz_jecDn.GetBinContent(i)-wz.GetBinContent(i))**2)+ (WZ_met[i])**2  ))
 
     others = treeOTHERS.getTH1F(lint, var+"others"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,  cuts.slep0jet, cuts.SF]), '', xlabel, "1",kf)
     others_orig = treeOTHERS.getTH1F(lint, var+"others_orig"+scutstring, treevar, nbins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,  cuts.slep0jet, cuts.SF]), '', xlabel, "1",kf)
@@ -875,7 +875,7 @@ if __name__ == '__main__':
     wzDatasets = ['WZTo3LNu']
     othersDatasets = ['WWZ', 'WZZ', 'ZZZ', 'TWZ', 'tZq_ll', 'TTZToLLNuNu_ext2', 'TTZToQQ', 'TTLLJets_m1to10', 'TTHnobb_pow', 'VHToNonbb', 'GGHZZ4L', 'QQHZZ4L']
     fsDatasets = ['TTTT',  'TTTo2L2Nu', 'TBar_tch_powheg', 'T_tch_powheg', 'WWTo2L2Nu', 'WWW', 'WWG', 'WWDouble', 'WpWpJJ', 'TTWToLNu_ext2',  'TTWToQQ', 'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT']                       
-    
+
     mcDatasets = fsDatasets+dyDatasets + othersDatasets + zzDatasets + wzDatasets
  
                                                                                      
@@ -912,22 +912,24 @@ if __name__ == '__main__':
  
     #daDatasets = daDatasetsB +daDatasetsC+ daDatasetsD     
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF + daDatasetsG + daDatasetsH      
-    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0, isOnEOS = 0)
-    print "##################################################################################################################################################################"
-    treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0, isOnEOS = 0)
-    treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0, isOnEOS = 0)
-    treeOTHERS = Sample.Tree(helper.selectSamples(opts.sampleFile, othersDatasets, 'OTHERS'), 'OTHERS'  , 0, isOnEOS = 0)
-    treeWZ = Sample.Tree(helper.selectSamples(opts.sampleFile, wzDatasets, 'WZ'), 'WZ'  , 0, isOnEOS = 0)
-    treeZZ = Sample.Tree(helper.selectSamples(opts.sampleFile, zzDatasets, 'ZZ'), 'ZZ'  , 0, isOnEOS = 0)
-    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1, isOnEOS = 0)
+    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0, isScan = 0)
+    treeDY = Sample.Tree(helper.selectSamples(opts.sampleFile, dyDatasets, 'DY'), 'DY'  , 0, isScan = 0)
+    treeFS = Sample.Tree(helper.selectSamples(opts.sampleFile, fsDatasets, 'FS'), 'FS'  , 0, isScan = 0)
+    treeOTHERS = Sample.Tree(helper.selectSamples(opts.sampleFile, othersDatasets, 'OTHERS'), 'OTHERS'  , 0, isScan = 0)
+    treeWZ = Sample.Tree(helper.selectSamples(opts.sampleFile, wzDatasets, 'WZ'), 'WZ'  , 0, isScan = 0)
+    treeZZ = Sample.Tree(helper.selectSamples(opts.sampleFile, zzDatasets, 'ZZ'), 'ZZ'  , 0, isScan = 0)
+    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1, isScan = 0)
     
-    signals = ['SMS_450_50', 'SMS_350_150', 'SMS_250_180', 'SMS_100_1']
-    signames = [[450, 50], [350, 150], [250, 180], [100, 1]]
-    xsec = [2*(0.77+ 0.3),2*(2.33+0.89), 2*(9.210+3.470), 2*270.79 ]
-    treeSIG1 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[0]], 'SI'), 'SI', 0, isScan = xsec[0])
-    treeSIG2 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[1]], 'SI'), 'SI', 0, isScan = xsec[1])
-    treeSIG3 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[2]], 'SI'), 'SI', 0, isScan = xsec[2])
-    treeSIG4 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[3]], 'SI'), 'SI', 0, isScan = xsec[3])
+    signals = ['SMS_450_40', 'SMS_375_160', 'SMS_250_180', 'SMS_100_1']
+    signames = [[450, 40], [375, 160], [250, 180], [100, 1]]
+    xsecf = open('datacards/xsec_SUM_13tev_fit_ee.txt', 'r')
+    #xsecf = open('datacards/xsec_lLlL_13tev_fit.txt', 'r')xsec_SUM_13tev_fit_ee.txt
+    xsecs = eval(xsecf.read())
+    xsecf.close()                                             
+    treeSIG1 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[0]], 'SI'), 'SI', 0, isScan =  xsecs[signames[0][0]][0])
+    treeSIG2 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[1]], 'SI'), 'SI', 0, isScan =  xsecs[signames[1][0]][0])
+    treeSIG3 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[2]], 'SI'), 'SI', 0, isScan =  xsecs[signames[2][0]][0])
+    treeSIG4 = Sample.Tree(helper.selectSamples("samplesSlepton.dat", [signals[3]], 'SI'), 'SI', 0, isScan =  xsecs[signames[3][0]][0])
     sigs = [treeSIG1, treeSIG2, treeSIG3, treeSIG4]                                                               
 
     print 'Trees successfully loaded...'

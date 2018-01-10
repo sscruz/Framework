@@ -187,7 +187,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, tree4l, treeBKG, treeMCForPlots, va
 
     
 
-    makeSummaryTable3l4l(plot)
+    #makeSummaryTable3l4l(plot)
     if returnplot:
         return plot
     else:
@@ -284,7 +284,9 @@ if __name__ == "__main__":
    # plot_3l_WmT_Zmass_met65 = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "WmT_Edge", "WmT_3l_Zmass_met65", 50,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 101     && mZ1_Edge > 81 && met_Edge > 65"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
     #plot_3l_met_ZmassCut_WmT = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "met_Edge", "met_3l_ZmassCut_WmT40", 30,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 101 && mZ1_Edge > 81 && WmT_Edge > 50"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
     #plot_3l_mll_ZmassCut = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, "mZ1_Edge", "mll_3l_ZmassCut", 50,  80, 102, cuts.AddList([cuts.goodLepton3l, cuts.region3lSlepton, "mZ1_Edge <  101 && mZ1_Edge > 81"]), cuts, "m_{ll} of best Z candidate [GeV]", 0, True)
-    plot_3l_met_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "met_Edge", "met_3l_Zmass", 13,  70, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
+    #plot_3l_met_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "met_Edge", "met_3l_Zmass", 13,  70, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "p_{T}^{miss} [GeV]", 0, True)
+    plot_3l_lepPt = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "Lep1_pt_Edge", "Lep1_pt_3l", 50,  0, 150, cuts.AddList([cuts.goodLeptonLowPt, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "Leading lepton p_{T} [GeV]", 0, True)
+    plot_3l_lepPt = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "Lep2_pt_Edge", "Lep2_pt_3l", 50,  0, 150, cuts.AddList([cuts.goodLeptonLowPt, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "Subleading lepton p_{T} [GeV]", 0, True)
     #makeSummaryTable3l4l(plot_3l_met_Zmass)
     #plot_3l_WmT_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "WmT_Edge", "WmT_3l_Zmass", 15,  50, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106   && mZ1_Edge > 76"]), cuts, "M_{T} (w/ W lep) [GeV]", 0, True)
     #plot_3l_WMT2_Zmass = makePlot(lumi, lumi_str, treeDA, treeMC, tree3l, treeBKG, treeMCForPlots, "WZ_ll_MT2_Edge", "WZMT2_3l_Zmass", 20,  0, 200, cuts.AddList([cuts.goodLepton, cuts.region3lSlepton, "mZ1_Edge < 106     && mZ1_Edge > 76"]), cuts, "M_{T2} (w/ W lep) [GeV]", 0, True)

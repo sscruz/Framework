@@ -28,6 +28,7 @@ class CutManager:
       self.trigEMNEW = "( HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
       self.trigger = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
       self.triggerForCR = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
+      self.goodLeptonLowPt = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton3l = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.leptonDR  +  ")"
       self.goodLepton4l = "("+self.trigger + "&&" +self.twoLeptons + ")"
@@ -76,6 +77,8 @@ class CutManager:
       self.mZ2inZ  = 'mZ2_Edge >= 86 && mZ2_Edge < 96'
       self.ZmassInc  = 'mZ1_Edge >= 80 && mZ1_Edge < 100'
       self.lepsFromZ  = 'abs(Lep1_mcMatchId_Edge) == 23 && abs(Lep2_mcMatchId_Edge) == 23'
+      self.lepsNotFromZ  = '(abs(Lep1_mcMatchId_Edge) == 24 || abs(Lep2_mcMatchId_Edge) == 24)'
+      #self.lepsNotFromZ  = '(abs(Lep1_mcMatchId_Edge) == 24 && abs(Lep2_mcMatchId_Edge) == 23) || (abs(Lep1_mcMatchId_Edge) == 23 && abs(Lep2_mcMatchId_Edge) == 24)'
       
       ########################################################################
       ######Basic MET cuts##########################################################
@@ -227,8 +230,10 @@ class CutManager:
       self.slepExclJet  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, 'nJet25_Edge > 0 && mt2_Edge > 90 && Lep1_pt_Edge > 50'])
       self.slep0jetNoMT2  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt,  'htJet25j_Edge  == 0'])
       self.slep0jetNoMET  = self.AddList([self.bvetoLoose25, self.ThirdLeptonVeto, self.ZvetoExt,  'htJet25j_Edge  == 0 && mt2_Edge > 90'])
-      self.region3lSlepton  = self.AddList([self.goodLepton, self.threeTightLeptons, self.METg70, self.bvetoLoose25, self.nj25eq0, 'WmT_Edge > 50'])
+      self.region3lSlepton  = self.AddList([self.threeTightLeptons, self.METg70, self.bvetoLoose25, self.nj25eq0, 'WmT_Edge > 50'])
       self.region4lSlepton  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.bvetoLoose25, self.nj25eq0, "mZ2_Edge > 40"])
+      self.region4lSleptonNoNJetCut  = self.AddList([self.goodLepton, self.fourTightLeptons, "mZ2_Edge > 40"])
+      self.region4lSleptonRelaxedCut  = self.AddList([self.goodLepton, self.fourTightLeptons])
       self.region4lSleptonIncJet  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.bvetoLoose25, "mZ2_Edge > 40"])
       self.region2l2nuSlepton  = self.AddList([self.goodLepton, self.twoTightLeptons, self.bvetoLoose25, self.nj25eq0])
       self.region4l  = self.AddList([self.goodLepton4l, self.fourTightLeptons,  self.dPhiJETMET, self.mZ2g20, self.bveto, self.nj2])

@@ -1,7 +1,7 @@
-from ROOT import TCanvas, TLegend, TPad, TLine, TLatex, TGraphAsymmErrors, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
+from ROOT import TCanvas, TLegend,TPie,  TPad, TLine, TLatex, TGraphAsymmErrors, TH1F, THStack, TGraphErrors, TLine, TPaveStats, TGraph, TArrow
 import ROOT as r
 import os, copy, math, array
-
+from array import array
 class Canvas:
    'Common base class for all Samples'
 
@@ -26,7 +26,7 @@ class Canvas:
       self.myLegend.SetTextFont(42)
       self.myLegend.SetTextSize(0.04)
       self.myLegend.SetLineWidth(0)
-      self.myLegend.SetBorderSize(0)
+      self.myLegend.SetBorderSize(0)              
       r.gStyle.SetPadRightMargin(0.05)
 
    def changeLabelsToNames(self):
@@ -37,7 +37,7 @@ class Canvas:
       self.labels = newlabels
 
    def banner(self, isData, lumi):
-    
+     
       latex = TLatex()
       latex.SetNDC();                         
       latex.SetTextAngle(0);                  
@@ -55,10 +55,19 @@ class Canvas:
       latexb.SetTextAlign(31);
       latexb.SetTextSize(0.04);            
 
-      if(isData):
-        latexb.DrawLatex(0.47, 0.93, "#it{Preliminary}")
-      else:
-        latexb.DrawLatex(0.47, 0.93, "#it{Simulation}")
+      latexd = TLatex()
+      latexd.SetNDC();
+      latexd.SetTextAngle(90);
+      latexd.SetTextColor(r.kBlack);
+      latexd.SetTextFont(42);
+      latexd.SetTextAlign(31);
+      latexd.SetTextSize(0.06);
+      latexd.DrawLatex(0.15, 0.93, "Events")  
+
+      #if(isData):
+      #  latexb.DrawLatex(0.44, 0.93, "#it{Preliminary}")
+      #else:
+      #  latexb.DrawLatex(0.44, 0.93, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
@@ -68,7 +77,7 @@ class Canvas:
       latexc.SetTextFont(42);
       latexc.SetTextAlign(31);
       latexc.SetTextSize(0.04);
-      latexc.DrawLatex(0.90, 0.93, text_lumi)
+      latexc.DrawLatex(0.90, 0.93, text_lumi)                
 
    def banner2(self, isData, lumi):
     
@@ -88,11 +97,20 @@ class Canvas:
       latexb.SetTextFont(42);
       latexb.SetTextAlign(31);
       latexb.SetTextSize(0.04);            
- 
-      if(isData):
-        latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
-      else:
-        latexb.DrawLatex(0.38, 0.93, "#it{Simulation}")
+
+      latexd = TLatex()
+      latexd.SetNDC();
+      latexd.SetTextAngle(90);
+      latexd.SetTextColor(r.kBlack);
+      latexd.SetTextFont(42);
+      latexd.SetTextAlign(31);
+      latexd.SetTextSize(0.04);
+      latexd.DrawLatex(0.07, 0.93, "Events")  
+
+      #if(isData):
+      #  latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
+      #else:
+      #  latexb.DrawLatex(0.38, 0.93, "#it{Simulation}")
 
       text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
       latexc = TLatex()
@@ -103,6 +121,40 @@ class Canvas:
       latexc.SetTextAlign(31);
       latexc.SetTextSize(0.05);
       latexc.DrawLatex(0.90, 0.93, text_lumi)
+
+   def banner3(self, isData, lumi):
+     
+      latex = TLatex()
+      latex.SetNDC();                         
+      latex.SetTextAngle(0);                  
+      latex.SetTextColor(r.kBlack);           
+      latex.SetTextFont(42);                  
+      latex.SetTextAlign(31);                 
+      latex.SetTextSize(0.07);                
+      latex.DrawLatex(0.1, 1.22, "#bf{CMS}") 
+               
+      latexb = TLatex()                      
+      latexb.SetNDC();
+      latexb.SetTextAngle(0);
+      latexb.SetTextColor(r.kBlack);
+      latexb.SetTextFont(42);
+      latexb.SetTextAlign(31);
+      latexb.SetTextSize(0.05);            
+                                                             
+      #if(isData):
+      #  latexb.DrawLatex(0.34, 1.22, "#it{Preliminary}")
+      #else:
+      #  latexb.DrawLatex(0.34, 1.22, "#it{Simulation}")
+                                                             
+      text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
+      latexc = TLatex()
+      latexc.SetNDC();
+      latexc.SetTextAngle(0);
+      latexc.SetTextColor(r.kBlack);
+      latexc.SetTextFont(42);
+      latexc.SetTextAlign(31);
+      latexc.SetTextSize(0.05);
+
 
    def addBand(self, x1, y1, x2, y2, color, opacity):
 
@@ -191,10 +243,19 @@ class Canvas:
       self.addHisto(h, option, "", "", "", ToDraw, -1)  
       for h_c in h.GetHists():
           self.addHisto(h_c, "H", h_c.GetTitle(), "F", "", 0, legendCounter)
-          legendCounter = legendCounter + 1
+          legendCounter = legendCounter + 1                                          
        
+   def addPies(self, h, option, ToDraw, orderForLegend):
+   
+      legendCounter = orderForLegend
+      if(orderForLegend < len(self.orderForLegend)):
+          legendCounter = len(self.orderForLegend)
+   
+      self.addHisto(h, option, "", "", "", ToDraw, -1)  
+      for h_c in h.GetHists():
+          self.addHisto(h_c, "H", h_c.GetTitle(), "F", "", 0, legendCounter)
+          legendCounter = legendCounter + 1                                       
 
- 
    def makeLegend(self):
 
       for i in range(0, len(self.histos)):
@@ -214,11 +275,11 @@ class Canvas:
 
       pad1 = TPad("pad1", "pad1", 0, 0.25, 1, 1.0)
       pad1.SetBottomMargin(0.12)
-      pad1.Draw()
+      pad1.Draw()                                     
       pad2 = TPad("pad2", "pad2", 0, 0.05, 1, 0.25)
       pad2.SetTopMargin(0.1);
       pad2.SetBottomMargin(0.3);
-      pad2.Draw();
+      pad2.Draw();                                      
 
       pad1.cd()
       if(log):
@@ -274,6 +335,7 @@ class Canvas:
           tmp_ratio.GetYaxis().SetNdivisions(4);
           tmp_ratio.GetYaxis().SetTitleSize(0.12);
           tmp_ratio.GetXaxis().SetTitleSize(0.12);
+          tmp_ratio.GetXaxis().SetLabelOffset(0.08);
           tmp_ratio.GetXaxis().SetTitle('');
           tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
@@ -319,7 +381,7 @@ class Canvas:
       self.myCanvas.IsA().Destructor(self.myCanvas)                                                                                                                                            
 
 
-   def save(self, legend, isData, log, lumi, ymin=0, ymax=0):
+   def save(self, legend, isData, log, lumi, labelx, ymin=0, ymax=0):
 
       self.myCanvas.cd()
       
@@ -348,19 +410,17 @@ class Canvas:
           lat.SetTextFont(latex[-2])
           lat.DrawLatex(latex[0], latex[1], latex[2])
   
-      ## ps = self.histos[0].GetListOfFunctions().FindObject('stat')
-      ## if ps:
-      ##   ps.SetX1NDC(0.15)
-      ##   ps.SetX2NDC(0.55)
-
-      ##   ps.SetY1NDC(0.15)
-      ##   ps.SetY2NDC(0.25)
-            
-
       if(legend):
           self.makeLegend()
           self.myLegend.Draw()
 
+      lat = TLatex()
+      lat.SetNDC()
+      lat.SetTextSize(0.05)
+      lat.SetTextFont(42)
+      lat.DrawLatex(0.46, 0.04, labelx)
+      
+      
       self.banner(isData, lumi)
       for plotName in self.plotNames:
           path = 'plots/'+plotName
@@ -370,7 +430,56 @@ class Canvas:
       self.myLegend.IsA().Destructor(self.myLegend)
       self.myCanvas.IsA().Destructor(self.myCanvas)
 
- #del self.myCanvas
+   def savePie(self, legend, lumi, labelx):
 
+      cpie = TCanvas("cpie","TPie test",700,700)
+      
+      pad1 = TPad("pad1", "pad1", 0.1, 0.1, 0.75, 0.75)
+      pad1.SetBottomMargin(0.12)
+      pad1.Draw()   
+      
+      pad1.cd()
+    
+      colors = []
+      names = []
+      vals = []
+      
+      for i in range(0, len(self.histos)):
+          vals.append(self.histos[i].Integral())
+          colors.append(self.histos[i].GetLineColor())
+          names.append(self.histos[i].GetName())
+      v = array('d', vals)
+      c = array('i', colors)
+      pie4 = TPie("p4","",len(v),v,c);
+      
+      pie4.SetRadius(.45);
+      pie4.SetLabelsOffset(.01);
+      pie4.SetLabelsOffset(100);
+      pie4.SetEntryLineWidth(1,2);
+      pie4.SetEntryLineWidth(2,2);
+      pie4.SetEntryLineWidth(3,2);
+      pie4.SetEntryLineWidth(4,2);
+      pie4.SetEntryLineWidth(5,2);
+      pie4.SetEntryLineWidth(6,2);
+      pie4.SetEntryLineWidth(7,2);
+      pie4.Draw();                                      
 
+      self.makeLegend()
+      self.myLegend.Draw()              
 
+      lat = TLatex()
+      lat.SetNDC()
+      lat.SetTextSize(0.06)
+      lat.SetTextFont(42)
+      lat.DrawLatex(0.12, -0.1, "Slepton signal region, "+labelx)
+
+      self.banner3(True, lumi)
+      for plotName in self.plotNames:
+          path = 'plots/'+plotName
+          #self.ensurePath(path)
+          cpie.SaveAs(path)
+
+      self.myLegend.IsA().Destructor(self.myLegend)
+      #cpie.Destructor(self.myCanvas)
+
+ #del self.myCanvas                                                                                      

@@ -160,6 +160,7 @@ class Sample:
           
           if (self.doKfactor == 0): #all other MC has no NNLO/NLO reweighting
               kf = "1"  
+          #cut = cut + "* ( " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
           cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
       else: 
          addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"
@@ -406,13 +407,13 @@ class Tree:
 
      del can_aux
 
-     ylabel = "# events"
+     ylabel = "Events"
      if xmax != xmin:
        hs.GetXaxis().SetTitle(xlabel)
        b = int((xmax-xmin)/nbin)
        ylabel = "Events / " + str(b) + " GeV"
      else:     
-       ylabel = "# events"
+       ylabel = "Events"
    
      hs.GetYaxis().SetTitle(ylabel)
      return hs   
