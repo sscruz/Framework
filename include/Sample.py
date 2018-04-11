@@ -25,8 +25,12 @@ class Sample:
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
             if gw: break
-        print "using this self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw) ", self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw), " for ", self.name
-        self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
+        if self.ftfile.Get('SumGenWeights'):
+            print "using this self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw) ", self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw), " for ", self.name
+            self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
+        else:
+            print "using this ttbar counts"
+            self.count = 219020050005/abs(gw)
       else:
         #self.count = self.ftfile.Get('Count').GetBinContent(1)
         self.count = self.ftfile.Get('sf/t').GetEntries()
@@ -45,7 +49,7 @@ class Sample:
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
         #print "self.name ", self.name
         print self.name
-        print "weight ", self.lumWeight*35.9
+        print "weight ", self.lumWeight*41.9
         #self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan > 0:
@@ -120,30 +124,6 @@ class Sample:
       kf = "1"  
       if(self.isData == 0):
           if (self.doKfactor == 1 ): #this is the kfactor for ZZto4l
-#              if doKfactorGENVar == 'doTGraph':
-#                  kf = "("
-#                  scalebins = [[0, 5], [5,10],[10, 15],[15, 20], [20,25], [25,30], [30,35], [35,40], [40,45], [45,50], [50,55], [55,60], [60,65], [65,70],[70, 75], [75,80], [80,85], [85,90], [90,95],[95, 100], [100, 1000]]
-#                  for q in scalebins:   
-#                      mini = float(min(scalebins[scalebins.index(q)]))
-#                      maxi = float(max(scalebins[scalebins.index(q)]))
-#                      mid = float((mini+maxi)/2)
-#                      p0 = fit.GetParameter(0) 
-#                      p1 = fit.GetParameter(1) 
-#                      p2 = fit.GetParameter(2) 
-#                      p3 = fit.GetParameter(3) 
-#                      p4 = fit.GetParameter(4) 
-#                      p5 = fit.GetParameter(5) 
-#                      p6 = fit.GetParameter(6) 
-#                      #x = hScale.GetY() 
-#                      #kf = "( "+str(p0)+"+ ("+str(p1)+"*abs(GENptZZ_Edge)))"
-#                      kf = "( "+str(p0)+"+ (("+str(p1)+")*GENptZZ_Edge) + (("+str(p2)+")*GENptZZ_Edge**2)+(("+str(p3)+")*GENptZZ_Edge**3)+(("+str(p4)+")*GENptZZ_Edge**4)+(("+str(p5)+")*GENptZZ_Edge**5)+(("+str(p6)+")*GENptZZ_Edge**6))*(GENptZZ_Edge < 100)"
-#                      #kf = "( "+str(p0)+"+ (("+str(p1)+")*GENptZZ_Edge) + (("+str(p2)+")*GENptZZ_Edge**2)+(("+str(p3)+")*GENptZZ_Edge**3)+(("+str(p4)+")*GENptZZ_Edge**4)+(("+str(p5)+")*GENptZZ_Edge**5)+(("+str(p6)+")*GENptZZ_Edge**6))*(GENptZZ_Edge < 100) + 1.584*(GENptZZ_Edge > 100)"
-#                      #kf = "( "+str(p0)+"+ ("+str(p1)+"*abs(GENptZZ_Edge)) + ("+str(p2)+"*abs(GENptZZ_Edge)^2)+("+str(p3)+"*abs(GENptZZ_Edge)^3)+("+str(p4)+"*abs(GENptZZ_Edge)^4)+("+str(p5)+"*abs(GENptZZ_Edge)^5)+("+str(p6)+"*abs(GENptZZ_Edge)^6))"
-#                          #kf = kf +  str(x[scalebins.index(q)]) +"*(abs(GENptZZ_Edge)>" +str(mini)+"&&abs(GENptZZ_Edge)<="+ str(maxi) +")"
-#                      #else:
-#                      #    kf = kf + "+"+ str(x[scalebins.index(q)]) +"*(abs(GENptZZ_Edge)>" +str(mini)+" &&abs(GENptZZ_Edge)<="+ str(maxi) +")"
-#                  #kf = kf+ ")"       
-#                  print kf
               if doKfactorGENVar == 'ZZmass':
                   kf = "(1.23613*(abs(GENmassZZ_Edge)>0.0&&abs(GENmassZZ_Edge)<=25.0)+1.1755*(abs(GENmassZZ_Edge)>25.0 &&abs(GENmassZZ_Edge)<=50.0 )+ 1.1704*(abs(GENmassZZ_Edge)>50.0 &&abs(GENmassZZ_Edge)<=75.0 )+ 1.0314*(abs(GENmassZZ_Edge)>75.0 &&abs(GENmassZZ_Edge)<=100.0)+1.0528*(abs(GENmassZZ_Edge)>100.0&&abs(GENmassZZ_Edge)<=125.0)+1.1128*(abs(GENmassZZ_Edge)>125.0&&abs(GENmassZZ_Edge)<=150.0)+1.1336*(abs(GENmassZZ_Edge)>150.0&&abs(GENmassZZ_Edge)<=175.0)+1.1035*(abs(GENmassZZ_Edge)>175.0&&abs(GENmassZZ_Edge)<=200.0)+1.1005*(abs(GENmassZZ_Edge)>200.0&&abs(GENmassZZ_Edge)<=225.0)+1.1097*(abs(GENmassZZ_Edge)>225.0&&abs(GENmassZZ_Edge)<=250.0)+1.1206*(abs(GENmassZZ_Edge)>250.0&&abs(GENmassZZ_Edge)<=275.0)+1.1158*(abs(GENmassZZ_Edge)>275.0&&abs(GENmassZZ_Edge)<=300.0)+1.1390*(abs(GENmassZZ_Edge)>300.0&&abs(GENmassZZ_Edge)<=325.0)+1.1485*(abs(GENmassZZ_Edge)>325.0&&abs(GENmassZZ_Edge)<=350.0)+1.1461*(abs(GENmassZZ_Edge)>350.0&&abs(GENmassZZ_Edge)<=375.0)+1.1457*(abs(GENmassZZ_Edge)>375.0&&abs(GENmassZZ_Edge)<=400.0)+1.1382*(abs(GENmassZZ_Edge)>400.0&&abs(GENmassZZ_Edge)<=425.0)+1.1552*(abs(GENmassZZ_Edge)>425.0&&abs(GENmassZZ_Edge)<=450.0)+1.1367*(abs(GENmassZZ_Edge)>450.0&&abs(GENmassZZ_Edge)<=475.0)+1.1322*(abs(GENmassZZ_Edge)>475.0))"
               if doKfactorGENVar == 'ZZpt':
@@ -160,7 +140,6 @@ class Sample:
           
           if (self.doKfactor == 0): #all other MC has no NNLO/NLO reweighting
               kf = "1"  
-          #cut = cut + "* ( " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
           cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
       else: 
          addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"

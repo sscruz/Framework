@@ -55,21 +55,12 @@ class Canvas:
       latexb.SetTextAlign(31);
       latexb.SetTextSize(0.04);            
 
-      latexd = TLatex()
-      latexd.SetNDC();
-      latexd.SetTextAngle(90);
-      latexd.SetTextColor(r.kBlack);
-      latexd.SetTextFont(42);
-      latexd.SetTextAlign(31);
-      latexd.SetTextSize(0.06);
-      latexd.DrawLatex(0.15, 0.93, "Events")  
-
       #if(isData):
-      #  latexb.DrawLatex(0.44, 0.93, "#it{Preliminary}")
+      latexb.DrawLatex(0.44, 0.93, "#it{Preliminary}")
       #else:
       #  latexb.DrawLatex(0.44, 0.93, "#it{Simulation}")
 
-      text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
+      text_lumi = "41.9 fb^{-1}"
       latexc = TLatex()
       latexc.SetNDC();
       latexc.SetTextAngle(0);
@@ -98,21 +89,12 @@ class Canvas:
       latexb.SetTextAlign(31);
       latexb.SetTextSize(0.04);            
 
-      latexd = TLatex()
-      latexd.SetNDC();
-      latexd.SetTextAngle(90);
-      latexd.SetTextColor(r.kBlack);
-      latexd.SetTextFont(42);
-      latexd.SetTextAlign(31);
-      latexd.SetTextSize(0.04);
-      latexd.DrawLatex(0.07, 0.93, "Events")  
-
       #if(isData):
-      #  latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
+      latexb.DrawLatex(0.38, 0.93, "#it{Preliminary}")
       #else:
       #  latexb.DrawLatex(0.38, 0.93, "#it{Simulation}")
 
-      text_lumi = str(lumi) + " fb^{-1} (13 TeV)"
+      text_lumi ="41.9 fb^{-1}"
       latexc = TLatex()
       latexc.SetNDC();
       latexc.SetTextAngle(0);
