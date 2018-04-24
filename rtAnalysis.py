@@ -76,9 +76,9 @@ def makeTable(DATAnumee, DATAnummm, DATAnumOF, DATAdenee, DATAdenmm, DATAdenOF, 
 
 ############################################################
 def getRT(eff_ee, unc_ee, eff_mm, unc_mm, eff_em, unc_em):
-    if(eff_em == 0 ):
-        print "Division by zero"
-        return [0, 0, 0]
+    if(eff_em == 0 ):return [0, 0, 0]
+    if(eff_ee == 0 ):return [0, 0, 0]
+    if(eff_mm == 0 ):return [0, 0, 0]
     RT = math.sqrt(eff_ee*eff_mm)/eff_em
     uncRTee = (math.sqrt(eff_mm)/eff_em)*0.5*(unc_ee/math.sqrt(eff_ee)) 
     uncRTmm = (math.sqrt(eff_ee)/eff_em)*0.5*(unc_mm/math.sqrt(eff_mm)) 
@@ -219,9 +219,9 @@ if __name__ == '__main__':
     dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
-    ttzDatasets = ['TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW', 'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
-    zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu', 'GluGluToContinToZZTo2mu2tau']
-    zz4lDatasets = ['ZZTo4L', 'GluGluToContinToZZTo2mu2tau', 'GGHZZ4L_ext', 'VBF_HToZZTo4L']
+    ttzDatasets = ['TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO',  'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
+    zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
+    zz4lDatasets = ['ZZTo4L',  'GGHZZ4L_ext', 'VBF_HToZZTo4L']
     wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q', 'WJetsToLNu_LO']
     wzDatasets = ['WZTo3LNu_amcatnlo']
     raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow','TTTT' ]
@@ -231,76 +231,68 @@ if __name__ == '__main__':
 
     daDatasets16B = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
                    'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
-                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
-                   'SingleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
-                   'SingleElectron_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
-                   'MET_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
-                   'JetHT_Run2016B_03Feb2017_ver2_v2_runs_273150_275376']             
+                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'] 
  
     daDatasets16C = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044', 
-                   'SingleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
-                   'SingleElectron_Run2016C_03Feb2017_v1_runs_271036_284044',
-                   'MET_Run2016C_03Feb2017_v1_runs_271036_284044', 
-                   'JetHT_Run2016C_03Feb2017_v1_runs_271036_284044']                    
+                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']
     
     daDatasets16D = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'SingleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'SingleElectron_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'MET_Run2016D_03Feb2017_v1_runs_271036_284044', 
-                   'JetHT_Run2016D_03Feb2017_v1_runs_271036_284044']          
+                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044']
  
     daDatasets16E = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'SingleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'SingleElectron_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'MET_Run2016E_03Feb2017_v1_runs_271036_284044', 
-                   'JetHT_Run2016E_03Feb2017_v1_runs_271036_284044']          
+                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044']
  
     daDatasets16F = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044', 
-                   'SingleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',        
-                   'SingleElectron_Run2016F_03Feb2017_v1_runs_271036_284044',
-                   'MET_Run2016F_03Feb2017_v1_runs_271036_284044', 
-                   'JetHT_Run2016F_03Feb2017_v1_runs_271036_284044']          
+                   'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044'] 
 
     daDatasets16G = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
                    'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'SingleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',       
-                   'SingleElectron_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'MET_Run2016G_03Feb2017_v1_runs_271036_284044', 
-                   'JetHT_Run2016G_03Feb2017_v1_runs_271036_284044']          
+                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044']
 
     daDatasets16H = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
                    'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
                    'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
                    'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
                    'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
-                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044', 
-                   'SingleElectron_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
-                   'SingleElectron_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
-                   'SingleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
-                   'SingleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
-                   'MET_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
-                   'MET_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
-                   'JetHT_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
-                   'JetHT_Run2016H_03Feb2017_ver3_v1_runs_284036_284044']    
- 
+                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044'] 
+
+                                                                                  
+    daDatasets17B = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',     
+                   'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
+                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                                                                              
+    daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
+                   'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
+                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029']    
+    
+    daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
+                   'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
+                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434']    
+                                                                              
+    daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
+                   'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
+                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                                                                              
+    daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
+                  'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
+                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462']          
+
+
+
     daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H     
+    daDatasets17 = daDatasets17B + daDatasets17C + daDatasets17D +daDatasets17E + daDatasets17F       
     treeMC = Sample.Tree(helper.selectSamples("samples.dat", mcDatasets, 'MC'), 'MC'  , 0)
     treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
-    treeDA17 = Sample.Tree(helper.selectSamples("samples.dat", daDatasets16, 'DA'), 'DATA', 1)
+    treeDA17 = Sample.Tree(helper.selectSamples("samples.dat", daDatasets17, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[RTAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
     
-    lumi = 35.9 ; maxrun = 999999; lumi_str = '35.9invfb'
+    lumi = 41.9 ; maxrun = 999999; lumi_str = '41.9invfb'
     gROOT.ProcessLine('.L include/tdrstyle.C')
     gROOT.SetBatch(1)
     r.setTDRStyle()
@@ -358,7 +350,7 @@ if __name__ == '__main__':
     effMlleevalueDATA17 = getTriggerEffs(DATA16numMlleevalue, DATA17denMlleevalue, "data")
     print "effMlleevalueDATA17 ", effMlleevalueDATA17.GetY()[0]
     effMllmmvalueDATA17 = getTriggerEffs(DATA17numMllmmvalue, DATA17denMllmmvalue, "data")
-    print "effMllmmvalueDATA17 ", effMllmmvalueDATA.GetY()[0]
+    print "effMllmmvalueDATA17 ", effMllmmvalueDATA17.GetY()[0]
     effMllSFvalueDATA17 = getTriggerEffs(DATA17numMllSFvalue, DATA17denMllSFvalue, "data")
     print "effMllSFvalueDATA17 ", effMllSFvalueDATA17.GetY()[0]
     effMllOFvalueDATA17 = getTriggerEffs(DATA17numMllOFvalue, DATA17denMllOFvalue, "data")
@@ -439,7 +431,7 @@ if __name__ == '__main__':
     print 'Measured RT value data 2016 ', da16rt, ' +/- ', da16uncrt, ' +/- ', da16systrt
     print 'Measured RT value data 2017 ', da17rt, ' +/- ', da17uncrt, ' +/- ', da17systrt
     print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
-    saveInFile(theFile, mcrt, mcuncrt, mcsystrt, dart, dauncrt, dasystrt)
+    saveInFile(theFile, mcrt, mcuncrt, mcsystrt, da17rt, da17uncrt, da17systrt)
     makeTable(DATA16numMlleevalue, DATA16numMllmmvalue, DATA16numMllOFvalue, DATA16denMlleevalue, DATA16denMllmmvalue, DATA16denMllOFvalue, eevalda16, mmvalda16, emvalda16, eevalda16e, mmvalda16e, emvalda16e, da16rt, da16uncrt, da16systrt, "DATA")
     makeTable(DATA17numMlleevalue, DATA17numMllmmvalue, DATA17numMllOFvalue, DATA17denMlleevalue, DATA17denMllmmvalue, DATA17denMllOFvalue, eevalda17, mmvalda17, emvalda17, eevalda17e, mmvalda17e, emvalda17e, da17rt, da17uncrt, da17systrt, "DATA")
     makeTable(MCnumMlleevalue, MCnumMllmmvalue, MCnumMllOFvalue, MCdenMlleevalue, MCdenMllmmvalue, MCdenMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, mcrt, mcuncrt, mcsystrt, "MC")

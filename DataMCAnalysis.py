@@ -158,7 +158,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
     print 'cumulative', cumulative
     print 'onlyMC', onlyMC
 
-    theCutDATA = cuts.AddList([theCut, cuts.trigger ])
+    theCutDATA = cuts.AddList([theCut, cuts.trigger17 ])
     theCutZ = cuts.AddList([theCut, cuts.Zmass ])
     MC   = treeMC.getTH1F(lumi, "hMC_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx)
@@ -178,7 +178,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
 
     for _i,_h in enumerate(MCS.GetHists()):
         print "sample ", _h.GetName(), " has integral ", _h.Integral()
-        
+    print "full MC ", MC.Integral() 
     if normalized:
         hists = []
         for _i,_h in enumerate(MCS.GetHists()):
@@ -489,7 +489,7 @@ if __name__ == "__main__":
                    'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasetsF = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
+    #              'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462']           
                                                                               
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF  

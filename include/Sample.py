@@ -25,32 +25,21 @@ class Sample:
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
             if gw: break
-        if self.ftfile.Get('SumGenWeights'):
-            print "using this self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw) ", self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw), " for ", self.name
-            self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
-        else:
-            print "using this ttbar counts"
-            self.count = 219020050005/abs(gw)
+        self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
       else:
-        #self.count = self.ftfile.Get('Count').GetBinContent(1)
-        self.count = self.ftfile.Get('sf/t').GetEntries()
+          #self.count = self.ftfile.Get('Count').GetBinContent(1)
+          self.count = self.ftfile.Get('sf/t').GetEntries()
       self.puWeight   = '1.0'
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
       self.triggWeight = '1.0'
       self.ISRWeight  = '1.0'
 
-      #print self.name
-      #print isdata
       if not self.isData and not self.isScan  > 0:
         self.lumWeight = self.xSection / self.count
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
-        #print "self.name ", self.name
-        print self.name
-        print "weight ", self.lumWeight*41.9
-        #self.triggWeight = "weight_trigger_Edge"
 
       if self.isScan > 0:
         self.lumWeight  =  1.0
@@ -61,11 +50,9 @@ class Sample:
         self.ISRWeight = 'ISRweight_Edge'
         if self.isScan == True:
             self.smsCount =   self.ftfile.Get('CountSMS')
-            print "using this self.smsCount ", self.smsCount, " for ", self.name
         else:
             self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
             self.lumWeight = self.xSection / self.smsCount
-            print "using this self.smsCount ", self.smsCount, " for ", self.name
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
