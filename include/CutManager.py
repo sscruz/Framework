@@ -10,7 +10,7 @@ class CutManager:
       ########################################################################
       ######Basic Lepton Cuts ################################################
       ########################################################################
-      self.twoLeptons = "nPairLep_Edge > 0 &&  Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
+      self.twoLeptons = "nPairLep_Edge > 0 &&  Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_ecalBadCalibFilter == 1&& Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
       self.sleptonLeptonPt = "Lep1_pt_Edge > 20 && Lep2_pt_Edge > 20."
@@ -23,20 +23,19 @@ class CutManager:
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
-      self.trigMM17 = "( HLT_DoubleMu_Edge ==1 )"
-      self.trigEE17 = "( HLT_DoubleEl_Edge ==1 )"
-      self.trigEM17 = "( HLT_MuEG_Edge ==1 )"
-      self.trigMMNEW = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
-      self.trigEENEW = "( HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge==1)"
-      self.trigEMNEW = "( HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
-      self.trigger = "((" + self.mm + ") || (" + self.ee + ") || (" + self.OF + "))"
-      #self.trigger = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
-      self.trigger17 = "((" +  self.mm + ") || (" + self.ee + ") || (" + self.OF + "))"
+      self.trigMM17 = "( HLT_DoubleMu_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v == 1 || HLT_BIT_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass3p8_v == 1 || HLT_BIT_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_v == 1 || HLT_BIT_HLT_Mu37_TkMu27_v == 1)"
+      self.trigEE17 = "( HLT_DoubleEl_Edge ==1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v ==1 || HLT_BIT_HLT_DoubleEle25_CaloIdL_MW_v == 1 || HLT_BIT_HLT_DoubleEle27_CaloIdL_MW_v == 1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_MW_v == 1)"
+      self.trigEM17 = "( HLT_MuEG_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v ==1 )"
+      self.trigMM16 = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
+      self.trigEE16 = "( HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge==1)"
+      self.trigEM16 = "( HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
+      self.trigger16 = "((" + self.trigMM16 + " && " + self.mm + ") || (" + self.trigEE16 + " && " + self.ee + ") || (" + self.trigEM16 + " && " + self.OF + "))"
+      self.trigger17 = "((" + self.trigMM17 + " && " + self.mm + ") || (" + self.trigEE17 + " && " + self.ee + ") || (" + self.trigEM17 + " && " + self.OF + "))"
       self.triggerForCR = "((" + self.trigMMNEW + " && " + self.mm + ") || (" + self.trigEENEW + " && " + self.ee + ") || (" + self.trigEMNEW + " && " + self.OF + "))"
-      self.goodLepton = "("+self.trigger + "&&" +self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.goodLepton3l = "("+self.trigger + "&&" +self.twoLeptons + "&&" + self.leptonDR  +  ")"
-      self.goodLepton4l = "("+self.trigger + "&&" +self.twoLeptons + ")"
-      self.goodLeptonSlepton = "("+self.trigger + "&&" +self.twoLeptons  +"&&" + self.sleptonLeptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      self.goodLepton = "("+self.trigger17 + "&&" +self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      self.goodLepton3l = "("+self.trigger17 + "&&" +self.twoLeptons + "&&" + self.leptonDR  +  ")"
+      self.goodLepton4l = "("+self.trigger17 + "&&" +self.twoLeptons + ")"
+      self.goodLeptonSlepton = "("+self.trigger17 + "&&" +self.twoLeptons  +"&&" + self.sleptonLeptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonSignal = "( nPairLep_Edge > 0 &&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLeptonNoTrigger = "(" +self.twoLeptons  +"&&" + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.oldThirdLepVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 )'
@@ -280,9 +279,12 @@ class CutManager:
       ######Basic HT cuts#####################################################
       ########################################################################
       self.HT = "(htJet35j_Edge > 200) "
-      self.triggerHT = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5  )" 
-      self.numerator =   self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT, self.trigger])
-      self.denominator = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT])  
+      self.triggerHT17 = "( HLT_HT == 1  )" 
+      self.triggerHT16 = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5  )" 
+      self.num16 = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT16, self.trigger16])
+      self.den16 = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT16])  
+      self.num17 = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT17, self.trigger17])
+      self.den17 = self.AddList([self.goodLeptonNoTrigger,  self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectControlRegionOF), self.HT, self.triggerHT17])  
 
    def donot(self, cut):
      return '(!' + self.brackets(cut) + ')'

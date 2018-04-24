@@ -113,7 +113,7 @@ DYJets    r.kYellow-9     DYJetsToLL_M50_LO              DY+Jets     /afs/cern.c
 WW2l      r.kCyan-6       WWTo2L2Nu                      WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/     12178.0    0   0 
 WW2l      r.kCyan-6       WWDouble                       WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/      1617.0    0   0 
 WW2l      r.kCyan-6       WpWpJJ                         WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/        37.1    0   0 
-WW2l      r.kCyan-6       GGHWWTo2L2Nu                   WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/      1002.0    0   0 
+#WW2l      r.kCyan-6       GGHWWTo2L2Nu                   WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/      1002.0    0   0 
 WW2l      r.kCyan-6       GGWWTo2L2Nu                    WW2l        /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/       421.8    0   0 
 TTJets    r.kRed-9        TTJets_SingleLeptonFromT       TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/    182175.4    0   0
 TTJets    r.kRed-9        TTJets_SingleLeptonFromTbar    TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/    182175.4    0   0
