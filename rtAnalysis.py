@@ -216,15 +216,15 @@ if __name__ == '__main__':
     makeDependencyPlots = True 
 
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
+    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
-    ttzDatasets = ['TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO',  'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
+    ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW',  'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
     zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
-    zz4lDatasets = ['ZZTo4L',  'GGHZZ4L_ext', 'VBF_HToZZTo4L']
+    zz4lDatasets = ['ZZTo4L',  'GGHZZ4L', 'VBF_HToZZTo4L', 'GluGluToContinToZZTo2mu2tau']
     wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q', 'WJetsToLNu_LO']
     wzDatasets = ['WZTo3LNu_amcatnlo']
-    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow','TTTT' ]
+    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow' ]
     mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets                           
 
 
@@ -261,33 +261,59 @@ if __name__ == '__main__':
                    'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044'] 
 
                                                                                   
-    daDatasets17B = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',     
+    daDatasets17B = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',            
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
-                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                   #'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
     daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029']    
+                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']    
+                   #'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
     daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434']    
+                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434']    
+                   #'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   #'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
     daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                   #'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462']          
+                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
+                  'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
+                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462']           
+                  #'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+                  #'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                   
+
+
+
+
+
+
 
 
 
     daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H     
     daDatasets17 = daDatasets17B + daDatasets17C + daDatasets17D +daDatasets17E + daDatasets17F       
-    treeMC = Sample.Tree(helper.selectSamples("samples.dat", mcDatasets, 'MC'), 'MC'  , 0)
+    treeMC = Sample.Tree(helper.selectSamples("samplesUnskimmedSR.dat", mcDatasets, 'MC'), 'MC'  , 0)
     treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
-    treeDA17 = Sample.Tree(helper.selectSamples("samples.dat", daDatasets17, 'DA'), 'DATA', 1)
+    treeDA17 = Sample.Tree(helper.selectSamples("samplesUnskimmedSR.dat", daDatasets17, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[RTAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
@@ -347,7 +373,7 @@ if __name__ == '__main__':
     print "effMllSFvalueDATA ", effMllSFvalueDATA16.GetY()[0]
     effMllOFvalueDATA16 = getTriggerEffs(DATA16numMllOFvalue, DATA16denMllOFvalue, "data")
     print "effMllOFvalueDATA ", effMllOFvalueDATA16.GetY()[0]                                  
-    effMlleevalueDATA17 = getTriggerEffs(DATA16numMlleevalue, DATA17denMlleevalue, "data")
+    effMlleevalueDATA17 = getTriggerEffs(DATA17numMlleevalue, DATA17denMlleevalue, "data")
     print "effMlleevalueDATA17 ", effMlleevalueDATA17.GetY()[0]
     effMllmmvalueDATA17 = getTriggerEffs(DATA17numMllmmvalue, DATA17denMllmmvalue, "data")
     print "effMllmmvalueDATA17 ", effMllmmvalueDATA17.GetY()[0]
@@ -428,9 +454,9 @@ if __name__ == '__main__':
     [da16rt, da16uncrt, da16systrt] = getRT(eevalda16, eevalda16e, mmvalda16, mmvalda16e, emvalda16, emvalda16e)
     [da17rt, da17uncrt, da17systrt] = getRT(eevalda17, eevalda17e, mmvalda17, mmvalda17e, emvalda17, emvalda17e)
     [mcrt, mcuncrt, mcsystrt] = getRT(eevalmc, eevalmce, mmvalmc, mmvalmce, emvalmc, emvalmce)
-    print 'Measured RT value data 2016 ', da16rt, ' +/- ', da16uncrt, ' +/- ', da16systrt
-    print 'Measured RT value data 2017 ', da17rt, ' +/- ', da17uncrt, ' +/- ', da17systrt
-    print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
+    print 'Measured RT value data 2016 %.2f +- %.2f +/- %.2f'%(da16rt, da16uncrt, da16systrt)
+    print 'Measured RT value data 2017 %.2f +- %.2f +/- %.2f'%(da17rt, da17uncrt, da17systrt)
+    print 'Measured RT value MC   %.2f +- %.2f +/- %.2f'%(mcrt, mcuncrt, mcsystrt)
     saveInFile(theFile, mcrt, mcuncrt, mcsystrt, da17rt, da17uncrt, da17systrt)
     makeTable(DATA16numMlleevalue, DATA16numMllmmvalue, DATA16numMllOFvalue, DATA16denMlleevalue, DATA16denMllmmvalue, DATA16denMllOFvalue, eevalda16, mmvalda16, emvalda16, eevalda16e, mmvalda16e, emvalda16e, da16rt, da16uncrt, da16systrt, "DATA")
     makeTable(DATA17numMlleevalue, DATA17numMllmmvalue, DATA17numMllOFvalue, DATA17denMlleevalue, DATA17denMllmmvalue, DATA17denMllOFvalue, eevalda17, mmvalda17, emvalda17, eevalda17e, mmvalda17e, emvalda17e, da17rt, da17uncrt, da17systrt, "DATA")

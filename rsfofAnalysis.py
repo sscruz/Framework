@@ -117,22 +117,22 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
     bins = [20,60,70,110,150,200,300,400] 
-    MCControlSF =      treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx, "1", kf)
-    MCControlee =      treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx, "1", kf)
-    MCControlmm =      treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx, "1", kf)
-    MCControlOF =      treeMC.getTH1F(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx, "1", kf)
+    MCControlSF =      treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCControlee =      treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    MCControlmm =      treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    MCControlOF =      treeMC.getTH1F(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
     MCSignalSF =       treeMC.getTH1F(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
     MCSignalOF =       treeMC.getTH1F(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    MCControlSFvalue = treeMC.getTH1F(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx, "1", kf)
-    MCControlOFvalue = treeMC.getTH1F(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx, "1", kf)
+    MCControlSFvalue = treeMC.getTH1F(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCControlOFvalue = treeMC.getTH1F(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
     MCSignalSFvalue =  treeMC.getTH1F(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
     MCSignalOFvalue =  treeMC.getTH1F(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    DataControlee =    treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.ee]), '', labelx, "1", kf)
-    DataControlmm=treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.mm]), '', labelx, "1", kf)
-    DataControlSF=treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx, "1", kf)
-    DataControlOF=treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx, "1", kf)
-    DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.SF]), '', labelx, "1", kf)
-    DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectControlRegion, cuts.OF]), '', labelx, "1", kf)
+    DataControlee =    treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    DataControlmm=treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    DataControlSF=treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    DataControlOF=treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
     MCControl =          make_rsfof(MCControlSF, MCControlOF, "MC")
     MCSignal =           make_rsfof(MCSignalSF, MCSignalOF, "MC")
     MCControlvalue =     make_rsfof(MCControlSFvalue, MCControlOFvalue, "MC")
@@ -176,7 +176,7 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     MCSignalOFJet =treeMC.getTH1F(lumi,"MCSignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton,cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet, "1", kf)
     DASignalOFJet =treeDA.getTH1F(lumi,"DASignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton,cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet, "1", kf)
     MCSignalSFmt2 =treeMC.getTH1F(lumi,"MCSignalSFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2, "1", kf)
-    DASignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, ccuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2, "1", kf)
+    DASignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelmt2, "1", kf)
     MCSignalOFmt2 =treeMC.getTH1F(lumi,"MCSignalOFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2, "1", kf)
     DASignalOFmt2 =treeDA.getTH1F(lumi,"DASignalOFmt2","mt2_Edge", [0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton, cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelmt2, "1", kf)
 
@@ -224,37 +224,60 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
+    dyDatasets = ['DYJetsToLL_M10to50_LO',  'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
     zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
-    zz4lDatasets = ['ZZTo4L',  'GGHZZ4L_ext', 'VBF_HToZZTo4L']
+    zz4lDatasets = ['ZZTo4L', 'GGHZZ4L', 'VBF_HToZZTo4L', 'GluGluToContinToZZTo2mu2tau']
     wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q', 'WJetsToLNu_LO']
     wzDatasets = ['WZTo3LNu_amcatnlo']
-    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow','TTTT' ]
-    ttzDatasets = [ 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
+    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow']
+    ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW', 'TTWZ', 'TTZH', 'TTZZ',  'TTGJets']
     mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
 
-    daDatasetsB = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',              
+    
+    
+    daDatasetsB = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',            
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
-                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                   #'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
     daDatasetsC = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029']    
+                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']   
+                   #'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
     daDatasetsD = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434']    
+                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434']     
+                   #'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   #'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
     daDatasetsE = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                   #'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasetsF = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462']  
-                                                                              
+                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
+                  'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
+                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462']           
+                  #'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+                  #'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']              
+
+
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF  
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
@@ -270,5 +293,5 @@ if __name__ == '__main__':
 
     cuts = CutManager.CutManager()
     
-    runAnalysis(lumi, treeDA, treeMC, cuts, '', 'nocut', True, opts.ingredientsFile)
+    runAnalysis(lumi, treeDA, treeMC, cuts, '', '', True, opts.ingredientsFile)
  

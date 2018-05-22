@@ -50,9 +50,11 @@ class Sample:
         self.ISRWeight = 'ISRweight_Edge'
         if self.isScan == True:
             self.smsCount =   self.ftfile.Get('CountSMS')
+            print "do i even ever go here ????????????????????????????????????????????????????????"
         else:
-            self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
-            self.lumWeight = self.xSection / self.smsCount
+            #self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
+            #self.lumWeight = self.xSection / self.smsCount
+            self.lumWeight = self.isScan
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -96,18 +98,7 @@ class Sample:
       h_of.GetYaxis().SetTitle(ylabel)
 
       addCut = ""
-      #if self.isData:
-      #  if(name.find("DoubleMuon") != -1):
-      #    addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
-      #    cut = cut + "* ( " + addCut + " ) "
-      #  if(name.find("DoubleEG") != -1):
-      #    addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)))"
-      #    cut = cut + "* ( " + addCut + " ) "
-      #  if(name.find("MuonEG") != -1):
-      #    addCut = "(!((Lep1_pdgId_Edge * Lep2_pdgId_Edge == -121) || (Lep1_pdgId_Edge * Lep2_pdgId_Edge == -169)))"
-      #    cut = cut + "* ( " + addCut + " ) "
-       
-      #fileD =  TFile("kfactors.root");
+      
       kf = "1"  
       if(self.isData == 0):
           if (self.doKfactor == 1 ): #this is the kfactor for ZZto4l
@@ -131,14 +122,12 @@ class Sample:
       else: 
          addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
-      #fileD.Close()                                                                                                                
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
       self.ttree.Project(h.GetName(), var, cut, options)
       for _bin in range(1, h.GetNbinsX()+2):
           h_of.SetBinContent(_bin, h.GetBinContent(_bin))
           h_of.SetBinError  (_bin, h.GetBinError  (_bin))
-      #fileD.Close()                                                                                                                
       return (h_of if ofBin else h)
 
     
@@ -275,7 +264,7 @@ class Tree:
    'Common base class for a physics meaningful tree'
 
    def __init__(self, fileName, name, isdata, isScan = False, isOnEOS = 0):
-      print fileName
+      #print fileName
       self.name  = name
       self.isData = isdata
       self.blocks = []
@@ -311,6 +300,7 @@ class Tree:
 
         sample = Sample(name, flocation, xsection, isdata, doKfactor, self.isScan, self.isOnEOS)
         coincidentBlock = [l for l in self.blocks if l.name == block]
+        #print name
         if(coincidentBlock == []):
 
           newBlock = Block(block, label, color, isdata, doKfactor)
@@ -354,14 +344,14 @@ class Tree:
       del h
       return y
 
-   def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel):
+   def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor):
    
 
      hs = THStack(name, "")
      for b in self.blocks:
      
        AuxName = "auxStack_block_" + name + "_" + b.name
-       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, "1", 'noKFactor')
+       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor)
        haux.SetFillColor(b.color)
        hs.Add(haux)
        del haux

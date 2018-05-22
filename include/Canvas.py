@@ -60,7 +60,7 @@ class Canvas:
       #else:
       #  latexb.DrawLatex(0.44, 0.93, "#it{Simulation}")
 
-      text_lumi = "41.9 fb^{-1}"
+      text_lumi = str(lumi)+" fb^{-1}"
       latexc = TLatex()
       latexc.SetNDC();
       latexc.SetTextAngle(0);
@@ -94,7 +94,7 @@ class Canvas:
       #else:
       #  latexb.DrawLatex(0.38, 0.93, "#it{Simulation}")
 
-      text_lumi ="41.9 fb^{-1}"
+      text_lumi =str(lumi)+" fb^{-1}"
       latexc = TLatex()
       latexc.SetNDC();
       latexc.SetTextAngle(0);
@@ -270,7 +270,7 @@ class Canvas:
       for i in range(0, len(self.histos)):
           if(self.ToDraw[i] != 0):
               #self.histos[i].SetMinimum(0.00001)
-              #self.histos[i].SetMinimum(0.1)
+              self.histos[i].SetMinimum(0.1)
               #self.histos[i].SetMinimum(0.0001)
               #self.histos[i].SetMaximum(0.5)
               self.histos[i].Draw(self.options[i])
