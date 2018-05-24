@@ -117,22 +117,67 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
     bins = [20,60,70,110,150,200,300,400] 
-    MCControlSF =      treeMC.getTH1F(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    MCControlee =      treeMC.getTH1F(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
-    MCControlmm =      treeMC.getTH1F(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
-    MCControlOF =      treeMC.getTH1F(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    MCSignalSF =       treeMC.getTH1F(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
-    MCSignalOF =       treeMC.getTH1F(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    MCControlSFvalue = treeMC.getTH1F(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    MCControlOFvalue = treeMC.getTH1F(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    MCSignalSFvalue =  treeMC.getTH1F(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
-    MCSignalOFvalue =  treeMC.getTH1F(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    DataControlee =    treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
-    DataControlmm=treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
-    DataControlSF=treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    DataControlOF=treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    MCSControlSF =      treeMC.getStack(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCSControlee =      treeMC.getStack(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    MCSControlmm =      treeMC.getStack(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    MCSControlOF =      treeMC.getStack(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    MCSSignalSF =       treeMC.getStack(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
+    MCSSignalOF =       treeMC.getStack(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
+    MCSControlSFvalue = treeMC.getStack(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCSControlOFvalue = treeMC.getStack(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    MCSSignalSFvalue =  treeMC.getStack(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
+    MCSSignalOFvalue =  treeMC.getStack(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
+    DataControlee = treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    DataControlmm=  treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    DataControlSF=  treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    DataControlOF=  treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
     DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
     DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    
+    
+    
+    ControlSF = 0;Controlee = 0; Controlmm = 0; ControlOF = 0; SignalSF = 0; SignalOF = 0; ControlSFvalue = 0; ControlOFvalue = 0;SignalSFvalue =0 ; SignalOFvalue = 0; 
+    for _i,_h in enumerate(MCSControlSF.GetHists()):
+        if not ControlSF: MCControlSF = copy.deepcopy(_h)
+        else:MCControlSF.Add(_h, 1.)               
+        ControlSF = 1                                             
+    for _i,_h in enumerate(MCSControlOF.GetHists()):
+        if not ControlOF: MCControlOF = copy.deepcopy(_h)
+        else:MCControlOF.Add(_h, 1.)               
+        ControlOF = 1                                         
+    for _i,_h in enumerate(MCSControlee.GetHists()):
+        if not Controlee: MCControlee = copy.deepcopy(_h)
+        else:MCControlee.Add(_h, 1.)               
+        Controlee = 1                                   
+    for _i,_h in enumerate(MCSControlmm.GetHists()):
+        if not Controlmm: MCControlmm = copy.deepcopy(_h)
+        else:MCControlmm.Add(_h, 1.)               
+        Controlmm = 1                                         
+    for _i,_h in enumerate(MCSSignalSF.GetHists()):
+        if not SignalSF: MCSignalSF = copy.deepcopy(_h)
+        else:MCSignalSF.Add(_h, 1.)               
+        SignalSF = 1                                       
+    for _i,_h in enumerate(MCSSignalOF.GetHists()):
+        if not SignalOF: MCSignalOF = copy.deepcopy(_h)
+        else:MCSignalOF.Add(_h, 1.)               
+        SignalOF = 1                                      
+    for _i,_h in enumerate(MCSSignalSFvalue.GetHists()):
+        if not SignalSFvalue: MCSignalSFvalue = copy.deepcopy(_h)
+        else:MCSignalSFvalue.Add(_h, 1.)               
+        SignalSFvalue = 1                                      
+    for _i,_h in enumerate(MCSSignalOFvalue.GetHists()):
+        if not SignalOFvalue: MCSignalOFvalue = copy.deepcopy(_h)
+        else:MCSignalOFvalue.Add(_h, 1.)               
+        SignalOFvalue = 1                                            
+    for _i,_h in enumerate(MCSControlSFvalue.GetHists()):
+        if not ControlSFvalue: MCControlSFvalue = copy.deepcopy(_h)
+        else:MCControlSFvalue.Add(_h, 1.)               
+        ControlSFvalue = 1                                      
+    for _i,_h in enumerate(MCSControlOFvalue.GetHists()):
+        if not ControlOFvalue: MCControlOFvalue = copy.deepcopy(_h)
+        else:MCControlOFvalue.Add(_h, 1.)               
+        ControlOFvalue = 1                                           
+
     MCControl =          make_rsfof(MCControlSF, MCControlOF, "MC")
     MCSignal =           make_rsfof(MCSignalSF, MCSignalOF, "MC")
     MCControlvalue =     make_rsfof(MCControlSFvalue, MCControlOFvalue, "MC")
@@ -151,7 +196,7 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     print "MC:   " , measuredValueMC
     print "Data: " ,measuredValueData
     makeTable(DataControlee, DataControlmm, DataControlSF, DataControlOF, MCControlee, MCControlmm, MCControlSF, MCControlOF,measuredValueData, measuredValueUncData, measuredValueMC, measuredValueUncMC)
-    plot_rsfof = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_mll'%(lumi_str,tag), 'png,pdf',  0.45, 0.6, 0.7, 0.8)
+    plot_rsfof = Canvas.Canvas('rsfof/%s%s/plot_rsfof_mll'%(lumi_str,tag), 'png,pdf',  0.45, 0.6, 0.7, 0.8)
     plot_rsfof.addHisto(MCControl, 'PE', 'Control region - MC', 'PL', r.kRed+1 , 1, 0)
     #plot_rsfof.addHisto(MCControlvalue, 'PE,SAME', 'ttjets measurement - MC', 'PL', r.kBlue , 1, 0)
     plot_rsfof.addHisto(MCSignal, 'PE,SAME', 'Signal region - MC', 'PL', r.kGreen+1 , 1, 0)
@@ -187,21 +232,21 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     MCSignalmt2   =make_rsfof(MCSignalSFmt2, MCSignalOFmt2, "MC")
     DASignalmt2   =make_rsfof(DASignalSFmt2, DASignalOFmt2, "DATA")
 
-    plot_rsfofmet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_met'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
+    plot_rsfofmet = Canvas.Canvas('rsfof/%s%s/plot_rsfof_met'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
     plot_rsfofmet.addHisto(MCSignalMET, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
     plot_rsfofmet.addHisto(DASignalMET, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmet.addBand(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofmet.addLine(MCSignalMET.GetXaxis().GetXmin(), measuredValueMC, MCSignalMET.GetXaxis().GetXmax(), measuredValueMC, r.kBlack)
     plot_rsfofmet.save(1, 1, 0, lumi,"",  0.5, 1.8)
 
-    plot_rsfofjet = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_jet'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
+    plot_rsfofjet = Canvas.Canvas('rsfof/%s%s/plot_rsfof_jet'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
     plot_rsfofjet.addHisto(MCSignalJet, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
     #plot_rsfofjet.addHisto(DASignalJet, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofjet.addBand(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
     plot_rsfofjet.addLine(MCSignalJet.GetXaxis().GetXmin(), measuredValueMC, MCSignalJet.GetXaxis().GetXmax(), measuredValueMC, r.kBlack)
     plot_rsfofjet.save(1, 1, 0, lumi,"",  0.5, 1.8)                                                                                                                                           
     
-    plot_rsfofmt2 = Canvas.Canvas('rsfof/%s_%s/plot_rsfof_mt2'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
+    plot_rsfofmt2 = Canvas.Canvas('rsfof/%s%s/plot_rsfof_mt2'%(lumi_str,tag), 'png,pdf', 0.45, 0.6, 0.7, 0.8)
     plot_rsfofmt2.addHisto(MCSignalmt2, 'PE', 'ttjets region - MC', 'PL', r.kRed+1 , 1, 0)
     #plot_rsfofmt2.addHisto(DASignalmt2, 'PE, SAME', 'ttjets region - Data', 'PL', r.kBlack , 1, 0)
     plot_rsfofmt2.addBand(MCSignalmt2.GetXaxis().GetXmin(), measuredValueMC-measuredValueUncMC, MCSignalmt2.GetXaxis().GetXmax(), measuredValueMC+measuredValueUncMC, r.kGreen, 0.2)
@@ -224,7 +269,7 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO',  'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
+    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed',  'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
     zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
@@ -241,41 +286,41 @@ if __name__ == '__main__':
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
                    'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
                    'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
-                   #'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
                    #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
     daDatasetsC = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
                    'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']   
-                   #'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',   
+                   'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
                    #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
     daDatasetsD = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
                    'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434']     
-                   #'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   #'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
+                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
     daDatasetsE = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
                    'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']    
-                   #'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']    
                    #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasetsF = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
                   'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462']           
-                  #'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
-                  #'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']              
+                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462',          
+                  'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+                  'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']              
 
 
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF  

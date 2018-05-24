@@ -151,38 +151,82 @@ def getFactor(rmue, rmue_err, rmue_err_syst):
 
 def makeAnalysis(treeDA16, treeDA17, treeMC, cuts, specialcut, tag, save, ingredientsFile):
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
-    MCDYControlMllee =    treeMC.getTH1F(lumi,"MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
-    MCDYControlMllmm =    treeMC.getTH1F(lumi,"MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
+    MCSDYControlMllee =   treeMC.getStack(lumi,"MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
+    MCSDYControlMllmm =   treeMC.getStack(lumi,"MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
     DA16DYControlMllee =  treeDA16.getTH1F(lumi,"DA16DYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton16,cuts.ee]),'',labelx, "1", kf)
     DA16DYControlMllmm =  treeDA16.getTH1F(lumi,"DA16DYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton16,cuts.mm]),'',labelx, "1", kf)
     DA17DYControlMllee =  treeDA17.getTH1F(lumi,"DA17DYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
     DA17DYControlMllmm =  treeDA17.getTH1F(lumi,"DA17DYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
-    MCDYControlMlleevalue =  treeMC.getTH1F(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
-    MCDYControlMllmmvalue =  treeMC.getTH1F(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
-    DA16DYControlMlleevalue =treeDA16.getTH1F(lumi,"DA16DYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.ee]),'',labelx, "1", kf)
-    DA16DYControlMllmmvalue =treeDA16.getTH1F(lumi,"DA16DYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.mm]),'',labelx, "1", kf)
-    DA17DYControlMlleevalue =treeDA17.getTH1F(lumi,"DA17DYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
-    DA17DYControlMllmmvalue =treeDA17.getTH1F(lumi,"DA17DYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
-    MCDYControlMETee =    treeMC.getTH1F(lumi,"MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
-    MCDYControlMETmm =    treeMC.getTH1F(lumi,"MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
+    ##
+    MCSDYControlMlleevalue = treeMC.getStack(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
+    MCSDYControlMllmmvalue = treeMC.getStack(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
+    DA16DYControlMlleevalue =treeDA16.getTH1F(lumi,"DA16DYCMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.ee]),'',labelx, "1", kf)
+    DA16DYControlMllmmvalue =treeDA16.getTH1F(lumi,"DA16DYCMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.mm]),'',labelx, "1", kf)
+    DA17DYControlMlleevalue =treeDA17.getTH1F(lumi,"DA17DYCMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
+    DA17DYControlMllmmvalue =treeDA17.getTH1F(lumi,"DA17DYCMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
+    ##
+    MCSDYControlMETee =   treeMC.getStack(lumi,"MCDYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
+    MCSDYControlMETmm =   treeMC.getStack(lumi,"MCDYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
     DA16DYControlMETee =  treeDA16.getTH1F(lumi,"DA16DYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton16,cuts.ee]), '', labelmet, "1", kf)
     DA16DYControlMETmm =  treeDA16.getTH1F(lumi,"DA16DYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton16,cuts.mm]), '', labelmet, "1", kf)
     DA17DYControlMETee =  treeDA17.getTH1F(lumi,"DA17DYControlMETee", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
     DA17DYControlMETmm =  treeDA17.getTH1F(lumi,"DA17DYControlMETmm", "met_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
-    MCDYControlmt2ee =    treeMC.getTH1F(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
-    MCDYControlmt2mm =    treeMC.getTH1F(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
+    ##
+    MCSDYControlmt2ee =   treeMC.getStack(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
+    MCSDYControlmt2mm =   treeMC.getStack(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
     DA16DYControlmt2ee =  treeDA16.getTH1F(lumi,"DA16DYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.ee]), '', labelmt2, "1", kf)
     DA16DYControlmt2mm =  treeDA16.getTH1F(lumi,"DA16DYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.mm]), '', labelmt2, "1", kf)
     DA17DYControlmt2ee =  treeDA17.getTH1F(lumi,"DA17DYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
     DA17DYControlmt2mm =  treeDA17.getTH1F(lumi,"DA17DYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
-    MCDYControlPT2ee =    treeMC.getTH1F(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
-    MCDYControlPT2mm =    treeMC.getTH1F(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
+    ##
+    MCSDYControlPT2ee =   treeMC.getStack(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
+    MCSDYControlPT2mm =   treeMC.getStack(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
     DA16DYControlPT2ee =  treeDA16.getTH1F(lumi, "DA16DYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.ee]), '', labelpt2, "1", kf)
     DA16DYControlPT2mm =  treeDA16.getTH1F(lumi, "DA16DYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton16,cuts.mm]), '', labelpt2, "1", kf)
     DA17DYControlPT2ee =  treeDA17.getTH1F(lumi, "DA17DYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
     DA17DYControlPT2mm =  treeDA17.getTH1F(lumi, "DA17DYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
 
-    
+    DYControlMllee = 0;DYControlMllmm = 0; DYControlMlleevalue = 0; DYControlMllmmvalue = 0;DYControlMETee = 0; DYControlMETmm = 0; DYControlmt2ee = 0; DYControlmt2mm = 0;DYControlmt2ee = 0;DYControlmt2mm =0 ; DYControlPT2ee = 0; DYControlPT2mm = 0;
+    for _i,_h in enumerate(MCSDYControlMllee.GetHists()):
+        if not DYControlMllee: MCDYControlMllee = copy.deepcopy(_h)
+        else:MCDYControlMllee.Add(_h, 1.)               
+        DYControlMllee = 1                                             
+    for _i,_h in enumerate(MCSDYControlMllmm.GetHists()):
+        if not DYControlMllmm: MCDYControlMllmm = copy.deepcopy(_h)
+        else:MCDYControlMllmm.Add(_h, 1.)               
+        DYControlMllmm = 1                                             
+    for _i,_h in enumerate(MCSDYControlMlleevalue.GetHists()):
+        if not DYControlMlleevalue: MCDYControlMlleevalue = copy.deepcopy(_h)
+        else:MCDYControlMlleevalue.Add(_h, 1.)               
+        DYControlMlleevalue = 1                                                 
+    for _i,_h in enumerate(MCSDYControlMllmmvalue.GetHists()):
+        if not DYControlMllmmvalue: MCDYControlMllmmvalue = copy.deepcopy(_h)
+        else:MCDYControlMllmmvalue.Add(_h, 1.)               
+        DYControlMllmmvalue = 1                                                
+    for _i,_h in enumerate(MCSDYControlMETee.GetHists()):
+        if not DYControlMETee: MCDYControlMETee = copy.deepcopy(_h)
+        else:MCDYControlMETee.Add(_h, 1.)               
+        DYControlMETee = 1                                                                           
+    for _i,_h in enumerate(MCSDYControlMETmm.GetHists()):
+        if not DYControlMETmm: MCDYControlMETmm = copy.deepcopy(_h)
+        else:MCDYControlMETmm.Add(_h, 1.)               
+        DYControlMETmm = 1                                               
+    for _i,_h in enumerate(MCSDYControlmt2ee.GetHists()):
+        if not DYControlmt2ee: MCDYControlmt2ee = copy.deepcopy(_h)
+        else:MCDYControlmt2ee.Add(_h, 1.)               
+        DYControlmt2ee = 1                                               
+    for _i,_h in enumerate(MCSDYControlmt2mm.GetHists()):
+        if not DYControlmt2mm: MCDYControlmt2mm = copy.deepcopy(_h)
+        else:MCDYControlmt2mm.Add(_h, 1.)               
+        DYControlmt2mm = 1                                               
+    for _i,_h in enumerate(MCSDYControlPT2ee.GetHists()):
+        if not DYControlPT2ee: MCDYControlPT2ee = copy.deepcopy(_h)
+        else:MCDYControlPT2ee.Add(_h, 1.)               
+        DYControlPT2ee = 1                                           
+    for _i,_h in enumerate(MCSDYControlPT2mm.GetHists()):
+        if not DYControlPT2mm: MCDYControlPT2mm = copy.deepcopy(_h)
+        else:MCDYControlPT2mm.Add(_h, 1.)               
+        DYControlPT2mm = 1                                           
     print "got all TH1Fs" 
     MCDYControlMll =           make_rmue(MCDYControlMllmm, MCDYControlMllee)
     DA16DYControlMll =         make_rmue(DA16DYControlMllmm, DA16DYControlMllee)
@@ -358,7 +402,7 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
+    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
     ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW', 'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
@@ -404,41 +448,41 @@ if __name__ == "__main__":
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
                    'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
                    'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
-   #                'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329';    
+                   'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
    #                'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
     daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
                    'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']   
-                   #'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',   
+                   'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
                    #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
     daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
                    'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434']     
-                   #'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   #'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
+                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
     daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
                    'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']   
-                   #'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',   
+                   'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797'] 
                    #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
                   'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462']          
-                  #'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
-                  #'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                          
+                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462'          
+                  'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+                  'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                          
 
 
     daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H       

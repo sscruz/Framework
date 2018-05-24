@@ -216,7 +216,7 @@ if __name__ == '__main__':
     makeDependencyPlots = True 
 
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
+    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
     ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
     ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW',  'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
@@ -265,41 +265,41 @@ if __name__ == '__main__':
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
                    'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
                    'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
-                   #'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
+                   'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
                    #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
     daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
                    'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']    
-                   #'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',    
+                   'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
                    #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
     daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
                    'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
                    'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434']    
-                   #'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   #'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
+                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',    
+                   'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+                   'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
     daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
                    'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']    
-                   #'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797',    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',   
+                   'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']   
                    #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
     daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
                   'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
                   'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462']           
-                  #'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
-                  #'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                   
+                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462',           
+                  'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+                  'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                   
 
 
 
