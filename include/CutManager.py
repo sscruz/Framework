@@ -187,10 +187,10 @@ class CutManager:
       self.RSFOFDirectCRNoJet = self.AddList([self.METg100, self.METl150, self.donot(self.mll70_110)])
       self.RSFOFDirectCRNoMll = self.AddList([self.METg100, self.METl150, self.njExact2])
       self.RSFOFDirectCRNoMET = self.AddList([self.njExact2, self.donot(self.mll70_110)])
-      self.RSFOFDirectSignalRegion = self.AddList([self.goodLepton17, self.nj2, self.METg150, self.donot(self.mll70_110)])
+      self.RSFOFDirectSignalRegion = self.AddList([self.goodLepton17, self.nj2, self.METg100, self.donot(self.mll70_110)])
       self.RSFOFDirectSignalRegionNoMET = self.AddList([self.goodLepton17, self.nj2, self.donot(self.mll70_110)])
-      self.RSFOFDirectSignalRegionNoJet = self.AddList([self.goodLepton17, self.METg150, self.donot(self.mll70_110)])
-      self.RSFOFSleptonSignalRegion = self.AddList([self.goodLepton17, self.METg150, self.ZvetoExt])
+      self.RSFOFDirectSignalRegionNoJet = self.AddList([self.goodLepton17, self.METg100, self.donot(self.mll70_110)])
+      self.RSFOFSleptonSignalRegion = self.AddList([self.goodLepton17, self.METg100, self.ZvetoExt])
       self.RSFOFSleptonSignalRegionNoMET = self.AddList([self.goodLepton17,  self.ZvetoExt])                                                       
 
       self.RSFOFCR = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110)])

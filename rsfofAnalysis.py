@@ -117,23 +117,22 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
     #####Main mll control plot
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting mll plot' + bcolors.ENDC
     bins = [20,60,70,110,150,200,300,400] 
-    MCSControlSF =      treeMC.getStack(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    MCSControlee =      treeMC.getStack(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
-    MCSControlmm =      treeMC.getStack(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
-    MCSControlOF =      treeMC.getStack(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    MCSSignalSF =       treeMC.getStack(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
-    MCSSignalOF =       treeMC.getStack(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    MCSControlSFvalue = treeMC.getStack(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    MCSControlOFvalue = treeMC.getStack(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    MCSSignalSFvalue =  treeMC.getStack(lumi, "MCSignalSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
-    MCSSignalOFvalue =  treeMC.getStack(lumi, "MCSignalOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
-    DataControlee = treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton,cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
-    DataControlmm=  treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
-    DataControlSF=  treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    DataControlOF=  treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton,cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
-    DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
-    
+    MCSControlSF =      treeMC.getStack(lumi, "MCControlSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCSControlee =      treeMC.getStack(lumi, "MCControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    MCSControlmm =      treeMC.getStack(lumi, "MCControlmm", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    MCSControlOF =      treeMC.getStack(lumi, "MCControlOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    MCSSignalSF =       treeMC.getStack(lumi, "MCSignalSF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
+    MCSSignalOF =       treeMC.getStack(lumi, "MCSignalOF", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
+    MCSControlSFvalue = treeMC.getStack(lumi, "MCControlSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    MCSControlOFvalue = treeMC.getStack(lumi, "MCControlOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    MCSSignalSFvalue =  treeMC.getStack(lumi, "MCSigSFvalue","lepsMll_Edge", [20,1000], 1, 1, cuts.AddList([specialcut,cuts.goodLepton17,cuts.RSFOFDirectSignalRegion, cuts.SF]), '', labelx, "1", kf)
+    MCSSignalOFvalue =  treeMC.getStack(lumi, "MCSigOFvalue","lepsMll_Edge", [20,1000], 1, 1, cuts.AddList([specialcut,cuts.goodLepton17,cuts.RSFOFDirectSignalRegion, cuts.OF]), '', labelx, "1", kf)
+    DataControlee = treeDA.getTH1F(lumi, "DataControlee", "lepsMll_Edge", bins, 1, 1, cuts.AddList([specialcut, cuts.goodLepton17,cuts.RSFOFDirectCR, cuts.ee]), '', labelx, "1", kf)
+    DataControlmm=  treeDA.getTH1F(lumi,"DataControlmm","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton17,cuts.RSFOFDirectCR, cuts.mm]), '', labelx, "1", kf)
+    DataControlSF=  treeDA.getTH1F(lumi,"DataControlSF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton17,cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    DataControlOF=  treeDA.getTH1F(lumi,"DataControlOF","lepsMll_Edge",bins,1,1,cuts.AddList([specialcut,cuts.goodLepton17,cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
+    DataControlSFvalue= treeDA.getTH1F(lumi,"DataControlSFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.SF]), '', labelx, "1", kf)
+    DataControlOFvalue= treeDA.getTH1F(lumi,"DataControlOFvalue","lepsMll_Edge",[20,1000], 1, 1, cuts.AddList([specialcut, cuts.goodLepton17, cuts.RSFOFDirectCR, cuts.OF]), '', labelx, "1", kf)
     
     
     ControlSF = 0;Controlee = 0; Controlmm = 0; ControlOF = 0; SignalSF = 0; SignalOF = 0; ControlSFvalue = 0; ControlOFvalue = 0;SignalSFvalue =0 ; SignalOFvalue = 0; 
