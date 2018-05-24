@@ -435,7 +435,7 @@ if __name__ == "__main__":
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
                    'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
                    'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329']    
+                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
                    'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
                    #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
@@ -443,7 +443,7 @@ if __name__ == "__main__":
                    'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
                    'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
                    'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029']    
+                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',     
                    'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']   
                    #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
@@ -459,7 +459,7 @@ if __name__ == "__main__":
                    'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
                    'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
                    'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797']    
+                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',    
                    'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']    
                    #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
