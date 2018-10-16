@@ -35,8 +35,8 @@ class CutManager:
       self.goodLepton = "("+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton16 = "("+self.trigger16+"&&"+self.filters16+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton17 = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.goodLepton3l = "("+self.twoLeptons + "&&" + self.leptonDR  +  ")"
-      self.goodLepton4l = "("+self.twoLeptons + ")"
+      self.goodLepton173l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
+      self.goodLepton174l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
       self.oldThirdLepVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 )'
       self.ThirdLeptonVeto = '(nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
       self.ThirdLeptonVetoOLD = 'nLepLoose_Edge == 2'
@@ -245,11 +245,11 @@ class CutManager:
       self.region4lSleptonRelaxedCut  = self.AddList([self.goodLepton16, self.fourTightLeptons])
       self.region4lSleptonIncJet  = self.AddList([self.goodLepton16, self.fourTightLeptons,  self.bvetoLoose25, "mZ2_Edge > 40"])
       self.region2l2nuSlepton  = self.AddList([self.goodLepton16, self.twoTightLeptons, self.bvetoLoose25, self.nj25eq0])
-      self.region4l      = self.AddList([self.goodLepton4l, self.fourTightLeptons,  self.mZ2g20])
-      self.region3l      = self.AddList([self.goodLepton17, self.threeTightLeptons, self.METg60, self.bveto])
+      self.region4l      = self.AddList([self.goodLepton174l, self.fourTightLeptons,  self.mZ2g20, self.bveto, self.dPhiJETMET, "mZ2_Edge > 40"])
+      self.region3l      = self.AddList([self.goodLepton173l, self.threeTightLeptons, self.METg70, self.bveto, self.dPhiJETMET,  'WmT_Edge > 55'])
       #self.region3l      = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET,self.METg60, self.bveto, self.nj2])
-      self.region4lInc   = self.AddList([self.goodLepton17, self.fourLooseLeptons, self.ZmassInc, self.mZ140, self.mZ4_120 ])
-      self.regionttZ     = self.AddList([self.goodLepton17, self.threeTightLeptons, self.METg30])
+      self.region4lInc   = self.AddList([self.goodLepton174l, self.fourLooseLeptons, self.ZmassInc, self.mZ140, self.mZ4_120 ])
+      self.regionttZ     = self.AddList([self.goodLepton173l, self.threeTightLeptons, self.METg30, self.nbj2, self.dPhiJETMET ])
       #self.regionttZ     = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
 
       ########################################################################
@@ -272,7 +272,8 @@ class CutManager:
       self.ewinoWZResolved2jetNoMjj  = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg120, self.bveto, self.mT2_100,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge <= 200 && lepsZPt_Edge >=0&& nJetSel_Edge > 1"])
       self.ewinoWZResolved2jetNoMT2  = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg120, self.mT2_100, self.bveto, self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge <= 200 && lepsZPt_Edge >=0&& nJetSel_Edge > 1 &&  hardMjj_Edge < 100 && hardMjj_Edge >= 0"])
       self.ewinoWZResolved2jetNoMET  = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg120, self.mT2_100, self.bveto, self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge <= 200 && lepsZPt_Edge >=0&& nJetSel_Edge > 1 &&  hardMjj_Edge < 100 && hardMjj_Edge >= 0"])
-      self.ewinoWZBoostedHP     = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg80,self.bveto, self.mT2_100,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge > 200 && FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.15 && (abs(j2MetDPhi_Edge)>= 0.4)"])
+      self.ewinoWZBoostedHP     = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg80,self.bveto, self.mT2_100,  self.ThirdLeptonVetoOLD, self.ZmassLoose, self.dPhiJETMET , "lepsZPt_Edge > 200 && nFatJetSel_Edge > 0"])
+      #self.ewinoWZBoostedHP     = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg80,self.bveto, self.mT2_100,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge > 200 && FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.15 && (abs(j2MetDPhi_Edge)>= 0.4)"])
       self.ewinoWZBoostedHPNoTau     = self.AddList([self.BaselineNoTriggerNoNJet,   self.METg80,self.bveto, self.mT2_100,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge > 200 && (abs(j2MetDPhi_Edge)>= 0.4)"])
       self.ewinoWZBoostedHPNoMT2     = self.AddList([self.BaselineNoTriggerNoNJet,    self.mT2_100, self.METg80, self.bveto,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge > 200 && FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.15 && (abs(j2MetDPhi_Edge)>= 0.4)"])
       self.ewinoWZBoostedHPNoMET     = self.AddList([self.BaselineNoTriggerNoNJet,    self.mT2_100, self.METg80, self.bveto,  self.ThirdLeptonVetoOLD, self.ZmassLoose, "lepsZPt_Edge > 200 && FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.15 && (abs(j2MetDPhi_Edge)>= 0.4)"])

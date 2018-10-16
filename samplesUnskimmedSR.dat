@@ -33,10 +33,10 @@ data  r.kBlack      JetHT_Run2017C_17Nov2017_v1_runs_299368_302029              
 data  r.kBlack      JetHT_Run2017D_17Nov2017_v1_runs_302030_303434                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      JetHT_Run2017E_17Nov2017_v1_runs_303824_304797                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      JetHT_Run2017F_17Nov2017_v1_runs_305040_306462                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-#data  r.kBlack      SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-#data  r.kBlack      SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
+data  r.kBlack      SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
+data  r.kBlack      SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-#data  r.kBlack      SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
+data  r.kBlack      SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
 data  r.kBlack      SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
@@ -59,7 +59,7 @@ DYJets    r.kYellow-9    DYJetsToLL_M50_HT1200to2500    DY+Jets     /eos/cms/sto
 DYJets    r.kYellow-9    DYJetsToLL_M50_HT2500toInf     DY+Jets     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       3.565    0 0
 #########################_TTbar_#######################################################################################################################
 TTJets    r.kRed-9       TTJets                         TT+Jets     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/    831760.0     0 0
-#TTJets    r.kRed-9       TTJets_SingleLeptonFromTbar    TT+Jets     /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09/   182175.40    0 0
+TTJets    r.kRed-9       TTJets_SingleLeptonFromTbar    TT+Jets     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/MC_Aug11/nLepnJetSkim/   182175.40    0 0
 TTJets    r.kRed-9       TTJets_SingleLeptonFromT       TT+Jets     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/   182175.40    0 0
 #########################_singleTop_###################################################################################################################
 singleT   r.kRed-7       TToLeptons_sch                 singleT     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/      3680.7    0 0
@@ -69,17 +69,17 @@ singleT   r.kRed-7       T_tWch_noFullHad               singleT     /eos/cms/sto
 singleT   r.kRed-7       TBar_tWch_noFullHad_ext        singleT     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/     18502.3    0 0
 singleT   r.kRed-7       tZq_ll                         singleT     /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/        75.8    0 0
 #########################_TTZ/TTW/TWZ/TTVV_############################################################################################################
-TTV       r.kBlue-7      TTZToLLNuNu                    TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       252.9    0 0
-TTV       r.kBlue-7      TTZ_LO                         TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       529.7    0 0
-TTV       r.kBlue-7      TTLLJets_m1to10                TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/        49.3    0 0
+TTZ       r.kBlue-7      TTZToLLNuNu                    TTZ         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       252.9    0 0
+TTZ       r.kBlue-7      TTZ_LO                         TTZ         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       529.7    0 0
+TTZ       r.kBlue-7      TTLLJets_m1to10                TTZ         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/        49.3    0 0
+TTZ       r.kBlue-7      TTZZ                           TTZ         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       1.572    0 0
+TTZ       r.kBlue-7      TTZH                           TTZ         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       1.253    0 0
 #TTV       r.kBlue-7      TWZ                            TTV         /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09/       11.23    0 0
-TTV       r.kBlue-7      TTWToLNu                       TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       204.3    0 0
-TTV       r.kBlue-7      TTW_LO                         TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       610.5    0 0
-TTV       r.kBlue-7      TTWW                           TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       7.883    0 0
-TTV       r.kBlue-7      TTWZ                           TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       2.974    0 0
-TTV       r.kBlue-7      TTZH                           TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       1.253    0 0
-TTV       r.kBlue-7      TTZZ                           TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       1.572    0 0
-TTV       r.kBlue-7      TTGJets                        TTV         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/      3697.0    0 0
+TTW       r.kBlue-7      TTWToLNu                       TTW         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       204.3    0 0
+TTW       r.kBlue-7      TTW_LO                         TTW         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       610.5    0 0
+TTW       r.kBlue-7      TTWW                           TTW         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       7.883    0 0
+TTW       r.kBlue-7      TTWZ                           TTW         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       2.974    0 0
+TTW       r.kBlue-7      TTGJets                        TTW         /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/      3697.0    0 0
 #########################_WWTo2L2Nu_###################################################################################################################
 WW2l      r.kCyan+3      WWTo2L2Nu                      WW2l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/     12178.0    0 0
 WW2l      r.kCyan+3      WWTo1L1Nu2Q                    WW2l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/     49997.0    0 0
@@ -96,7 +96,7 @@ ZZ4l      r.kCyan+2      GluGluToContinToZZTo2mu2tau    ZZ4l        /eos/cms/sto
 #ZZ4l      r.kCyan+2      GluGluToContinToZZTo4e         ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       3.648    0 0
 #ZZ4l      r.kCyan+2      GluGluToContinToZZTo4mu        ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       3.648    0 0
 #ZZ4l      r.kCyan+2      GluGluToContinToZZTo4tau       ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       3.648    0 0
-#ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/      1256.0    0 1
+ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/      1256.0    0 1
 ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       13.08    0 0
 ZZ4l      r.kCyan+2      VBF_HToZZTo4L                  ZZ4l        /eos/cms/store/user/mvesterb/makeSRfriendsMC_April20/       1.034    0 0
 #########################_ZZTo2l_######################################################################################################################
