@@ -316,7 +316,6 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     checkedList = []
     typeList    = []
     for line in f.readlines():
-        print "line ", line
         if '#' in line or not len(line.rstrip('\r')): continue
         for _sample in selList:
             #print "_sample", _sample
@@ -340,7 +339,6 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
                 sys.exit('exiting...')
         else:
             print 'you used some wildcards in selecting the samples. be careful with that!'
-    print typeList
     if not len(set(typeList)) == 1:
             print 'ERROR: you\'re mixing DATA and MC!'
             sys.exit('exiting...')

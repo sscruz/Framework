@@ -3,6 +3,8 @@ from array import array
 from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
 import include.LeptonSF
 import include.FastSimSF
+import copy
+
 
 class Sample:
    'Common base class for all Samples'
@@ -50,7 +52,6 @@ class Sample:
         self.ISRWeight = 'ISRweight_Edge'
         if self.isScan == True:
             self.smsCount =   self.ftfile.Get('CountSMS')
-            print "do i even ever go here ????????????????????????????????????????????????????????"
         else:
             #self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
             #self.lumWeight = self.xSection / self.smsCount
@@ -375,9 +376,13 @@ class Tree:
      return hs   
 
 
+
+
    def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar):
-     
+    
+
      for ib,b in enumerate(self.blocks):
+       
        AuxName = "auxh1_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
        if not ib:
@@ -386,7 +391,7 @@ class Tree:
           h.Add(haux)
        del haux
        
-       return h
+     return h
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, extraWeight='1'):
      if(xmin == xmax) and (ymax == ymin):

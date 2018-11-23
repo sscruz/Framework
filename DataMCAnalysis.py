@@ -158,8 +158,11 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
     print 'cumulative', cumulative
     print 'onlyMC', onlyMC
 
+    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 1" 
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx, "1", 'ZZpt')
+    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 2" 
     DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
+    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 3" 
     f = 0
     for _i,_h in enumerate(MCS.GetHists()):
         if not f: MC = copy.deepcopy(_h)
@@ -429,7 +432,9 @@ if __name__ == "__main__":
     wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q']
     wzDatasets = ['WZTo3LNu_amcatnlo']
     raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow']
-    mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
+    #mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
+    ttDatasets = ['TTJets']
+    mcDatasets = ttDatasets 
 
     daDatasetsB = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',                                                                                                 
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
@@ -515,7 +520,7 @@ if __name__ == "__main__":
     treeDAD = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsD, 'DA'), 'DATA', 1, isScan = 0)
     treeDAE = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsE, 'DA'), 'DATA', 1, isScan = 0)
     treeDAF = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsF, 'DA'), 'DATA', 1, isScan = 0)
-    treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
+    #treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
     
     lumiB = 4.80
     lumiC = 9.76

@@ -37,6 +37,18 @@ class CutManager:
       self.goodLepton17 = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton173l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
       self.goodLepton174l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
+      
+      
+      #self.nSRA = "(nJetSel_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nJetSel_Edge <= 3 && nBJetMedium25_Edge == 0 && htJet35j_Edge > 500 && mt2_Edge>80 && lepsMll_Edge >= 86 && lepsMll_Edge < 96 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.fromZ = '(abs(Lep1_mcMatchId_Edge) == 23 && abs(Lep2_mcMatchId_Edge) == 23)'
+      self.masscut = '(lepsMll_Edge >= 86 && lepsMll_Edge < 96)'
+      self.nSRAbveto = "(nJetSel_Edge >= 2 && nJetSel_Edge <= 3 && nBJetMedium25_Edge == 0 && htJet35j_Edge > 500 && mt2_Edge>80 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.nSRBbveto = "(nJetSel_Edge >= 4 && nJetSel_Edge <= 5 && nBJetMedium25_Edge == 0 && htJet35j_Edge > 500 && mt2_Edge>80 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.nSRCbveto = "(nJetSel_Edge >= 6                      && nBJetMedium25_Edge == 0 &&                        mt2_Edge>80 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.nSRAb = "(nJetSel_Edge >= 2 && nJetSel_Edge <= 3 && nBJetMedium25_Edge >= 1 && htJet35j_Edge > 200 && mt2_Edge>100 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.nSRBb = "(nJetSel_Edge >= 4 && nJetSel_Edge <= 5 && nBJetMedium25_Edge >= 1 && htJet35j_Edge > 200 && mt2_Edge>100 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+      self.nSRCb = "(nJetSel_Edge >= 6                      && nBJetMedium25_Edge >= 1 &&                        mt2_Edge>100 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
+
       self.oldThirdLepVeto = '(nLepLoose_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 )'
       self.ThirdLeptonVeto = '(nPFHad10_Edge == 0 && nPFLep5_Edge <= 2)'
       self.ThirdLeptonVetoOLD = 'nLepLoose_Edge == 2'
