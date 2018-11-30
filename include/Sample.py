@@ -20,6 +20,7 @@ class Sample:
       else:
           ftfileloc = friendlocation+'/evVarFriend_'+self.name+'.root' 
           self.ftfile = TFile(ftfileloc)                                    
+      print ftfileloc
       self.ttree = self.ftfile.Get('sf/t')
       self.isScan = isScan
       if not self.isData and not self.isScan:
@@ -43,7 +44,43 @@ class Sample:
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
 
-      if self.isScan > 0:
+      if isinstance(self.isScan,tuple):                       
+         self.puWeight    = "PileupW_Edge"                     
+         self.btagWeight  = "weight_btagsf_Edge"               
+         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"                         
+         self.ISRWeight = 'ISRweight_Edge'                     
+         smsCount = self.ftfile.Get('CountSMS')                
+         xbin = smsCount.GetXaxis().FindBin(self.isScan[0])    
+         ybin = smsCount.GetYaxis().FindBin(self.isScan[1])    
+         zbin = smsCount.GetZaxis().FindBin(1)                 
+         bin  = smsCount.GetBin(xbin,ybin,zbin)                
+         counts = smsCount.GetBinContent(bin)                  
+         if self.isScan[2] == 'TChiWZ':                        
+            fxsec = open('datacards/charneuXsec.txt','r')      
+            xsec  = eval(fxsec.read())[self.isScan[0]][0]      
+            br    = 0.102   
+            fxsec.close()   
+         else:              
+            raise RuntimeError('No model %s avialable'%self.isScan[2])                            
+         self.lumWeight = xsec*br / counts                     
+                            
+      elif not isinstance(self.isScan,tuple)  and self.isScan > 0:                                  
+        self.lumWeight  =  1.0                                 
+        self.xSection = self.isScan                            
+        self.puWeight    = "PileupW_Edge"                      
+        self.btagWeight  = "weight_btagsf_Edge"                
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"                          
+        self.ISRWeight = 'ISRweight_Edge'                      
+        if self.isScan == True:                                
+            self.smsCount =   self.ftfile.Get('CountSMS')      
+            print "using this self.smsCount ", self.smsCount, " for ", self.name                  
+        else:               
+            self.smsCount =  self.ftfile.Get('sf/t').GetEntries()                                 
+            self.lumWeight = self.xSection / self.smsCount     
+            print "using this self.smsCount ", self.smsCount, " for ", self.name                  
+
+
+      elif self.isScan > 0:
         self.lumWeight  =  1.0
         self.xSection = self.isScan
         self.puWeight    = "PileupW_Edge"

@@ -134,6 +134,8 @@ class CutManager:
       self.dPhiJETMET = " (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4)"
       self.dPhiJET1MET = "abs(j1MetDPhi_Edge)>= 0.4 && j1MetDPhi_Edge> -10 && nJetSel_Edge > 0"
       
+      self.mass_600_25 = "GenSusyMScan1_Edge == 600 && GenSusyMScan2_Edge == 25"
+
       ########################################################################
       ######Basic NLL cut#####################################################
       ########################################################################

@@ -150,7 +150,7 @@ data-bkg.        & {obsSub3l:.2f}   $\\pm$  {obsSub3l_e:.2f} & {obsSub4l:.2f}   
     compTableFile.write(table3l4lComparisonString)
     compTableFile.close()
 
-def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx, returnplot = False, scaleToData = False, normalized = False, cumulative = False, onlyMC = False):
+def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut, cuts,labelx, logx, returnplot = False, scaleToData = False, normalized = False, cumulative = False, onlyMC = False, treeSI=None):
 
     print 'returnplot', returnplot
     print 'scaletodata', scaleToData
@@ -158,53 +158,62 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
     print 'cumulative', cumulative
     print 'onlyMC', onlyMC
 
-    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 1" 
+    if treeSI:
+        SI = treeSI.getTH1F(lumi,"hSI_%s"%(name), var, nbin, xmin, xmax, cuts.AddList( [theCut.replace(cuts.trigger16,'1'), cuts.mass_600_25]), "", labelx,'1','ZZpt')
+
+
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx, "1", 'ZZpt')
-    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 2" 
-    DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
-    print "FAILIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIING HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE 3" 
+    if not onlyMC and treeDA:
+        DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx, "1", 'ZZpt')
+    else: DATA = None
+
     f = 0
     for _i,_h in enumerate(MCS.GetHists()):
         if not f: MC = copy.deepcopy(_h)
         else:MC.Add(_h, 1.)               
         f = 1
         print "sample ", _h.GetName(), " has integral ", _h.Integral()
-    print "full MC ", MC.Integral() 
-    print "data    ", DATA.Integral() 
+
 
     maxValmc = MC.GetMaximum() #GetBinContent(MC.GetMaximumBin())
-    maxValdata = DATA.GetMaximum() #GetBinContent(DATA.GetMaximumBin())
+    maxValdata = DATA.GetMaximum() if DATA else 0#GetBinContent(DATA.GetMaximumBin())
     maxVal = max(maxValmc, maxValdata)
     if not logx:
         MCS.SetMaximum(1.3*maxVal)
         if scaleToData:
             newStack.SetMaximum(1.3*maxVal)
-        DATA.GetYaxis().SetRangeUser(0.1, 1.3*maxVal)
+        if DATA:
+            DATA.GetYaxis().SetRangeUser(0.1, 1.3*maxVal)
     else:
         MCS.SetMaximum(2.0*maxVal)
         if scaleToData:
             newStack.SetMaximum(2.0*maxVal)
-        DATA.GetYaxis().SetRangeUser(0.1, 2.0*maxVal)
+        if DATA:
+            DATA.GetYaxis().SetRangeUser(0.1, 2.0*maxVal)
 
    
     print name
     SetOwnership(MC, 0 )   # 0 = release (not keep), 1 = keep
     SetOwnership(MCS, 0 )   # 0 = release (not keep), 1 = keep
-    SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = keep
+    if DATA: SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = keep
     plot = Canvas.Canvas('DataMC/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.7, 0.55, 0.9, 0.9)
     if not normalized:
         plot.addStack(MCS if not scaleToData else newStack, "HIST", 1, 1)
-        plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+        if DATA:
+            plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+        if treeSI:
+            SI.SetLineWidth(2)
+            plot.addHisto(SI, "L,SAME", "Signal (600,25)", "L", r.kRed, 1,1)
     else:
         for h in hists:
             plot.addHisto(h, 'hist,same' if not h.GetName() == 'data' else 'p,same', h.GetName(), 'PL', h.GetLineColor(), 1, 0)
-    plot.saveRatio(1, 1, logx, lumi, DATA, MC)
+    plot.saveRatio(1, 1, logx, lumi, DATA if DATA else MC, MC)
 
     if cumulative:
         cum_plot = Canvas.Canvas('DataMC/%s/plot_cumulative_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.15, 0.85, 0.45)
         if not normalized:
             cum_plot.addStack(MCS if not scaleToData else newStack, "HIST", 1, 1)
-            cum_plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
+            if DATA: cum_plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)
         else:
             for h in hists:
                 if onlyMC and not h.GetName() == 'data':
@@ -416,7 +425,7 @@ if __name__ == "__main__":
     print '#######################################################################' + bcolors.ENDC
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
-    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samplesUnskimmedSR.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
     parser.add_option('-i', '--ingredients', action='store', type=str, dest='ingredientsFile', default='ingredients.dat', help='the ingredients file. default \'ingredients.dat\'')
     parser.add_option('-d', '--do', action='store', type=str, dest='do', default='1', help='do')
     (opts, args) = parser.parse_args()
@@ -424,7 +433,7 @@ if __name__ == "__main__":
     print bcolors.HEADER + '[Data - MC comparisons] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
     dyDatasets = ['DYJetsToLL_M10to50_LO','DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
-    ttDatasets = ['TTJets','TTJets_SingleLeptonFromT', 'TTJets_SingleLeptonFromTbar']
+    ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
     stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
     ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW', 'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
     zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
@@ -432,9 +441,10 @@ if __name__ == "__main__":
     wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q']
     wzDatasets = ['WZTo3LNu_amcatnlo']
     raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow']
-    #mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
-    ttDatasets = ['TTJets']
-    mcDatasets = ttDatasets 
+    
+    mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
+
+    print mcDatasets
 
     daDatasetsB = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',                                                                                                 
                    'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
@@ -512,14 +522,17 @@ if __name__ == "__main__":
     daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H       
     daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF  
 
+    
+    datasetTChiWZ = ['SMS_TChiWZ_ZToLL']
 
     treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0, isScan = 0)
-    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1, isScan = 0)
-    treeDAB = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsB, 'DA'), 'DATA', 1, isScan = 0)
-    treeDAC = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsC, 'DA'), 'DATA', 1, isScan = 0)
-    treeDAD = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsD, 'DA'), 'DATA', 1, isScan = 0)
-    treeDAE = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsE, 'DA'), 'DATA', 1, isScan = 0)
-    treeDAF = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsF, 'DA'), 'DATA', 1, isScan = 0)
+    treeSI = Sample.Tree(helper.selectSamples(opts.sampleFile, datasetTChiWZ,'SI'),'SI', 0, (600,25,'TChiWZ')  ) 
+    # treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1, isScan = 0)
+    # treeDAB = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsB, 'DA'), 'DATA', 1, isScan = 0)
+    # treeDAC = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsC, 'DA'), 'DATA', 1, isScan = 0)
+    # treeDAD = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsD, 'DA'), 'DATA', 1, isScan = 0)
+    # treeDAE = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsE, 'DA'), 'DATA', 1, isScan = 0)
+    # treeDAF = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasetsF, 'DA'), 'DATA', 1, isScan = 0)
     #treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
     
     lumiB = 4.80
@@ -723,4 +736,31 @@ if __name__ == "__main__":
 
 
 
+ 
+    if opts.do == "boosted_reg_sergio_tests":
+        # ossf pair (lo mitico: pt cut, dr(ll), mll > x
+        # at least 1 ak4 jet
+        # at dphi(ak4[0], met) > 0.4
+        # met > 80 
+        # bveto
+        # mt2 > 100 
+        # third lepton veto, 86 < mll  < 106
+        #mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0']
+        #makePlot(lumi, lumi_str, None, treeMC,"nJetSel_Edge", "n_jet_sel_inc", 6, -.5, 5.5, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
 
+        # mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0','nJetSel_Edge == 1']
+        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_softDropMass", "fat_jet_sdmass", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_mass", "fat_jet_mass", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0]", "fat_jet_tau21", 100, 0, 2, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        # makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met", 100, 0, 2000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+
+
+        # plots with some met cut
+        mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0','nJetSel_Edge == 1','met_Edge > 100']
+        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt_metcut", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"nJetSel_Edge", "n_jet_sel_metcut", 6, -.5, 5.5, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_softDropMass", "fat_jet_sdmass_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_mass", "fat_jet_mass_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0]", "fat_jet_tau21_metcut", 100, 0, 2, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
