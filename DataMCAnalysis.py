@@ -160,7 +160,7 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
 
     if treeSI:
         SI = treeSI.getTH1F(lumi,"hSI_%s"%(name), var, nbin, xmin, xmax, cuts.AddList( [theCut.replace(cuts.trigger16,'1'), cuts.mass_600_25]), "", labelx,'1','ZZpt')
-
+    print 'Signal yield', SI.Integral()
 
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx, "1", 'ZZpt')
     if not onlyMC and treeDA:
@@ -745,22 +745,31 @@ if __name__ == "__main__":
         # bveto
         # mt2 > 100 
         # third lepton veto, 86 < mll  < 106
-        #mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0']
-        #makePlot(lumi, lumi_str, None, treeMC,"nJetSel_Edge", "n_jet_sel_inc", 6, -.5, 5.5, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0', 'nJetSel_Edge == 1'] 
+        #makePlot(lumi, lumi_str, None, treeMC,"mt2_Edge", "mt2_inc", 100, 0, 400, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
 
-        # mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0','nJetSel_Edge == 1']
-        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
-        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_softDropMass", "fat_jet_sdmass", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
-        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_mass", "fat_jet_mass", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
-        # makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0]", "fat_jet_tau21", 100, 0, 2, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        mycuts = [cuts.BaselineNoTriggerNoNJet.replace(cuts.dPhiJET1MET,'deltaPhi(FatJetSel_Edge_phi[0],met_phi_Edge) > 0.4'), cuts.METg80, cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0', 'nJetSel_Edge == 1','mt2_Edge > 100','met_Edge > 100','FatJetSel_Edge_mass > 80'] 
+        makePlot(lumi, lumi_str, None, treeMC,"j1MetDPhi_Edge", "j1MetDPhi_Edge", 100,-4.15, 3.15, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)        
+        makePlot(lumi, lumi_str, None, treeMC,"deltaPhi(FatJetSel_Edge_phi[0],met_phi_Edge)", "deltaPhiFatMet", 100,-4.15, 3.15, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)        
+
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0]", "fat_jet_tau21", 100, 0, 2, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt", 100, 0, 2000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"lepsZPt_Edge", "zpt", 100, 0, 2000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+
+
+        makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met", 100, 0, 2000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_softDropMass", "fat_jet_sdmass", 50, 0, 150, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_mass", "fat_jet_mass", 50, 0, 150, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        
         # makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met", 100, 0, 2000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
 
 
         # plots with some met cut
-        mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0','nJetSel_Edge == 1','met_Edge > 100']
-        makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt_metcut", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #mycuts = [cuts.BaselineNoTriggerNoNJet, cuts.METg80, cuts.bveto,cuts.mT2_100,  cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, 'nFatJetSel_Edge > 0','nJetSel_Edge == 1','met_Edge > 100']
+        #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_pt[0]", "fat_jet_pt_metcut", 20, 150, 1000, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
         #makePlot(lumi, lumi_str, None, treeMC,"nJetSel_Edge", "n_jet_sel_metcut", 6, -.5, 5.5, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
         #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_softDropMass", "fat_jet_sdmass_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
         #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_mass", "fat_jet_mass_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
         #makePlot(lumi, lumi_str, None, treeMC,"FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0]", "fat_jet_tau21_metcut", 100, 0, 2, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
-        makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)
+        #makePlot(lumi, lumi_str, None, treeMC,"met_Edge", "fat_jet_met_metcut", 100, 0, 500, cuts.AddList(mycuts), cuts, '',1, 0,treeSI=treeSI)

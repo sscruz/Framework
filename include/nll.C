@@ -55,3 +55,12 @@ float nll(float met, float zpt, float mlb, float ldp)
   return -1.*TMath::Log(zptPdfVal*metPdfVal*ldpPdfVal*mlbPdfVal);
   
 }
+
+
+float deltaPhi(float phi1, float phi2)
+{
+  float result = phi2-phi1;
+  while (result > TMath::Pi()) result -= 2*TMath::Pi();
+  while (result < -TMath::Pi())result += 2*TMath::Pi();
+  return result;
+}
