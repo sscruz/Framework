@@ -117,18 +117,76 @@ class Scan(object):
                              12: '300-400/ Non ttbar ',
                              13: '400+   / Non ttbar'}
 
-        if self.name == 'CharNeu_Moriond2017':
-            self.makeMCDatacards = False#True
+        if self.name == 'TChiWZ_boosted':
+            self.makeMCDatacards = True
             self.paper = 'SUS16034'
-            self.datasets = ['TChiWZ']
+            self.datasets = ['SMS_TChiWZ']
             self.xbins = binning(100,700,25)
             self.ybins = binning(0,300,1)
             self.br    = 0.102
             self.xvar = 'GenSusyMScan1_Edge'
             self.yvar = 'GenSusyMScan2_Edge'
-            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTriggerNoNJet.replace(cuts.dPhiJET1MET,'deltaPhi(met_phi_Edge,FatJetSel_Edge_phi) > 0.4'), cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, cuts.SF, 'nFatJetSel_Edge > 0',  'FatJetSel_Edge_softDropMass  > 60', 'FatJetSel_Edge_softDropMass  < 100', 'FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.6','nBJetMedium25_Edge == 0'])
             self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
-            print self.cuts_norm
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('datacards/charneuXsec.txt')
+            self.regions = []
+            self.xtitle = 'm_{chi^{0}_{2}} = m_{chi^{+}_{1}}'; self.ytitle = 'm_{chi^{0}_{1}}'
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 200) + 1*(met_Edge > 200)*(met_Edge < 300) + 2*(met_Edge > 300)*(met_Edge < 400) + 3*(met_Edge > 400)*(met_Edge < 500) + 4*(met_Edge > 500)'
+            self.srIDMax = 4
+            self.shortLabels = {0: 'vlowmet',
+                                1: 'lowmet',
+                                2: 'medmet',
+                                3: 'highmet',
+                                4: 'vhighmet'}
+            self.SRLabels = self.shortLabels
+            # self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
+            #                     1: '150 GeV < ME_{T} < 250 GeV',
+            #                     2: '250 GeV < ME_{T} < 350 GeV', 
+            #                     3: 'ME_{T} > 350 GeV'}
+
+        if self.name == 'TChiWZ_boosted_resol_veto':
+            self.makeMCDatacards = True
+            self.paper = 'SUS16034'
+            self.datasets = ['SMS_TChiWZ']
+            self.xbins = binning(100,700,25)
+            self.ybins = binning(0,300,1)
+            self.br    = 0.102
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
+            self.cuts_norm = cuts.AddList([cuts.BaselineNoTriggerNoNJet.replace(cuts.dPhiJET1MET,'deltaPhi(met_phi_Edge,FatJetSel_Edge_phi) > 0.4'), cuts.ThirdLeptonVetoOLD, cuts.ZmassLoose, cuts.SF, 'nFatJetSel_Edge > 0',  'FatJetSel_Edge_softDropMass  > 60', 'FatJetSel_Edge_softDropMass  < 100', 'FatJetSel_Edge_tau2[0]/FatJetSel_Edge_tau1[0] < 0.6','nBJetMedium25_Edge == 0','nJetSel_Edge < 2'])
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('datacards/charneuXsec.txt')
+            self.regions = []
+            self.xtitle = 'm_{chi^{0}_{2}} = m_{chi^{+}_{1}}'; self.ytitle = 'm_{chi^{0}_{1}}'
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 200) + 1*(met_Edge > 200)*(met_Edge < 300) + 2*(met_Edge > 300)*(met_Edge < 400) + 3*(met_Edge > 400)*(met_Edge < 500) + 4*(met_Edge > 500)'
+            self.srIDMax = 4
+            self.shortLabels = {0: 'vlowmet',
+                                1: 'lowmet',
+                                2: 'medmet',
+                                3: 'highmet',
+                                4: 'vhighmet'}
+            self.SRLabels = self.shortLabels
+            # self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
+            #                     1: '150 GeV < ME_{T} < 250 GeV',
+            #                     2: '250 GeV < ME_{T} < 350 GeV', 
+            #                     3: 'ME_{T} > 350 GeV'}
+
+        
+        if self.name == 'CharNeu_Moriond2017_resolved':
+            self.makeMCDatacards = True
+            self.paper = 'SUS16034'
+            self.datasets = ['SMS_TChiWZ']
+            self.xbins = binning(100,700,25)
+            self.ybins = binning(0,300,1)
+            self.br    = 0.102
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning, 'nFatJetSel_Edge == 0' ])
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
             self.zminUL = 1e-3; self.zmaxUL = 1e3
             self.zmaxEff = 0.30
             self.xsecFile = ('datacards/charneuXsec.txt')
@@ -144,7 +202,34 @@ class Scan(object):
                                 1: '150 GeV < ME_{T} < 250 GeV',
                                 2: '250 GeV < ME_{T} < 350 GeV', 
                                 3: 'ME_{T} > 350 GeV'}
-        
+
+        if self.name == 'CharNeu_Moriond2017':
+            self.makeMCDatacards = True
+            self.paper = 'SUS16034'
+            self.datasets = ['SMS_TChiWZ']
+            self.xbins = binning(100,700,25)
+            self.ybins = binning(0,300,1)
+            self.br    = 0.102
+            self.xvar = 'GenSusyMScan1_Edge'
+            self.yvar = 'GenSusyMScan2_Edge'
+            self.cuts_norm = cuts.AddList([cuts.SF, cuts.ewinoWZNoTrigger,cuts.FSCentralJetCleaning])
+            self.cuts_norm = self.cuts_norm.replace(cuts.twoLeptons, 'nPairLep_Edge > 0')
+            self.zminUL = 1e-3; self.zmaxUL = 1e3
+            self.zmaxEff = 0.30
+            self.xsecFile = ('datacards/charneuXsec.txt')
+            self.regions = []
+            self.xtitle = 'm_{chi^{0}_{2}} = m_{chi^{+}_{1}}'; self.ytitle = 'm_{chi^{0}_{1}}'
+            self.srID   = '0*(met_Edge > 100)*(met_Edge < 150) + 1*(met_Edge > 150)*(met_Edge < 250) + 2*(met_Edge > 250)*(met_Edge < 350) + 3*(met_Edge > 350)'
+            self.srIDMax = 3
+            self.shortLabels = {0: 'vlowmet',
+                                1: 'lowmet',
+                                2: 'medmet',
+                                3: 'highmet'}
+            self.SRLabels    = {0: '100 GeV < ME_{T} < 150 GeV',
+                                1: '150 GeV < ME_{T} < 250 GeV',
+                                2: '250 GeV < ME_{T} < 350 GeV', 
+                                3: 'ME_{T} > 350 GeV'}
+
 
                                                                                                                                                                       
 

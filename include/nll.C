@@ -5,6 +5,7 @@
 #include "RooArgSet.h"
 #include "RooArgList.h"
 #include "TROOT.h"
+#include "TVector3.h"
 
 #include <iostream>
 using namespace std;
@@ -63,4 +64,15 @@ float deltaPhi(float phi1, float phi2)
   while (result > TMath::Pi()) result -= 2*TMath::Pi();
   while (result < -TMath::Pi())result += 2*TMath::Pi();
   return result;
+}
+
+float deltaPhiZZ_Jet(float ptl1, float ptl2, float phil1, float phil2, float met_pt, float phiMET, float phiJet, float ptJet)
+{
+  TVector3 l1, l2, met, jet;
+  l1 .SetPtEtaPhi(ptl1, 0., phil1);
+  l2 .SetPtEtaPhi(ptl2, 0., phil2);
+  met.SetPtEtaPhi(met_pt,  0., phiMET);
+  jet.SetPtEtaPhi(ptJet, 0., phiJet); // ptJet not really needed but ok 
+
+  return (l1+l2+met).DeltaPhi(jet);
 }

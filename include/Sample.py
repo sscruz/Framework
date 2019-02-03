@@ -48,7 +48,7 @@ class Sample:
          self.puWeight    = "PileupW_Edge"                     
          self.btagWeight  = "weight_btagsf_Edge"               
          self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"                         
-         self.ISRWeight = 'ISRweight_Edge'                     
+         self.ISRWeight = '1'# ISRweight_Edge'                     
          smsCount = self.ftfile.Get('CountSMS')                
          xbin = smsCount.GetXaxis().FindBin(self.isScan[0])    
          ybin = smsCount.GetYaxis().FindBin(self.isScan[1])    
@@ -162,6 +162,7 @@ class Sample:
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
+      print cut 
       self.ttree.Project(h.GetName(), var, cut, options)
       for _bin in range(1, h.GetNbinsX()+2):
           h_of.SetBinContent(_bin, h.GetBinContent(_bin))
@@ -391,6 +392,8 @@ class Tree:
        AuxName = "auxStack_block_" + name + "_" + b.name
        haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor)
        haux.SetFillColor(b.color)
+       for i in range(1,haux.GetNbinsX()+1):
+          if haux.GetBinContent(i) < 0 : haux.SetBinContent(i,0)
        hs.Add(haux)
        del haux
 

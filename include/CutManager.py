@@ -12,7 +12,7 @@ class CutManager:
       ########################################################################
       self.twoLeptons = "nPairLep_Edge > 0"
       self.filters16 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
-      self.filters17 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_ecalBadCalibFilter_Edge == 1&& Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
+      self.filters17 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
       self.diLeptonPt = "lepsZPt_EdgeXXX > 25"
@@ -33,6 +33,7 @@ class CutManager:
       self.trigger16 = "((" + self.trigMM16 + " && " + self.mm + ") || (" + self.trigEE16 + " && " + self.ee + ") || (" + self.trigEM16 + " && " + self.OF + "))"
       self.trigger17 = "((" + self.trigMM17 + " && " + self.mm + ") || (" + self.trigEE17 + " && " + self.ee + ") || (" + self.trigEM17 + " && " + self.OF + "))"
       self.goodLepton = "("+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      print self.goodLepton
       self.goodLepton16 = "("+self.trigger16+"&&"+self.filters16+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton17 = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton173l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
@@ -134,7 +135,10 @@ class CutManager:
       self.dPhiJETMET = " (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4)"
       self.dPhiJET1MET = "abs(j1MetDPhi_Edge)>= 0.4 && j1MetDPhi_Edge> -10 && nJetSel_Edge > 0"
       
+      self.mass_700_25 = "GenSusyMScan1_Edge == 700 && GenSusyMScan2_Edge == 25"
       self.mass_600_25 = "GenSusyMScan1_Edge == 600 && GenSusyMScan2_Edge == 25"
+      self.mass_650_25 = "GenSusyMScan1_Edge == 650 && GenSusyMScan2_Edge == 25"
+      self.mass_550_25 = "GenSusyMScan1_Edge == 550 && GenSusyMScan2_Edge == 25"
 
       ########################################################################
       ######Basic NLL cut#####################################################

@@ -28,57 +28,68 @@ _r = r.TRandom3(42)
 
 def makeMCDatacards():
     print 'producing mc datacards'
-    othersDatasets = [ 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu', 'WZTo3LNu', 'WWG', 'WWW', 'WWZ',  'WZZ', 'ZZZ', 'ZGTo2LG',  'WWDouble', 'WpWpJJ',  'ZZTo2L2Nu', 'TTHnobb_pow', 'VHToNonbb', 'TWZ', 'WZTo2L2Q']
-    ttDatasets = ['TTTo2L2Nu','WWTo2L2Nu', 'GGHWWTo2L2Nu', 'GGWWTo2L2Nu']
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
+    zzDatasets = ['ZZTo2L2Nu']
+    wzDatasets = ['WZTo3LNu']
+    ttzDatasets = []
+    raDatasets = ['TWZ', 'tZq_ll']
+    vvvDatasets = ['WZZ', 'ZZZ'] # 'WWZ',
+    othersDatasets =  raDatasets +  wzDatasets + ttzDatasets + vvvDatasets
+    fsDatasets = ['TTJets'] #[  'WWW',    'TTJets_SingleLeptonFromTbar', 'TTJets_SingleLeptonFromT'] # 'TTTo2L2Nu', 'WWTo2L2Nu', 'TTWToLNu_ext2', 'TTWToQQ',
+    dyDatasets = ['DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800',  'DYJetsToLL_M50_HT1200to2500'] # ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50_LO']
+
     print 'getting trees'
-    treeTT     = Sample.Tree(helper.selectSamples('samplesSlepton.dat', ttDatasets, 'TT'), 'TT', 0, isScan = 0)
-    treeDY     = Sample.Tree(helper.selectSamples('samplesSlepton.dat', dyDatasets, 'DY'), 'DY', 0, isScan = 0)
-    treeOTHERS = Sample.Tree(helper.selectSamples('samplesSlepton.dat', othersDatasets, 'OTHERS'), 'OTHERS', 0, isScan = 0)
-    print 'getting yields'
-    print cuts.AddList([scan.cuts_norm,cuts.goodLepton])
-    print cuts
-    tt = treeTT.getTH1F(lumi, 'FSbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); tt.SetName('FSbkg')
-    dy = treeDY.getTH1F(lumi, 'dybkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); dy.SetName('dybkg')
-    others = treeOTHERS.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, cuts.AddList([scan.cuts_norm,cuts.goodLepton]), '', '', "1", "noKFactor"); others.SetName('otherbkg')
+    treeTT     = Sample.Tree(helper.selectSamples('samples_resolved.dat', fsDatasets, 'TT'), 'TT', 0, isScan = 0)
+    treeDY     = Sample.Tree(helper.selectSamples('samples_resolved.dat', dyDatasets, 'DY'), 'DY', 0, isScan = 0)
+    treeOTHERS = Sample.Tree(helper.selectSamples('samples_resolved.dat', othersDatasets, 'OTHERS'), 'OTHERS', 0, isScan = 0)
+    treeZZ     = Sample.Tree(helper.selectSamples('samples_resolved.dat', zzDatasets, 'ZZ'), 'ZZ', 0, isScan = 0)
+
+    theCuts = cuts.AddList([scan.cuts_norm,cuts.goodLepton]).replace(cuts.FSCentralJetCleaning,'1')
+
+    tt = treeTT.getTH1F(lumi, 'FSbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '', '', "1", "noKFactor"); tt.SetName('FSbkg')
+    dy = treeDY.getTH1F(lumi, 'dybkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '', '', "1", "noKFactor"); dy.SetName('dybkg')
+    others = treeOTHERS.getTH1F(lumi, 'otherbkg', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '', '', "1", "noKFactor"); others.SetName('otherbkg')
+    zz = treeZZ.getTH1F(lumi, 'zz', scan.srID, scan.srIDMax+1, -0.5, scan.srIDMax+0.5, theCuts, '', '', "1", "noKFactor"); zz.SetName('zz')
+
     data = tt.Clone('data_obs'); data.Add(dy);data.Add(others)
     helper.ensureDirectory('datacards/datacards_%s/%s'%(scan.name,scan.name))
     for SR, label in scan.shortLabels.items():
         if scan.hasOther:
             datacard = '''imax 1 number of bins
-jmax 3 number of processes minus 1
+jmax * number of processes minus 1
 kmax *  number of nuisance parameters
 ----------------------------------------------------------------------------------------------------------------------------------
 bin          {label}
 observation  {obs}   
 ----------------------------------------------------------------------------------------------------------------------------------
-bin          {label}      {label}        {label}      {label}
-process      XXSIGNALXX     FSbkg          DY         Other
-process      0             1              2           3
-rate         XXSIGRATEXX    {fs}           {DY}       {other}
+bin          {label}      {label}        {label}      {label}  {label}
+process      XXSIGNALXX     FSbkg          DY         Other    ZZ 
+process      0             1              2           3        4
+rate         XXSIGRATEXX    {fs}           {DY}       {other} {zz} 
 ----------------------------------------------------------------------------------------------------------------------------------
-fs_stat_{label} gmN  {fs_int}  -            1.0             -         - 
-fs_unc lnN             -            1.05             -          -
-jec   lnN           XXjecXX            -             -          -
-El    lnN           XXElXX             -             -          -
-Mu    lnN           XXMuXX             -             -          -
-FastSimEl   lnN     XXFastSimElXX      -             -          -
-FastSimMu   lnN     XXFastSimMuXX      -             -          -
-PU    lnN             1.0              -             -          - 
-SigTrig  lnN          1.05             -             -          -
-bHe   lnN           XXbHeXX            -             -          -
-bLi   lnN           XXbLiXX            -             -          -
-genMet lnN              XXgenMetXX     -             -          - 
-metElEn lnN              XXmetElEnXX     -             -          - 
-metMuEn lnN              XXmetMuEnXX     -             -          - 
-metUnclEn lnN              XXmetUnclEnXX     -             -          - 
-signalMCstats_{label} lnN    XXmcStatXX  -           -          -
-dySys  lnN           -                  -            1.4        - 
-otherSys lnN         -                  -            -          1.5
-lumi   lnN             1.026              -            -          - 
+#fs_stat_{label} gmN  {fs_int}  -            1.0             -         -  -
+fs_unc lnN             -            1.05             -          - - 
+fs_stat_{label} lnN   -            {fs_unc}             -         -  -
+jec   lnN           XXjecXX            -             -          -   -  
+El    lnN           XXElXX             -             -          -   - 
+Mu    lnN           XXMuXX             -             -          -   - 
+FastSimEl   lnN     XXFastSimElXX      -             -          -   - 
+FastSimMu   lnN     XXFastSimMuXX      -             -          -   - 
+PU    lnN             1.0              -             -          -   -  
+SigTrig  lnN          1.05             -             -          -   - 
+bHe   lnN           XXbHeXX            -             -          -   - 
+bLi   lnN           XXbLiXX            -             -          -   - 
+genMet lnN              XXgenMetXX     -             -          -   -  
+signalMCstats_{label} lnN    XXmcStatXX  -           -          -   - 
+dySys  lnN           -                  -            1.4        -   -  
+otherSys lnN         -                  -            -          1.5   -
+zzSys lnN         -                  -            -          -    1.5
+lumi   lnN             1.026              -            -          1.026   1.026
 '''.format(obs = int(tt.GetBinContent(tt.FindBin(SR))) + int(dy.GetBinContent(dy.FindBin(SR))) + int(others.GetBinContent(others.FindBin(SR))), 
            fs  = tt.GetBinContent(tt.FindBin(SR)), DY = dy.GetBinContent(dy.FindBin(SR)), other = others.GetBinContent(others.FindBin(SR)), 
-           label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))))
+           label = label, fs_int = int(tt.GetBinContent(tt.FindBin(SR))),
+           zz    = zz.GetBinContent(zz.FindBin(SR)),
+           fs_unc = (1 + tt.GetBinError(tt.FindBin(SR))/tt.GetBinContent(tt.FindBin(SR))) if tt.GetBinContent(tt.FindBin(SR)) > 0 else 2,
+           )
 
         else:
             datacard = '''imax 1 number of bins
@@ -384,7 +395,7 @@ export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
 export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
 cmsenv                                                                                                              
-cd /afs/cern.ch/user/m/mvesterb/edgeSW/combine/CMSSW_7_4_7/src/
+cd /afs/cern.ch/work/s/sesanche/private/Edge/produceLimits/CMSSW_7_1_5/src/
 cmsenv\n'''                                                                                            
     else:
         command = '''#!/bin/sh                                                                             
@@ -393,7 +404,7 @@ export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch
 source ${VO_CMS_SW_DIR}/cmsset_default.sh                                                                           
 export CMS_PATH=${VO_CMS_SW_DIR}                                                                                    
 cmsenv                                                                                                              
-cd /afs/cern.ch/work/m/mvesterb/private/Edge/produceLimits/CMSSW_7_4_7/src/                                         
+cd /afs/cern.ch/work/s/sesanche/private/Edge/produceLimits/CMSSW_7_1_5/src/
 cmsenv\n'''                                                                                            
     command = command+'cd ' + cmd[2] + '\n'
     command = command+cmd[0] + '\n'
@@ -587,9 +598,9 @@ def PutHistosIntoRootFiles():
                         scan.SysForTableMax[sys] = max( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMax[sys])
                         scan.SysForTableMin[sys] = min( abs(up/nom-1), abs(dn/nom-1), scan.SysForTableMin[sys])
                     template = template.replace('XX'+sys+'XX', '%4.4f/%4.4f'%(dn/nom,up/nom))
-                    if dn/nom < 1e-4 or up/nom < 1e-4: 
-                        print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
-                        itsOk = False
+                    #if dn/nom < 1e-4 or up/nom < 1e-4: 
+                    #    print 'theres an issue in', xval, yval, label, sys, ' probably related to not having enough mc in that region. Skiping that region'
+                    #    itsOk = False
 
                 if not itsOk: continue
                 for sys in scan.SysString.split():
@@ -634,7 +645,7 @@ if __name__ == "__main__":
     r.gStyle.SetOptStat(0)
 
     parser = optparse.OptionParser(usage="usage: %prog [opts] FilenameWithSamples", version="%prog 1.0")
-    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples.dat', help='the samples file. default \'samples.dat\'')
+    parser.add_option('-s', '--samples', action='store', type=str, dest='sampleFile', default='samples_resolved.dat', help='the samples file. default \'samples_resolved.dat\'')
     parser.add_option('-r', '--reloadScan' , action='store_true', dest='reloadScan', help='reload scan. default %default')
     parser.add_option('-l', '--reloadLimits' , action='store_true', dest='reloadLimits', help='reload limits. default %default')
     parser.add_option('-n', '--scanName'     , action='store', type=str, dest='scanName', default='T6bbslepton', help='scan name. e.g. T6bbslepton (this is the default)')
@@ -649,7 +660,7 @@ if __name__ == "__main__":
     global lumi, scan
     scan = Scans.Scan(opts.scanName)
     cuts = CutManager.CutManager()
-    lumi = 35.9
+    lumi = 140 #35.9
     global replaceCutsForSys, extraWeightsForSys
     if 'Slepton' in scan.name:
         replaceCutsForSys = {'':      [],
@@ -659,8 +670,6 @@ if __name__ == "__main__":
                              'jecDown'     : [['nJet25_Edge','nJet25_jecDn_Edge'],
                                               ['mt2_Edge','mt2_jecDn_Edge'],
                                               ['met_Edge', 'met_jecDn_Edge']],
-                             'metElEnUp'     : [['met_Edge','met_shifted_ElectronEnUp_pt_Edge']],
-                             'metElEnDown'   : [['met_Edge','met_shifted_ElectronEnDown_pt_Edge']],
                              'metMuEnUp'     : [['met_Edge','met_shifted_MuonEnUp_pt_Edge']],
                              'metMuEnDown'   : [['met_Edge','met_shifted_MuonEnDown_pt_Edge']],
                              'metUnclEnUp'   : [['met_Edge','met_shifted_UnclusteredEnUp_pt_Edge']],
@@ -717,14 +726,14 @@ if __name__ == "__main__":
                              'bHeDown'      : [],
                              'bLiUp'        : [],
                              'bLiDown'      : [],
-                             'lepElUp'         : [],
-                             'lepElDown'       : [],
+                             'ElUp'         : [],
+                             'ElDown'       : [],
                              'FastSimElUp'  : [],
                              'FastSimElDown': [],
                              'FastSimMuUp'  : [],
                              'FastSimMuDown': [],
-                             'lepMuUp'   : [],
-                             'lepMuDown' : [],
+                             'MuUp'   : [],
+                             'MuDown' : [],
                              'PUUp'   : [],
                              'PUDown' : [],
                              'ISRUp'  : [],
@@ -740,8 +749,6 @@ if __name__ == "__main__":
     extraWeightsForSys = {''          : '1',
                           'jecUp'     : '1',
                           'jecDown'   : '1',
-                          'metElEnUp'   : '1',
-                          'metElEnDown' : '1',
                           'metMuEnUp' : '1',
                           'metMuEnDown' : '1',
                           'metUnclEnUp' : '1',
@@ -750,24 +757,18 @@ if __name__ == "__main__":
                           'bHeDown'   : 'weight_btagsf_heavy_DN_Edge / weight_btagsf_Edge',
                           'bLiUp'     : 'weight_btagsf_light_UP_Edge / weight_btagsf_Edge',
                           'bLiDown'   : 'weight_btagsf_light_DN_Edge / weight_btagsf_Edge',
-                          'lepElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'lepElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'ElUp'      : 'LepSFElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'ElDown'      : 'LepSFElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimElUp'  : 'LepSFFastSimElUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimElDown': 'LepSFFastSimElDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimElDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimMuUp'  : 'LepSFFastSimMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'FastSimMuDown': 'LepSFFastSimMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSimMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'lepMuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
-                          'lepMuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'MuUp'      : 'LepSFMuUp(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuUp(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
+                          'MuDown'      : 'LepSFMuDn(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFMuDn(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) / ( LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge) )',
                           'PUUp'      : 'PileupW_Up_Edge / PileupW_Edge',
                           'PUDown'    : 'PileupW_Dn_Edge / PileupW_Edge',
                           'ISRUp'     : 'ISRweight_Up_Edge / ISRweight_Edge',
                           'ISRDown'   : 'ISRweight_Dn_Edge / ISRweight_Edge',
-                          'scaleIncl'   : '1',
-                          'scaleInclUp'   : 'LHEweight_wgt_Edge[4]/LHEweight_wgt_Edge[0]',
-                          'scaleInclDown' : 'LHEweight_wgt_Edge[8]/LHEweight_wgt_Edge[0]',
-                          'scaleExcl'   : '1',
-                          'scaleExclUp'   : 'LHEweight_wgt_Edge[4]/LHEweight_wgt_Edge[0]',
-                          'scaleExclDown' : 'LHEweight_wgt_Edge[8]/LHEweight_wgt_Edge[0]',
                           'genMet'    : '1'}
 
 
@@ -787,15 +788,15 @@ if __name__ == "__main__":
         if scan.makeMCDatacards:
             print "doing makeDataCards"
             makeMCDatacards()
-        if scan.makeMCDatacardsSlepton:
-            makeDataCardsFromRootFileSlepton()
+        #if scan.makeMCDatacardsSlepton:
+        #    makeDataCardsFromRootFileSlepton()
         else:
             if not 'Edge' in scan.name:
                 makeDataCardsFromRootFile()
             else:
                 makeDataCardsFromRootFileForEdge()
 
-        scan.tree = Sample.Tree(helper.selectSamples("samplesSlepton.dat", scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
+        scan.tree = Sample.Tree(helper.selectSamples("samples_resolved.dat", scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         #scan.tree = Sample.Tree(helper.selectSamples(opts.sampleFile, scan.datasets, 'SIG'), 'SIG'  , 0, isScan = True)
         ## Load the number of generated events to produce efficiency maps per systematic
         print "getting treeeees     ____________________________________________________________________________________________________"
@@ -836,7 +837,7 @@ if __name__ == "__main__":
         scan.ngen_3d = newbinning[1] ## this one has ngen in every single bin. for every SR. and it's 3D, so that's cool
         getSREffMaps()
 
-        scan.SysStringUpDown = 'lepEl lepMu metElEn metMuEn metUnclEn jec FastSimEl FastSimMu PU scaleExcl scaleIncl'
+        scan.SysStringUpDown = 'El Mu jec FastSimEl FastSimMu PU bHe bLi ISR '
         scan.SysString = 'genMet'
         scan.SysForTableMax = {}
         scan.SysForTableMin = {}
@@ -877,7 +878,7 @@ if __name__ == "__main__":
     #makeTable()
     if opts.reloadLimits:
         print 'reloading limits and datacards'
- #        fillAndSaveDatacards(dobs)
+        #fillAndSaveDatacards(dobs)
         produceLimits(40 if os.path.exists('/pool/') else 8)
 
     os.system('mkdir -p mkdir -p makeExclusionPlot/config/%s/'%scan.paper)
