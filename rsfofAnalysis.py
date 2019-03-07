@@ -24,6 +24,8 @@ import include.Canvas     as Canvas
 import include.CutManager as CutManager
 import include.Sample     as Sample
 
+from itertools import product
+
 
 
 class bcolors:
@@ -294,64 +296,35 @@ if __name__ == '__main__':
 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed',  'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500' ]
-    ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
-    stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
-    zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
-    zz4lDatasets = ['ZZTo4L', 'GGHZZ4L', 'VBF_HToZZTo4L', 'GluGluToContinToZZTo2mu2tau']
-    wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q', 'WJetsToLNu_LO']
-    wzDatasets = ['WZTo3LNu_amcatnlo']
-    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow']
-    ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW', 'TTWZ', 'TTZH', 'TTZZ',  'TTGJets']
+
+    
+    dyDatasets = ['DYJetsToLL_M50_ext_part1+DYJetsToLL_M50_ext_part2+DYJetsToLL_M50_ext_part3']
+    ttDatasets = ['TTTo2L2Nu_part1+TTTo2L2Nu_part2','TTToSemiLeptonic'] # tt1l missing
+    stDatasets = ['TW','TbarW'] # t and s (lol) channel missing 
+    ttzDatasets = ['TTZ_LO_ext1','TTW_LO']#,'TTWZ','TTGJets_newpmx']
+    zz2lDatasets = ['ZZTo2L2Q','ZZTo2L2Nu']
+    zz4lDatasets = ['ZZTo4L_ext1_part1+ZZTo4L_ext1_part2',
+                    #'GluGluToContinToZZTo2e2mu+GluGluToContinToZZTo2e2mu_ext1',
+                    #'GluGluToContinToZZTo2e2nu+GluGluToContinToZZTo2e2nu_ext1',
+                    #'GluGluToContinToZZTo2mu2nu+GluGluToContinToZZTo2mu2nu_ext1',
+                    #'GluGluToContinToZZTo4e+GluGluToContinToZZTo4e_ext1',
+                    #'GluGluToContinToZZTo4mu+GluGluToContinToZZTo4mu_ext1'
+    ]
+    wwDatasets = ['WWTo2L2Nu']
+    wzDatasets = ['WZTo3LNu','WZTo2L2Q']
+    raDatasets = [ 'TTH_amc']
     mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
 
-    
-    
-    daDatasetsB = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',            
-                   'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
-                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
-                   #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
-                                                                              
-    daDatasetsC = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',   
-                   'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
-                   #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
-    
-    daDatasetsD = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
-                                                                              
-    daDatasetsE = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']    
-                   #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
-                                                                              
-    daDatasetsF = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462',          
-                  'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
-                  'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']              
+    daDatasets = [ '%s_Run2017%s'%(x,y) for x,y in product('DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(','), 'B,C,D,E,F'.split(','))]
+    daDatasetsB = [ '%s_Run2017B'%(x) for x in 'DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(',')]
+    daDatasetsC = [ '%s_Run2017C'%(x) for x in 'DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(',')]
+    daDatasetsD = [ '%s_Run2017D'%(x) for x in 'DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(',')]
+    daDatasetsE = [ '%s_Run2017E'%(x) for x in 'DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(',')]
+    daDatasetsF = [ '%s_Run2017F'%(x) for x in 'DoubleEG,DoubleMuon,SingleElectron,SingleMuon,MuonEG'.split(',')]
 
 
-    daDatasets = daDatasetsB + daDatasetsC + daDatasetsD +daDatasetsE + daDatasetsF  
-
-    treeMC = Sample.Tree(helper.selectSamples(opts.sampleFile, mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA = Sample.Tree(helper.selectSamples(opts.sampleFile, daDatasets, 'DA'), 'DATA', 1)
+    treeMC = Sample.Tree(helper.selectSamples("samples.dat", mcDatasets, 'MC'), 'MC'  , 0)
+    treeDA = Sample.Tree(helper.selectSamples("samples.dat", daDatasets, 'DA'), 'DATA', 1)
   
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
     kf = "noKFactor"

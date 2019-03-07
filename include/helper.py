@@ -315,10 +315,13 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     tmp_file = open('.tmp_sampleFile%s.txt' %sType, 'w')
     checkedList = []
     typeList    = []
+    defMap = {} 
     for line in f.readlines():
         if '#' in line or not len(line.rstrip('\r')): continue
+        if 'DEF:' in line: 
+            defMap[line.split(':')[1]] = line.split(':')[2]
+            continue 
         for _sample in selList:
-            #print "_sample", _sample
             _sample = _sample.replace('*','.*')
             if _sample == line.split()[2] or re.search(_sample, line.split()[2]):
                 if not sType == 'SYNCH':
@@ -334,8 +337,7 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     for _selSample in selList:
         if not '*' in _selSample:
             if _selSample not in checkedList:
-                print 'ERROR: some samples weren\'t selected, check all sample names!'
-                print 'check this sample:', _selSample
+                print 'ERROR: Sample %s is not in the sample file'%_selSample
                 sys.exit('exiting...')
         else:
             print 'you used some wildcards in selecting the samples. be careful with that!'
@@ -343,7 +345,7 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
             print 'ERROR: you\'re mixing DATA and MC!'
             sys.exit('exiting...')
             
-    return tmp_file.name
+    return tmp_file.name, defMap
 
 class color:
        purple = '\033[95m'

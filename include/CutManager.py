@@ -12,7 +12,7 @@ class CutManager:
       ########################################################################
       self.twoLeptons = "nPairLep_Edge > 0"
       self.filters16 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
-      self.filters17 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
+      self.filters17 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1"
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
       self.diLeptonPt = "lepsZPt_EdgeXXX > 25"
@@ -24,21 +24,19 @@ class CutManager:
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
-      self.trigMM17 = "( HLT_DoubleMu_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v_Edge == 1 || HLT_BIT_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass3p8_v_Edge == 1 || HLT_BIT_HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_v_Edge == 1 || HLT_BIT_HLT_Mu37_TkMu27_v_Edge == 1)"
-      self.trigEE17 = "( HLT_DoubleEl_Edge ==1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_DoubleEle25_CaloIdL_MW_v_Edge == 1 || HLT_BIT_HLT_DoubleEle27_CaloIdL_MW_v_Edge == 1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_MW_v_Edge == 1)"
-      self.trigEM17 = "( HLT_MuEG_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge ==1 )"
+      self.trigMM17 = "(  HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_Edge == 1 || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_Edge == 1 || HLT_Mu37_TkMu27_Edge == 1) || HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass3p8_Edge == 1 || HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_Edge == 1"
+      self.trigEE17 = "( HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Edge == 1 || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_Edge ==1 || HLT_DoubleEle25_CaloIdL_MW_Edge == 1 || HLT_DoubleEle27_CaloIdL_MW_Edge == 1 || HLT_DoubleEle33_CaloIdL_MW_Edge == 1)"
+      self.trigEM17 = "( HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_Edge == 1 || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Edge ==1 || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_Edge ==1 )"
       self.trigMM16 = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
       self.trigEE16 = "( HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge==1)"
       self.trigEM16 = "( HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
       self.trigger16 = "((" + self.trigMM16 + " && " + self.mm + ") || (" + self.trigEE16 + " && " + self.ee + ") || (" + self.trigEM16 + " && " + self.OF + "))"
       self.trigger17 = "((" + self.trigMM17 + " && " + self.mm + ") || (" + self.trigEE17 + " && " + self.ee + ") || (" + self.trigEM17 + " && " + self.OF + "))"
       self.goodLepton = "("+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      print self.goodLepton
       self.goodLepton16 = "("+self.trigger16+"&&"+self.filters16+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton17 = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
       self.goodLepton173l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
       self.goodLepton174l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
-      
       
       #self.nSRA = "(nJetSel_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nJetSel_Edge <= 3 && nBJetMedium25_Edge == 0 && htJet35j_Edge > 500 && mt2_Edge>80 && lepsMll_Edge >= 86 && lepsMll_Edge < 96 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
       self.fromZ = '(abs(Lep1_mcMatchId_Edge) == 23 && abs(Lep2_mcMatchId_Edge) == 23)'
@@ -99,22 +97,22 @@ class CutManager:
       ########################################################################
       ######Basic MET cuts##########################################################
       ########################################################################
-      self.METl50  = "(met_Edge < 50)"
-      self.METl100 = "(met_Edge < 100)"
-      self.METl150 = "(met_Edge < 150)"
-      self.METg20 = "(met_Edge > 20)"
-      self.METg30 = "(met_Edge > 30)"
-      self.METg60 = "(met_Edge > 60)"
-      self.METg65 = "(met_Edge > 65)"
-      self.METg50 = "(met_Edge > 50)"
-      self.METg80 = "(met_Edge >  80)"
-      self.METg70 = "(met_Edge >  70)"
-      self.METg50 = "(met_Edge >= 50)"
-      self.METg100 = "(met_Edge >= 100)"
-      self.METg120 = "(met_Edge >= 120)"
-      self.METg150 = "(met_Edge >= 150)"
-      self.METg200 = "(met_Edge >= 200)"
-      self.METg250 = "(met_Edge >= 250)"
+      self.METl50  = "(MET_pt_Edge < 50)"
+      self.METl100 = "(MET_pt_Edge < 100)"
+      self.METl150 = "(MET_pt_Edge < 150)"
+      self.METg20 = "(MET_pt_Edge > 20)"
+      self.METg30 = "(MET_pt_Edge > 30)"
+      self.METg60 = "(MET_pt_Edge > 60)"
+      self.METg65 = "(MET_pt_Edge > 65)"
+      self.METg50 = "(MET_pt_Edge > 50)"
+      self.METg80 = "(MET_pt_Edge >  80)"
+      self.METg70 = "(MET_pt_Edge >  70)"
+      self.METg50 = "(MET_pt_Edge >= 50)"
+      self.METg100 = "(MET_pt_Edge >= 100)"
+      self.METg120 = "(MET_pt_Edge >= 120)"
+      self.METg150 = "(MET_pt_Edge >= 150)"
+      self.METg200 = "(MET_pt_Edge >= 200)"
+      self.METg250 = "(MET_pt_Edge >= 250)"
       self.JETg50 = "(JetSel_Edge_pt >= 50)"
       self.JETg100 = "(JetSel_Edge_pt >= 100)"
       self.JETg150 = "(JetSel_Edge_pt >= 150)"
@@ -122,10 +120,10 @@ class CutManager:
       self.JETg250 = "(JetSel_Edge_pt >= 250)"
       self.JET = "(JetSel_Edge_pt >= 250)"
       
-      self.MET50_100 = "(met_Edge >= 50 && met_Edge < 100)"
-      self.MET100_150 = "(met_Edge >= 100 && met_Edge < 150)"
-      self.MET150_250 = "(met_Edge >= 150 && met_Edge < 250)"
-      self.MET250 = "(met_Edge >= 250)"
+      self.MET50_100 = "(MET_pt_Edge >= 50 && MET_pt_Edge < 100)"
+      self.MET100_150 = "(MET_pt_Edge >= 100 && MET_pt_Edge < 150)"
+      self.MET150_250 = "(MET_pt_Edge >= 150 && MET_pt_Edge < 250)"
+      self.MET250 = "(MET_pt_Edge >= 250)"
       self.lep1W = "abs(Lep1_mcMatchId_Edge) == 24 "
       self.lep1Z = "abs(Lep1_mcMatchId_Edge) == 23 "
       self.lep2W = "abs(Lep2_mcMatchId_Edge) == 24 "
@@ -143,7 +141,7 @@ class CutManager:
       ########################################################################
       ######Basic NLL cut#####################################################
       ########################################################################
-      self.NLL = '(nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21)'
+      self.NLL = '(nll(MET_pt_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21)'
 
       ########################################################################
       ######Basic MT2 cuts####################################################
@@ -240,8 +238,8 @@ class CutManager:
       self.Edge300Mll400 = '(lepsMll_Edge > 300) && (lepsMll_Edge < 400)'
       self.Edge400MllInf = '(lepsMll_Edge > 400)'
                                                                                             
-      self.ttBarLike    = ' nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21'
-      self.NonttBarLike = ' nll(met_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21'
+      self.ttBarLike    = ' nll(MET_pt_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) < 21'
+      self.NonttBarLike = ' nll(MET_pt_Edge, lepsZPt_Edge, sum_mlb_Edge, lepsDPhi_Edge) > 21'
       self.loNLL = self.ttBarLike
       self.hiNLL = self.NonttBarLike                                                        
       self.mt290 = 'mt2_Edge > 90'                                                        

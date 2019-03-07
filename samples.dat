@@ -8,108 +8,88 @@
 # BLOCK        COLOR                         NAME                 LABEL                                     LOCATION OF FRIENDS                                                     XSEC     ISDATA
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #
-data  r.kBlack      DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329                  DoubleEG         /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0 
-data  r.kBlack      DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029                  DoubleEG         /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434                  DoubleEG         /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797                  DoubleEG         /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462                  DoubleEG         /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329                DoubleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029                DoubleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434                DoubleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797                DoubleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462                DoubleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329                    MuonEG           /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029                    MuonEG           /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434                    MuonEG           /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797                    MuonEG           /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462                    MuonEG           /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MET_Run2017B_17Nov2017_v1_runs_297046_299329                       MET              /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MET_Run2017C_17Nov2017_v1_runs_299368_302029                       MET              /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MET_Run2017D_17Nov2017_v1_runs_302030_303434                       MET              /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MET_Run2017E_17Nov2017_v1_runs_303824_304797                       MET              /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      MET_Run2017F_17Nov2017_v1_runs_305040_306462                       MET              /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      JetHT_Run2017B_17Nov2017_v1_runs_297046_299329                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      JetHT_Run2017C_17Nov2017_v1_runs_299368_302029                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      JetHT_Run2017D_17Nov2017_v1_runs_302030_303434                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      JetHT_Run2017E_17Nov2017_v1_runs_303824_304797                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      JetHT_Run2017F_17Nov2017_v1_runs_305040_306462                     JetHT            /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462                SingleMuon       /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0
-data  r.kBlack      SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462            SingleElectron   /eos/cms/store/user/mvesterb/heppyFriendsData2018_May14_Skimmed2Lep/ 1    1 0    
+#
+DEF:path:/data/sscruz/firstEdgeProduction_merge/
+data  r.kBlack       DoubleEG_Run2017B          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run2017C          DoubleEG             {path}  1    1 0
+data  r.kBlack       DoubleEG_Run2017D          DoubleEG             {path}  1    1 0
+data  r.kBlack       DoubleEG_Run2017E          DoubleEG             {path}  1    1 0
+data  r.kBlack       DoubleEG_Run2017F          DoubleEG             {path}  1    1 0
+data  r.kBlack       DoubleMuon_Run2017B        DoubleMuon           {path}  1    1 0
+data  r.kBlack       DoubleMuon_Run2017C        DoubleMuon           {path}  1    1 0
+data  r.kBlack       DoubleMuon_Run2017D        DoubleMuon           {path}  1    1 0
+data  r.kBlack       DoubleMuon_Run2017E        DoubleMuon           {path}  1    1 0
+data  r.kBlack       DoubleMuon_Run2017F        DoubleMuon           {path}  1    1 0
+data  r.kBlack       SingleElectron_Run2017B    SingleElectron       {path}  1    1 0
+data  r.kBlack       SingleElectron_Run2017C    SingleElectron       {path}  1    1 0
+data  r.kBlack       SingleElectron_Run2017D    SingleElectron       {path}  1    1 0
+data  r.kBlack       SingleElectron_Run2017E    SingleElectron       {path}  1    1 0
+data  r.kBlack       SingleElectron_Run2017F    SingleElectron       {path}  1    1 0
+data  r.kBlack       SingleMuon_Run2017B        SingleMuon           {path}  1    1 0
+data  r.kBlack       SingleMuon_Run2017C        SingleMuon           {path}  1    1 0
+data  r.kBlack       SingleMuon_Run2017D        SingleMuon           {path}  1    1 0
+data  r.kBlack       SingleMuon_Run2017E        SingleMuon           {path}  1    1 0
+data  r.kBlack       SingleMuon_Run2017F        SingleMuon           {path}  1    1 0
+data  r.kBlack       MuonEG_Run2017B            MuonEG               {path}  1    1 0
+data  r.kBlack       MuonEG_Run2017C            MuonEG               {path}  1    1 0
+data  r.kBlack       MuonEG_Run2017D            MuonEG               {path}  1    1 0
+data  r.kBlack       MuonEG_Run2017E            MuonEG               {path}  1    1 0
+data  r.kBlack       MuonEG_Run2017F            MuonEG               {path}  1    1 0
+#
 #----------------- monte carlo -----------------------------
 #-----------------------------------------------------------
 # BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #########################_DY+jets_####################################################################################################################
-#DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO          DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet  18610000.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50HTskimmed        DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet   6024000.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT100to200      DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet    147400.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT200to400      DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     40990.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT400to600      DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      5678.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT600to800      DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      1367.0    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT800to1200     DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       630.4    0 0
-DYJets    r.kYellow-9    DYJetsToLL_M50_HT1200to2500    DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       151.4    0 0
-#DYJets    r.kYellow-9    DYJetsToLL_M50_HT2500toInf     DY+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.565    0 0
+DYJets    r.kYellow-9    DYJetsToLL_M50_ext_part1+DYJetsToLL_M50_ext_part2+DYJetsToLL_M50_ext_part3        DY+Jets     {path}   2008.*3    0 0
+DYJets    r.kYellow-9    DYJetsToLL_M10to50                                                                DY+Jets     {path}   22635.09    0 0
 #########################_TTbar_#######################################################################################################################
-TTJets    r.kRed-9       TTJets                         TT+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet    831760.0     0 0
-#TTJets    r.kRed-9       TTJets_SingleLeptonFromT       TT+Jets     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet   182175.40    0 0
+TTJets    r.kRed-9       TTTo2L2Nu_part1+TTTo2L2Nu_part2        TT+Jets     {path}   831.76*((3*0.108)**2)     0 0
+TTJets    r.kRed-9       TTToSemiLeptonic        TT+Jets     {path}   2*831.76*(3*0.108)*(1-3*0.108)     0 0
 #########################_singleTop_###################################################################################################################
-singleT   r.kRed-7       TToLeptons_sch                 singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      3680.7    0 0
-singleT   r.kRed-7       T_tch_powheg                   singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     44330.0    0 0
-singleT   r.kRed-7       TBar_tch_powheg                singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     26380.0    0 0
-singleT   r.kRed-7       T_tWch_noFullHad               singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     20247.8    0 0
-singleT   r.kRed-7       TBar_tWch_noFullHad_ext        singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     18502.3    0 0
-singleT   r.kRed-7       tZq_ll                         singleT     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet        75.8    0 0
+singleT   r.kRed-7       TW_NoFullyHadronic_PSweights           singleT     {path}     19.5    0 0
+singleT   r.kRed-7       TbarW_NoFullyHadronic_PSweights        singleT     {path}     19.5    0 0
 #########################_TTZ/TTW/TWZ/TTVV_############################################################################################################
-TTZ       r.kBlue-7      TTZToLLNuNu                    TTZ         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       252.9    0 0
-TTZ       r.kBlue-7      TTZ_LO                         TTZ         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       529.7    0 0
-TTZ       r.kBlue-7      TTLLJets_m1to10                TTZ         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet        49.3    0 0
-TTZ       r.kBlue-7      TTZZ                           TTZ         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       1.572    0 0
-TTZ       r.kBlue-7      TTZH                           TTZ         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       1.253    0 0
-#TTV       r.kBlue-7      TWZ                            TTV         /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09/       11.23    0 0
-TTW       r.kBlue-7      TTWToLNu                       TTW         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       204.3    0 0
-TTW       r.kBlue-7      TTW_LO                         TTW         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       610.5    0 0
-TTW       r.kBlue-7      TTWW                           TTW         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       7.883    0 0
-TTW       r.kBlue-7      TTWZ                           TTW         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       2.974    0 0
-TTW       r.kBlue-7      TTGJets                        TTW         /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      3697.0    0 0
+TTZ       r.kBlue-7      TTZ_LO_ext1                         TTZ         {path}  0.5297/0.692    0 0
+#TTZ       r.kBlue-7      TTLLJets_m1to10                TTZ        {path}  xsec    0 0
+#TTZ       r.kBlue-7      TTZZ                           TTZ        {path}  xsec    0 0
+#TTZ       r.kBlue-7      TTZH                           TTZ        {path}  xsec    0 0
+#TTV       r.kBlue-7      TWZ                            TTV        {path}  xsec    0 0
+#TTW       r.kBlue-7      TTWToLNu                       TTW        {path}  xsec    0 0
+TTW       r.kBlue-7      TTW_LO                         TTW         {path}  0.6105    0 0
+#TTW       r.kBlue-7      TTWW                           TTW        {path}  xsec    0 0
+TTW       r.kBlue-7      TTWZ                           TTW         {path}  0.001982    0 0
+TTW       r.kBlue-7      TTGJets_newpmx                 TTW         {path}  3.697    0 0
 #########################_WWTo2L2Nu_###################################################################################################################
-WW2l      r.kCyan+3      WWTo2L2Nu                      WW2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     12178.0    0 0
-WW2l      r.kCyan+3      WWTo1L1Nu2Q                    WW2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet     49997.0    0 0
-#WW2l      r.kCyan+3      GGWWTo2L2Nu                    WW2l        /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/       590.6    0 0
-#WW2l      r.kCyan+3      GGHWWTo2L2Nu                   WW2l        /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/      1002.0    0 0
-#WW2l      r.kCyan+3      WWDouble                       WW2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      1617.0    0 0
-#WW2l      r.kCyan+3      WpWpJJ                         WW2l        /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/        37.1    0 0
-WZTo2L2Q      r.kCyan+3      WZTo2L2Q                   WZTo2L2Q     /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      5595.0    0 0
-#VV2l      r.kCyan+3      ZZTo2L2Q                       VV2l        /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/      3220.0    0 0
+WW2l      r.kCyan+3      WWTo2L2Nu                       WW2l        {path}    12.178   0 0
+#WW2l      r.kCyan+3      WWTo1L1Nu2Q                    WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      GGWWTo2L2Nu                    WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      GGHWWTo2L2Nu                   WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      WWDouble                       WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      WpWpJJ                         WW2l        {path}    xsec   0 0
+WZTo2L2Q      r.kCyan+3      WZTo2L2Q                   WZTo2L2Q     {path}    5.60    0 0
+WZTo3LNu      r.kCyan+3      WZTo3LNu                   WZTo3LNu     {path}    4.666   0 0
 #########################_ZZTo4l_######################################################################################################################
-#ZZ4l      r.kCyan+2      GluGluToContinToZZTo2e2mu      ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       7.346    0 0
-#ZZ4l      r.kCyan+2      GluGluToContinToZZTo2e2tau     ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       7.346    0 0
-ZZ4l      r.kCyan+2      GluGluToContinToZZTo2mu2tau    ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       7.346    0 0
-#ZZ4l      r.kCyan+2      GluGluToContinToZZTo4e         ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.648    0 0
-#ZZ4l      r.kCyan+2      GluGluToContinToZZTo4mu        ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.648    0 0
-#ZZ4l      r.kCyan+2      GluGluToContinToZZTo4tau       ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.648    0 0
-ZZ4l      r.kCyan+2      ZZTo4L                         ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      1256.0    0 1
-ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       13.08    0 0
-ZZ4l      r.kCyan+2      VBF_HToZZTo4L                  ZZ4l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       1.034    0 0
+ZZ4l      r.kCyan+2       ZZTo4L_ext1_part1+ZZTo4L_ext1_part2              ZZ4l       {path}       1.256    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2e2mu+GluGluToContinToZZTo2e2mu_ext1          ZZ4l       {path}       0.00319    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2e2nu+GluGluToContinToZZTo2e2nu_ext1          ZZ4l       {path}       0.00319    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2mu2nu+GluGluToContinToZZTo2mu2nu_ext1        ZZ4l       {path}       0.00319    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo4e+GluGluToContinToZZTo4e_ext1                ZZ4l       {path}       0.00159    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo4mu+GluGluToContinToZZTo4mu_ext1              ZZ4l       {path}       0.00159    0 1
+#ZZ4l      r.kCyan+2      GGHZZ4L                        ZZ4l       {path}       xsec    0 0
+#ZZ4l      r.kCyan+2      VBF_HToZZTo4L                  ZZ4l       {path}       xsec    0 0
 #########################_ZZTo2l_######################################################################################################################
-ZZ2l      r.kCyan+2      ZZTo2L2Nu                      ZZ2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       564.0    0 2
-ZZ2l      r.kCyan+2      GluGluToContinToZZTo2e2nu      ZZ2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.956    0 0
-ZZ2l      r.kCyan+2      GluGluToContinToZZTo2mu2nu     ZZ2l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       3.956    0 0
-WZ3l      r.kGreen-8     WZTo3LNu_amcatnlo              WZ3l        /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet      4666.0    0 0
+ZZ2l      r.kCyan+2      ZZTo2L2Nu                      ZZ2l        {path}       0.564    0 2
+ZZ2l      r.kCyan+2      ZZTo2L2Q                       ZZ2l        {path}       3.28     0 2
+#ZZ2l      r.kCyan+2      GluGluToContinToZZTo2e2nu      ZZ2l       {path}       xsec    0 0
+#ZZ2l      r.kCyan+2      GluGluToContinToZZTo2mu2nu     ZZ2l       {path}       xsec    0 0
 #########################_rares_########################################################################################################################
-rares     r.kGreen-5     WWW_4F                         rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       208.6    0 0
+#rares     r.kGreen-5     WWW_4F                         rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       208.6    0 0
 #rares     r.kGreen-5     WWZ                            rares       /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/       165.1    0 0
-rares     r.kGreen-5     WZG                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       41.23    0 0
-rares     r.kGreen-5     WZZ                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       55.65    0 0
-rares     r.kGreen-5     ZZZ                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       13.98    0 0
-rares     r.kGreen-5     TTHnobb_pow                    rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       215.0    0 0
+#rares     r.kGreen-5     WZG                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       41.23    0 0
+#rares     r.kGreen-5     WZZ                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       55.65    0 0
+#rares     r.kGreen-5     ZZZ                            rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       13.98    0 0
+rares     r.kGreen-5     TTH_amc                    rares            {path}       0.215    0 0
 #rares     r.kGreen-5     VHToNonbb                      rares       /eos/cms/store/user/mvesterb/heppyFriendsMC2018_April09_skimmed/       927.0    0 0
 #rares     r.kGreen-5     TTTT                           rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       9.103    0 0
 #rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet  61526700.0    0 0

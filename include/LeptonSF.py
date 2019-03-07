@@ -24,41 +24,28 @@ import ROOT, math, optparse, copy
 # (reco scale factors when available)
 
 def LoadLeptonSF():
-    print 'Welcome to the LeptonSF calculator'
-    print 'Notice:'
-    print '+ Only full sim / data SFs are available yet'
-    print '+ 3% systematic is taken for the muons. only statistical uncertainty available in histos. Line 31 in  .C and so on'
-    print '+ no ip3d < 8 sf for muons is available'
-    print '+ no mva tight vs miniiso 0.4 is availabel for tight electrons'
-    print '+ no tracking efficiency available for muons. Geting 1.'
 
     ROOT.gROOT.LoadMacro('include/LeptonSF.C+')
+
     # Electrons
-    elFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/ELEC/scaleFactors.root')
-    ROOT.SetElecID (copy.deepcopy( elFile.Get('GsfElectronToMVATightIDEmuTightIP2DSIP3D4')))
-    ROOT.SetElecIP (copy.deepcopy( elFile.Get('MVAVLooseElectronToMini'))) 
-    ROOT.SetElecISO(copy.deepcopy( elFile.Get('MVATightElectronToConvVetoIHit0')))# its not iso, but who cares
+    elFile = ROOT.TFile('data/2017/leptonSF/ElectronScaleFactors_Run2017.root')
+    ROOT.AddElec(copy.deepcopy( elFile.Get('Run2017_MVATightTightIP2D3D')))
+    ROOT.AddElec(copy.deepcopy( elFile.Get('Run2017_MVAVLooseTightIP2DMini'))) 
+    ROOT.AddElec(copy.deepcopy( elFile.Get('Run2017_ConvIHit0')))
     elFile.Close()
-    elFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/ELEC/egammaEffi.txt_EGM2D.root')
-    ROOT.SetElecTrk(copy.deepcopy( elFile.Get('EGamma_SF2D')))
+
+    elFile = ROOT.TFile('data/2017/leptonSF/egammaEffi.txt_EGM2D_runBCDEF_passingRECO.root')
+    ROOT.AddElec(copy.deepcopy( elFile.Get('EGamma_SF2D')))
+    elFile.Close()
 
     # Muons
-    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/TnP_NUM_MediumID_DENOM_generalTracks_VAR_map_pt_eta.root')
-    ROOT.SetMuonID( copy.deepcopy( muFile.Get('SF') ))
+    muFile = ROOT.TFile('data/2017/leptonSF/RunBCDEF_SF_ID.root')
+    ROOT.AddMuon( copy.deepcopy( muFile.Get('NUM_MediumPromptID_DEN_genTracks_pt_abseta') ))
     muFile.Close()
-    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/TnP_NUM_MiniIsoLoose_DENOM_MediumID_VAR_map_pt_eta.root')
-    ROOT.SetMuonISO( copy.deepcopy( muFile.Get('SF') ))
+    muFile = ROOT.TFile('data/2017/leptonSF/SF_num_miniiso_denmediumprompt.root')
+    ROOT.AddMuon( copy.deepcopy( muFile.Get('TnP_MC_NUM_MiniIso02Cut_DEN_MediumCutidPromptCut_PAR_pt_eta') ))
     muFile.Close()
-    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/TnP_NUM_TightIP2D_DENOM_MediumID_VAR_map_pt_eta.root')
-    ROOT.SetMuonIP1( copy.deepcopy(muFile.Get('SF')))
-    muFile.Close()
-    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/TnP_NUM_TightIP3D_DENOM_MediumID_VAR_map_pt_eta.root')
-    ROOT.SetMuonIP2( copy.deepcopy(muFile.Get('SF')))
-    muFile.Close()
-    muFile = ROOT.TFile('/afs/cern.ch/work/s/sesanche/public/stuffForMoriond/LepSFs/MUON/Tracking_EfficienciesAndSF_BCDEFGH.root')
-    ROOT.SetMuonTrk( copy.deepcopy(muFile.Get('ratio_eff_aeta_dr030e030_corr')))
-    muFile.Close()
-    print 'Setup done. Have a nice day'
+
 
 LoadLeptonSF()
 

@@ -1,6 +1,6 @@
 import ROOT as r
 from array import array
-from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas
+from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas, TChain
 import include.LeptonSF
 import include.FastSimSF
 import copy
@@ -10,28 +10,32 @@ class Sample:
    'Common base class for all Samples'
 
    def __init__(self, name, friendlocation, xsection, isdata, doKfactor, isScan, isOnEOS):
+      print name, isScan, isdata
       self.name = name
       self.location = friendlocation
       self.xSection = xsection
       self.doKfactor = doKfactor
       self.isData = isdata
+      self.ttree = TChain('Events')
       if isOnEOS:
-          self.ftfile = TFile(friendlocation)
+         self.ttree.Add(friendlocation)
       else:
-          ftfileloc = friendlocation+'/evVarFriend_'+self.name+'.root' 
-          self.ftfile = TFile(ftfileloc)                                    
-      print ftfileloc
-      self.ttree = self.ftfile.Get('sf/t')
+         for part in name.split('+'):
+            self.ttree.Add(friendlocation+'/%s/nanoAODskim/Events.root'%part)
+            
       self.isScan = isScan
       if not self.isData and not self.isScan:
         gw = 0.
         for i in self.ttree:
             gw = abs(i.genWeight_Edge)
             if gw: break
-        self.count = self.ftfile.Get('SumGenWeights').GetBinContent(1)/abs(gw)
-      else:
+        self.count = 0
+        for part in name.split('+'):
+           ftfile = TFile(friendlocation+'/%s/nanoAODskim/Events.root'%part)
+           self.count += ftfile.Get('SumWeights').GetBinContent(1)/abs(gw)
+      #else:
           #self.count = self.ftfile.Get('Count').GetBinContent(1)
-          self.count = self.ftfile.Get('sf/t').GetEntries()
+          #self.count = self.ftfile.Get('sf/t').GetEntries()
       self.puWeight   = '1.0'
       self.SFWeight   = '1.0'
       self.btagWeight = '1.0'
@@ -39,7 +43,7 @@ class Sample:
       self.ISRWeight  = '1.0'
 
       if not self.isData and not self.isScan  > 0:
-        self.lumWeight = self.xSection / self.count
+        self.lumWeight = '%s /'%self.xSection + str(self.count)
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
         self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
@@ -75,7 +79,7 @@ class Sample:
             self.smsCount =   self.ftfile.Get('CountSMS')      
             print "using this self.smsCount ", self.smsCount, " for ", self.name                  
         else:               
-            self.smsCount =  self.ftfile.Get('sf/t').GetEntries()                                 
+            self.smsCount =  self.ftfile.Get('Events').GetEntries()                                 
             self.lumWeight = self.xSection / self.smsCount     
             print "using this self.smsCount ", self.smsCount, " for ", self.name                  
 
@@ -156,13 +160,12 @@ class Sample:
           
           if (self.doKfactor == 0): #all other MC has no NNLO/NLO reweighting
               kf = "1"  
-          cut = cut + "* ( " + str(self.lumWeight*lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
+          cut = cut + "*1000*( %s *"%self.lumWeight + str(lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
       else: 
          addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
-      print cut 
       self.ttree.Project(h.GetName(), var, cut, options)
       for _bin in range(1, h.GetNbinsX()+2):
           h_of.SetBinContent(_bin, h.GetBinContent(_bin))
@@ -302,22 +305,25 @@ class Block:
 class Tree:
    'Common base class for a physics meaningful tree'
 
-   def __init__(self, fileName, name, isdata, isScan = False, isOnEOS = 0):
+   def __init__(self, fileNameAndMap, name, isdata, isScan = False, isOnEOS = 0):
       #print fileName
       self.name  = name
       self.isData = isdata
       self.blocks = []
       self.isScan = isScan
       self.isOnEOS = isOnEOS
-      self.parseFileName(fileName)
+      self.parseFileName(fileNameAndMap)
 
-   def parseFileName(self, fileName):
-
+   def parseFileName(self, fileNameAndMap):
+      
+      fileName, defMap = fileNameAndMap
+      
       f = open(fileName)
 
       for l in f.readlines():
         if (l[0] == "#" or len(l) < 2):
           continue
+        l = l.format(**defMap)
 
         splitedLine = str.split(l)
         block       = splitedLine[0]
@@ -325,17 +331,19 @@ class Tree:
         name        = splitedLine[2]
         label       = splitedLine[3]
         flocation   = splitedLine[4]
-        xsection    = float(splitedLine[5])
+        xsection    = splitedLine[5]
         isdata      = int(splitedLine[6])
         doKfactor   = int(splitedLine[7])
 
-        color = 0
-        plusposition = theColor.find("+")
-        if(plusposition == -1):
-          color = eval(theColor)
-        else:
-          color = eval(theColor[0:plusposition])
-          color = color + int(theColor[plusposition+1:len(theColor)])
+        #color = 0
+        # plusposition = theColor.find("+")
+        # if(plusposition == -1):
+        #   color = eval(theColor)
+        # else:
+        #   color = eval(theColor[0:plusposition])
+        #   color = color + int(theColor[plusposition+1:len(theColor)])
+
+        color = eval(theColor)
 
         sample = Sample(name, flocation, xsection, isdata, doKfactor, self.isScan, self.isOnEOS)
         coincidentBlock = [l for l in self.blocks if l.name == block]
