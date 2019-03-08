@@ -40,8 +40,9 @@ class bcolors:
 
 def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut, cuts, labelx, logx, protection):
 
-    
+    print 'getting stack'
     MCS  = treeMC.getStack(lumi, "hMCS_%s"%(name), var, nbin, xmin, xmax, theCut, "", labelx,'1',0)
+    print' getting mc'
     DATA = treeDA.getTH1F(lumi, "hDATA_%s"%(name), var, nbin, xmin, xmax, theCut, '', labelx,'1',0)
     MC = MCS.GetStack().Last()
 
@@ -61,7 +62,8 @@ def makePlot(lumi, lumi_str, treeDA, treeMC, var, name, nbin, xmin, xmax, theCut
     print "MC   integral ", MC.Integral()
     SetOwnership(MC, 0 )   # 0 = release (not keep), 1 = keep
     SetOwnership(MCS, 0 )   # 0 = release (not keep), 1 = keep
-    SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = keep
+    SetOwnership(DATA, 0 )   # 0 = release (not keep), 1 = kee
+    DATA.SetMarkerStyle(r.kFullCircle)
     plot = Canvas.Canvas('DataMC_trigger/%s/plot_%s'%(lumi_str,name), 'png,pdf,root', 0.65, 0.6, 0.85, 0.9)
     plot.addStack(MCS, "HIST", 1, 1)
     plot.addHisto(DATA, "E1,SAME", "Data", "P", r.kBlack, 1, 0)

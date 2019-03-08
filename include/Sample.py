@@ -4,7 +4,15 @@ from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas, TChain
 import include.LeptonSF
 import include.FastSimSF
 import copy
+import time
+import math
+from multiprocessing import Pool
 
+chunkSize = 1000000# chunks of 1M events
+
+def runTH1Tasks (task):
+   sample, blockName, params  = task
+   return (blockName, sample.getTH1F(*params))
 
 class Sample:
    'Common base class for all Samples'
@@ -22,7 +30,6 @@ class Sample:
       else:
          for part in name.split('+'):
             self.ttree.Add(friendlocation+'/%s/nanoAODskim/Events.root'%part)
-            
       self.isScan = isScan
       if not self.isData and not self.isScan:
         gw = 0.
@@ -107,7 +114,7 @@ class Sample:
       print "#################################"
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel,  extraWeight, doKfactorGENVar):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel,  extraWeight, doKfactorGENVar, chunk=-1):
    #def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin=True, extraWeight="1", ylabel = 'Events', doKfactorGENVar = "noKFactor"):
 #      if doKfactorGENVar == 'doTGraph':
 #          fileD =  TFile("kfactors.root");
@@ -166,7 +173,17 @@ class Sample:
          cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
-      self.ttree.Project(h.GetName(), var, cut, options)
+
+      if (chunk > -1):
+         allEntries = self.ttree.GetEntries()
+         firstEntry = chunkSize * chunk
+         maxEntries = chunkSize # the last chunk may go beyond the end of the tree, but ROOT stops anyway so we don't care
+      else:
+         firstEntry = 0
+         maxEntries = allEntries+1 # +1 just in case 
+
+      self.ttree.Project(h.GetName(), var, cut, options, maxEntries, firstEntry)
+
       for _bin in range(1, h.GetNbinsX()+2):
           h_of.SetBinContent(_bin, h.GetBinContent(_bin))
           h_of.SetBinError  (_bin, h.GetBinError  (_bin))
@@ -313,6 +330,8 @@ class Tree:
       self.isScan = isScan
       self.isOnEOS = isOnEOS
       self.parseFileName(fileNameAndMap)
+      self.pool = Pool(50)
+      self.split = 1 
 
    def parseFileName(self, fileNameAndMap):
       
@@ -391,55 +410,87 @@ class Tree:
       del h
       return y
 
+
+      
    def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor):
    
+      hs = THStack(name, "")
+      tasks = [] 
+      for b in self.blocks:
+         for s in  b.samples:
+            AuxName = "auxStack_block_" + name + "_" + b.name + '_' + s.name
+            
+            if self.split: 
+               chunks = int(math.ceil(s.ttree.GetEntries() / float(chunkSize)))
+               for i in range(chunks):
+                  tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor, i)))
+            else:
+               tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor))  )
+         
+      temp_results = self.pool.map_async( runTH1Tasks, tasks,1 ) 
+      while not temp_results.ready():
+         print "Jobs left: %d out of %d"%(temp_results._number_left, len(tasks))
+         time.sleep(2)
+      results = temp_results.get()
 
-     hs = THStack(name, "")
-     for b in self.blocks:
-     
-       AuxName = "auxStack_block_" + name + "_" + b.name
-       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor)
-       haux.SetFillColor(b.color)
-       for i in range(1,haux.GetNbinsX()+1):
-          if haux.GetBinContent(i) < 0 : haux.SetBinContent(i,0)
-       hs.Add(haux)
-       del haux
+      for b in self.blocks:
+         b.first = True
+         for bname, hist in results:
+            if b.name == bname: 
+               if b.first:
+                  mergedHist = hist.Clone( hist.GetName() + '_blockHisto')
+                  b.first = False
+               else:
+                  mergedHist.Add( hist )
+            del hist
+         mergedHist.SetLineColor(b.color)
+         mergedHist.SetFillColor(b.color)
+         mergedHist.SetMarkerColor(b.color)
+         mergedHist.GetYaxis().SetTitle('Events')
+         mergedHist.SetTitle(b.label)
+         for i in range(1,mergedHist.GetNbinsX()+1):
+            if mergedHist.GetBinContent(i) < 0 : mergedHist.SetBinContent(i,0)
+         hs.Add(mergedHist)
+         del mergedHist
 
+      can_aux = TCanvas("can_%s_%s"%(name, b.name))
+      can_aux.cd()
+      hs.Draw()
 
-     can_aux = TCanvas("can_%s_%s"%(name, b.name))
-     can_aux.cd()
-     hs.Draw()
-
-     del can_aux
-
-     ylabel = "Events"
-     if xmax != xmin:
-       hs.GetXaxis().SetTitle(xlabel)
-       b = int((xmax-xmin)/nbin)
-       ylabel = "Events / " + str(b) + " GeV"
-     else:     
-       ylabel = "Events"
+      del can_aux
+      
+      ylabel = "Events"
+      if xmax != xmin:
+         hs.GetXaxis().SetTitle(xlabel)
+         b = int((xmax-xmin)/nbin)
+         ylabel = "Events / " + str(b) + " GeV"
+      else:     
+         ylabel = "Events"
    
-     hs.GetYaxis().SetTitle(ylabel)
-     return hs   
+      hs.GetYaxis().SetTitle(ylabel)
+      return hs   
 
 
 
 
    def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar):
     
+      hs = self.getStack(lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
+      h = hs.GetStack().Last().Clone(name + '_treeHisto')
+      del hs 
+      return h 
 
-     for ib,b in enumerate(self.blocks):
+     # for ib,b in enumerate(self.blocks):
        
-       AuxName = "auxh1_block_" + name + "_" + b.name
-       haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
-       if not ib:
-          h = haux.Clone(name+'_treeHisto')
-       else:
-          h.Add(haux)
-       del haux
+     #   AuxName = "auxh1_block_" + name + "_" + b.name
+     #   haux = b.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
+     #   if not ib:
+     #      h = haux.Clone(name+'_treeHisto')
+     #   else:
+     #      h.Add(haux)
+     #   del haux
        
-     return h
+     # return h
 
    def getTH2F(self, lumi, name, var, nbinx, xmin, xmax, nbiny, ymin, ymax, cut, options, xlabel, extraWeight='1'):
      if(xmin == xmax) and (ymax == ymin):
