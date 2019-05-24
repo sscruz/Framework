@@ -1,14 +1,16 @@
 import ROOT as r
 from array import array
-from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas, TChain
+from ROOT import TTree, TFile, TCut, TH1F, TH2F, TH3F, THStack, TCanvas, TChain, SetOwnership
 import include.LeptonSF
 import include.FastSimSF
+import include.CutManager as CutManager
 import copy
 import time
 import math
 from multiprocessing import Pool
 
-chunkSize = 1000000# chunks of 1M events
+
+chunkSize = 100000# chunks of 100k events (so we have the cluster active :) )
 
 def runTH1Tasks (task):
    sample, blockName, params  = task
@@ -18,18 +20,19 @@ class Sample:
    'Common base class for all Samples'
 
    def __init__(self, name, friendlocation, xsection, isdata, doKfactor, isScan, isOnEOS):
-      print name, isScan, isdata
       self.name = name
       self.location = friendlocation
       self.xSection = xsection
       self.doKfactor = doKfactor
       self.isData = isdata
       self.ttree = TChain('Events')
+      self.fttree = TChain('sf/t')
       if isOnEOS:
          self.ttree.Add(friendlocation)
       else:
          for part in name.split('+'):
             self.ttree.Add(friendlocation+'/%s/nanoAODskim/Events.root'%part)
+            self.fttree.Add(friendlocation+'/1_triggers/evVarFriend_%s.root'%part)
       self.isScan = isScan
       if not self.isData and not self.isScan:
         gw = 0.
@@ -50,10 +53,16 @@ class Sample:
       self.ISRWeight  = '1.0'
 
       if not self.isData and not self.isScan  > 0:
+        cuts = CutManager.CutManager()
         self.lumWeight = '%s /'%self.xSection + str(self.count)
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
-        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge,year)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,year)"
+        self.triggWeight = 'TriggerSF(Lep1_pdgId_Edge,Lep2_pdgId_Edge,year)'
+
+        #((%s)*(%4.5f)+(%s)*(%4.5f)+(%s)*(%4.5f))'%(cuts.mm,0.878/0.947,
+        #                                                               cuts.ee,0.900/0.953,
+        #                                                               cuts.OF,0.844/0.905)
 
       if isinstance(self.isScan,tuple):                       
          self.puWeight    = "PileupW_Edge"                     
@@ -96,7 +105,7 @@ class Sample:
         self.xSection = self.isScan
         self.puWeight    = "PileupW_Edge"
         self.btagWeight  = "weight_btagsf_Edge"
-        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
+        self.SFWeight = "LepSF(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge,year)*LepSF(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge,year)*LepSFFastSim(Lep1_pt_Edge,Lep1_eta_Edge,Lep1_pdgId_Edge)*LepSFFastSim(Lep2_pt_Edge,Lep2_eta_Edge,Lep2_pdgId_Edge)"
         self.ISRWeight = 'ISRweight_Edge'
         if self.isScan == True:
             self.smsCount =   self.ftfile.Get('CountSMS')
@@ -104,6 +113,7 @@ class Sample:
             #self.smsCount =  self.ftfile.Get('sf/t').GetEntries()
             #self.lumWeight = self.xSection / self.smsCount
             self.lumWeight = self.isScan
+
    def printSample(self):
       print "#################################"
       print "Sample Name: ", self.name
@@ -114,7 +124,8 @@ class Sample:
       print "#################################"
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel,  extraWeight, doKfactorGENVar, chunk=-1):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel,  extraWeight, doKfactorGENVar, chunk=-1, forceDataWeight=False):
+      self.ttree.AddFriend(self.fttree)
    #def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, ofBin=True, extraWeight="1", ylabel = 'Events', doKfactorGENVar = "noKFactor"):
 #      if doKfactorGENVar == 'doTGraph':
 #          fileD =  TFile("kfactors.root");
@@ -127,17 +138,17 @@ class Sample:
       if(xmin == xmax):                                          
           _nbins = len(nbin)-1
           _arr = array('d', nbin)
-          h = TH1F(name+'_noOF', "", _nbins, _arr)
+          h = TH1F(name+'_noOF_%d'%chunk, "", _nbins, _arr)
           _newarr = _arr + array('d', [ 2*_arr[-1]-_arr[-2] ])
           h_of = TH1F(name, "", _nbins+1, _newarr)                                     
       else:
-           h = TH1F(name+'_noOF', "", nbin, xmin, xmax)
+           h = TH1F(name+'_noOF_%d'%chunk, "", nbin, xmin, xmax)
            bw = int((xmax-xmin)/nbin)
            #if ylabel == "au":
            #    ylabel = "A.U"
            #else:
            ylabel = ylabel +"/ " + str(bw) + " GeV"
-           h_of = TH1F(name, '', nbin+1, xmin, xmax+bw)
+           h_of = TH1F(name + '%d'%chunk, '', nbin+1, xmin, xmax+bw)
       h.Sumw2()
       h.GetXaxis().SetTitle(xlabel)
       h.GetYaxis().SetTitle(ylabel)
@@ -167,10 +178,10 @@ class Sample:
           
           if (self.doKfactor == 0): #all other MC has no NNLO/NLO reweighting
               kf = "1"  
-          cut = cut + "*1000*( %s *"%self.lumWeight + str(lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " )" 
+          cut = cut + "*1000*( %s *"%self.lumWeight + str(lumi) + " * genWeight_Edge/abs(genWeight_Edge) * " + self.puWeight +" * "+self.SFWeight+" * "+self.btagWeight+" * "+extraWeight +" * "+kf + " * " + self.triggWeight + " )" 
       else: 
          addDataFilters = "&&(  Flag_eeBadScFilter_Edge == 1)"
-         cut = "("+ cut + addDataFilters+ ")" + "* (" + extraWeight +")"
+         cut = "("+ cut + addDataFilters+ ")" + "* (" + (extraWeight if forceDataWeight else '1') +")"
       if (self.doKfactor == 1): print "doing ", doKfactorGENVar, "for ZZ4l kfactor!"
       if (self.doKfactor == 2): print "doing ", doKfactorGENVar, "for  ZZ2l kfactor!"
 
@@ -181,7 +192,6 @@ class Sample:
       else:
          firstEntry = 0
          maxEntries = allEntries+1 # +1 just in case 
-
       self.ttree.Project(h.GetName(), var, cut, options, maxEntries, firstEntry)
 
       for _bin in range(1, h.GetNbinsX()+2):
@@ -227,6 +237,7 @@ class Sample:
      else: 
         cut = cut + "* ( " + extraWeight + ")"
      self.ttree.Project(name, var, cut, options) 
+
      return h
 
 class Block:
@@ -256,11 +267,11 @@ class Block:
    def addSample(self, s):
       self.samples.append(s)
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight,doKFactorGENVar):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight,doKFactorGENVar,forceDataWeight):
      for _is,s in enumerate(self.samples):
        
        AuxName = "auxT1_sample" + s.name
-       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
+       haux = s.getTH1F(lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar, forceDataWeight)
        if not _is:
           h = haux.Clone(name+'_blockHisto')
        else:
@@ -323,27 +334,24 @@ class Tree:
    'Common base class for a physics meaningful tree'
 
    def __init__(self, fileNameAndMap, name, isdata, isScan = False, isOnEOS = 0):
-      #print fileName
       self.name  = name
       self.isData = isdata
       self.blocks = []
       self.isScan = isScan
       self.isOnEOS = isOnEOS
       self.parseFileName(fileNameAndMap)
-      self.pool = Pool(50)
+      self.pool = Pool(80)
       self.split = 1 
 
    def parseFileName(self, fileNameAndMap):
-      
+
       fileName, defMap = fileNameAndMap
-      
       f = open(fileName)
 
       for l in f.readlines():
         if (l[0] == "#" or len(l) < 2):
           continue
         l = l.format(**defMap)
-
         splitedLine = str.split(l)
         block       = splitedLine[0]
         theColor    = splitedLine[1]
@@ -398,9 +406,9 @@ class Tree:
 
 
 
-   def getYields(self, lumi, var, xmin, xmax, cut):
+   def getYields(self, lumi, var, xmin, xmax, cut, forceDataWeight=False):
   
-      h = self.getTH1F(lumi, "yields", var, 1, xmin, xmax, cut, "", "")
+      h = self.getTH1F(lumi, "yields", var, 1, xmin, xmax, cut, "", "",forceDataWeight)
       nbinmin = h.FindBin(xmin)
       nbinmax = h.FindBin(xmax)
       error = r.Double()
@@ -411,8 +419,10 @@ class Tree:
       return y
 
 
+
+
       
-   def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor):
+   def getStack(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor, forceDataWeight=False):
    
       hs = THStack(name, "")
       tasks = [] 
@@ -423,16 +433,16 @@ class Tree:
             if self.split: 
                chunks = int(math.ceil(s.ttree.GetEntries() / float(chunkSize)))
                for i in range(chunks):
-                  tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor, i)))
+                  tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor, i,forceDataWeight)))
             else:
-               tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor))  )
+               tasks.append( (s, b.name, (lumi, AuxName, var, nbin, xmin, xmax, cut, options, xlabel, weight, kfactor,forceDataWeight))  )
          
       temp_results = self.pool.map_async( runTH1Tasks, tasks,1 ) 
       while not temp_results.ready():
          print "Jobs left: %d out of %d"%(temp_results._number_left, len(tasks))
-         time.sleep(2)
+         #print tasks
+         time.sleep(5)
       results = temp_results.get()
-
       for b in self.blocks:
          b.first = True
          for bname, hist in results:
@@ -452,13 +462,11 @@ class Tree:
             if mergedHist.GetBinContent(i) < 0 : mergedHist.SetBinContent(i,0)
          hs.Add(mergedHist)
          del mergedHist
-
       can_aux = TCanvas("can_%s_%s"%(name, b.name))
       can_aux.cd()
       hs.Draw()
 
       del can_aux
-      
       ylabel = "Events"
       if xmax != xmin:
          hs.GetXaxis().SetTitle(xlabel)
@@ -470,12 +478,25 @@ class Tree:
       hs.GetYaxis().SetTitle(ylabel)
       return hs   
 
+   def getYieldTable(self, lumi, cut, weight, kfactor,forceDataWeight=False):
+  
+      h = self.getStack(lumi, 'yield_table', '1', 1, 0, 2, cut, '', '', weight, kfactor,forceDataWeight)
+      table = {} 
+      hists = [] 
+      for hist in h.GetHists():
+         hists.append(hist) # so we can erase them through the stack
+         title = hist.GetTitle()
+         error = r.Double()
+         value = hist.IntegralAndError(0, 2, error)
+         table[title]  = (value, error)
+      SetOwnership(h,0)
+      return table
 
 
 
-   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar):
+   def getTH1F(self, lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar,forceDataWeight=False):
     
-      hs = self.getStack(lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar)
+      hs = self.getStack(lumi, name, var, nbin, xmin, xmax, cut, options, xlabel, extraWeight, doKFactorGENVar,forceDataWeight)
       h = hs.GetStack().Last().Clone(name + '_treeHisto')
       del hs 
       return h 

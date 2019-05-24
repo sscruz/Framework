@@ -11,11 +11,10 @@ class CutManager:
       ######Basic Lepton Cuts ################################################
       ########################################################################
       self.twoLeptons = "nPairLep_Edge > 0"
-      self.filters16 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1 && Flag_badMuonMoriond2017_Edge == 1 && Flag_badCloneMuonMoriond2017_Edge == 1"
-      self.filters17 = "Flag_HBHENoiseFilter_Edge ==1 && Flag_HBHENoiseIsoFilter_Edge ==1 && Flag_EcalDeadCellTriggerPrimitiveFilter_Edge == 1 && Flag_goodVertices_Edge == 1 && Flag_globalTightHalo2016Filter_Edge ==1 && Flag_badChargedHadronFilter_Edge == 1"
+      self.filters = "Filters"
       self.tightCharge = 'Lep1_tightCharge_Edge > 0 && Lep2_tightCharge_Edge > 0'
       self.leptonPt = "Lep1_pt_Edge > 25 && Lep2_pt_Edge > 20."
-      self.diLeptonPt = "lepsZPt_EdgeXXX > 25"
+      self.diLeptonPt = "lepsZPt_Edge > 25"
       self.leptonDR = "lepsDR_Edge > 0.1"       
       self.leptonDR4l = "lepsDR_Edge > 0.02"       
       self.leptonsMll = "lepsMll_Edge > 20"
@@ -24,19 +23,13 @@ class CutManager:
       self.OF = "(Lep1_pdgId_Edge * Lep2_pdgId_Edge == -143)"
       self.SF = "(" + self.ee + " || " +  self.mm + ")"
       self.AF = "(" + self.SF + " || " +  self.OF + ")"
-      self.trigMM17 = "(  HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_Edge == 1 || HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_Edge == 1 || HLT_Mu37_TkMu27_Edge == 1) || HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass3p8_Edge == 1 || HLT_Mu19_TrkIsoVVL_Mu9_TrkIsoVVL_DZ_Mass8_Edge == 1"
-      self.trigEE17 = "( HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Edge == 1 || HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_Edge ==1 || HLT_DoubleEle25_CaloIdL_MW_Edge == 1 || HLT_DoubleEle27_CaloIdL_MW_Edge == 1 || HLT_DoubleEle33_CaloIdL_MW_Edge == 1)"
-      self.trigEM17 = "( HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_Edge == 1 || HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_Edge ==1 || HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_Edge ==1 )"
-      self.trigMM16 = "( HLT_BIT_HLT_Mu30_TkMu11_v_Edge ==1 ||HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v_Edge == 1  || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v_Edge ==1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v_Edge == 1 ||HLT_BIT_HLT_Mu27_TkMu8_v_Edge==1 )"
-      self.trigEE16 = "( HLT_BIT_HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v_Edge==1 || HLT_BIT_HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v_Edge==1)"
-      self.trigEM16 = "( HLT_BIT_HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v_Edge ==1 || HLT_BIT_HLT_Mu30_Ele30_CaloIdL_GsfTrkIdVL_v_Edge ==1 ||  HLT_BIT_HLT_Mu33_Ele33_CaloIdL_GsfTrkIdVL_v_Edge ==1  || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1 || HLT_BIT_HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v_Edge == 1)"
-      self.trigger16 = "((" + self.trigMM16 + " && " + self.mm + ") || (" + self.trigEE16 + " && " + self.ee + ") || (" + self.trigEM16 + " && " + self.OF + "))"
-      self.trigger17 = "((" + self.trigMM17 + " && " + self.mm + ") || (" + self.trigEE17 + " && " + self.ee + ") || (" + self.trigEM17 + " && " + self.OF + "))"
-      self.goodLepton = "("+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.goodLepton16 = "("+self.trigger16+"&&"+self.filters16+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.goodLepton17 = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
-      self.goodLepton173l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
-      self.goodLepton174l = "("+self.trigger17+"&&"+self.filters17+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
+      self.trigMM = "Trigger_2m"
+      self.trigEE = "Trigger_2e"
+      self.trigEM = "Trigger_em"
+      self.trigger     = "((" + self.trigMM + " && " + self.mm + ") || (" + self.trigEE + " && " + self.ee + ") || (" + self.trigEM + " && " + self.OF + "))"
+      self.goodLepton = "("+self.trigger+ '&&'+self.filters+"&&"+self.twoLeptons + "&&"  + self.leptonPt + "&&" + self.leptonDR + "&&"  + self.leptonsMll +  ")"
+      self.goodLepton3l = "("+self.trigger+ "&&"+self.filters+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
+      self.goodLepton4l = "("+self.trigger+ "&&"+self.filters+"&&"+self.twoLeptons + "&&"  + self.leptonPt +   ")"
       
       #self.nSRA = "(nJetSel_Edge == 2 && nPFHad10_Edge == 0 && nPFLep5_Edge <= 2 && nJetSel_Edge <= 3 && nBJetMedium25_Edge == 0 && htJet35j_Edge > 500 && mt2_Edge>80 && lepsMll_Edge >= 86 && lepsMll_Edge < 96 && (abs(j1MetDPhi_Edge)>= 0.4)&& (abs(j2MetDPhi_Edge)>= 0.4))"
       self.fromZ = '(abs(Lep1_mcMatchId_Edge) == 23 && abs(Lep2_mcMatchId_Edge) == 23)'
@@ -169,7 +162,8 @@ class CutManager:
       self.belowZmass = "lepsMll_Edge < 86"
       self.aboveZmass = "lepsMll_Edge > 96"
       self.mll20_60= "lepsMll_Edge < 60. && lepsMll_Edge >= 20 "
-      self.mll60_86= "lepsMll_Edge < 86. && lepsMll_Edge >= 60 "
+      self.mll60_86 = "lepsMll_Edge < 86. && lepsMll_Edge >= 60 "
+      self.mll60_120= "lepsMll_Edge < 120. && lepsMll_Edge >= 60 "
       self.mll81_101= "lepsMll_Edge < 101. && lepsMll_Edge >= 81 "
       self.mll86_96= "lepsMll_Edge < 96. && lepsMll_Edge >= 86 "
       self.mll70_110= "lepsMll_Edge < 110. && lepsMll_Edge >= 70 "
@@ -182,9 +176,9 @@ class CutManager:
       self.ZmassExtendedRsfof = "lepsMll_Edge >= 70 && lepsMll_Edge < 110"
       self.Zveto = "!(lepsMll_Edge >= 86 && lepsMll_Edge < 96)"
       self.ZvetoExt = "!(lepsMll_Edge >= 76 && lepsMll_Edge < 106)"
-      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton17])
+      self.baseline = self.AddList([self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
       self.baselineNoTrigger = self.AddList([self.METg100, self.nj2, self.mT2_80, self.dPhiJETMET,self.goodLepton])
-      self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton17])
+      self.baselineNoMT2 = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton])
       self.baselineNoMT2NoTrigger = self.AddList([self.nj2,  self.dPhiJETMET,self.goodLepton])
 
       ########################################################################
@@ -193,21 +187,21 @@ class CutManager:
       self.JETMETBaseline = self.AddList([self.METg150, self.nj2, self.mT2_80])
       self.JETMETBaselineNoMT2 = self.AddList([self.METg150, self.nj2])
       self.JETMETBaselineNoMT2SF_86_96 = self.AddList([self.METg150, self.nj2, self.SF, self.mll86_96])
-      self.SignalRegionNoDPhi = self.AddList([self.goodLepton17, self.JETMETBaseline]) 
-      self.SignalRegion = self.AddList([self.goodLepton17, self.JETMETBaseline, self.dPhiJETMET]) 
-      self.SignalRegionNoMT2 = self.AddList([self.goodLepton17, self.JETMETBaselineNoMT2, self.dPhiJETMET]) 
-      self.SignalRegionNLL = self.AddList([self.goodLepton17, self.JETMETBaseline, self.dPhiJETMET, self.NLL]) 
+      self.SignalRegionNoDPhi = self.AddList([self.goodLepton, self.JETMETBaseline]) 
+      self.SignalRegion = self.AddList([self.goodLepton, self.JETMETBaseline, self.dPhiJETMET]) 
+      self.SignalRegionNoMT2 = self.AddList([self.goodLepton, self.JETMETBaselineNoMT2, self.dPhiJETMET]) 
+      self.SignalRegionNLL = self.AddList([self.goodLepton, self.JETMETBaseline, self.dPhiJETMET, self.NLL]) 
 
       self.RSFOFDirectCR = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110)])
       self.RSFOFDirectCROF = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110), self.OF])
       self.RSFOFDirectCRNoJet = self.AddList([self.METg100, self.METl150, self.donot(self.mll70_110)])
       self.RSFOFDirectCRNoMll = self.AddList([self.METg100, self.METl150, self.njExact2])
       self.RSFOFDirectCRNoMET = self.AddList([self.njExact2, self.donot(self.mll70_110)])
-      self.RSFOFDirectSignalRegion = self.AddList([self.goodLepton17, self.nj2, self.METg100, self.donot(self.mll70_110)])
-      self.RSFOFDirectSignalRegionNoMET = self.AddList([self.goodLepton17, self.nj2, self.donot(self.mll70_110)])
-      self.RSFOFDirectSignalRegionNoJet = self.AddList([self.goodLepton17, self.METg100, self.donot(self.mll70_110)])
-      self.RSFOFSleptonSignalRegion = self.AddList([self.goodLepton17, self.METg100, self.ZvetoExt])
-      self.RSFOFSleptonSignalRegionNoMET = self.AddList([self.goodLepton17,  self.ZvetoExt])                                                       
+      self.RSFOFDirectSignalRegion = self.AddList([self.goodLepton, self.nj2, self.METg100, self.donot(self.mll70_110)])
+      self.RSFOFDirectSignalRegionNoMET = self.AddList([self.goodLepton, self.nj2, self.donot(self.mll70_110)])
+      self.RSFOFDirectSignalRegionNoJet = self.AddList([self.goodLepton, self.METg100, self.donot(self.mll70_110)])
+      self.RSFOFSleptonSignalRegion = self.AddList([self.goodLepton, self.METg100, self.ZvetoExt])
+      self.RSFOFSleptonSignalRegionNoMET = self.AddList([self.goodLepton,  self.ZvetoExt])                                                       
 
       self.RSFOFCR = self.AddList([self.METg100, self.METl150, self.njExact2, self.donot(self.mll70_110)])
       self.RSFOFCRnoMET = self.AddList([self.njExact2, self.donot(self.mll70_110)])
@@ -247,31 +241,31 @@ class CutManager:
       ########################################################################
       ######EWK signal regions ###############################################
       self.slepBaseline  = self.AddList([self.bvetoLoose25, self.METg100, self.ZvetoExt, self.ThirdLeptonVeto,  'htJet35j_Edge  == 0  && Lep1_pt_Edge > 50'])
-      self.slep  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton16, "nJet25_Edge == 0 && mt2_Edge > 90&& Lep1_pt_Edge > 50"])
-      self.slepLowPt  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton16])
-      self.slepRegPt  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton16])
+      self.slep  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton, "nJet25_Edge == 0 && mt2_Edge > 90&& Lep1_pt_Edge > 50"])
+      self.slepLowPt  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton])
+      self.slepRegPt  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, self.goodLepton])
       self.slep0jet  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, ' nJet25_Edge  == 0 &&  mt2_Edge > 90 && Lep1_pt_Edge > 50'])
       self.slepInclJet  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, 'mt2_Edge > 90 && Lep1_pt_Edge > 50'])
       self.slepExclJet  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt, 'nJet25_Edge > 0 && mt2_Edge > 90 && Lep1_pt_Edge > 50'])
       self.slep0jetNoMT2  = self.AddList([self.bvetoLoose25, self.METg100, self.ThirdLeptonVeto, self.ZvetoExt,  'htJet25j_Edge  == 0'])
       self.slep0jetNoMET  = self.AddList([self.bvetoLoose25, self.ThirdLeptonVeto, self.ZvetoExt,  'htJet25j_Edge  == 0 && mt2_Edge > 90'])
       self.region3lSlepton  = self.AddList([self.threeTightLeptons, self.METg70, self.bvetoLoose25, self.nj25eq0, 'WmT_Edge > 50'])
-      self.region4lSlepton  = self.AddList([self.goodLepton16, self.fourTightLeptons,  self.bvetoLoose25, self.nj25eq0, "mZ2_Edge > 40"])
-      self.region4lSleptonNoNJetCut  = self.AddList([self.goodLepton16, self.fourTightLeptons, "mZ2_Edge > 40"])
-      self.region4lSleptonRelaxedCut  = self.AddList([self.goodLepton16, self.fourTightLeptons])
-      self.region4lSleptonIncJet  = self.AddList([self.goodLepton16, self.fourTightLeptons,  self.bvetoLoose25, "mZ2_Edge > 40"])
-      self.region2l2nuSlepton  = self.AddList([self.goodLepton16, self.twoTightLeptons, self.bvetoLoose25, self.nj25eq0])
-      self.region4l      = self.AddList([self.goodLepton174l, self.fourTightLeptons,  self.mZ2g20, self.bveto, self.dPhiJETMET, "mZ2_Edge > 40"])
-      self.region3l      = self.AddList([self.goodLepton173l, self.threeTightLeptons, self.METg70, self.bveto, self.dPhiJETMET,  'WmT_Edge > 55'])
+      self.region4lSlepton  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.bvetoLoose25, self.nj25eq0, "mZ2_Edge > 40"])
+      self.region4lSleptonNoNJetCut  = self.AddList([self.goodLepton, self.fourTightLeptons, "mZ2_Edge > 40"])
+      self.region4lSleptonRelaxedCut  = self.AddList([self.goodLepton, self.fourTightLeptons])
+      self.region4lSleptonIncJet  = self.AddList([self.goodLepton, self.fourTightLeptons,  self.bvetoLoose25, "mZ2_Edge > 40"])
+      self.region2l2nuSlepton  = self.AddList([self.goodLepton, self.twoTightLeptons, self.bvetoLoose25, self.nj25eq0])
+      self.region4l      = self.AddList([self.goodLepton4l, self.fourTightLeptons,  self.mZ2g20, self.bveto, self.dPhiJETMET, "mZ2_Edge > 40"])
+      self.region3l      = self.AddList([self.goodLepton3l, self.threeTightLeptons, self.METg70, self.bveto, self.dPhiJETMET,  'WmT_Edge > 55'])
       #self.region3l      = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET,self.METg60, self.bveto, self.nj2])
-      self.region4lInc   = self.AddList([self.goodLepton174l, self.fourLooseLeptons, self.ZmassInc, self.mZ140, self.mZ4_120 ])
-      self.regionttZ     = self.AddList([self.goodLepton173l, self.threeTightLeptons, self.METg30, self.nbj2, self.dPhiJETMET ])
+      self.region4lInc   = self.AddList([self.goodLepton4l, self.fourLooseLeptons, self.ZmassInc, self.mZ140, self.mZ4_120 ])
+      self.regionttZ     = self.AddList([self.goodLepton3l, self.threeTightLeptons, self.METg30, self.nbj2, self.dPhiJETMET ])
       #self.regionttZ     = self.AddList([self.goodLepton, self.threeTightLeptons, self.dPhiJETMET, self.nbj2, self.METg30, self.nj2])
 
       ########################################################################
       ######EWK signal regions ###############################################
       ########################################################################
-      self.Baseline = self.AddList([self.nj2,  self.METg100,self.dPhiJETMET,self.goodLepton17])
+      self.Baseline = self.AddList([self.nj2,  self.METg100,self.dPhiJETMET,self.goodLepton])
       self.BaselineNoTriggerNoNJet = self.AddList([self.goodLepton,  self.dPhiJET1MET])
       self.BaselineNoTrigger = self.AddList([self.METg100,self.dPhiJETMET,self.goodLepton])
       self.EdgeBaseline = self.AddList( [self.BaselineNoTrigger,self.METg150, self.mT2_80])
@@ -310,11 +304,13 @@ class CutManager:
       ########################################################################
       self.HT = "(htJet35j_Edge > 200) "
       self.triggerHT17 = "( HLT_HT_Edge == 1  )" 
-      self.triggerHT16 = "( HLT_BIT_HLT_PFHT200_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT250_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT300_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT350_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT400_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT475_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT600_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT650_v_Edge > 0.5 ||HLT_BIT_HLT_PFHT800_v_Edge > 0.5  )" 
-      self.num16 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters16, self.HT, self.triggerHT16, self.trigger16])
-      self.den16 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters16, self.HT, self.triggerHT16])  
-      self.num17 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters17, self.HT, self.triggerHT17, self.trigger17])
-      self.den17 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters17, self.HT, self.triggerHT17])  
+      self.triggerHT16 = "( HLT_PFHT200_Edge > 0.5 ||HLT_PFHT250_Edge > 0.5 ||HLT_PFHT300_Edge > 0.5 ||HLT_PFHT350_Edge > 0.5 ||HLT_PFHT400_Edge > 0.5 ||HLT_PFHT475_Edge > 0.5 ||HLT_PFHT600_Edge > 0.5 ||HLT_PFHT650_Edge > 0.5 ||HLT_PFHT800_Edge > 0.5  )" 
+      self.triggerMET17 = " (HLT_PFMET120_PFMHT120_IDTight_PFHT60_Edge || HLT_PFMET120_PFMHT120_IDTight_Edge)"
+      self.MET = "MET_pt_Edge > 130"
+      self.num16 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters, self.HT, self.triggerHT16, self.trigger])
+      self.den16 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters, self.HT, self.triggerHT16])  
+      self.num17 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters, self.MET, self.triggerMET17, self.trigger])
+      self.den17 = self.AddList([self.goodLepton,self.donot(self.JETMETBaselineNoMT2SF_86_96), self.donot(self.RSFOFDirectCROF), self.filters, self.MET, self.triggerMET17])  
 
    def donot(self, cut):
      return '(!' + self.brackets(cut) + ')'

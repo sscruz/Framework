@@ -319,18 +319,20 @@ def selectSamples(inputfile, selList, sType = 'DATA'):
     for line in f.readlines():
         if '#' in line or not len(line.rstrip('\r')): continue
         if 'DEF:' in line: 
-            defMap[line.split(':')[1]] = line.split(':')[2]
-            continue 
+            defMap[line.split(':')[1]] = line.split(':')[2].rstrip()
+            continue
         for _sample in selList:
             _sample = _sample.replace('*','.*')
-            if _sample == line.split()[2] or re.search(_sample, line.split()[2]):
+            if 'ZZTo4L' in _sample: 
+                if len(line.split()) < 3: print '[', line , ']'
+            if _sample == (line.split()[2]).format(**defMap) or re.search(_sample, line.split()[2]):
                 if not sType == 'SYNCH':
                     tmp_file.write(line)
                 else:
                     tmp_splitline = line.split()
                     tmp_splitline[0] = 'synching'
                     tmp_file.write('  '.join(tmp_splitline+['\n']))
-                checkedList.append(_sample)
+                checkedList.append(_sample.format(**defMap))
                 typeList   .append(int(line.split()[-2]))
                 #typeList   .append(int(line.split()[-1])) 
                 #i changed this to 2!
@@ -567,5 +569,13 @@ myColors = {
             'W11AnnBlue': 856,
             'W11Rare':  630,
             }
+
+
+def replaceSamp(lst, element, replacement):
+    return [x if x != element else replacement for x in lst]
+
+def removeSamp(lst, element):
+    lst.remove(element)
+    return lst
 
 

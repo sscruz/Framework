@@ -95,7 +95,6 @@ def saveInFile(theFile, measuredValueMC, measuredValueUncMC, measuredValueUncSys
 def calc_rmue(Nmm, Nee, Emm, Eee):
 
     val = [0, 0]
-    print Nmm, Nee
     if(Nmm >= 0 and Nee > 0):
         val[0] = math.sqrt(Nmm/Nee)
         val[1] = math.sqrt(0.25 * Emm * Emm / (Nmm * Nee) + 0.25 * Eee * Eee * Nmm / (Nee * Nee * Nee))
@@ -151,212 +150,254 @@ def getFactor(rmue, rmue_err, rmue_err_syst):
     return fac, err                                                     
 
 
-def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile):
-    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
-    MCSDYControlMllee =   treeMC.getStack(lumi,"MCDYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
-    MCSDYControlMllmm =   treeMC.getStack(lumi,"MCDYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
-    DADYControlMllee =  treeDA.getTH1F(lumi,"DADYControlMllee", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
-    DADYControlMllmm =  treeDA.getTH1F(lumi,"DADYControlMllmm", "lepsMll_Edge", 20, 20, 200, cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
+def makeClosure( treeDA, treeMC, cuts, specialcut, tag, save, a_data, b_data, a_mc, b_mc, var):
 
-    MCSDYControlMlleevalue = treeMC.getStack(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
-    MCSDYControlMllmmvalue = treeMC.getStack(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
-    DADYControlMlleevalue =treeDA.getTH1F(lumi,"DADYCMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
-    DADYControlMllmmvalue =treeDA.getTH1F(lumi,"DADYCMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
-    ##
-    MCSDYControlMETee =   treeMC.getStack(lumi,"MCDYControlMETee", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
-    MCSDYControlMETmm =   treeMC.getStack(lumi,"MCDYControlMETmm", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
-    DADYControlMETee =  treeDA.getTH1F(lumi,"DADYControlMETee", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
-    DADYControlMETmm =  treeDA.getTH1F(lumi,"DADYControlMETmm", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
-    ##
-    MCSDYControlmt2ee =   treeMC.getStack(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
-    MCSDYControlmt2mm =   treeMC.getStack(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
-    DADYControlmt2ee =  treeDA.getTH1F(lumi,"DADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
-    DADYControlmt2mm =  treeDA.getTH1F(lumi,"DADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
-    ##
-    MCSDYControlPT2ee =   treeMC.getStack(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
-    MCSDYControlPT2mm =   treeMC.getStack(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
-    DADYControlPT2ee =  treeDA.getTH1F(lumi, "DADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
-    DADYControlPT2mm =  treeDA.getTH1F(lumi, "DADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
-
-    DYControlMllee = 0;DYControlMllmm = 0; DYControlMlleevalue = 0; DYControlMllmmvalue = 0;DYControlMETee = 0; DYControlMETmm = 0; DYControlmt2ee = 0; DYControlmt2mm = 0;DYControlmt2ee = 0;DYControlmt2mm =0 ; DYControlPT2ee = 0; DYControlPT2mm = 0;
-    for _i,_h in enumerate(MCSDYControlMllee.GetHists()):
-        if not DYControlMllee: MCDYControlMllee = copy.deepcopy(_h)
-        else:MCDYControlMllee.Add(_h, 1.)               
-        DYControlMllee = 1                                             
-    for _i,_h in enumerate(MCSDYControlMllmm.GetHists()):
-        if not DYControlMllmm: MCDYControlMllmm = copy.deepcopy(_h)
-        else:MCDYControlMllmm.Add(_h, 1.)               
-        DYControlMllmm = 1                                             
-    for _i,_h in enumerate(MCSDYControlMlleevalue.GetHists()):
-        if not DYControlMlleevalue: MCDYControlMlleevalue = copy.deepcopy(_h)
-        else:MCDYControlMlleevalue.Add(_h, 1.)               
-        DYControlMlleevalue = 1                                                 
-    for _i,_h in enumerate(MCSDYControlMllmmvalue.GetHists()):
-        if not DYControlMllmmvalue: MCDYControlMllmmvalue = copy.deepcopy(_h)
-        else:MCDYControlMllmmvalue.Add(_h, 1.)               
-        DYControlMllmmvalue = 1                                                
-    for _i,_h in enumerate(MCSDYControlMETee.GetHists()):
-        if not DYControlMETee: MCDYControlMETee = copy.deepcopy(_h)
-        else:MCDYControlMETee.Add(_h, 1.)               
-        DYControlMETee = 1                                                                           
-    for _i,_h in enumerate(MCSDYControlMETmm.GetHists()):
-        if not DYControlMETmm: MCDYControlMETmm = copy.deepcopy(_h)
-        else:MCDYControlMETmm.Add(_h, 1.)               
-        DYControlMETmm = 1                                               
-    for _i,_h in enumerate(MCSDYControlmt2ee.GetHists()):
-        if not DYControlmt2ee: MCDYControlmt2ee = copy.deepcopy(_h)
-        else:MCDYControlmt2ee.Add(_h, 1.)               
-        DYControlmt2ee = 1                                               
-    for _i,_h in enumerate(MCSDYControlmt2mm.GetHists()):
-        if not DYControlmt2mm: MCDYControlmt2mm = copy.deepcopy(_h)
-        else:MCDYControlmt2mm.Add(_h, 1.)               
-        DYControlmt2mm = 1                                               
-    for _i,_h in enumerate(MCSDYControlPT2ee.GetHists()):
-        if not DYControlPT2ee: MCDYControlPT2ee = copy.deepcopy(_h)
-        else:MCDYControlPT2ee.Add(_h, 1.)               
-        DYControlPT2ee = 1                                           
-    for _i,_h in enumerate(MCSDYControlPT2mm.GetHists()):
-        if not DYControlPT2mm: MCDYControlPT2mm = copy.deepcopy(_h)
-        else:MCDYControlPT2mm.Add(_h, 1.)               
-        DYControlPT2mm = 1                                           
-    print "got all TH1Fs" 
-    MCDYControlMll =           make_rmue(MCDYControlMllmm, MCDYControlMllee)
-    DADYControlMll =         make_rmue(DADYControlMllmm, DADYControlMllee)
-    MCDYControlMllvalue =      make_rmue(MCDYControlMllmmvalue, MCDYControlMlleevalue)
-    DADYControlMllvalue =    make_rmue(DADYControlMllmmvalue, DADYControlMlleevalue)
-    MCDYControlMET =           make_rmue(MCDYControlMETmm, MCDYControlMETee)
-    DADYControlMET =         make_rmue(DADYControlMETmm, DADYControlMETee)
-    #MCDYControlJet =           make_rmue(MCDYControlJetmm, MCDYControlJetee)
-    #DADYControlJet =         make_rmue(DADYControlJetmm, DADYControlJetee)
-    MCDYControlmt2 =           make_rmue(MCDYControlmt2mm, MCDYControlmt2ee)
-    DADYControlmt2 =         make_rmue(DADYControlmt2mm, DADYControlmt2ee)
-    MCDYControlPT2 =           make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
-    DADYControlPT2   =       make_rmue(DADYControlPT2mm, DADYControlPT2ee)
+    mllCut = '1' if var[0] == 'mll' else cuts.mll60_120
 
 
-    print 'fits to pt2'
-    fun_da = r.TF1('fun_da','[0]+[1]/x', 20, 400)
-    fun_mc = r.TF1('fun_mc','[0]+[1]/x', 20, 400)
-    fun_da.SetLineWidth(2); fun_mc.SetLineWidth(2)
-    DADYControlPT2.Fit('fun_da','rQ'); 
-    data_a = fun_da.GetParameter(0); data_a_e = fun_da.GetParError(0)
-    data_b = fun_da.GetParameter(1); data_b_e = fun_da.GetParError(1)
-    MCDYControlPT2.Fit('fun_mc','rQ')
-    mc_a = fun_mc.GetParameter(0); mc_a_e = fun_mc.GetParError(0)
-    mc_b = fun_mc.GetParameter(1); mc_b_e = fun_mc.GetParError(1)
-    da_string = 'Fit on data: (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(data_a,data_a_e, data_b, data_b_e)
-    mc_string = 'Fit on MC:   (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(mc_a,mc_a_e, mc_b, mc_b_e)
+    MCSDYControlMllee =  treeMC.getTH1F(lumi,"MC_%s_ee"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee, mllCut]), '', var[5], "TMath::Power({a}+{b}/Lep2_pt_Edge,2)".format(a=a_mc, b=b_mc), kf)
+    MCSDYControlMllmm =  treeMC.getTH1F(lumi,"MC_%s_mm"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm, mllCut]), '', var[5], "1", kf)
+    DADYControlMllee  =  treeDA.getTH1F(lumi,"DA_%s_ee"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee, mllCut]),'', var[5], "TMath::Power({a}+{b}/Lep2_pt_Edge,2)".format(a=a_data, b=b_data), kf, forceDataWeight=True)
+    DADYControlMllmm  =  treeDA.getTH1F(lumi,"DA_%s_mm"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm, mllCut]),'', var[5], "1", kf)
 
-    plot_rmue_pt2 = Canvas.Canvas('rmue/%s/plot_rmue_pT2_%s'%(lumi_str, tag), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
-    plot_rmue_pt2.addHisto(MCDYControlPT2, 'PE', 'MC', 'PL', r.kRed+1, 1, 0)
-    plot_rmue_pt2.addHisto(DADYControlPT2, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 1)
-    plot_rmue_pt2.addHisto(fun_da, 'L,SAME', 'Fit - Data', 'L', r.kBlack, 1,2)
-    plot_rmue_pt2.addHisto(fun_mc, 'L,SAME', 'Fit - MC', 'L', r.kRed+1, 1,3)
-    plot_rmue_pt2.addLatex(0.2,0.2, da_string, 42, 0.02)
-    plot_rmue_pt2.addLatex(0.2,0.25, mc_string, 42, 0.02)
-    #plot_rmue_pt2.save(1, 1, 0, lumi)
+    clos_rmue_mc = make_rmue(MCSDYControlMllmm, MCSDYControlMllee)
+    clos_rmue_da = make_rmue(DADYControlMllmm, DADYControlMllee)
+    
+    clos_rmue_da.GetYaxis().SetTitle('r^{corr}_{#mu/e}')
+    clos_rmue_da.SetMarkerStyle(r.kFullCircle)
+
+    
+    
+    plot_rmue_pt2 = Canvas.Canvas('rmue/%s/plot_closure_%s'%(lumi_str, var[1]), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
+    print clos_rmue_da
+
+    plot_rmue_pt2.addHisto(clos_rmue_da, 'PE',      'Data', 'PL', r.kBlack , 1, 1)
+    plot_rmue_pt2.addHisto(clos_rmue_mc, 'PE,SAME', 'MC', 'PL'  , r.kRed , 1, 0)
+    plot_rmue_pt2.addBand(clos_rmue_da.GetXaxis().GetXmin(), 0.9, clos_rmue_da.GetXaxis().GetXmax(), 1.1, r.kGreen, 0.2)
+    #plot_rmue_pt2.save(1, 1, 0, lumi,"")
     plot_rmue_pt2.save(1, 1, 0, lumi, "",  0.2, 1.8)
-
-
-
-
-    print "made all the rmues" 
-    factorMCDYControlMll =          convertToFactor(MCDYControlMll)
-    factorDADYControlMll =        convertToFactor(DADYControlMll)
-    factorMCDYControlMllvalue =     convertToFactor(MCDYControlMllvalue)
-    factorDADYControlMllvalue =   convertToFactor(DADYControlMllvalue)
-    factorMCDYControlMET =          convertToFactor(MCDYControlMET)
-    factorDADYControlMET =        convertToFactor(DADYControlMET)
-    #factorMCDYControlJet =          convertToFactor(MCDYControlJet)
-    #factorDADYControlJet =        convertToFactor(DADYControlJet)
-    factorMCDYControlmt2 =          convertToFactor(MCDYControlmt2)
-    factorDADYControlmt2 =        convertToFactor(DADYControlmt2)
-
-    print "convert all factors" 
-    systematicForrmue = 0.1 
-    MCrmuemeasured =               MCDYControlMllvalue.GetBinContent(1)
-    MCrmuemeasuredUnc =            MCDYControlMllvalue.GetBinError(1)
-    MCrmuemeasuredUncSyst =        MCrmuemeasured * systematicForrmue
-    DArmuemeasured =             DADYControlMllvalue.GetBinContent(1)
-    DArmuemeasuredUnc =          DADYControlMllvalue.GetBinError(1)
-    DArmuemeasuredUncSyst =      DArmuemeasured * systematicForrmue
-    DArmuemeasuredUncTot  =      math.sqrt(DArmuemeasuredUnc**2 + DArmuemeasuredUncSyst**2)
     
-    factorMCrmuemeasured =             factorMCDYControlMllvalue.GetBinContent(1)
-    factorMCrmuemeasuredUnc =          factorMCDYControlMllvalue.GetBinError(1)
-    factorMCrmuemeasuredUncSyst =      (1.0-1.0/MCrmuemeasured**2) * MCrmuemeasuredUncSyst if MCrmuemeasured != 0 else 1000.00
-    factorMCrmuemeasuredUncTot  =      math.sqrt(MCrmuemeasuredUnc**2 + MCrmuemeasuredUncSyst**2)
-    factorDArmuemeasured =             factorDADYControlMllvalue.GetBinContent(1)
-    factorDArmuemeasuredUnc =          factorDADYControlMllvalue.GetBinError(1)
-    factorDArmuemeasuredUncSyst =      (1.0-1.0/DArmuemeasured**2) * DArmuemeasuredUncSyst if DArmuemeasured != 0 else 1000.00
-    factorDArmuemeasuredUncTot  =      math.sqrt(DArmuemeasuredUnc**2 + DArmuemeasuredUncSyst**2)                                    
+
+def makeAnalysis(treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFile, var):
+    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing histograms...' + bcolors.ENDC
+    #20, 20, 200
+    mllCut = '1' if var[0] == 'mll' else cuts.mll60_120
+    MCSDYControlee =   treeMC.getTH1F(lumi,"MC_%s_ee"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee, mllCut]), '', var[5], "1", kf) 
+    MCSDYControlmm =   treeMC.getTH1F(lumi,"MC_%s_mm"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm, mllCut]), '', var[5], "1", kf) 
+    DADYControlee  =  treeDA .getTH1F(lumi,"DA_%s_ee"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.ee, mllCut]),'' , var[5], "1", kf)     
+    DADYControlmm  =  treeDA .getTH1F(lumi,"DA_%s_mm"%var[0], var[1], var[2],var[3], var[4], cuts.AddList([specialcut,cuts.DYControlRegionNoMll,cuts.goodLepton17,cuts.mm, mllCut]),'' , var[5], "1", kf)     
+
+
+
+
+    # MCSDYControlMlleevalue = treeMC.getStack(lumi,"MCDYControlMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelx, "1", kf)
+    # MCSDYControlMllmmvalue = treeMC.getStack(lumi,"MCDYControlMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut,cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelx, "1", kf)
+    # DADYControlMlleevalue =treeDA.getTH1F(lumi,"DADYCMlleevalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]),'', labelx, "1", kf)
+    # DADYControlMllmmvalue =treeDA.getTH1F(lumi,"DADYCMllmmvalue", "lepsMll_Edge", 1, 20, 300, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]),'', labelx, "1", kf)
+
+    # ##
+    # MCSDYControlMETee =   treeMC.getStack(lumi,"MCDYControlMETee", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
+    # MCSDYControlMETmm =   treeMC.getStack(lumi,"MCDYControlMETmm", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
+    # DADYControlMETee =  treeDA.getTH1F(lumi,"DADYControlMETee", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.ee]), '', labelmet, "1", kf)
+    # DADYControlMETmm =  treeDA.getTH1F(lumi,"DADYControlMETmm", "MET_pt_Edge", 5, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegionNoMET,cuts.goodLepton17,cuts.mm]), '', labelmet, "1", kf)
+    # ##
+    # MCSDYControlmt2ee =   treeMC.getStack(lumi,"MCDYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
+    # MCSDYControlmt2mm =   treeMC.getStack(lumi,"MCDYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
+    # DADYControlmt2ee =  treeDA.getTH1F(lumi,"DADYControlmt2ee", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelmt2, "1", kf)
+    # DADYControlmt2mm =  treeDA.getTH1F(lumi,"DADYControlmt2mm", "mt2_Edge", 8, 0, 160, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelmt2, "1", kf)
+    # ##
+    # MCSDYControlPT2ee =   treeMC.getStack(lumi, "MCDYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
+    # MCSDYControlPT2mm =   treeMC.getStack(lumi, "MCDYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut,  cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
+    # DADYControlPT2ee =  treeDA.getTH1F(lumi, "DADYControlPT2ee", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.ee]), '', labelpt2, "1", kf)
+    # DADYControlPT2mm =  treeDA.getTH1F(lumi, "DADYControlPT2mm", "Lep2_pt_Edge", 8, 20, 200, cuts.AddList([specialcut, cuts.DYControlRegion,cuts.goodLepton17,cuts.mm]), '', labelpt2, "1", kf)
+
+    # DYControlMllee = 0;DYControlMllmm = 0; DYControlMlleevalue = 0; DYControlMllmmvalue = 0;DYControlMETee = 0; DYControlMETmm = 0; DYControlmt2ee = 0; DYControlmt2mm = 0;DYControlmt2ee = 0;DYControlmt2mm =0 ; DYControlPT2ee = 0; DYControlPT2mm = 0;
+    # for _i,_h in enumerate(MCSDYControlMllee.GetHists()):
+    #     if not DYControlMllee: MCDYControlMllee = copy.deepcopy(_h)
+    #     else:MCDYControlMllee.Add(_h, 1.)               
+    #     DYControlMllee = 1                                             
+    # for _i,_h in enumerate(MCSDYControlMllmm.GetHists()):
+    #     if not DYControlMllmm: MCDYControlMllmm = copy.deepcopy(_h)
+    #     else:MCDYControlMllmm.Add(_h, 1.)               
+    #     DYControlMllmm = 1                                             
+    # for _i,_h in enumerate(MCSDYControlMlleevalue.GetHists()):
+    #     if not DYControlMlleevalue: MCDYControlMlleevalue = copy.deepcopy(_h)
+    #     else:MCDYControlMlleevalue.Add(_h, 1.)               
+    #     DYControlMlleevalue = 1                                                 
+    # for _i,_h in enumerate(MCSDYControlMllmmvalue.GetHists()):
+    #     if not DYControlMllmmvalue: MCDYControlMllmmvalue = copy.deepcopy(_h)
+    #     else:MCDYControlMllmmvalue.Add(_h, 1.)               
+    #     DYControlMllmmvalue = 1                                                
+    # for _i,_h in enumerate(MCSDYControlMETee.GetHists()):
+    #     if not DYControlMETee: MCDYControlMETee = copy.deepcopy(_h)
+    #     else:MCDYControlMETee.Add(_h, 1.)               
+    #     DYControlMETee = 1                                                                           
+    # for _i,_h in enumerate(MCSDYControlMETmm.GetHists()):
+    #     if not DYControlMETmm: MCDYControlMETmm = copy.deepcopy(_h)
+    #     else:MCDYControlMETmm.Add(_h, 1.)               
+    #     DYControlMETmm = 1                                               
+    # for _i,_h in enumerate(MCSDYControlmt2ee.GetHists()):
+    #     if not DYControlmt2ee: MCDYControlmt2ee = copy.deepcopy(_h)
+    #     else:MCDYControlmt2ee.Add(_h, 1.)               
+    #     DYControlmt2ee = 1                                               
+    # for _i,_h in enumerate(MCSDYControlmt2mm.GetHists()):
+    #     if not DYControlmt2mm: MCDYControlmt2mm = copy.deepcopy(_h)
+    #     else:MCDYControlmt2mm.Add(_h, 1.)               
+    #     DYControlmt2mm = 1                                               
+    # for _i,_h in enumerate(MCSDYControlPT2ee.GetHists()):
+    #     if not DYControlPT2ee: MCDYControlPT2ee = copy.deepcopy(_h)
+    #     else:MCDYControlPT2ee.Add(_h, 1.)               
+    #     DYControlPT2ee = 1                                           
+    # for _i,_h in enumerate(MCSDYControlPT2mm.GetHists()):
+    #     if not DYControlPT2mm: MCDYControlPT2mm = copy.deepcopy(_h)
+    #     else:MCDYControlPT2mm.Add(_h, 1.)               
+    #     DYControlPT2mm = 1                                           
+
+    # MCDYControlMll =           make_rmue(MCDYControlMllmm, MCDYControlMllee)
+    # DADYControlMll =         make_rmue(DADYControlMllmm, DADYControlMllee)
+    # MCDYControlMllvalue =      make_rmue(MCDYControlMllmmvalue, MCDYControlMlleevalue)
+    # DADYControlMllvalue =    make_rmue(DADYControlMllmmvalue, DADYControlMlleevalue)
+    # MCDYControlMET =           make_rmue(MCDYControlMETmm, MCDYControlMETee)
+    # DADYControlMET =         make_rmue(DADYControlMETmm, DADYControlMETee)
+    # #MCDYControlJet =           make_rmue(MCDYControlJetmm, MCDYControlJetee)
+    # #DADYControlJet =         make_rmue(DADYControlJetmm, DADYControlJetee)
+    # MCDYControlmt2 =           make_rmue(MCDYControlmt2mm, MCDYControlmt2ee)
+    # DADYControlmt2 =         make_rmue(DADYControlmt2mm, DADYControlmt2ee)
+    # MCDYControlPT2 =           make_rmue(MCDYControlPT2mm, MCDYControlPT2ee)
+    # DADYControlPT2   =       make_rmue(DADYControlPT2mm, DADYControlPT2ee)
+
+    MCDYControl = make_rmue(MCSDYControlmm, MCSDYControlee)
+    DADYControl = make_rmue(DADYControlmm , DADYControlee)
+
+
+    plot_rmue = Canvas.Canvas('rmue/%s/plot_rmue_%s'%(lumi_str, var[1]), 'png,pdf', 0.6, 0.2, 0.75, 0.35)
+    plot_rmue.addHisto(MCDYControl, 'PE', 'MC', 'PL', r.kRed+1, 1, 0)
+    plot_rmue.addHisto(DADYControl, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 1)
+
+    if var[1] == 'Lep2_pt_Edge':
+        fun_da = r.TF1('fun_da','[0]+[1]/x', 20, 400)
+        fun_mc = r.TF1('fun_mc','[0]+[1]/x', 20, 400)
+        fun_da.SetLineWidth(2); fun_mc.SetLineWidth(2)
+        DADYControl.Fit('fun_da','rQ'); 
+        data_a = fun_da.GetParameter(0); data_a_e = fun_da.GetParError(0)
+        data_b = fun_da.GetParameter(1); data_b_e = fun_da.GetParError(1)
+        MCDYControl.Fit('fun_mc','rQ')
+        mc_a = fun_mc.GetParameter(0); mc_a_e = fun_mc.GetParError(0)
+        mc_b = fun_mc.GetParameter(1); mc_b_e = fun_mc.GetParError(1)
+        da_string = 'Fit on data: (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(data_a,data_a_e, data_b, data_b_e)
+        mc_string = 'Fit on MC:   (%4.2f #pm %4.2f) + (%4.2f #pm %4.2f) p_{T}^{-1}'%(mc_a,mc_a_e, mc_b, mc_b_e)
+
+        plot_rmue.addHisto(fun_da, 'L,SAME', 'Fit - Data', 'L', r.kBlack, 1,2)
+        plot_rmue.addHisto(fun_mc, 'L,SAME', 'Fit - MC', 'L', r.kRed+1, 1,3)
+        plot_rmue.addLatex(0.2,0.2, da_string, 42, 0.02)
+        plot_rmue.addLatex(0.2,0.25, mc_string, 42, 0.02)
+
+        if save==True:
+            #saveInFile(ingredientsFile, MCrmuemeasured, MCrmuemeasuredUnc, MCrmuemeasuredUncSyst, DA16rmuemeasured, DA16rmuemeasuredUnc, DA16rmuemeasuredUncSyst, 'alone')
+            #saveInFile(ingredientsFile, factorMCrmuemeasured, factorMCrmuemeasuredUnc, factorMCrmuemeasuredUncSyst, factorDA16rmuemeasured, factorDA16rmuemeasuredUnc, factorDA16rmuemeasuredUncSyst, 'factor')
+            saveInFile(ingredientsFile, mc_a, 0., mc_a_e, data_a, 0., data_a_e,  'coeffA')
+            saveInFile(ingredientsFile, mc_b, 0., mc_b_e, data_b, 0., data_b_e,  'coeffB')
+            makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b,mc_b_e, data_b, data_b_e)
+
+
+    plot_rmue.save(1, 1, 0, lumi, "",  0.2, 1.8)
+
+    if var[1] == 'Lep2_pt_Edge':
+        return (mc_a, mc_b, data_a, data_b)
+    else: return None
+
+
+    #    print "made all the rmues" 
+    #factorMCDY = convertToFactor(MCDYControl)
+    #factorDADY = convertToFactor(DADYControl)
+
+    # factorMCDYControlMll =          convertToFactor(MCDYControlMll)
+    # factorDADYControlMll =        convertToFactor(DADYControlMll)
+    # factorMCDYControlMllvalue =     convertToFactor(MCDYControlMllvalue)
+    # factorDADYControlMllvalue =   convertToFactor(DADYControlMllvalue)
+    # factorMCDYControlMET =          convertToFactor(MCDYControlMET)
+    # factorDADYControlMET =        convertToFactor(DADYControlMET)
+    # #factorMCDYControlJet =          convertToFactor(MCDYControlJet)
+    # #factorDADYControlJet =        convertToFactor(DADYControlJet)
+    # factorMCDYControlmt2 =          convertToFactor(MCDYControlmt2)
+    # factorDADYControlmt2 =        convertToFactor(DADYControlmt2)
+
+    # print "convert all factors" 
+    # systematicForrmue = 0.1 
+    # MCrmuemeasured =               MCDYControlMllvalue.GetBinContent(1)
+    # MCrmuemeasuredUnc =            MCDYControlMllvalue.GetBinError(1)
+    # MCrmuemeasuredUncSyst =        MCrmuemeasured * systematicForrmue
+    # DArmuemeasured =             DADYControlMllvalue.GetBinContent(1)
+    # DArmuemeasuredUnc =          DADYControlMllvalue.GetBinError(1)
+    # DArmuemeasuredUncSyst =      DArmuemeasured * systematicForrmue
+    # DArmuemeasuredUncTot  =      math.sqrt(DArmuemeasuredUnc**2 + DArmuemeasuredUncSyst**2)
+    
+    # factorMCrmuemeasured =             factorMCDYControlMllvalue.GetBinContent(1)
+    # factorMCrmuemeasuredUnc =          factorMCDYControlMllvalue.GetBinError(1)
+    # factorMCrmuemeasuredUncSyst =      (1.0-1.0/MCrmuemeasured**2) * MCrmuemeasuredUncSyst if MCrmuemeasured != 0 else 1000.00
+    # factorMCrmuemeasuredUncTot  =      math.sqrt(MCrmuemeasuredUnc**2 + MCrmuemeasuredUncSyst**2)
+    # factorDArmuemeasured =             factorDADYControlMllvalue.GetBinContent(1)
+    # factorDArmuemeasuredUnc =          factorDADYControlMllvalue.GetBinError(1)
+    # factorDArmuemeasuredUncSyst =      (1.0-1.0/DArmuemeasured**2) * DArmuemeasuredUncSyst if DArmuemeasured != 0 else 1000.00
+    # factorDArmuemeasuredUncTot  =      math.sqrt(DArmuemeasuredUnc**2 + DArmuemeasuredUncSyst**2)                                    
     
     
-    print "ready to save"
-    if save==True:
-        #saveInFile(ingredientsFile, MCrmuemeasured, MCrmuemeasuredUnc, MCrmuemeasuredUncSyst, DA16rmuemeasured, DA16rmuemeasuredUnc, DA16rmuemeasuredUncSyst, 'alone')
-        #saveInFile(ingredientsFile, factorMCrmuemeasured, factorMCrmuemeasuredUnc, factorMCrmuemeasuredUncSyst, factorDA16rmuemeasured, factorDA16rmuemeasuredUnc, factorDA16rmuemeasuredUncSyst, 'factor')
-        saveInFile(ingredientsFile, mc_a, 0., mc_a_e, data_a, 0., data_a_e,  'coeffA')
-        saveInFile(ingredientsFile, mc_b, 0., mc_b_e, data_b, 0., data_b_e,  'coeffB')
-        makeTable( mc_a, mc_a_e, data_a, data_a_e,  mc_b,mc_b_e, data_b, data_b_e)
-    MCDYControlPT2.Fit('fun_mc','rQ')
-    mc_a = fun_mc.GetParameter(0); mc_a_e = fun_mc.GetParError(0)
-    mc_b = fun_mc.GetParameter(1); mc_b_e = fun_mc.GetParError(1)
+
       
-    print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing plots...' + bcolors.ENDC
-    plot_rmue_mll = Canvas.Canvas('rmue/%s/plot_rmue_mll_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-    plot_rmue_mll.addHisto(MCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-    plot_rmue_mll.addHisto(DADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
-    #plot_rmue_mll.addBand(MCDYControlMll.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlMll.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
-    #plot_rmue_mll.addLine(MCDYControlMll.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlMll.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
-    plot_rmue_mll.save(1, 1, 0, lumi, "",0.2, 1.8)
+#     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Producing plots...' + bcolors.ENDC
+#     plot_rmue_mll = Canvas.Canvas('rmue/%s/plot_rmue_mll_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+#     plot_rmue_mll.addHisto(MCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+#     plot_rmue_mll.addHisto(DADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
+#     #plot_rmue_mll.addBand(MCDYControlMll.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlMll.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
+#     #plot_rmue_mll.addLine(MCDYControlMll.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlMll.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
+#     plot_rmue_mll.save(1, 1, 0, lumi, "",0.2, 1.8)
     
-    plot_rmue_met = Canvas.Canvas('rmue/%s/plot_rmue_met_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-    plot_rmue_met.addHisto(MCDYControlMET, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-    #plot_rmue_met.addHisto(DA16DYControlMET, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-    plot_rmue_met.addHisto(DADYControlMET, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
-    #plot_rmue_met.addBand(MCDYControlMET.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlMET.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
-    #plot_rmue_met.addLine(MCDYControlMET.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlMET.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
-    plot_rmue_met.save(1, 1, 0, lumi, "",0.2, 1.8)
+#     plot_rmue_met = Canvas.Canvas('rmue/%s/plot_rmue_met_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+#     plot_rmue_met.addHisto(MCDYControlMET, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+#     #plot_rmue_met.addHisto(DA16DYControlMET, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+#     plot_rmue_met.addHisto(DADYControlMET, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
+#     #plot_rmue_met.addBand(MCDYControlMET.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlMET.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
+#     #plot_rmue_met.addLine(MCDYControlMET.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlMET.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
+#     plot_rmue_met.save(1, 1, 0, lumi, "",0.2, 1.8)
   
-#    plot_rmue_jet = Canvas.Canvas('rmue/%s_%s/plot_rmue_jet'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-#    plot_rmue_jet.addHisto(MCDYControlJet, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-#    plot_rmue_jet.addHisto(DA16DYControlJet, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-#    plot_rmue_jet.addHisto(DADYControlJet, 'PE,SAME', 'DATA 2017', 'PL', r.kBlue , 1, 0)
-#    plot_rmue_jet.addBand(MCDYControlJet.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlJet.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
-#    plot_rmue_jet.addLine(MCDYControlJet.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlJet.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
-#    plot_rmue_jet.save(1, 1, 0, lumi, 0.2, 1.8)
+# #    plot_rmue_jet = Canvas.Canvas('rmue/%s_%s/plot_rmue_jet'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+# #    plot_rmue_jet.addHisto(MCDYControlJet, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+# #    plot_rmue_jet.addHisto(DA16DYControlJet, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+# #    plot_rmue_jet.addHisto(DADYControlJet, 'PE,SAME', 'DATA 2017', 'PL', r.kBlue , 1, 0)
+# #    plot_rmue_jet.addBand(MCDYControlJet.GetXaxis().GetXmin(), DA16rmuemeasured-DA16rmuemeasuredUncTot, MCDYControlJet.GetXaxis().GetXmax(), DA16rmuemeasured+DA16rmuemeasuredUncTot, r.kGreen, 0.2)
+# #    plot_rmue_jet.addLine(MCDYControlJet.GetXaxis().GetXmin(), DA16rmuemeasured, MCDYControlJet.GetXaxis().GetXmax(), DA16rmuemeasured,r.kGreen)
+# #    plot_rmue_jet.save(1, 1, 0, lumi, 0.2, 1.8)
     
-    plot_factor_mll = Canvas.Canvas('rmue/%s/plot_factor_mll_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-    plot_factor_mll.addHisto(factorMCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-    #plot_factor_mll.addHisto(factorDA16DYControlMll, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-    plot_factor_mll.addHisto(factorDADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
-    #plot_factor_mll.addBand(factorMCDYControlMll.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlMll.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
-    #lot_factor_mll.addLine(factorMCDYControlMll.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlMll.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
-    plot_factor_mll.save(1, 1, 0, lumi, "",0.2, 1.8)
+#     plot_factor_mll = Canvas.Canvas('rmue/%s/plot_factor_mll_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+#     plot_factor_mll.addHisto(factorMCDYControlMll, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+#     #plot_factor_mll.addHisto(factorDA16DYControlMll, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+#     plot_factor_mll.addHisto(factorDADYControlMll, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
+#     #plot_factor_mll.addBand(factorMCDYControlMll.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlMll.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
+#     #lot_factor_mll.addLine(factorMCDYControlMll.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlMll.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
+#     plot_factor_mll.save(1, 1, 0, lumi, "",0.2, 1.8)
 
-    plot_factor_met = Canvas.Canvas('rmue/%s/plot_factor_met_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-    plot_factor_met.addHisto(factorMCDYControlMET, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-    #plot_factor_met.addHisto(factorDA16DYControlMET, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-    plot_factor_met.addHisto(factorDADYControlMET, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
-    #plot_factor_met.addBand(factorMCDYControlMET.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlMET.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
-    plot_factor_met.addLine(factorMCDYControlMET.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlMET.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
-    plot_factor_met.save(1, 1, 0, lumi, "",0.2, 1.8)
+#     plot_factor_met = Canvas.Canvas('rmue/%s/plot_factor_met_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+#     plot_factor_met.addHisto(factorMCDYControlMET, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+#     #plot_factor_met.addHisto(factorDA16DYControlMET, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+#     plot_factor_met.addHisto(factorDADYControlMET, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
+#     #plot_factor_met.addBand(factorMCDYControlMET.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlMET.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
+#     #plot_factor_met.addLine(factorMCDYControlMET.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlMET.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
+#     plot_factor_met.save(1, 1, 0, lumi, "",0.2, 1.8)
 
-#    plot_factor_jet = Canvas.Canvas('rmue/%s_%s/plot_factor_jet'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-#    plot_factor_jet.addHisto(factorMCDYControlJet, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-#    plot_factor_jet.addHisto(factorDA16DYControlJet, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-#    plot_factor_jet.addHisto(factorDADYControlJet, 'PE,SAME', 'DATA 2017', 'PL', r.kBlue , 1, 0)
-#    plot_factor_jet.addBand(factorMCDYControlJet.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlJet.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
-#    plot_factor_jet.addLine(factorMCDYControlJet.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlJet.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
-#    plot_factor_jet.save(1, 1, 0, lumi, "Data/Prediction",0.2, 1.8)                                                                                                                                                                                                 
-    plot_factor_mt2 = Canvas.Canvas('rmue/%s/plot_factor_mt2_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
-    plot_factor_mt2.addHisto(factorMCDYControlmt2, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
-    #plot_factor_mt2.addHisto(factorDA16DYControlmt2, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
-    plot_factor_mt2.addHisto(factorDADYControlmt2, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
-    #plot_factor_mt2.addBand(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
-    #plot_factor_mt2.addLine(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
-    plot_factor_mt2.save(1, 1, 0, lumi, "",0.2, 1.8)                   
+# #    plot_factor_jet = Canvas.Canvas('rmue/%s_%s/plot_factor_jet'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+# #    plot_factor_jet.addHisto(factorMCDYControlJet, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+# #    plot_factor_jet.addHisto(factorDA16DYControlJet, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+# #    plot_factor_jet.addHisto(factorDADYControlJet, 'PE,SAME', 'DATA 2017', 'PL', r.kBlue , 1, 0)
+# #    plot_factor_jet.addBand(factorMCDYControlJet.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlJet.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
+# #    plot_factor_jet.addLine(factorMCDYControlJet.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlJet.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
+# #    plot_factor_jet.save(1, 1, 0, lumi, "Data/Prediction",0.2, 1.8)                                                                                                                                                                                                 
+#     plot_factor_mt2 = Canvas.Canvas('rmue/%s/plot_factor_mt2_%s'%(lumi_str, tag), 'png,pdf', 0.5, 0.2, 0.75, 0.4)
+#     plot_factor_mt2.addHisto(factorMCDYControlmt2, 'PE', 'MC', 'PL', r.kRed+1 , 1, 0)
+#     #plot_factor_mt2.addHisto(factorDA16DYControlmt2, 'PE,SAME', 'DATA 2016', 'PL', r.kBlack , 1, 0)
+#     plot_factor_mt2.addHisto(factorDADYControlmt2, 'PE,SAME', 'DATA', 'PL', r.kBlue , 1, 0)
+#     #plot_factor_mt2.addBand(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDA16rmuemeasured-factorDA16rmuemeasuredUncTot, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDA16rmuemeasured+factorDA16rmuemeasuredUncTot, r.kGreen, 0.2)
+#     #plot_factor_mt2.addLine(factorMCDYControlmt2.GetXaxis().GetXmin(), factorDA16rmuemeasured, factorMCDYControlmt2.GetXaxis().GetXmax(), factorDA16rmuemeasured,r.kGreen)
+#     plot_factor_mt2.save(1, 1, 0, lumi, "",0.2, 1.8)                   
 
 if __name__ == "__main__":
 
@@ -372,7 +413,7 @@ if __name__ == "__main__":
 
     print bcolors.HEADER + '[rmueAnalysis] ' + bcolors.OKBLUE + 'Loading DATA and MC trees...' + bcolors.ENDC
 
-    dyDatasets = ['DYJetsToLL_M50_ext_part1+DYJetsToLL_M50_ext_part2+DYJetsToLL_M50_ext_part3']
+    dyDatasets = ['DYJetsToLL_M50_ext_part1+DYJetsToLL_M50_ext_part2+DYJetsToLL_M50_ext_part3','DYJetsToLL_M10to50']
     ttDatasets = ['TTTo2L2Nu_part1+TTTo2L2Nu_part2','TTToSemiLeptonic'] # tt1l missing
     stDatasets = ['TW','TbarW'] # t and s (lol) channel missing 
     ttzDatasets = ['TTZ_LO_ext1','TTW_LO']#,'TTWZ','TTGJets_newpmx']
@@ -414,11 +455,31 @@ if __name__ == "__main__":
     labelnjet = "N. Jets"
     labelmt2 = "M_{T2} [GeV]"
     labelpt2 = "p_{T}^{lep2}"
+    labelpt1 = "p_{T}^{lep1}"
+    labelht  = "H_{T} [GeV]"
     #Cuts needed by rmue
     cuts = CutManager.CutManager()
 
-    makeAnalysis(treeDA, treeMC,  cuts, '', '', True, opts.ingredientsFile)
-
+    lep2_pt_binning = [20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,110,120,130,140,150,160,180,200]
+    lep1_pt_binning = range(25,255,5)
+    mll_binning     = [50,60,70,80,90,100,110,120,130,140,160,180,200,220,240,260,280,300,350,400,500]
+    ht_binning      = range(0,350,50)+[400]
+    met_binning     = range(0,100,10)+[100,120,140,170,200,250,300,350,400,450]
 
     
 
+    mc_a, mc_b, data_a, data_b = makeAnalysis(treeDA, treeMC,  cuts, '', '', True, opts.ingredientsFile, ('lep2_pt','Lep2_pt_Edge', lep2_pt_binning, 0,0,labelpt2))
+    makeAnalysis(treeDA, treeMC,  cuts, '', '', True, opts.ingredientsFile, ('lep1_pt','Lep1_pt_Edge', lep1_pt_binning, 0,0,labelpt1))
+    makeAnalysis(treeDA, treeMC,  cuts, '', '', True, opts.ingredientsFile, ('mll','lepsMll_Edge', mll_binning, 0,0,labelx))
+    
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('lep2_pt','Lep2_pt_Edge', lep2_pt_binning, 0,0,labelpt2))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('lep1_pt','Lep1_pt_Edge', lep1_pt_binning, 0,0,labelpt1))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('mll'    ,'lepsMll_Edge', mll_binning, 0,0,labelx))
+
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('ht'    ,'htJet35j_Edge', ht_binning, 0,0,labelht))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('met'    ,'MET_pt_Edge', met_binning, 0,0,labelmet))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('njet'    ,'nJetSel_Edge', [-0.5,0.5,1.5,2.5,3.5,4.5,5.5,6.5], 0,0,'n_{jets}'))
+
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('mt2'    ,'mt2_Edge', range(0,100,20)+[100,150], 0,0,'m_{T2} (GeV)'))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('dphi'    ,'lepsDPhi_Edge', 20, 0, 3.14,'#Delta #phi_{ll}'))
+    makeClosure(treeDA, treeMC, cuts, '', '', True, data_a, data_b, mc_a, mc_b, ('zpt'    ,'lepsZPt_Edge', [0,10,20,30,40,50,60,70,80,90,100,125,150,175,200,250,300], 0, 0,'p_{T}^{ll} (GeV)'))

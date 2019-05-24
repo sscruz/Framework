@@ -213,20 +213,20 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
 
     ######Met and JET plots 
     print bcolors.HEADER + '[RSFOFAnalysis] ' + bcolors.OKBLUE + 'Starting jet and met plot' + bcolors.ENDC
-    MCSSignalSFMET =treeMC.getTH1F(lumi,"MCSignalSFMET", "met_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]),'',labelmet,"1", kf)
-    DASSignalSFMET =treeDA.getTH1F(lumi,"DASignalSFMET", "met_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]),'',labelmet,"1", kf)
-    MCSSignalOFMET =treeMC.getTH1F(lumi,"MCSignalOFMET", "met_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]),'',labelmet,"1", kf)
-    DASSignalOFMET =treeDA.getTH1F(lumi,"DASignalOFMET", "met_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]),'',labelmet,"1", kf)
-    MCSSignalSFJet =treeMC.getTH1F(lumi,"MCSignalSFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet, "1", kf)
-    DASSignalSFJet =treeDA.getTH1F(lumi,"DASignalSFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]),'',labelnjet, "1", kf)
-    MCSSignalOFJet =treeMC.getTH1F(lumi,"MCSignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet, "1", kf)
-    DASSignalOFJet =treeDA.getTH1F(lumi,"DASignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]),'',labelnjet, "1", kf)
-    MCSSignalSFmt2 =treeMC.getTH1F(lumi,"MCSignalSFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.SF]),'',labelmt2,"1", kf)
-    DASSignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.SF]),'',labelmt2,"1", kf)
-    MCSSignalOFmt2 =treeMC.getTH1F(lumi,"MCSignalOFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.OF]),'',labelmt2,"1", kf)
-    DASSignalOFmt2 =treeDA.getTH1F(lumi,"DASignalOFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.OF]),'',labelmt2,"1", kf)
+    MCSSignalSFMET =treeMC.getStack(lumi,"MCSignalSFMET", "MET_pt_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]),'',labelmet,"1", kf)
+    DASignalSFMET =treeDA.getTH1F(lumi,"DASignalSFMET", "MET_pt_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.SF]),'',labelmet,"1", kf)
+    MCSSignalOFMET =treeMC.getStack(lumi,"MCSignalOFMET", "MET_pt_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]),'',labelmet,"1", kf)
+    DASignalOFMET =treeDA.getTH1F(lumi,"DASignalOFMET", "MET_pt_Edge",[50, 100, 150, 200, 300], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegionNoMET, cuts.OF]),'',labelmet,"1", kf)
+    MCSSignalSFJet =treeMC.getStack(lumi,"MCSignalSFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]), '', labelnjet, "1", kf)
+    DASignalSFJet =treeDA.getTH1F(lumi,"DASignalSFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.SF]),'',labelnjet, "1", kf)
+    MCSSignalOFJet =treeMC.getStack(lumi,"MCSignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]), '', labelnjet, "1", kf)
+    DASignalOFJet =treeDA.getTH1F(lumi,"DASignalOFJets", "nJetSel_Edge", 8, 0, 8, cuts.AddList([cuts.goodLepton17,cuts.RSFOFDirectSignalRegionNoJet, cuts.OF]),'',labelnjet, "1", kf)
+    MCSSignalSFmt2 =treeMC.getStack(lumi,"MCSignalSFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.SF]),'',labelmt2,"1", kf)
+    DASignalSFmt2 =treeDA.getTH1F(lumi,"DASignalSFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.SF]),'',labelmt2,"1", kf)
+    MCSSignalOFmt2 =treeMC.getStack(lumi,"MCSignalOFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.OF]),'',labelmt2,"1", kf)
+    DASignalOFmt2 =treeDA.getTH1F(lumi,"DASignalOFmt2","mt2_Edge",[0, 20, 40, 60, 80, 100,  130], 1, 1, cuts.AddList([cuts.goodLepton17, cuts.RSFOFDirectSignalRegion, cuts.OF]),'',labelmt2,"1", kf)
 
-    SignalSFMET=0; SignalOFMET = 0; SignalSFJet = 0; SignalSFJet = 0;SignalSFmt2 = 0; SignalOFmt2 = 0;
+    SignalSFMET=0; SignalOFMET = 0; SignalSFJet = 0; SignalSFJet = 0;SignalSFmt2 = 0; SignalOFmt2 = 0; SignalOFJet = 0
     for _i,_h in enumerate(MCSSignalSFMET.GetHists()):
         if not SignalSFMET: MCSignalSFMET = copy.deepcopy(_h)
         else:MCSignalSFMET.Add(_h, 1.)               
@@ -241,7 +241,7 @@ def runAnalysis(lumi, treeDA, treeMC, cuts, specialcut, tag, save, ingredientsFi
         SignalSFJet = 1                                          
     for _i,_h in enumerate(MCSSignalOFJet.GetHists()):
         if not SignalOFJet: MCSignalOFJet = copy.deepcopy(_h)
-        else:MCSignalOFJet.Add(_h, 1.)               
+        else: MCSignalOFJet.Add(_h, 1.)               
         SignalOFJet = 1                                          
     for _i,_h in enumerate(MCSSignalSFmt2.GetHists()):            
         if not SignalSFmt2: MCSignalSFmt2 = copy.deepcopy(_h)

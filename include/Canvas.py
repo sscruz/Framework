@@ -185,13 +185,16 @@ class Canvas:
       return newhisto
         
  
-   def addHisto(self, h, option, label, labelOption, color, ToDraw, orderForLegend, doOF = False):
+   def addHisto(self, h, option, label, labelOption, color, ToDraw, orderForLegend, doOF = False, lineWidth=0):
 
       if(color != ""):
           h.SetLineColor(color)
           h.SetMarkerColor(color)
       if(label == ""):
           label = h.GetTitle()
+
+      if lineWidth:
+         h.SetLineWidth(lineWidth)
 
       self.histos.append(h if not doOF else self.makeOFHisto(h))
       self.options.append(option)
@@ -319,7 +322,7 @@ class Canvas:
           tmp_ratio.GetXaxis().SetTitleSize(0.12);
           tmp_ratio.GetXaxis().SetLabelOffset(0.08);
           tmp_ratio.GetXaxis().SetTitle('');
-          tmp_ratio.SetMarkerStyle(tmp_hMC.GetMarkerStyle());
+          tmp_ratio.SetMarkerStyle(hdata.GetMarkerStyle());
           tmp_ratio.SetFillColorAlpha(r.kBlue-3,0.9)
           tmp_ratio.SetFillStyle(3017)
           tmp_ratio.SetMarkerColor(r.kBlack);
@@ -371,9 +374,10 @@ class Canvas:
           self.myCanvas.GetPad(0).SetLogy(1)
      
       for i in range(0, len(self.histos)):
-          if(self.ToDraw[i] != 0):        
+          if(self.ToDraw[i]):        
               if ymin and ymax:
                   self.histos[i].GetYaxis().SetRangeUser(ymin, ymax)
+              print 'drawing', self.histos[i], self.options[i]
               self.histos[i].Draw(self.options[i])
 
       for band in self.bands:

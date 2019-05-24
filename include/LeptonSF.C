@@ -1,20 +1,21 @@
 #include<iostream>
+#include<map>
 #include"TH1.h"
 #include"TH2.h"
 #include"TGraphAsymmErrors.h"
 
 using namespace std;
 
-vector<TH2*> hElec;
-vector<TH2*> hMuon;
+std::map<int,vector<TH2*>> hElec;
+std::map<int,vector<TH2*>> hMuon;
 
 
-void AddElec (TH2* h){ hElec.push_back(h); }
-void AddMuon (TH2* h){ hMuon.push_back(h); }
+void AddElec (TH2* h, int year){ hElec[year].push_back(h); }
+void AddMuon (TH2* h, int year){ hMuon[year].push_back(h); }
 
 
 
-Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
+Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, int year, TString sys="")
 {
   // sys can be 
   // "": nominal
@@ -24,7 +25,7 @@ Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
   // "MuDn": obvious
   // cout << "[LepSF]" << pt << " " << eta << " " << pdgId << " " << sys << endl;
 
-  vector<TH2*> hists = abs(pdgId)==11 ? hElec : hMuon;
+  vector<TH2*> hists = abs(pdgId)==11 ? hElec[year] : hMuon[year];
   float out = 1;
   int var = 0;
 
@@ -42,6 +43,26 @@ Double_t LepSF(Double_t pt, Double_t eta, Int_t pdgId, TString sys="")
   return out;
 }
 
+
+Double_t TriggerSF(int pdgid1, int pdgid2, int year)
+{
+  if (year == 2016){
+    if (fabs(pdgid1*pdgid2) == 121) return 1;
+    if (fabs(pdgid1*pdgid2) == 143) return 1;
+    if (fabs(pdgid1*pdgid2) == 169) return 1;
+  }
+  if (year == 2017){
+    if (fabs(pdgid1*pdgid2) == 121) return 0.900/0.953;
+    if (fabs(pdgid1*pdgid2) == 143) return 0.844/0.905;
+    if (fabs(pdgid1*pdgid2) == 169) return 0.878/0.947;
+  }
+  if (year == 2018){
+    if (fabs(pdgid1*pdgid2) == 121) return 0.924/0.946;
+    if (fabs(pdgid1*pdgid2) == 143) return 0.925/0.953;
+    if (fabs(pdgid1*pdgid2) == 169) return 0.925/0.926;
+  }
+
+}
 
 // Double_t LepSFElUp(Double_t pt, Double_t eta, Int_t pdgId)
 // {

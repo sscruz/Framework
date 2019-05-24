@@ -3,7 +3,8 @@ import ROOT, math, optparse, copy
 
 def LoadFastSimSF():
     print 'Welcome to the FastSIMSF calculator'
-
+    print 'nothing will be set up'
+    return
 
     ROOT.gROOT.LoadMacro('include/FastSimSF.C+')
     # Electrons

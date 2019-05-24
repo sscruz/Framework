@@ -203,6 +203,7 @@ if __name__ == '__main__':
     print bcolors.HEADER
     print '#######################################################################'
     print '                  Starting RT analysis...                          '
+    print 'Something in the systs is missing    dasystrt'
     print '#######################################################################' + bcolors.ENDC
 
     parser = optparse.OptionParser(usage='usage: %prog [opts] FilenameWithSamples', version='%prog 1.0')
@@ -216,104 +217,108 @@ if __name__ == '__main__':
     makeDependencyPlots = True 
 
 
-    dyDatasets = ['DYJetsToLL_M10to50_LO', 'DYJetsToLL_M50HTskimmed', 'DYJetsToLL_M50_HT100to200','DYJetsToLL_M50_HT200to400', 'DYJetsToLL_M50_HT400to600', 'DYJetsToLL_M50_HT600to800', 'DYJetsToLL_M50_HT800to1200', 'DYJetsToLL_M50_HT1200to2500']
-    ttDatasets = ['TTJets','TTJets_SingleLeptonFromT']
-    stDatasets = ['TToLeptons_sch', 'T_tch_powheg', 'TBar_tch_powheg', 'T_tWch_noFullHad', 'TBar_tWch_noFullHad_ext', 'tZq_ll']
-    ttzDatasets = ['TTZToLLNuNu', 'TTZ_LO', 'TTLLJets_m1to10', 'TWZ', 'TTWToLNu', 'TTW_LO', 'TTWW',  'TTWZ', 'TTZH', 'TTZZ', 'TTGJets']
-    zz2lDatasets = ['ZZTo2L2Nu', 'GluGluToContinToZZTo2e2nu', 'GluGluToContinToZZTo2mu2nu']
-    zz4lDatasets = ['ZZTo4L',  'GGHZZ4L', 'VBF_HToZZTo4L', 'GluGluToContinToZZTo2mu2tau']
-    wwDatasets = ['WWTo2L2Nu', 'WWTo1L1Nu2Q', 'WJetsToLNu_LO']
-    wzDatasets = ['WZTo3LNu_amcatnlo']
-    raDatasets = ['WWW_4F', 'WZG', 'WZZ', 'ZZZ', 'TTHnobb_pow' ]
-    mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets                           
 
+    dyDatasets = ['DYJetsToLL_M50_ext_part1+DYJetsToLL_M50_ext_part2+DYJetsToLL_M50_ext_part3']
+    ttDatasets = ['TTTo2L2Nu_part1+TTTo2L2Nu_part2','TTToSemiLeptonic'] # tt1l missing
+    stDatasets = ['TW','TbarW'] # t and s (lol) channel missing 
+    ttzDatasets = ['TTZ_LO_ext1','TTW_LO']#,'TTWZ','TTGJets_newpmx']
+    zz2lDatasets = ['ZZTo2L2Q','ZZTo2L2Nu']
+    zz4lDatasets = ['ZZTo4L_ext1_part1+ZZTo4L_ext1_part2',
+                    #'GluGluToContinToZZTo2e2mu+GluGluToContinToZZTo2e2mu_ext1',
+                    #'GluGluToContinToZZTo2e2nu+GluGluToContinToZZTo2e2nu_ext1',
+                    #'GluGluToContinToZZTo2mu2nu+GluGluToContinToZZTo2mu2nu_ext1',
+                    #'GluGluToContinToZZTo4e+GluGluToContinToZZTo4e_ext1',
+                    #'GluGluToContinToZZTo4mu+GluGluToContinToZZTo4mu_ext1'
+    ]
+    wwDatasets = ['WWTo2L2Nu']
+    wzDatasets = ['WZTo3LNu','WZTo2L2Q']
+    raDatasets = [ 'TTH_amc']
+    mcDatasets = zz4lDatasets + zz2lDatasets + ttzDatasets + raDatasets + wwDatasets +wzDatasets + stDatasets+  ttDatasets + dyDatasets
 
-
-    daDatasets16B = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
-                   'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
-                   'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'] 
+    # daDatasets16B = ['DoubleEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376',
+    #                'DoubleMuon_Run2016B_03Feb2017_ver2_v2_runs_273150_275376', 
+    #                'MuonEG_Run2016B_03Feb2017_ver2_v2_runs_273150_275376'] 
  
-    daDatasets16C = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']
+    # daDatasets16C = ['DoubleEG_Run2016C_03Feb2017_v1_runs_271036_284044',
+    #                'DoubleMuon_Run2016C_03Feb2017_v1_runs_271036_284044',
+    #                'MuonEG_Run2016C_03Feb2017_v1_runs_271036_284044']
     
-    daDatasets16D = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044']
+    # daDatasets16D = ['DoubleEG_Run2016D_03Feb2017_v1_runs_271036_284044',
+    #                'DoubleMuon_Run2016D_03Feb2017_v1_runs_271036_284044',
+    #                'MuonEG_Run2016D_03Feb2017_v1_runs_271036_284044']
  
-    daDatasets16E = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044']
+    # daDatasets16E = ['DoubleEG_Run2016E_03Feb2017_v1_runs_271036_284044',
+    #                'DoubleMuon_Run2016E_03Feb2017_v1_runs_271036_284044',
+    #                'MuonEG_Run2016E_03Feb2017_v1_runs_271036_284044']
  
-    daDatasets16F = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044'] 
+    # daDatasets16F = ['DoubleEG_Run2016F_03Feb2017_v1_runs_271036_284044',
+    #                'DoubleMuon_Run2016F_03Feb2017_v1_runs_271036_284044',
+    #                'MuonEG_Run2016F_03Feb2017_v1_runs_271036_284044'] 
 
-    daDatasets16G = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
-                   'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044']
+    # daDatasets16G = ['DoubleEG_Run2016G_03Feb2017_v1_runs_271036_284044',
+    #                'DoubleMuon_Run2016G_03Feb2017_v1_runs_271036_284044',
+    #                'MuonEG_Run2016G_03Feb2017_v1_runs_271036_284044']
 
-    daDatasets16H = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
-                   'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
-                   'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
-                   'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
-                   'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
-                   'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044'] 
+    # daDatasets16H = ['DoubleEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+    #                'DoubleEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+    #                'DoubleMuon_Run2016H_03Feb2017_ver2_v1_runs_281085_284035',
+    #                'DoubleMuon_Run2016H_03Feb2017_ver3_v1_runs_284036_284044',
+    #                'MuonEG_Run2016H_03Feb2017_ver2_v1_runs_281085_284035', 
+    #                'MuonEG_Run2016H_03Feb2017_ver3_v1_runs_284036_284044'] 
 
                                                                                   
-    daDatasets17B = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',            
-                   'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
-                   'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
-                   'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
-                   #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
+    # daDatasets17B = ['DoubleEG_Run2017B_17Nov2017_v1_runs_297046_299329',            
+    #                'DoubleMuon_Run2017B_17Nov2017_v1_runs_297046_299329',
+    #                'MuonEG_Run2017B_17Nov2017_v1_runs_297046_299329',    
+    #                'MET_Run2017B_17Nov2017_v1_runs_297046_299329',    
+    #                'JetHT_Run2017B_17Nov2017_v1_runs_297046_299329',    
+    #                'SingleElectron_Run2017B_17Nov2017_v1_runs_297046_299329']    
+    #                #'SingleMuon_Run2017B_17Nov2017_v1_runs_297046_299329']    
                                                                               
-    daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
-                   'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',    
-                   'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
-                   #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
+    # daDatasets17C = ['DoubleEG_Run2017C_17Nov2017_v1_runs_299368_302029',
+    #                'DoubleMuon_Run2017C_17Nov2017_v1_runs_299368_302029',
+    #                'MuonEG_Run2017C_17Nov2017_v1_runs_299368_302029',    
+    #                'MET_Run2017C_17Nov2017_v1_runs_299368_302029',    
+    #                'JetHT_Run2017C_17Nov2017_v1_runs_299368_302029',    
+    #                'SingleElectron_Run2017C_17Nov2017_v1_runs_299368_302029']    
+    #                #'SingleMuon_Run2017C_17Nov2017_v1_runs_299368_302029']   
     
-    daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
-                   'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',    
-                   'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
-                   'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
+    # daDatasets17D = ['DoubleEG_Run2017D_17Nov2017_v1_runs_302030_303434',
+    #                'DoubleMuon_Run2017D_17Nov2017_v1_runs_302030_303434',
+    #                'MuonEG_Run2017D_17Nov2017_v1_runs_302030_303434',     
+    #                'MET_Run2017D_17Nov2017_v1_runs_302030_303434',     
+    #                'JetHT_Run2017D_17Nov2017_v1_runs_302030_303434',    
+    #                'SingleElectron_Run2017D_17Nov2017_v1_runs_302030_303434',     
+    #                'SingleMuon_Run2017D_17Nov2017_v1_runs_302030_303434']     
                                                                               
-    daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
-                   'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
-                   'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',   
-                   'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']   
-                   #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
+    # daDatasets17E = ['DoubleEG_Run2017E_17Nov2017_v1_runs_303824_304797',
+    #                'DoubleMuon_Run2017E_17Nov2017_v1_runs_303824_304797',
+    #                'MuonEG_Run2017E_17Nov2017_v1_runs_303824_304797',    
+    #                'MET_Run2017E_17Nov2017_v1_runs_303824_304797',    
+    #                'JetHT_Run2017E_17Nov2017_v1_runs_303824_304797',   
+    #                'SingleElectron_Run2017E_17Nov2017_v1_runs_303824_304797']   
+    #                #'SingleMuon_Run2017E_17Nov2017_v1_runs_303824_304797']    
                                                                               
-    daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
-                  'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462',           
-                  'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
-                  'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                   
+    # daDatasets17F = ['DoubleEG_Run2017F_17Nov2017_v1_runs_305040_306462',
+    #               'DoubleMuon_Run2017F_17Nov2017_v1_runs_305040_306462',
+    #               'MuonEG_Run2017F_17Nov2017_v1_runs_305040_306462',           
+    #               'MET_Run2017F_17Nov2017_v1_runs_305040_306462',           
+    #               'JetHT_Run2017F_17Nov2017_v1_runs_305040_306462',           
+    #               'SingleElectron_Run2017F_17Nov2017_v1_runs_305040_306462',       
+    #               'SingleMuon_Run2017F_17Nov2017_v1_runs_305040_306462']                   
 
 
 
+    
+
+    daDatasets17 = ['MET_Run2017B', 'MET_Run2017C', 'MET_Run2017D', 'MET_Run2017E', 'MET_Run2017F']
 
 
 
-
-
-
-    daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H     
-    daDatasets17 = daDatasets17B + daDatasets17C + daDatasets17D +daDatasets17E + daDatasets17F       
-    treeMC = Sample.Tree(helper.selectSamples("samplesUnskimmedSR.dat", mcDatasets, 'MC'), 'MC'  , 0)
-    treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
-    treeDA17 = Sample.Tree(helper.selectSamples("samplesUnskimmedSR.dat", daDatasets17, 'DA'), 'DATA', 1)
+    # daDatasets16 = daDatasets16B + daDatasets16C + daDatasets16D +daDatasets16E + daDatasets16F + daDatasets16G + daDatasets16H     
+    treeMC = Sample.Tree(helper.selectSamples("samples.dat", mcDatasets, 'MC'), 'MC'  , 0)
+    #treeDA16 = Sample.Tree(helper.selectSamples("samplesEdge.dat", daDatasets16, 'DA'), 'DATA', 1)
+    treeDA17 = Sample.Tree(helper.selectSamples("samples.dat", daDatasets17, 'DA'), 'DATA', 1)
 
     print bcolors.HEADER + '[RTAnalysis] ' + bcolors.OKBLUE + 'Trees successfully loaded...' + bcolors.ENDC
 
@@ -338,14 +343,14 @@ if __name__ == '__main__':
     etabins = [-3.0, -2.4, -1.8, -1.2, -0.6, 0, 0.6, 1.2, 1.8, 2.4, 3.0]
     specialcut = ''
     kf = 'noKFactor'
-    DATA16denMlleevalue =     treeDA16.getTH1F(lumi, "DATA16deneevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelx,"1", kf)
-    DATA16numMlleevalue =     treeDA16.getTH1F(lumi, "DATA16numeevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelx,"1", kf)
-    DATA16denMllmmvalue =     treeDA16.getTH1F(lumi, "DATA16denmmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelx,"1", kf)
-    DATA16numMllmmvalue =     treeDA16.getTH1F(lumi, "DATA16nummmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelx,"1", kf)
-    DATA16denMllSFvalue =     treeDA16.getTH1F(lumi, "DATA16denSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelx,"1", kf)
-    DATA16numMllSFvalue =     treeDA16.getTH1F(lumi, "DATA16numSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelx,"1", kf)
-    DATA16denMllOFvalue =     treeDA16.getTH1F(lumi, "DATA16denOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelx,"1", kf)
-    DATA16numMllOFvalue =     treeDA16.getTH1F(lumi, "DATA16numOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelx,"1", kf)
+    # DATA16denMlleevalue =     treeDA16.getTH1F(lumi, "DATA16deneevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelx,"1", kf)
+    # DATA16numMlleevalue =     treeDA16.getTH1F(lumi, "DATA16numeevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelx,"1", kf)
+    # DATA16denMllmmvalue =     treeDA16.getTH1F(lumi, "DATA16denmmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelx,"1", kf)
+    # DATA16numMllmmvalue =     treeDA16.getTH1F(lumi, "DATA16nummmvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelx,"1", kf)
+    # DATA16denMllSFvalue =     treeDA16.getTH1F(lumi, "DATA16denSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelx,"1", kf)
+    # DATA16numMllSFvalue =     treeDA16.getTH1F(lumi, "DATA16numSFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelx,"1", kf)
+    # DATA16denMllOFvalue =     treeDA16.getTH1F(lumi, "DATA16denOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelx,"1", kf)
+    # DATA16numMllOFvalue =     treeDA16.getTH1F(lumi, "DATA16numOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelx,"1", kf)
    
     DATA17denMlleevalue =     treeDA17.getTH1F(lumi, "DATA17deneevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelx,"1", kf)
     DATA17numMlleevalue =     treeDA17.getTH1F(lumi, "DATA17numeevalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelx,"1", kf)
@@ -365,15 +370,16 @@ if __name__ == '__main__':
     MCdenMllOFvalue =     treeMC.getTH1F(lumi, "MCdenOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labelx,"1", kf)
     MCnumMllOFvalue =     treeMC.getTH1F(lumi, "MCnumOFvalue", "lepsMll_Edge", [20, 1000], 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelx,"1", kf)
     
-    effMlleevalueDATA16 = getTriggerEffs(DATA16numMlleevalue, DATA16denMlleevalue, "data")
-    print "effMlleevalueDATA ", effMlleevalueDATA16.GetY()[0]
-    effMllmmvalueDATA16 = getTriggerEffs(DATA16numMllmmvalue, DATA16denMllmmvalue, "data")
-    print "effMllmmvalueDATA ", effMllmmvalueDATA16.GetY()[0]
-    effMllSFvalueDATA16 = getTriggerEffs(DATA16numMllSFvalue, DATA16denMllSFvalue, "data")
-    print "effMllSFvalueDATA ", effMllSFvalueDATA16.GetY()[0]
-    effMllOFvalueDATA16 = getTriggerEffs(DATA16numMllOFvalue, DATA16denMllOFvalue, "data")
-    print "effMllOFvalueDATA ", effMllOFvalueDATA16.GetY()[0]                                  
+    # effMlleevalueDATA16 = getTriggerEffs(DATA16numMlleevalue, DATA16denMlleevalue, "data")
+    # print "effMlleevalueDATA ", effMlleevalueDATA16.GetY()[0]
+    # effMllmmvalueDATA16 = getTriggerEffs(DATA16numMllmmvalue, DATA16denMllmmvalue, "data")
+    # print "effMllmmvalueDATA ", effMllmmvalueDATA16.GetY()[0]
+    # effMllSFvalueDATA16 = getTriggerEffs(DATA16numMllSFvalue, DATA16denMllSFvalue, "data")
+    # print "effMllSFvalueDATA ", effMllSFvalueDATA16.GetY()[0]
+    # effMllOFvalueDATA16 = getTriggerEffs(DATA16numMllOFvalue, DATA16denMllOFvalue, "data")
+    # print "effMllOFvalueDATA ", effMllOFvalueDATA16.GetY()[0]                                  
     effMlleevalueDATA17 = getTriggerEffs(DATA17numMlleevalue, DATA17denMlleevalue, "data")
+
     print "effMlleevalueDATA17 ", effMlleevalueDATA17.GetY()[0]
     effMllmmvalueDATA17 = getTriggerEffs(DATA17numMllmmvalue, DATA17denMllmmvalue, "data")
     print "effMllmmvalueDATA17 ", effMllmmvalueDATA17.GetY()[0]
@@ -403,21 +409,21 @@ if __name__ == '__main__':
     effMllOFvalueMC   = getTriggerEffs(MCnumMllOFvalue, MCdenMllOFvalue, "MC")
     print "effMllOFvalueMC ", effMllOFvalueMC.GetY()[0]
 
-    eevalda16_   = effMlleevalueDATA16.GetY()
-    eevalda16eh_ = effMlleevalueDATA16.GetEYhigh()
-    eevalda16el_ = effMlleevalueDATA16.GetEYlow()
-    eevalda16    = eevalda16_[0]
-    eevalda16e   = max(eevalda16eh_[0], eevalda16el_[0])
-    mmvalda16_   = effMllmmvalueDATA16.GetY()
-    mmvalda16eh_ = effMllmmvalueDATA16.GetEYhigh()
-    mmvalda16el_ = effMllmmvalueDATA16.GetEYlow()
-    mmvalda16    = mmvalda16_[0]
-    mmvalda16e   = max(mmvalda16eh_[0], mmvalda16el_[0])
-    emvalda16_   = effMllOFvalueDATA16.GetY()
-    emvalda16eh_ = effMllOFvalueDATA16.GetEYhigh()
-    emvalda16el_ = effMllOFvalueDATA16.GetEYlow()
-    emvalda16    = emvalda16_[0]
-    emvalda16e   = max(emvalda16eh_[0], emvalda16el_[0])
+    # eevalda16_   = effMlleevalueDATA16.GetY()
+    # eevalda16eh_ = effMlleevalueDATA16.GetEYhigh()
+    # eevalda16el_ = effMlleevalueDATA16.GetEYlow()
+    # eevalda16    = eevalda16_[0]
+    # eevalda16e   = max(eevalda16eh_[0], eevalda16el_[0])
+    # mmvalda16_   = effMllmmvalueDATA16.GetY()
+    # mmvalda16eh_ = effMllmmvalueDATA16.GetEYhigh()
+    # mmvalda16el_ = effMllmmvalueDATA16.GetEYlow()
+    # mmvalda16    = mmvalda16_[0]
+    # mmvalda16e   = max(mmvalda16eh_[0], mmvalda16el_[0])
+    # emvalda16_   = effMllOFvalueDATA16.GetY()
+    # emvalda16eh_ = effMllOFvalueDATA16.GetEYhigh()
+    # emvalda16el_ = effMllOFvalueDATA16.GetEYlow()
+    # emvalda16    = emvalda16_[0]
+    # emvalda16e   = max(emvalda16eh_[0], emvalda16el_[0])
 
     eevalda17_   = effMlleevalueDATA17.GetY()
     eevalda17eh_ = effMlleevalueDATA17.GetEYhigh()
@@ -451,75 +457,75 @@ if __name__ == '__main__':
     emvalmc    = emvalmc_[0]
     emvalmce   = max(emvalmceh_[0], emvalmcel_[0])
 
-    [da16rt, da16uncrt, da16systrt] = getRT(eevalda16, eevalda16e, mmvalda16, mmvalda16e, emvalda16, emvalda16e)
+    #[da16rt, da16uncrt, da16systrt] = getRT(eevalda16, eevalda16e, mmvalda16, mmvalda16e, emvalda16, emvalda16e)
     [da17rt, da17uncrt, da17systrt] = getRT(eevalda17, eevalda17e, mmvalda17, mmvalda17e, emvalda17, emvalda17e)
     [mcrt, mcuncrt, mcsystrt] = getRT(eevalmc, eevalmce, mmvalmc, mmvalmce, emvalmc, emvalmce)
-    print 'Measured RT value data 2016 %.2f +- %.2f +/- %.2f'%(da16rt, da16uncrt, da16systrt)
+    #print 'Measured RT value data 2016 %.2f +- %.2f +/- %.2f'%(da16rt, da16uncrt, da16systrt)
     print 'Measured RT value data 2017 %.2f +- %.2f +/- %.2f'%(da17rt, da17uncrt, da17systrt)
     print 'Measured RT value MC   %.2f +- %.2f +/- %.2f'%(mcrt, mcuncrt, mcsystrt)
     saveInFile(theFile, mcrt, mcuncrt, mcsystrt, da17rt, da17uncrt, da17systrt)
-    makeTable(DATA16numMlleevalue, DATA16numMllmmvalue, DATA16numMllOFvalue, DATA16denMlleevalue, DATA16denMllmmvalue, DATA16denMllOFvalue, eevalda16, mmvalda16, emvalda16, eevalda16e, mmvalda16e, emvalda16e, da16rt, da16uncrt, da16systrt, "DATA")
+    #makeTable(DATA16numMlleevalue, DATA16numMllmmvalue, DATA16numMllOFvalue, DATA16denMlleevalue, DATA16denMllmmvalue, DATA16denMllOFvalue, eevalda16, mmvalda16, emvalda16, eevalda16e, mmvalda16e, emvalda16e, da16rt, da16uncrt, da16systrt, "DATA")
     makeTable(DATA17numMlleevalue, DATA17numMllmmvalue, DATA17numMllOFvalue, DATA17denMlleevalue, DATA17denMllmmvalue, DATA17denMllOFvalue, eevalda17, mmvalda17, emvalda17, eevalda17e, mmvalda17e, emvalda17e, da17rt, da17uncrt, da17systrt, "DATA")
     makeTable(MCnumMlleevalue, MCnumMllmmvalue, MCnumMllOFvalue, MCdenMlleevalue, MCdenMllmmvalue, MCdenMllOFvalue, eevalmc, mmvalmc, emvalmc, eevalmce, mmvalmce, emvalmce, mcrt, mcuncrt, mcsystrt, "MC")
     ######################## Calculation of total values #############################
 
     if makeDependencyPlots: 
-        DATA16denMllee = treeDA16.getTH1F(lumi, "DATA16denee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelx,"1", kf)
-        DATA16numMllee = treeDA16.getTH1F(lumi, "DATA16numee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelx,"1", kf)
-        DATA16denMllmm = treeDA16.getTH1F(lumi, "DATA16denmm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelx,"1", kf)
-        DATA16numMllmm = treeDA16.getTH1F(lumi, "DATA16nummm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelx,"1", kf)
-        DATA16denMllSF = treeDA16.getTH1F(lumi, "DATA16denSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelx,"1", kf)
-        DATA16numMllSF = treeDA16.getTH1F(lumi, "DATA16numSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelx,"1", kf)
-        DATA16denMllOF = treeDA16.getTH1F(lumi, "DATA16denOF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelx,"1", kf)
-        DATA16numMllOF = treeDA16.getTH1F(lumi, "DATA16numOF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelx,"1", kf)
-        DATA16denpt1ee = treeDA16.getTH1F(lumi, "DATA16denpt1ee", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelpt1,"1", kf)
-        DATA16numpt1ee = treeDA16.getTH1F(lumi, "DATA16numpt1ee", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelpt1,"1", kf)
-        DATA16denpt1mm = treeDA16.getTH1F(lumi, "DATA16denpt1mm", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelpt1,"1", kf)
-        DATA16numpt1mm = treeDA16.getTH1F(lumi, "DATA16numpt1mm", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelpt1,"1", kf)
-        DATA16denpt1SF = treeDA16.getTH1F(lumi, "DATA16denpt1SF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelpt1,"1", kf)
-        DATA16numpt1SF = treeDA16.getTH1F(lumi, "DATA16numpt1SF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelpt1,"1", kf)
-        DATA16denpt1OF = treeDA16.getTH1F(lumi, "DATA16denpt1OF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelpt1,"1", kf)
-        DATA16numpt1OF = treeDA16.getTH1F(lumi, "DATA16numpt1OF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelpt1,"1", kf)
-        DATA16denpt2ee = treeDA16.getTH1F(lumi, "DATA16denpt2ee", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelpt2,"1", kf)
-        DATA16numpt2ee = treeDA16.getTH1F(lumi, "DATA16numpt2ee", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelpt2,"1", kf)
-        DATA16denpt2mm = treeDA16.getTH1F(lumi, "DATA16denpt2mm", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelpt2,"1", kf)
-        DATA16numpt2mm = treeDA16.getTH1F(lumi, "DATA16numpt2mm", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelpt2,"1", kf)
-        DATA16denpt2SF = treeDA16.getTH1F(lumi, "DATA16denpt2SF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelpt2,"1", kf)
-        DATA16numpt2SF = treeDA16.getTH1F(lumi, "DATA16numpt2SF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelpt2,"1", kf)
-        DATA16denpt2OF = treeDA16.getTH1F(lumi, "DATA16denpt2OF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelpt2,"1", kf)
-        DATA16numpt2OF = treeDA16.getTH1F(lumi, "DATA16numpt2OF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelpt2,"1", kf)
-        DATA16deneta1ee = treeDA16.getTH1F(lumi, "DATA16deneta1ee", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labeleta1,"1", kf)
-        DATA16numeta1ee = treeDA16.getTH1F(lumi, "DATA16numeta1ee", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labeleta1,"1", kf)
-        DATA16deneta1mm = treeDA16.getTH1F(lumi, "DATA16deneta1mm", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labeleta1,"1", kf)
-        DATA16numeta1mm = treeDA16.getTH1F(lumi, "DATA16numeta1mm", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labeleta1,"1", kf)
-        DATA16deneta1SF = treeDA16.getTH1F(lumi, "DATA16deneta1SF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labeleta1,"1", kf)
-        DATA16numeta1SF = treeDA16.getTH1F(lumi, "DATA16numeta1SF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labeleta1,"1", kf)
-        DATA16deneta1OF = treeDA16.getTH1F(lumi, "DATA16deneta1OF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labeleta1,"1", kf)
-        DATA16numeta1OF = treeDA16.getTH1F(lumi, "DATA16numeta1OF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labeleta1,"1", kf)
-        DATA16deneta2ee = treeDA16.getTH1F(lumi, "DATA16deneta2ee", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labeleta2,"1", kf)
-        DATA16numeta2ee = treeDA16.getTH1F(lumi, "DATA16numeta2ee", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labeleta2,"1", kf)
-        DATA16deneta2mm = treeDA16.getTH1F(lumi, "DATA16deneta2mm", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labeleta2,"1", kf)
-        DATA16numeta2mm = treeDA16.getTH1F(lumi, "DATA16numeta2mm", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labeleta2,"1", kf)
-        DATA16deneta2SF = treeDA16.getTH1F(lumi, "DATA16deneta2SF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labeleta2,"1", kf)
-        DATA16numeta2SF = treeDA16.getTH1F(lumi, "DATA16numeta2SF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labeleta2,"1", kf)
-        DATA16deneta2OF = treeDA16.getTH1F(lumi, "DATA16deneta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labeleta2,"1", kf)
-        DATA16numeta2OF = treeDA16.getTH1F(lumi, "DATA16numeta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labeleta2,"1", kf)
-        DATA16denMETee =  treeDA16.getTH1F(lumi, "DATA16deneevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelmet,"1", kf)
-        DATA16numMETee =  treeDA16.getTH1F(lumi, "DATA16numeevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelmet,"1", kf)
-        DATA16denMETmm =  treeDA16.getTH1F(lumi, "DATA16denmmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelmet,"1", kf)
-        DATA16numMETmm =  treeDA16.getTH1F(lumi, "DATA16nummmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelmet,"1", kf)
-        DATA16denMETSF =  treeDA16.getTH1F(lumi, "DATA16denSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelmet,"1", kf)
-        DATA16numMETSF =  treeDA16.getTH1F(lumi, "DATA16numSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelmet,"1", kf)
-        DATA16denMETOF =  treeDA16.getTH1F(lumi, "DATA16denOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelmet,"1", kf)
-        DATA16numMETOF =  treeDA16.getTH1F(lumi, "DATA16numOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelmet,"1", kf)
-        DATA16denmt2ee =  treeDA16.getTH1F(lumi, "DATA16deneevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelmt2,"1", kf)
-        DATA16nummt2ee =  treeDA16.getTH1F(lumi, "DATA16numeevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelmt2,"1", kf)
-        DATA16denmt2mm =  treeDA16.getTH1F(lumi, "DATA16denmmvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelmt2,"1", kf)
-        DATA16nummt2mm =  treeDA16.getTH1F(lumi, "DATA16nummmvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelmt2,"1", kf)
-        DATA16denmt2SF =  treeDA16.getTH1F(lumi, "DATA16denSFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelmt2,"1", kf)
-        DATA16nummt2SF =  treeDA16.getTH1F(lumi, "DATA16numSFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelmt2,"1", kf)
-        DATA16denmt2OF =  treeDA16.getTH1F(lumi, "DATA16denOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelmt2,"1", kf)
-        DATA16nummt2OF =  treeDA16.getTH1F(lumi, "DATA16numOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelmt2,"1", kf)       
+        # DATA16denMllee = treeDA16.getTH1F(lumi, "DATA16denee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelx,"1", kf)
+        # DATA16numMllee = treeDA16.getTH1F(lumi, "DATA16numee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelx,"1", kf)
+        # DATA16denMllmm = treeDA16.getTH1F(lumi, "DATA16denmm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelx,"1", kf)
+        # DATA16numMllmm = treeDA16.getTH1F(lumi, "DATA16nummm", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelx,"1", kf)
+        # DATA16denMllSF = treeDA16.getTH1F(lumi, "DATA16denSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelx,"1", kf)
+        # DATA16numMllSF = treeDA16.getTH1F(lumi, "DATA16numSF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelx,"1", kf)
+        # DATA16denMllOF = treeDA16.getTH1F(lumi, "DATA16denOF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelx,"1", kf)
+        # DATA16numMllOF = treeDA16.getTH1F(lumi, "DATA16numOF", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelx,"1", kf)
+        # DATA16denpt1ee = treeDA16.getTH1F(lumi, "DATA16denpt1ee", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelpt1,"1", kf)
+        # DATA16numpt1ee = treeDA16.getTH1F(lumi, "DATA16numpt1ee", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelpt1,"1", kf)
+        # DATA16denpt1mm = treeDA16.getTH1F(lumi, "DATA16denpt1mm", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelpt1,"1", kf)
+        # DATA16numpt1mm = treeDA16.getTH1F(lumi, "DATA16numpt1mm", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelpt1,"1", kf)
+        # DATA16denpt1SF = treeDA16.getTH1F(lumi, "DATA16denpt1SF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelpt1,"1", kf)
+        # DATA16numpt1SF = treeDA16.getTH1F(lumi, "DATA16numpt1SF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelpt1,"1", kf)
+        # DATA16denpt1OF = treeDA16.getTH1F(lumi, "DATA16denpt1OF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelpt1,"1", kf)
+        # DATA16numpt1OF = treeDA16.getTH1F(lumi, "DATA16numpt1OF", "Lep1_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelpt1,"1", kf)
+        # DATA16denpt2ee = treeDA16.getTH1F(lumi, "DATA16denpt2ee", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelpt2,"1", kf)
+        # DATA16numpt2ee = treeDA16.getTH1F(lumi, "DATA16numpt2ee", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelpt2,"1", kf)
+        # DATA16denpt2mm = treeDA16.getTH1F(lumi, "DATA16denpt2mm", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelpt2,"1", kf)
+        # DATA16numpt2mm = treeDA16.getTH1F(lumi, "DATA16numpt2mm", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelpt2,"1", kf)
+        # DATA16denpt2SF = treeDA16.getTH1F(lumi, "DATA16denpt2SF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelpt2,"1", kf)
+        # DATA16numpt2SF = treeDA16.getTH1F(lumi, "DATA16numpt2SF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelpt2,"1", kf)
+        # DATA16denpt2OF = treeDA16.getTH1F(lumi, "DATA16denpt2OF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelpt2,"1", kf)
+        # DATA16numpt2OF = treeDA16.getTH1F(lumi, "DATA16numpt2OF", "Lep2_pt_Edge", ptbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelpt2,"1", kf)
+        # DATA16deneta1ee = treeDA16.getTH1F(lumi, "DATA16deneta1ee", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labeleta1,"1", kf)
+        # DATA16numeta1ee = treeDA16.getTH1F(lumi, "DATA16numeta1ee", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labeleta1,"1", kf)
+        # DATA16deneta1mm = treeDA16.getTH1F(lumi, "DATA16deneta1mm", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labeleta1,"1", kf)
+        # DATA16numeta1mm = treeDA16.getTH1F(lumi, "DATA16numeta1mm", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labeleta1,"1", kf)
+        # DATA16deneta1SF = treeDA16.getTH1F(lumi, "DATA16deneta1SF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labeleta1,"1", kf)
+        # DATA16numeta1SF = treeDA16.getTH1F(lumi, "DATA16numeta1SF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labeleta1,"1", kf)
+        # DATA16deneta1OF = treeDA16.getTH1F(lumi, "DATA16deneta1OF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labeleta1,"1", kf)
+        # DATA16numeta1OF = treeDA16.getTH1F(lumi, "DATA16numeta1OF", "Lep1_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labeleta1,"1", kf)
+        # DATA16deneta2ee = treeDA16.getTH1F(lumi, "DATA16deneta2ee", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labeleta2,"1", kf)
+        # DATA16numeta2ee = treeDA16.getTH1F(lumi, "DATA16numeta2ee", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labeleta2,"1", kf)
+        # DATA16deneta2mm = treeDA16.getTH1F(lumi, "DATA16deneta2mm", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labeleta2,"1", kf)
+        # DATA16numeta2mm = treeDA16.getTH1F(lumi, "DATA16numeta2mm", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labeleta2,"1", kf)
+        # DATA16deneta2SF = treeDA16.getTH1F(lumi, "DATA16deneta2SF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labeleta2,"1", kf)
+        # DATA16numeta2SF = treeDA16.getTH1F(lumi, "DATA16numeta2SF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labeleta2,"1", kf)
+        # DATA16deneta2OF = treeDA16.getTH1F(lumi, "DATA16deneta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labeleta2,"1", kf)
+        # DATA16numeta2OF = treeDA16.getTH1F(lumi, "DATA16numeta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labeleta2,"1", kf)
+        # DATA16denMETee =  treeDA16.getTH1F(lumi, "DATA16deneevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelmet,"1", kf)
+        # DATA16numMETee =  treeDA16.getTH1F(lumi, "DATA16numeevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelmet,"1", kf)
+        # DATA16denMETmm =  treeDA16.getTH1F(lumi, "DATA16denmmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelmet,"1", kf)
+        # DATA16numMETmm =  treeDA16.getTH1F(lumi, "DATA16nummmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelmet,"1", kf)
+        # DATA16denMETSF =  treeDA16.getTH1F(lumi, "DATA16denSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelmet,"1", kf)
+        # DATA16numMETSF =  treeDA16.getTH1F(lumi, "DATA16numSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelmet,"1", kf)
+        # DATA16denMETOF =  treeDA16.getTH1F(lumi, "DATA16denOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelmet,"1", kf)
+        # DATA16numMETOF =  treeDA16.getTH1F(lumi, "DATA16numOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelmet,"1", kf)
+        # DATA16denmt2ee =  treeDA16.getTH1F(lumi, "DATA16deneevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.ee]), '', labelmt2,"1", kf)
+        # DATA16nummt2ee =  treeDA16.getTH1F(lumi, "DATA16numeevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.ee]), '', labelmt2,"1", kf)
+        # DATA16denmt2mm =  treeDA16.getTH1F(lumi, "DATA16denmmvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.mm]), '', labelmt2,"1", kf)
+        # DATA16nummt2mm =  treeDA16.getTH1F(lumi, "DATA16nummmvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.mm]), '', labelmt2,"1", kf)
+        # DATA16denmt2SF =  treeDA16.getTH1F(lumi, "DATA16denSFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.SF]), '', labelmt2,"1", kf)
+        # DATA16nummt2SF =  treeDA16.getTH1F(lumi, "DATA16numSFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.SF]), '', labelmt2,"1", kf)
+        # DATA16denmt2OF =  treeDA16.getTH1F(lumi, "DATA16denOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den16,  cuts.OF]), '', labelmt2,"1", kf)
+        # DATA16nummt2OF =  treeDA16.getTH1F(lumi, "DATA16numOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num16,  cuts.OF]), '', labelmt2,"1", kf)       
 
         DATA17denMllee = treeDA17.getTH1F(lumi, "DATA17denee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelx,"1", kf)
         DATA17numMllee = treeDA17.getTH1F(lumi, "DATA17numee", "lepsMll_Edge", mllbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelx,"1", kf)
@@ -561,14 +567,14 @@ if __name__ == '__main__':
         DATA17numeta2SF = treeDA17.getTH1F(lumi, "DATA17numeta2SF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num17,  cuts.SF]), '', labeleta2,"1", kf)
         DATA17deneta2OF = treeDA17.getTH1F(lumi, "DATA17deneta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labeleta2,"1", kf)
         DATA17numeta2OF = treeDA17.getTH1F(lumi, "DATA17numeta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labeleta2,"1", kf)
-        DATA17denMETee =  treeDA17.getTH1F(lumi, "DATA17deneevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmet,"1", kf)
-        DATA17numMETee =  treeDA17.getTH1F(lumi, "DATA17numeevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmet,"1", kf)
-        DATA17denMETmm =  treeDA17.getTH1F(lumi, "DATA17denmmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.mm]), '', labelmet,"1", kf)
-        DATA17numMETmm =  treeDA17.getTH1F(lumi, "DATA17nummmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.mm]), '', labelmet,"1", kf)
-        DATA17denMETSF =  treeDA17.getTH1F(lumi, "DATA17denSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.SF]), '', labelmet,"1", kf)
-        DATA17numMETSF =  treeDA17.getTH1F(lumi, "DATA17numSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.SF]), '', labelmet,"1", kf)
-        DATA17denMETOF =  treeDA17.getTH1F(lumi, "DATA17denOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labelmet,"1", kf)
-        DATA17numMETOF =  treeDA17.getTH1F(lumi, "DATA17numOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelmet,"1", kf)
+        DATA17denMETee =  treeDA17.getTH1F(lumi, "DATA17deneevalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmet,"1", kf)
+        DATA17numMETee =  treeDA17.getTH1F(lumi, "DATA17numeevalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmet,"1", kf)
+        DATA17denMETmm =  treeDA17.getTH1F(lumi, "DATA17denmmvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.mm]), '', labelmet,"1", kf)
+        DATA17numMETmm =  treeDA17.getTH1F(lumi, "DATA17nummmvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.mm]), '', labelmet,"1", kf)
+        DATA17denMETSF =  treeDA17.getTH1F(lumi, "DATA17denSFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.SF]), '', labelmet,"1", kf)
+        DATA17numMETSF =  treeDA17.getTH1F(lumi, "DATA17numSFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.SF]), '', labelmet,"1", kf)
+        DATA17denMETOF =  treeDA17.getTH1F(lumi, "DATA17denOFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labelmet,"1", kf)
+        DATA17numMETOF =  treeDA17.getTH1F(lumi, "DATA17numOFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelmet,"1", kf)
         DATA17denmt2ee =  treeDA17.getTH1F(lumi, "DATA17deneevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmt2,"1", kf)
         DATA17nummt2ee =  treeDA17.getTH1F(lumi, "DATA17numeevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmt2,"1", kf)
         DATA17denmt2mm =  treeDA17.getTH1F(lumi, "DATA17denmmvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.mm]), '', labelmt2,"1", kf)
@@ -623,14 +629,14 @@ if __name__ == '__main__':
         MCdeneta2OF =  treeMC.getTH1F(lumi, "MCdeneta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labeleta2,"1", kf)
         MCnumeta2OF =  treeMC.getTH1F(lumi, "MCnumeta2OF", "Lep2_eta_Edge", etabins, 1, 1,cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labeleta2,"1", kf)
                                                                                                                                                                                        
-        MCdenMETee =   treeMC.getTH1F(lumi, "MCdeneevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmet,"1", kf)
-        MCnumMETee =   treeMC.getTH1F(lumi, "MCnumeevalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmet,"1", kf)
-        MCdenMETmm =   treeMC.getTH1F(lumi, "MCdenmmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.mm]), '', labelmet,"1", kf)
-        MCnumMETmm =   treeMC.getTH1F(lumi, "MCnummmvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.mm]), '', labelmet,"1", kf)
-        MCdenMETSF =   treeMC.getTH1F(lumi, "MCdenSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.SF]), '', labelmet,"1", kf)
-        MCnumMETSF =   treeMC.getTH1F(lumi, "MCnumSFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.SF]), '', labelmet,"1", kf)
-        MCdenMETOF =   treeMC.getTH1F(lumi, "MCdenOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labelmet,"1", kf)
-        MCnumMETOF =   treeMC.getTH1F(lumi, "MCnumOFvalue", "met_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelmet,"1", kf)
+        MCdenMETee =   treeMC.getTH1F(lumi, "MCdeneevalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmet,"1", kf)
+        MCnumMETee =   treeMC.getTH1F(lumi, "MCnumeevalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmet,"1", kf)
+        MCdenMETmm =   treeMC.getTH1F(lumi, "MCdenmmvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.mm]), '', labelmet,"1", kf)
+        MCnumMETmm =   treeMC.getTH1F(lumi, "MCnummmvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.mm]), '', labelmet,"1", kf)
+        MCdenMETSF =   treeMC.getTH1F(lumi, "MCdenSFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.SF]), '', labelmet,"1", kf)
+        MCnumMETSF =   treeMC.getTH1F(lumi, "MCnumSFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.SF]), '', labelmet,"1", kf)
+        MCdenMETOF =   treeMC.getTH1F(lumi, "MCdenOFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.OF]), '', labelmet,"1", kf)
+        MCnumMETOF =   treeMC.getTH1F(lumi, "MCnumOFvalue", "MET_pt_Edge", metbins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelmet,"1", kf)
         
         MCdenmt2ee =   treeMC.getTH1F(lumi, "MCdeneevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.den17,  cuts.ee]), '', labelmt2,"1", kf)
         MCnummt2ee =   treeMC.getTH1F(lumi, "MCnumeevalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.ee]), '', labelmt2,"1", kf)
@@ -642,34 +648,34 @@ if __name__ == '__main__':
         MCnummt2OF =   treeMC.getTH1F(lumi, "MCnumOFvalue", "mt2_Edge", mt2bins, 1, 1, cuts.AddList([specialcut, cuts.num17,  cuts.OF]), '', labelmt2,"1", kf)  
         
         
-        DATA16effMETee =  getTriggerEffs(DATA16numMETee,  DATA16denMETee,  "data")
-        DATA16effMETmm =  getTriggerEffs(DATA16numMETmm,  DATA16denMETmm,  "data")    
-        DATA16effMETSF =  getTriggerEffs(DATA16numMETSF,  DATA16denMETSF,  "data")    
-        DATA16effMETOF =  getTriggerEffs(DATA16numMETOF,  DATA16denMETOF,  "data")
-        DATA16effmt2ee =  getTriggerEffs(DATA16nummt2ee,  DATA16denmt2ee,  "data")
-        DATA16effmt2mm =  getTriggerEffs(DATA16nummt2mm,  DATA16denmt2mm,  "data")
-        DATA16effmt2SF =  getTriggerEffs(DATA16nummt2SF,  DATA16denmt2SF,  "data")
-        DATA16effmt2OF =  getTriggerEffs(DATA16nummt2OF,  DATA16denmt2OF,  "data")
-        DATA16effMllee =  getTriggerEffs(DATA16numMllee,  DATA16denMllee,  "data")
-        DATA16effMllmm =  getTriggerEffs(DATA16numMllmm,  DATA16denMllmm,  "data")
-        DATA16effMllSF =  getTriggerEffs(DATA16numMllSF,  DATA16denMllSF,  "data")
-        DATA16effMllOF =  getTriggerEffs(DATA16numMllOF,  DATA16denMllOF,  "data")
-        DATA16effpt1ee =  getTriggerEffs(DATA16numpt1ee,  DATA16denpt1ee,  "data")
-        DATA16effpt1mm =  getTriggerEffs(DATA16numpt1mm,  DATA16denpt1mm,  "data")
-        DATA16effpt1SF =  getTriggerEffs(DATA16numpt1SF,  DATA16denpt1SF,  "data")
-        DATA16effpt1OF =  getTriggerEffs(DATA16numpt1OF,  DATA16denpt1OF,  "data")
-        DATA16effpt2ee =  getTriggerEffs(DATA16numpt2ee,  DATA16denpt2ee,  "data")
-        DATA16effpt2mm =  getTriggerEffs(DATA16numpt2mm,  DATA16denpt2mm,  "data")
-        DATA16effpt2SF =  getTriggerEffs(DATA16numpt2SF,  DATA16denpt2SF,  "data")
-        DATA16effpt2OF =  getTriggerEffs(DATA16numpt2OF,  DATA16denpt2OF,  "data")
-        DATA16effeta1ee = getTriggerEffs(DATA16numeta1ee, DATA16deneta1ee, "data")
-        DATA16effeta1mm = getTriggerEffs(DATA16numeta1mm, DATA16deneta1mm, "data")
-        DATA16effeta1SF = getTriggerEffs(DATA16numeta1SF, DATA16deneta1SF, "data")
-        DATA16effeta1OF = getTriggerEffs(DATA16numeta1OF, DATA16deneta1OF, "data")
-        DATA16effeta2ee = getTriggerEffs(DATA16numeta2ee, DATA16deneta2ee, "data")
-        DATA16effeta2mm = getTriggerEffs(DATA16numeta2mm, DATA16deneta2mm, "data")
-        DATA16effeta2SF = getTriggerEffs(DATA16numeta2SF, DATA16deneta2SF, "data")
-        DATA16effeta2OF = getTriggerEffs(DATA16numeta2OF, DATA16deneta2OF, "data")
+        # DATA16effMETee =  getTriggerEffs(DATA16numMETee,  DATA16denMETee,  "data")
+        # DATA16effMETmm =  getTriggerEffs(DATA16numMETmm,  DATA16denMETmm,  "data")    
+        # DATA16effMETSF =  getTriggerEffs(DATA16numMETSF,  DATA16denMETSF,  "data")    
+        # DATA16effMETOF =  getTriggerEffs(DATA16numMETOF,  DATA16denMETOF,  "data")
+        # DATA16effmt2ee =  getTriggerEffs(DATA16nummt2ee,  DATA16denmt2ee,  "data")
+        # DATA16effmt2mm =  getTriggerEffs(DATA16nummt2mm,  DATA16denmt2mm,  "data")
+        # DATA16effmt2SF =  getTriggerEffs(DATA16nummt2SF,  DATA16denmt2SF,  "data")
+        # DATA16effmt2OF =  getTriggerEffs(DATA16nummt2OF,  DATA16denmt2OF,  "data")
+        # DATA16effMllee =  getTriggerEffs(DATA16numMllee,  DATA16denMllee,  "data")
+        # DATA16effMllmm =  getTriggerEffs(DATA16numMllmm,  DATA16denMllmm,  "data")
+        # DATA16effMllSF =  getTriggerEffs(DATA16numMllSF,  DATA16denMllSF,  "data")
+        # DATA16effMllOF =  getTriggerEffs(DATA16numMllOF,  DATA16denMllOF,  "data")
+        # DATA16effpt1ee =  getTriggerEffs(DATA16numpt1ee,  DATA16denpt1ee,  "data")
+        # DATA16effpt1mm =  getTriggerEffs(DATA16numpt1mm,  DATA16denpt1mm,  "data")
+        # DATA16effpt1SF =  getTriggerEffs(DATA16numpt1SF,  DATA16denpt1SF,  "data")
+        # DATA16effpt1OF =  getTriggerEffs(DATA16numpt1OF,  DATA16denpt1OF,  "data")
+        # DATA16effpt2ee =  getTriggerEffs(DATA16numpt2ee,  DATA16denpt2ee,  "data")
+        # DATA16effpt2mm =  getTriggerEffs(DATA16numpt2mm,  DATA16denpt2mm,  "data")
+        # DATA16effpt2SF =  getTriggerEffs(DATA16numpt2SF,  DATA16denpt2SF,  "data")
+        # DATA16effpt2OF =  getTriggerEffs(DATA16numpt2OF,  DATA16denpt2OF,  "data")
+        # DATA16effeta1ee = getTriggerEffs(DATA16numeta1ee, DATA16deneta1ee, "data")
+        # DATA16effeta1mm = getTriggerEffs(DATA16numeta1mm, DATA16deneta1mm, "data")
+        # DATA16effeta1SF = getTriggerEffs(DATA16numeta1SF, DATA16deneta1SF, "data")
+        # DATA16effeta1OF = getTriggerEffs(DATA16numeta1OF, DATA16deneta1OF, "data")
+        # DATA16effeta2ee = getTriggerEffs(DATA16numeta2ee, DATA16deneta2ee, "data")
+        # DATA16effeta2mm = getTriggerEffs(DATA16numeta2mm, DATA16deneta2mm, "data")
+        # DATA16effeta2SF = getTriggerEffs(DATA16numeta2SF, DATA16deneta2SF, "data")
+        # DATA16effeta2OF = getTriggerEffs(DATA16numeta2OF, DATA16deneta2OF, "data")
        
         
         DATA17effMETee =  getTriggerEffs(DATA17numMETee,  DATA17denMETee,  "data")
@@ -730,13 +736,13 @@ if __name__ == '__main__':
         MCeffeta2SF = getTriggerEffs(MCnumeta2SF, MCdeneta2SF, "MC")
         MCeffeta2OF = getTriggerEffs(MCnumeta2OF, MCdeneta2OF, "MC")
         
-        DATA16RTMET  = RT(DATA16numMETSF,  DATA16effMETee,  DATA16effMETmm,  DATA16effMETOF)
-        DATA16RTmt2  = RT(DATA16nummt2SF,  DATA16effmt2ee,  DATA16effmt2mm,  DATA16effmt2OF)
-        DATA16RTMll  = RT(DATA16numMllSF,  DATA16effMllee,  DATA16effMllmm,  DATA16effMllOF)
-        DATA16RTpt1  = RT(DATA16numpt1SF,  DATA16effpt1ee,  DATA16effpt1mm,  DATA16effpt1OF)
-        DATA16RTpt2  = RT(DATA16numpt2SF,  DATA16effpt2ee,  DATA16effpt2mm,  DATA16effpt2OF)
-        DATA16RTeta1 = RT(DATA16numeta1SF, DATA16effeta1ee, DATA16effeta1mm, DATA16effeta1OF)
-        DATA16RTeta2 = RT(DATA16numeta2SF, DATA16effeta2ee, DATA16effeta2mm, DATA16effeta2OF)
+        # DATA16RTMET  = RT(DATA16numMETSF,  DATA16effMETee,  DATA16effMETmm,  DATA16effMETOF)
+        # DATA16RTmt2  = RT(DATA16nummt2SF,  DATA16effmt2ee,  DATA16effmt2mm,  DATA16effmt2OF)
+        # DATA16RTMll  = RT(DATA16numMllSF,  DATA16effMllee,  DATA16effMllmm,  DATA16effMllOF)
+        # DATA16RTpt1  = RT(DATA16numpt1SF,  DATA16effpt1ee,  DATA16effpt1mm,  DATA16effpt1OF)
+        # DATA16RTpt2  = RT(DATA16numpt2SF,  DATA16effpt2ee,  DATA16effpt2mm,  DATA16effpt2OF)
+        # DATA16RTeta1 = RT(DATA16numeta1SF, DATA16effeta1ee, DATA16effeta1mm, DATA16effeta1OF)
+        # DATA16RTeta2 = RT(DATA16numeta2SF, DATA16effeta2ee, DATA16effeta2mm, DATA16effeta2OF)
        
         DATA17RTMET  = RT(DATA17numMETSF,  DATA17effMETee,  DATA17effMETmm,  DATA17effMETOF)
         DATA17RTmt2  = RT(DATA17nummt2SF,  DATA17effmt2ee,  DATA17effmt2mm,  DATA17effmt2OF)
@@ -759,146 +765,147 @@ if __name__ == '__main__':
         h_auxrtMll.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrtMll.GetXaxis().SetRangeUser(0, 250)
         h_auxrtMll.GetXaxis().SetTitle(labelx)
-        effRTMll.addLine(h_auxrtMll.GetXaxis().GetXmin(), da16rt, h_auxrtMll.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTMll.addLine(h_auxrtMll.GetXaxis().GetXmin(), da16rt, h_auxrtMll.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTMll.addLine(h_auxrtMll.GetXaxis().GetXmin(), da17rt, h_auxrtMll.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTMll.addHisto(h_auxrtMll, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTMll.addHisto(DATA16RTMll, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTMll.addHisto(DATA16RTMll, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
         effRTMll.addHisto(DATA17RTMll, 'PE,SAME', 'R_{T} data 2017', 'PL', r.kBlue , 1, 0)
         effRTMll.addHisto(MCRTMll, 'PE,SAME', 'R_{T} MC', 'PL', r.kGreen , 1, 0)
-        effRTMll.addBand(h_auxrtMll.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtMll.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTMll.addBand(h_auxrtMll.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtMll.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTMll.addBand(h_auxrtMll.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtMll.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTMll.addLatex (0.55, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTMll.addLatex (0.55, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTMll.addLatex (0.55, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTMll.addLatex (0.55, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
-        effRTMll.save(1, 1, 0, lumi, 0.8, 1.2)                                                            
+        effRTMll.save(1, 1, 0, lumi, 'm_{ll} (GeV)')                                                            
         
         effRTMET = Canvas.Canvas('rt/%s/plot_rt_met_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrtMET = r.TH1F("h_auxRTMET", "", 1, 0, 200)
         h_auxrtMET.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrtMET.GetXaxis().SetRangeUser(0, 150)
         h_auxrtMET.GetXaxis().SetTitle(labelmet)
-        effRTMET.addLine(h_auxrtMET.GetXaxis().GetXmin(), da16rt, h_auxrtMET.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTMET.addLine(h_auxrtMET.GetXaxis().GetXmin(), da16rt, h_auxrtMET.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTMET.addLine(h_auxrtMET.GetXaxis().GetXmin(), da17rt, h_auxrtMET.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTMET.addHisto(h_auxrtMET, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTMET.addHisto(DATA16RTMET, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTMET.addHisto(DATA16RTMET, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
         effRTMET.addHisto(DATA17RTMET, 'PE,SAME', 'R_{T} data 2017', 'PL', r.kBlue , 1, 0)
         effRTMET.addHisto(MCRTMET, 'PE,SAME', 'R_{T} MC', 'PL', r.kGreen , 1, 0)
-        effRTMET.addBand(h_auxrtMET.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtMET.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTMET.addBand(h_auxrtMET.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtMET.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTMET.addBand(h_auxrtMET.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtMET.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTMET.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTMET.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTMET.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTMET.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
-        effRTMET.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                  
-        
+        effRTMET.save(1, 1, 0, lumi, 'MET (GeV)')                                                            
+
+
         
         effRTmt2 = Canvas.Canvas('rt/%s/plot_rt_mt2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrtmt2 = r.TH1F("h_auxRTMET", "", 1, 0, 160)
         h_auxrtmt2.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrtmt2.GetXaxis().SetRangeUser(0, 160)
         h_auxrtmt2.GetXaxis().SetTitle(labelmt2)
-        effRTmt2.addLine(h_auxrtmt2.GetXaxis().GetXmin(), da16rt, h_auxrtmt2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTmt2.addLine(h_auxrtmt2.GetXaxis().GetXmin(), da16rt, h_auxrtmt2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTmt2.addLine(h_auxrtmt2.GetXaxis().GetXmin(), da17rt, h_auxrtmt2.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTmt2.addHisto(h_auxrtmt2, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTmt2.addHisto(DATA16RTmt2, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTmt2.addHisto(DATA16RTmt2, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
         effRTmt2.addHisto(DATA17RTmt2, 'PE,SAME', 'R_{T} data 2017', 'PL', r.kBlue , 1, 0)
         effRTmt2.addHisto(MCRTmt2, 'PE,SAME', 'R_{T} MC', 'PL', r.kGreen , 1, 0)
-        effRTmt2.addBand(h_auxrtmt2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtmt2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTmt2.addBand(h_auxrtmt2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtmt2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTmt2.addBand(h_auxrtmt2.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtmt2.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTmt2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTmt2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTmt2.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTmt2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
-        effRTmt2.save(1, 1, 0, lumi, 0.8, 1.2)                                                                                                 
+        effRTmt2.save(1, 1, 0, lumi, 'm_{T2} (GeV)')
 
         effRTpt1 = Canvas.Canvas('rt/%s/plot_rt_pt1_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrtpt1 = r.TH1F("h_auxRTpt1", "", 1, 20, 150)
         h_auxrtpt1.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrtpt1.GetXaxis().SetRangeUser(20, 150)
         h_auxrtpt1.GetXaxis().SetTitle(labelpt1)
-        effRTpt1.addLine(h_auxrtpt1.GetXaxis().GetXmin(), da16rt, h_auxrtpt1.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTpt1.addLine(h_auxrtpt1.GetXaxis().GetXmin(), da16rt, h_auxrtpt1.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTpt1.addLine(h_auxrtpt1.GetXaxis().GetXmin(), da17rt, h_auxrtpt1.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTpt1.addHisto(h_auxrtpt1, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTpt1.addHisto(DATA16RTpt1, 'PE,SAME', 'RT data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTpt1.addHisto(DATA16RTpt1, 'PE,SAME', 'RT data 2016', 'PL', r.kBlack , 1, 0)
         effRTpt1.addHisto(DATA17RTpt1, 'PE,SAME', 'RT data 2017', 'PL', r.kBlue , 1, 0)
         effRTpt1.addHisto(MCRTpt1, 'PE,SAME', 'RT MC', 'PL', r.kGreen , 1, 0)
-        effRTpt1.addBand(h_auxrtpt1.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtpt1.GetXaxis().GetXmax(), da16rt+dasystrt, r.kOrange+6, 0.2)
-        effRTpt1.addBand(h_auxrtpt1.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtpt1.GetXaxis().GetXmax(), da17rt+dasystrt, r.kPink+6, 0.2)
-        effRTpt1.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTpt1.addBand(h_auxrtpt1.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtpt1.GetXaxis().GetXmax(), da16rt+dasystrt, r.kOrange+6, 0.2)
+        #effRTpt1.addBand(h_auxrtpt1.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtpt1.GetXaxis().GetXmax(), da17rt+dasystrt, r.kPink+6, 0.2)
+        #effRTpt1.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTpt1.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTpt1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
-        effRTpt1.save(1, 1, 0, lumi, 0.8, 1.2)
+        effRTpt1.save(1, 1, 0, lumi, 'p_{T}^{leading lepton} (GeV)')
 
         effRTpt2 = Canvas.Canvas('rt/%s/plot_rt_pt2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrtpt2 = r.TH1F("h_auxRTpt2", "", 1, 20, 150)
         h_auxrtpt2.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrtpt2.GetXaxis().SetRangeUser(20, 150)
         h_auxrtpt2.GetXaxis().SetTitle(labelpt2)
-        effRTpt2.addLine(h_auxrtpt2.GetXaxis().GetXmin(), da16rt, h_auxrtpt2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTpt2.addLine(h_auxrtpt2.GetXaxis().GetXmin(), da16rt, h_auxrtpt2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTpt2.addLine(h_auxrtpt2.GetXaxis().GetXmin(), da17rt, h_auxrtpt2.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTpt2.addHisto(h_auxrtpt2, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTpt2.addHisto(DATA16RTpt2, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTpt2.addHisto(DATA16RTpt2, 'PE,SAME', 'R_{T} data 2016', 'PL', r.kBlack , 1, 0)
         effRTpt2.addHisto(DATA17RTpt2, 'PE,SAME', 'R_{T} data 2017', 'PL', r.kBlue , 1, 0)
         effRTpt2.addHisto(MCRTpt2, 'PE,SAME', 'R_{T} MC', 'PL', r.kGreen , 1, 0)
-        effRTpt2.addBand(h_auxrtpt2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtpt2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTpt2.addBand(h_auxrtpt2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrtpt2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTpt2.addBand(h_auxrtpt2.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrtpt2.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTpt2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTpt2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTpt2.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTpt2.addLatex (0.6, 0.2, 'Mean R_{T} MC: %.3f '%(mcrt))
-        effRTpt2.save(1, 1, 0, lumi, 0.8, 1.2)
+        effRTpt2.save(1, 1, 0, lumi,  'p_{T}^{subleading lepton} (GeV)')
 
         effRTeta1 = Canvas.Canvas('rt/%s/plot_rt_eta1_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrteta1 = r.TH1F("h_auxRTeta1", "", 1, -2.4, 2.4)
         h_auxrteta1.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrteta1.GetXaxis().SetRangeUser(-2.4, 2.4)
         h_auxrteta1.GetXaxis().SetTitle(labeleta1)
-        effRTeta1.addLine(h_auxrteta1.GetXaxis().GetXmin(), da16rt, h_auxrteta1.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTeta1.addLine(h_auxrteta1.GetXaxis().GetXmin(), da16rt, h_auxrteta1.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTeta1.addLine(h_auxrteta1.GetXaxis().GetXmin(), da17rt, h_auxrteta1.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTeta1.addHisto(h_auxrteta1, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTeta1.addHisto(DATA16RTeta1, 'PE,SAME', 'RT data 2016', 'PL', r.kBlack , 1, 0)
+        #effRTeta1.addHisto(DATA16RTeta1, 'PE,SAME', 'RT data 2016', 'PL', r.kBlack , 1, 0)
         effRTeta1.addHisto(DATA17RTeta1, 'PE,SAME', 'RT data 2017', 'PL', r.kBlue , 1, 0)
         effRTeta1.addHisto(MCRTeta1, 'PE,SAME', 'RT MC', 'PL', r.kGreen , 1, 0)
-        effRTeta1.addBand(h_auxrteta1.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrteta1.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTeta1.addBand(h_auxrteta1.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrteta1.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTeta1.addBand(h_auxrteta1.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrteta1.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTeta1.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTeta1.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTeta1.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTeta1.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
-        effRTeta1.save(1, 1, 0, lumi, 0.8, 1.2)
+        effRTeta1.save(1, 1, 0, lumi, '#eta^{subleading lepton} (GeV)')
 
         effRTeta2 = Canvas.Canvas('rt/%s/plot_rt_eta2_'%(lumi_str), 'png,pdf', 0.6, 0.3, 0.8, 0.5)
         h_auxrteta2 = r.TH1F("h_auxRTeta2", "", 1, -2.4, 2.4)
         h_auxrteta2.GetYaxis().SetRangeUser(0.8, 1.2)
         h_auxrteta2.GetXaxis().SetRangeUser(-2.4, 2.4)
         h_auxrteta2.GetXaxis().SetTitle(labeleta2)
-        effRTeta2.addLine(h_auxrteta2.GetXaxis().GetXmin(), da16rt, h_auxrteta2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
+        #effRTeta2.addLine(h_auxrteta2.GetXaxis().GetXmin(), da16rt, h_auxrteta2.GetXaxis().GetXmax(), da16rt ,r.kBlack)
         effRTeta2.addLine(h_auxrteta2.GetXaxis().GetXmin(), da17rt, h_auxrteta2.GetXaxis().GetXmax(), da17rt ,r.kBlue)
         effRTeta2.addHisto(h_auxrteta2, 'h', '', 'R_{T}', r.kRed+1, 1, 0)
-        effRTeta2.addHisto(DATA16RTeta2, 'PE,SAME', 'RT data 2016' , 'PL', r.kBlack , 1, 0)
+        #effRTeta2.addHisto(DATA16RTeta2, 'PE,SAME', 'RT data 2016' , 'PL', r.kBlack , 1, 0)
         effRTeta2.addHisto(DATA17RTeta2, 'PE,SAME', 'RT data 2017' , 'PL', r.kBlue , 1, 0)
         effRTeta2.addHisto(MCRTeta2, 'PE,SAME', 'RT MC', 'PL', r.kGreen , 1, 0)
-        effRTeta2.addBand(h_auxrteta2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrteta2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
+        #effRTeta2.addBand(h_auxrteta2.GetXaxis().GetXmin(), da16rt-da16systrt, h_auxrteta2.GetXaxis().GetXmax(), da16rt+da16systrt, r.kOrange+6, 0.2)
         effRTeta2.addBand(h_auxrteta2.GetXaxis().GetXmin(), da17rt-da17systrt, h_auxrteta2.GetXaxis().GetXmax(), da17rt+da17systrt, r.kPink+6, 0.2)
-        effRTeta2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
+        #effRTeta2.addLatex (0.6, 0.3, 'Mean R_{T} data 2016: %.3f '%(da16rt))
         effRTeta2.addLatex (0.6, 0.25, 'Mean R_{T} data 2017: %.3f '%(da17rt))
         effRTeta2.addLatex (0.6, 0.2, 'Mean R_{T} MC  : %.3f '%(mcrt))
-        effRTeta2.save(1, 1, 0, lumi, 0.8, 1.2)
+        effRTeta2.save(1, 1, 0, lumi, '#eta^{subleading lepton}')
    
         effMll = Canvas.Canvas('rt/%s/plot_eff_mll_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxMll = r.TH1F("h_auxMll", "", 1, 0, 250)
-        h_auxMll.GetYaxis().SetRangeUser(0, 2)
+        h_auxMll.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxMll.GetXaxis().SetRangeUser(0, 250)
         h_auxMll.GetXaxis().SetTitle(labelx)
         effMll.addHisto(h_auxMll, 'h', '', '', r.kRed+1, 1, 0)
-        DATA16effMllee.SetMarkerStyle(kOpenCircle)
-        DATA16effMllmm.SetMarkerStyle(kOpenCircle)
-        DATA16effMllSF.SetMarkerStyle(kOpenCircle)
-        DATA16effMllOF.SetMarkerStyle(kOpenCircle)
-        DATA17effMllee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effMllmm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effMllSF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effMllOF.SetMarkerStyle(kFullTriangleUp)
-        effMll.addHisto(DATA16effMllee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effMll.addHisto(DATA16effMllmm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effMll.addHisto(DATA16effMllSF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effMll.addHisto(DATA16effMllOF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # DATA16effMllee.SetMarkerStyle(kOpenCircle)
+        # DATA16effMllmm.SetMarkerStyle(kOpenCircle)
+        # DATA16effMllSF.SetMarkerStyle(kOpenCircle)
+        # DATA16effMllOF.SetMarkerStyle(kOpenCircle)
+        DATA17effMllee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effMllmm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effMllSF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effMllOF.SetMarkerStyle(r.kFullTriangleUp)
+        # effMll.addHisto(DATA16effMllee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effMll.addHisto(DATA16effMllmm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effMll.addHisto(DATA16effMllSF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effMll.addHisto(DATA16effMllOF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effMll.addHisto(DATA17effMllee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effMll.addHisto(DATA17effMllmm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effMll.addHisto(DATA17effMllSF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
@@ -906,129 +913,129 @@ if __name__ == '__main__':
         
         
         
-        effMll.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
+        effMll.save(1, 1, 0, lumi, 'm_{ll} (GeV)')
 
         effmt2 = Canvas.Canvas('rt/%s/plot_eff_mt2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxmt2 = r.TH1F("h_auxmt2", "", 1, 0, 160)
-        h_auxmt2.GetYaxis().SetRangeUser(0, 2)
+        h_auxmt2.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxmt2.GetXaxis().SetRangeUser(0, 160)
         h_auxmt2.GetXaxis().SetTitle(labelx)
         effmt2.addHisto(h_auxmt2, 'h', '', '', r.kRed+1, 1, 0)
-        DATA16effmt2ee.SetMarkerStyle(kOpenCircle)
-        DATA16effmt2mm.SetMarkerStyle(kOpenCircle)
-        DATA16effmt2SF.SetMarkerStyle(kOpenCircle)
-        DATA16effmt2OF.SetMarkerStyle(kOpenCircle)
-        DATA17effmt2ee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effmt2mm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effmt2SF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effmt2OF.SetMarkerStyle(kFullTriangleUp)
-        effmt2.addHisto(DATA16effmt2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effmt2.addHisto(DATA16effmt2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effmt2.addHisto(DATA16effmt2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effmt2.addHisto(DATA16effmt2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # DATA16effmt2ee.SetMarkerStyle(kOpenCircle)
+        # DATA16effmt2mm.SetMarkerStyle(kOpenCircle)
+        # DATA16effmt2SF.SetMarkerStyle(kOpenCircle)
+        #DATA16effmt2OF.SetMarkerStyle(kOpenCircle)
+        DATA17effmt2ee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effmt2mm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effmt2SF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effmt2OF.SetMarkerStyle(r.kFullTriangleUp)
+        # effmt2.addHisto(DATA16effmt2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effmt2.addHisto(DATA16effmt2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effmt2.addHisto(DATA16effmt2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effmt2.addHisto(DATA16effmt2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effmt2.addHisto(DATA17effmt2ee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effmt2.addHisto(DATA17effmt2mm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effmt2.addHisto(DATA17effmt2SF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
         effmt2.addHisto(DATA17effmt2OF, 'PE,SAME', '2017 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
-        effmt2.save(1, 1, 0, lumi, 0.2, 1.8)                                                                    
+        effmt2.save(1, 1, 0, lumi, 'm_{T2} (GeV)')
 
         effpt1 = Canvas.Canvas('rt/%s/plot_eff_pt1_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxpt1 = r.TH1F("h_auxpt1", "", 1, 0, 150)
-        h_auxpt1.GetYaxis().SetRangeUser(0, 2)
+        h_auxpt1.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxpt1.GetXaxis().SetRangeUser(0, 150)
         h_auxpt1.GetXaxis().SetTitle(labelpt1)
         effpt1.addHisto(h_auxpt1, 'h', '', '', r.kRed+1, 1, 0)
-        DATA16effpt1ee.SetMarkerStyle(kOpenCircle)
-        DATA16effpt1mm.SetMarkerStyle(kOpenCircle)
-        DATA16effpt1SF.SetMarkerStyle(kOpenCircle)
-        DATA16effpt1OF.SetMarkerStyle(kOpenCircle)
-        DATA17effpt1ee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt1mm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt1SF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt1OF.SetMarkerStyle(kFullTriangleUp)
-        effpt1.addHisto(DATA16effpt1ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effpt1.addHisto(DATA16effpt1mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effpt1.addHisto(DATA16effpt1SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effpt1.addHisto(DATA16effpt1OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # DATA16effpt1ee.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt1mm.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt1SF.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt1OF.SetMarkerStyle(kOpenCircle)
+        DATA17effpt1ee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt1mm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt1SF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt1OF.SetMarkerStyle(r.kFullTriangleUp)
+        # effpt1.addHisto(DATA16effpt1ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effpt1.addHisto(DATA16effpt1mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effpt1.addHisto(DATA16effpt1SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effpt1.addHisto(DATA16effpt1OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effpt1.addHisto(DATA17effpt1ee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effpt1.addHisto(DATA17effpt1mm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effpt1.addHisto(DATA17effpt1SF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
         effpt1.addHisto(DATA17effpt1OF, 'PE,SAME', '2017 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
-        effpt1.save(1, 1, 0, lumi, 0.2, 1.8)
+        effpt1.save(1, 1, 0, lumi, 'p_{T}^{Leading lepton} (GeV)')
 
         effpt2 = Canvas.Canvas('rt/%s/plot_eff_pt2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxpt2 = r.TH1F("h_auxpt2", "", 1, 0, 150)
-        h_auxpt2.GetYaxis().SetRangeUser(0, 2)
+        h_auxpt2.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxpt2.GetXaxis().SetRangeUser(0, 150)
         h_auxpt2.GetXaxis().SetTitle(labelpt2)
-        DATA16effpt2ee.SetMarkerStyle(kOpenCircle)
-        DATA16effpt2mm.SetMarkerStyle(kOpenCircle)
-        DATA16effpt2SF.SetMarkerStyle(kOpenCircle)
-        DATA16effpt2OF.SetMarkerStyle(kOpenCircle)
-        DATA17effpt2ee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt2mm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt2SF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effpt2OF.SetMarkerStyle(kFullTriangleUp)
+        # DATA16effpt2ee.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt2mm.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt2SF.SetMarkerStyle(kOpenCircle)
+        # DATA16effpt2OF.SetMarkerStyle(kOpenCircle)
+        DATA17effpt2ee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt2mm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt2SF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effpt2OF.SetMarkerStyle(r.kFullTriangleUp)
         effpt2.addHisto(h_auxpt2, 'h', '', '', r.kRed+1, 1, 0)
-        effpt2.addHisto(DATA16effpt2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effpt2.addHisto(DATA16effpt2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effpt2.addHisto(DATA16effpt2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effpt2.addHisto(DATA16effpt2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # effpt2.addHisto(DATA16effpt2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effpt2.addHisto(DATA16effpt2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effpt2.addHisto(DATA16effpt2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effpt2.addHisto(DATA16effpt2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effpt2.addHisto(DATA17effpt2ee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effpt2.addHisto(DATA17effpt2mm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effpt2.addHisto(DATA17effpt2SF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
         effpt2.addHisto(DATA17effpt2OF, 'PE,SAME', '2017 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
-        effpt2.save(1, 1, 0, lumi, 0.2, 1.8)
+        effpt2.save(1, 1, 0, lumi, 'p_{T}^{Subleading lepton} (GeV)')
  
         effeta1 = Canvas.Canvas('rt/%s/plot_eff_eta1_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxeta1 = r.TH1F("h_auxeta1", "", 1, -2.4, 2.4)
-        h_auxeta1.GetYaxis().SetRangeUser(0, 2)
+        h_auxeta1.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxeta1.GetXaxis().SetRangeUser(-2.4, 2.4)
         h_auxeta1.GetXaxis().SetTitle(labeleta1)
         effeta1.addHisto(h_auxeta1, 'h', '', '', r.kRed+1, 1, 0)
-        DATA16effeta1ee.SetMarkerStyle(kOpenCircle)
-        DATA16effeta1mm.SetMarkerStyle(kOpenCircle)
-        DATA16effeta1SF.SetMarkerStyle(kOpenCircle)
-        DATA16effeta1OF.SetMarkerStyle(kOpenCircle)
-        DATA17effeta1ee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta1mm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta1SF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta1OF.SetMarkerStyle(kFullTriangleUp)
-        effeta1.addHisto(DATA16effeta1ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effeta1.addHisto(DATA16effeta1mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effeta1.addHisto(DATA16effeta1SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effeta1.addHisto(DATA16effeta1OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # DATA16effeta1ee.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta1mm.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta1SF.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta1OF.SetMarkerStyle(kOpenCircle)
+        DATA17effeta1ee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta1mm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta1SF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta1OF.SetMarkerStyle(r.kFullTriangleUp)
+        # effeta1.addHisto(DATA16effeta1ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effeta1.addHisto(DATA16effeta1mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effeta1.addHisto(DATA16effeta1SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effeta1.addHisto(DATA16effeta1OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effeta1.addHisto(DATA17effeta1ee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effeta1.addHisto(DATA17effeta1mm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effeta1.addHisto(DATA17effeta1SF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
         effeta1.addHisto(DATA17effeta1OF, 'PE,SAME', '2017 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
-        effeta1.save(1, 1, 0, lumi, 0.2, 1.8)
+        effeta1.save(1, 1, 0, lumi, '#eta^{Leading lepton} (GeV)')
 
         effeta2 = Canvas.Canvas('rt/%s/plot_eff_eta2_'%(lumi_str), 'png,pdf', 0.4, 0.2, 0.65, 0.4)
         h_auxeta2 = r.TH1F("h_auxeta2", "", 1, -2.4, 2.4)
-        h_auxeta2.GetYaxis().SetRangeUser(0, 2)
+        h_auxeta2.GetYaxis().SetRangeUser(0.6, 1.1)
         h_auxeta2.GetXaxis().SetRangeUser(-2.4, 2.4)
-        h_auxeta2.GetXaxis().SetTitle(labeleta2)
+        #h_auxeta2.GetXaxis().SetTitle(labeleta2)
         effeta2.addHisto(h_auxeta2, 'h', '', '', r.kRed+1, 1, 0)
-        DATA16effeta2ee.SetMarkerStyle(kOpenCircle)
-        DATA16effeta2mm.SetMarkerStyle(kOpenCircle)
-        DATA16effeta2SF.SetMarkerStyle(kOpenCircle)
-        DATA16effeta2OF.SetMarkerStyle(kOpenCircle)
-        DATA17effeta2ee.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta2mm.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta2SF.SetMarkerStyle(kFullTriangleUp)
-        DATA17effeta2OF.SetMarkerStyle(kFullTriangleUp)
-        effeta2.addHisto(DATA16effeta2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
-        effeta2.addHisto(DATA16effeta2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
-        effeta2.addHisto(DATA16effeta2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
-        effeta2.addHisto(DATA16effeta2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
+        # DATA16effeta2ee.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta2mm.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta2SF.SetMarkerStyle(kOpenCircle)
+        # DATA16effeta2OF.SetMarkerStyle(kOpenCircle)
+        DATA17effeta2ee.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta2mm.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta2SF.SetMarkerStyle(r.kFullTriangleUp)
+        DATA17effeta2OF.SetMarkerStyle(r.kFullTriangleUp)
+        # effeta2.addHisto(DATA16effeta2ee, 'PE,SAME', '2016 Double Electron', 'PL', r.kRed+1 , 1, 0)
+        # effeta2.addHisto(DATA16effeta2mm, 'PE,SAME', '2016 Double Muon', 'PL', r.kBlue+1 , 1, 0)
+        # effeta2.addHisto(DATA16effeta2SF, 'PE,SAME', '2016 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
+        # effeta2.addHisto(DATA16effeta2OF, 'PE,SAME', '2016 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
         effeta2.addHisto(DATA17effeta2ee, 'PE,SAME', '2017 Double Electron', 'PL', r.kRed+1 , 1, 0)
         effeta2.addHisto(DATA17effeta2mm, 'PE,SAME', '2017 Double Muon', 'PL', r.kBlue+1 , 1, 0)
         effeta2.addHisto(DATA17effeta2SF, 'PE,SAME', '2017 Same Flavor', 'PL', r.kGreen+1 , 1, 0)
         effeta2.addHisto(DATA17effeta2OF, 'PE,SAME', '2017 Opposite Flavor', 'PL', r.kBlack+1 , 1, 0)
-        effeta2.save(1, 1, 0, lumi, 0.2, 1.8)
+        effeta2.save(1, 1, 0, lumi, '#eta^{Subleading lepton} (GeV)')
  
-        print 'Measured RT value data 2016 ', da16rt, ' +/- ', da16uncrt, ' +/- ', da16systrt
+        #print 'Measured RT value data 2016 ', da16rt, ' +/- ', da16uncrt, ' +/- ', da16systrt
         print 'Measured RT value data 2017 ', da17rt, ' +/- ', da17uncrt, ' +/- ', da17systrt
         print 'Measured RT value MC   ', mcrt, ' +/- ', mcuncrt, ' +/- ', mcsystrt
 

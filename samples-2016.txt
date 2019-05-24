@@ -1,0 +1,107 @@
+#-----------------------------------------------------------
+#-----------------------------------------------------------
+#----- all samples that are currently available ------------
+#-----------------------------------------------------------
+#
+#-----------------------------------------------------------
+#----------------- data samples ----------------------------
+# BLOCK        COLOR                         NAME                 LABEL                                     LOCATION OF FRIENDS                                                     XSEC     ISDATA
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#
+#
+DEF:path:/pool/ciencias/userstorage/sscruz/NanoAOD/Edge_17_05_19/
+DEF:year:2016
+data  r.kBlack       DoubleEG_Run{year}C_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run{year}D_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run{year}E_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run{year}F_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run{year}G_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleEG_Run{year}H_{year}          DoubleEG             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}C_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}D_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}E_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}F_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}G_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       DoubleMuon_Run{year}H_{year}          DoubleMuon             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}C_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}D_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}E_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}F_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}G_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       MuonEG_Run{year}H_{year}          MuonEG             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}C_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}D_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}E_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}F_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}G_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleElectron_Run{year}H_{year}          SingleElectron             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}C_{year}          SingleMuon             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}D_{year}          SingleMuon             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}E_{year}          SingleMuon             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}F_{year}          SingleMuon             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}G_{year}          SingleMuon             {path}  1    1 0 
+data  r.kBlack       SingleMuon_Run{year}H_{year}          SingleMuon             {path}  1    1 0 
+#
+#----------------- monte carlo -----------------------------
+#-----------------------------------------------------------
+# BLOCK     COLOR         NAME                       LABEL                       LOCATION OF FRIENDS                                                                   XSEC    ISDATA
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#########################_DY+jets_####################################################################################################################
+DYJets    r.kYellow-9    DYJetsToLL_M50_{year}_part1+DYJetsToLL_M50_{year}_part2        DY+Jets     {path}   xsec   0 0
+DYJets    r.kYellow-9    DYJetsToLL_M10to50_LO_{year}                                                         DY+Jets     {path}   xsec    0 0
+#########################_TTbar_#######################################################################################################################
+TTJets    r.kRed-9       TTTo2L2Nu_{year}_part1+TTTo2L2Nu_{year}_part2        TT+Jets     {path}   xsec     0 0
+TTJets    r.kRed-9       TTJets_SingleLeptonFromT_{year}+TTJets_SingleLeptonFromT_ext1_{year}        TT+Jets     {path}   xsec     0 0
+TTJets    r.kRed-9       TTJets_SingleLeptonFromTbar_{year}+TTJets_SingleLeptonFromTbar_ext1_{year}        TT+Jets     {path}   xsec     0 0
+#########################_singleTop_###################################################################################################################
+singleT   r.kRed-7       TW_{year}           singleT     {path}     xsec    0 0
+singleT   r.kRed-7       TbarW_{year}        singleT     {path}     xsec    0 0
+#########################_TTZ/TTW/TWZ/TTVV_############################################################################################################
+TTZ       r.kBlue-7      TTZToLLNuNu_ext_{year}+TTZToLLNuNu_ext3_{year}          TTZ        {path}  xsec    0 0
+TTZ       r.kBlue-7      TTZToLLNuNu_m1to10_{year}          TTZ        {path}  xsec    0 0
+TTW       r.kBlue-7      TTWToLNu_{year}                 TTW         {path}  xsec    0 0
+TTW       r.kBlue-7      TTWW_{year}                           TTW        {path}  xsec    0 0
+#########################_WWTo2L2Nu_###################################################################################################################
+WW2l      r.kCyan+3      WWTo2L2Nu_{year}                       WW2l        {path}    xsec   0 0
+WZTo3LNu      r.kCyan+3      WZTo3LNu_{year}                   WZTo3LNu     {path}    xsec  0 0
+WZTo2L2Q      r.kCyan+3      WZTo2L2Q_{year}                   WZTo2L2Q     {path}    xsec   0 0
+#########################_ZZTo4l_######################################################################################################################
+ZZ4l      r.kCyan+2       ZZTo4L_{year}              ZZ4l       {path}       xsec    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2e2mu_{year}          ZZ4l       {path}       xsec    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2e2nu_{year}          ZZ4l       {path}       xsec    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo2mu2nu_{year}         ZZ4l       {path}       xsec    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo4e_{year}             ZZ4l       {path}       xsec    0 1
+ZZ4l      r.kCyan+2       GluGluToContinToZZTo4mu_{year}            ZZ4l       {path}       xsec    0 1
+#ZZ2l      r.kCyan+2      ZZTo2L2Q_{year}                       ZZ2l        {path}      xsec     0 2
+ZZ2l      r.kCyan+2      ZZTo2L2Nu_{year}                       ZZ2l        {path}      xsec     0 2
+#########################_rares_########################################################################################################################
+rares     r.kGreen-5     WWW_{year}         rares       {path}       xsec    0 0
+rares     r.kGreen-5     WWZ_{year}         rares       {path}       xsec    0 0
+rares     r.kGreen-5     WZZ_{year}         rares       {path}       xsec    0 0
+rares     r.kGreen-5     ZZZ_{year}         rares       {path}       xsec    0 0
+rares     r.kGreen-5     TTHnobb_{year}     rares       {path}       xsec    0 0
+#
+#rares     r.kGreen-5     TTTT                           rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet       9.103    0 0
+#rares     r.kGreen-5     WJetsToLNu_LO                  rares       /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet  61526700.0    0 0
+#
+#SMS_TChiWZ   r.kBlack+2     SMS_TChiWZ                    SMS_TChiWZ    /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet/          1    0 0
+#TChiWZ  r.kBlack+2   TChiWZ    TChiWZ     /afs/cern.ch/work/s/sesanche/public/forEdge/nTuplesForMoriond/mergedSignals/slimmed/   1   0   0
+#SMS_TSlepSlep  r.kBlack+2   SMS_TSlepSlep     SMS_TSlepSlep     /afs/cern.ch/work/m/mvesterb/public/MC_samples/edgeZ/signals/SMS_TSlepSlep/   1     0  0
+#SMS_300_1_   r.kBlack+2     SMS_300_1_                    SMS_300_1_    /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_450_50_  r.kBlack+2     SMS_450_50_                   SMS_450_50_   /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_600_300_ r.kBlack+2     SMS_600_300_                  SMS_600_300_  /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_600_1_   r.kBlack+2     SMS_600_1_                    SMS_600_1_    /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_650_300_ r.kBlack+2     SMS_650_300_                  SMS_650_300_  /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_650_1_   r.kBlack+2     SMS_650_1_                    SMS_650_1_    /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_700_300_ r.kBlack+2     SMS_700_300_                  SMS_700_300_  /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#SMS_700_1_   r.kBlack+2     SMS_700_1_                    SMS_700_1_    /afs/cern.ch/work/s/sesanche/public/forEdge/skim_1fatjet          1    0 0
+#WW2l      r.kCyan+3      WWTo1L1Nu2Q                    WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      GGWWTo2L2Nu                    WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      GGHWWTo2L2Nu                   WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      WWDouble                       WW2l        {path}    xsec   0 0
+#WW2l      r.kCyan+3      WpWpJJ                         WW2l        {path}    xsec   0 0
+#WZTo2L2Q      r.kCyan+3      WZTo2L2Q                   WZTo2L2Q     {path}    5.60    0 0
+#TTZ       r.kBlue-7      TTZZ                           TTZ        {path}  xsec    0 0
+#TTZ       r.kBlue-7      TTZH                           TTZ        {path}  xsec    0 0
+#TTV       r.kBlue-7      TWZ                            TTV        {path}  xsec    0 0
+#TTW       r.kBlue-7      TTWToLNu                       TTW        {path}  xsec    0 0
